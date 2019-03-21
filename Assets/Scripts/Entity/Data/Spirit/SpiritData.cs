@@ -13,42 +13,31 @@ namespace Game.Spirit.Data
     [CreateAssetMenu(fileName = "New Spirit", menuName = "Data/Spirit/Spirit")]
     [Serializable]
     public class SpiritData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
-    {        
-        public bool IsGradeSpirit;
-        public bool CanAttackFlying;
-        public List<NumeralAttribute> Attributes;
-        public List<Ability> AbilityList;
-        public List<Trait> TraitList;
-
-        [SerializeField]
-        public RarityType Rarity;
-
-        [SerializeField]
-        public ElementType Element;
-
-        public List<SpiritData> Grades;
-        public List<float> DamageToRace;
-        public int GradeCount { get; set; } = -1;
-        public Inventory Inventory { get; set; }
-        public List<NumeralAttribute> BaseAttributes { get => Attributes; set => Attributes = value; }
-        public List<NumeralAttribute> AppliedAttributes { get; set; }
-        public List<Ability> Abilities { get => AbilityList; set => AbilityList = value; }
-        public List<Trait> Traits { get => TraitList; set => TraitList = value; }
+    {
+        [SerializeField] public bool IsGradeSpirit;
+        [SerializeField] public bool CanAttackFlying;
+        [SerializeField] public List<NumeralAttribute> Attributes;
+        [SerializeField] public List<Ability> AbilityList;
+        [SerializeField] public List<Trait> TraitList;
+        [SerializeField] public RarityType Rarity;
+        [SerializeField] public ElementType Element;
+        [SerializeField] public List<SpiritData> Grades;
+        [SerializeField] public List<float> DamageToRace;
+        [SerializeField] public int GradeCount { get; set; } = -1;
+        [SerializeField] public Inventory Inventory { get; set; }
+        [SerializeField] public List<NumeralAttribute> BaseAttributes { get => Attributes; set => Attributes = value; }
+        [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
+        [SerializeField] public List<Ability> Abilities { get => AbilityList; set => AbilityList = value; }
+        [SerializeField] public List<Trait> Traits { get => TraitList; set => TraitList = value; }
 
         private int numberInList;
-
-        private void Awake()
-        {
-            if (Attributes == null || Attributes.Count == 0)
-                Attributes = Attributes.CreateAttributeList();
-        }
 
         public void SetData()
         {
             Grades = new List<SpiritData>();
             Inventory = new Inventory(this.Get(Numeral.MaxInventorySlots, From.Base).Value);
 
-            AppliedAttributes = AppliedAttributes.CreateAttributeList();         
+            AppliedAttributes = AppliedAttributes.CreateAttributeList();
 
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
@@ -68,6 +57,13 @@ namespace Game.Spirit.Data
         #region IF UNITY EDITOR
 
 #if UNITY_EDITOR
+
+        private void Awake()
+        {
+            if (Attributes == null || Attributes.Count == 0)
+                Attributes = Attributes.CreateAttributeList();
+        }
+
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {

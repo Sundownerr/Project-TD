@@ -38,7 +38,7 @@ namespace Game.Systems
         public void SetSystem()
         {
             if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                NetworkRequest.EnemyCreatingRequestDone += NetworkEnemyCreated;
+                Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
@@ -122,13 +122,30 @@ namespace Game.Systems
 
                 while (spawned < CurrentWaveEnemies.Count)
                 {
+                    var spawnPosition = (int)CurrentWaveEnemies[spawned].Type == (int)EnemyType.Flying ?
+                        Owner.Map.FlyingSpawnPoint.transform.position :
+                        Owner.Map.GroundSpawnPoint.transform.position;
+
                     if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                        CreateRequest();
+                        EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest(CurrentWaveEnemies[spawned], spawnPosition));
                     else
                         CreateEnemy();
 
                     spawned++;
                     yield return spawnDelay;
+
+                    #region  Helper functions
+
+                    void CreateEnemy()
+                    {
+                        var newEnemy = StaticMethods.CreateEnemy(CurrentWaveEnemies[spawned], spawnPosition, Owner);
+
+                        wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
+
+                        EnemyCreated?.Invoke(null, newEnemy);
+                    }
+
+                    #endregion
                 }
 
                 if (WaveNumber <= Owner.WaveAmount)
@@ -137,34 +154,6 @@ namespace Game.Systems
                     WaveNumber++;
                     WaveEnded?.Invoke(null, null);
                 }
-
-                #region  Helper functions
-
-                void CreateEnemy()
-                {
-                    var newEnemy = StaticMethods.CreateEnemy(CurrentWaveEnemies[spawned], Owner);
-
-                    wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
-
-                    EnemyCreated?.Invoke(null, newEnemy);
-                }
-
-                void CreateRequest()
-                {
-                    var spawnPosition = CurrentWaveEnemies[spawned].Type == EnemyType.Flying ?
-                        Owner.Map.FlyingSpawnPoint.transform.position :
-                        Owner.Map.GroundSpawnPoint.transform.position;
-
-                    var requestData = new EnemyCreationRequest
-                    {
-                        Data = CurrentWaveEnemies[spawned],
-                        Position = spawnPosition
-                    };
-
-                    EnemyCreationRequested?.Invoke(null, requestData);
-                }
-
-                #endregion
             }
 
             #endregion

@@ -9,24 +9,24 @@ using Mirror;
 
 namespace Game.Systems
 {
-    public class SpiritPlaceSystem 
-    {    
-        public event EventHandler<SpiritSystem> SpiritCreated = delegate{};
-        public event EventHandler<SpiritSystem> SpiritPlaced = delegate{};
+    public class SpiritPlaceSystem
+    {
+        public event EventHandler<SpiritSystem> SpiritCreated = delegate { };
+        public event EventHandler<SpiritSystem> SpiritPlaced = delegate { };
         public event EventHandler<SpiritCreationRequest> SpiritCreationRequested = delegate { };
 
         public PlayerSystem Owner { get; set; }
-  
+
         public SpiritPlaceSystem(PlayerSystem player)
         {
-            Owner = player;         
+            Owner = player;
         }
 
         public void SetSystem()
         {
-            if(Owner.NetworkPlayer != null)
+            if (Owner.NetworkPlayer != null)
             {
-                NetworkRequest.SpiritCreatingRequestDone += (s, e) => SpiritPlaced?.Invoke(s, e);
+                Owner.NetworkPlayer.SpiritCreatingRequestDone += (_, e) => SpiritPlaced?.Invoke(_, e);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Game.Systems
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
                 {
                     if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                        CreateRequest();
+                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData, Owner.CellControlSystem.ChoosedCell.transform.position));
                     else
                     {
                         var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, Owner);
@@ -49,21 +49,6 @@ namespace Game.Systems
                     }
                 }
             }
-
-            #region Helper functions
-
-            void CreateRequest()
-            {
-                var requestData = new SpiritCreationRequest()
-                {
-                    Data = spiritData,
-                    Position = Owner.CellControlSystem.ChoosedCell.transform.position
-                };
-
-                SpiritCreationRequested?.Invoke(null, requestData);
-            } 
-
-            #endregion
         }
-    }  
+    }
 }

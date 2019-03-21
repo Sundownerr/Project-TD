@@ -12,7 +12,7 @@ using Game.Spirit;
 using Game.Cells;
 using Game.Enemy;
 
-public static class StaticMethods 
+public static class StaticMethods
 {
     public static RangeSystem CreateRange(IPrefabComponent owner, double size, CollideWith collideType)
     {
@@ -85,15 +85,11 @@ public static class StaticMethods
 
     public static SpiritSystem CreateSpirit(SpiritData spiritData, Vector3 position, PlayerSystem owner)
     {
-        var newSpiritPrefab = U.Instantiate(
-            spiritData.Prefab,
-            position,
-            Quaternion.identity,
-            ReferenceHolder.Get.SpiritParent);
+        var newSpiritPrefab = U.Instantiate(spiritData.Prefab, position, Quaternion.identity, ReferenceHolder.Get.SpiritParent);
 
         var newSpirit = new SpiritSystem(newSpiritPrefab)
         {
-            Data = U.Instantiate(spiritData),
+            Data = spiritData,
             UsedCell = null
         };
 
@@ -103,23 +99,14 @@ public static class StaticMethods
         return newSpirit;
     }
 
-    public static EnemySystem CreateEnemy(EnemyData data, PlayerSystem owner)
+    public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, PlayerSystem owner)
     {
-        var spawnPoint = data.Type == EnemyType.Flying ? 
-            owner.Map.FlyingSpawnPoint :
-            owner.Map.GroundSpawnPoint;
+        var enemy = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
+        var enemySystem = new EnemySystem(enemy) { Data = data };
 
-        var enemy = U.Instantiate(
-            data.Prefab,
-            spawnPoint.transform.position,
-            Quaternion.identity, 
-            ReferenceHolder.Get.EnemyParent);
-
-        enemy.gameObject.layer = 12;
-
-        var enemySystem = new EnemySystem(enemy) { Data = data};
+        enemy.gameObject.layer = 12;  
         enemySystem.SetSystem(owner);
-    
+
         return enemySystem;
     }
 }

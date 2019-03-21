@@ -57,12 +57,43 @@ public class NetworkPlayer : NetworkBehaviour
     private void Start()
     {
         if (!isLocalPlayer) return;
-
         ReferenceHolder.Get.NetworkPlayer = this;
     }
 
-    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e) => NetworkRequest.Send(e);
-    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e) => NetworkRequest.Send(e);   
+    #region Spirit creating request
+
+    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e) => CmdCreateSpirit(JsonUtility.ToJson(e));
+    [Command]
+    private void CmdCreateSpirit(string jsonRequest) => RpcCreateSpirit(jsonRequest);
+    [ClientRpc]
+    private void RpcCreateSpirit(string jsonRequest)
+    {
+        var request = JsonUtility.FromJson<SpiritCreationRequest>(jsonRequest);
+        var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells.Find(x => x.transform.position == request.Position);
+        var newSpirit = choosedCell != null ?
+            StaticMethods.CreateSpirit(request.Data, choosedCell.GetComponent<Cell>(), ReferenceHolder.Get.Player) :
+            StaticMethods.CreateSpirit(request.Data, request.Position, ReferenceHolder.Get.Player);
+
+        SpiritCreatingRequestDone?.Invoke(null, newSpirit);
+    }
+
+    #endregion
+
+    #region EnemyCreatingRequest
+
+    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e) => CmdCreateEnemy(JsonUtility.ToJson(e));
+    [Command]
+    private void CmdCreateEnemy(string jsonRequest) => RpcCreateEnemy(jsonRequest);
+    [ClientRpc]
+    private void RpcCreateEnemy(string jsonRequest)
+    {
+        var request = JsonUtility.FromJson<EnemyCreationRequest>(jsonRequest);
+        var newEnemy = StaticMethods.CreateEnemy(request.Data, request.Position, ReferenceHolder.Get.Player);
+
+        EnemyCreatingRequestDone?.Invoke(null, newEnemy);
+    }
+
+    #endregion
 
     #region Save-load methods
 
@@ -72,7 +103,7 @@ public class NetworkPlayer : NetworkBehaviour
 
         var data = GameData.Instance.PlayerData;
         var userName = FPClient.Instance.Username;
-        
+
 
         CmdSendData(gameObject, data, userName);
     }

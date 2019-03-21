@@ -15,28 +15,19 @@ namespace Game.Enemy
     [Serializable]
     public class EnemyData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
     {
-        public List<Trait> Traits { get; set; }
-        public List<Ability> Abilities { get; set; }
-        public List<NumeralAttribute> BaseAttributes { get; set; } 
-        public List<NumeralAttribute> AppliedAttributes { get; set; } 
+        [SerializeField] public List<Trait> Traits { get; set; }
+        [SerializeField] public List<Ability> Abilities { get; set; }
+        [SerializeField] public List<NumeralAttribute> BaseAttributes { get; set; }
+        [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
 
-        public Armor.ArmorType ArmorType { get; set; }
-        public bool IsInstanced { get; set; }
+        [SerializeField] public Armor.ArmorType ArmorType { get; set; }
+        [SerializeField] public bool IsInstanced { get; set; }
 
-        public int WaveLevel;
-        public RaceType Race;
-        public EnemyType Type;
+        [SerializeField] public int WaveLevel;
+        [SerializeField] public RaceType Race;
+        [SerializeField] public EnemyType Type;
 
         protected int numberInList;
-
-        private void Awake()
-        {
-            //   AddToDataBase();           
-            Abilities = new List<Ability>();
-            Traits = new List<Trait>();
-            BaseAttributes = BaseAttributes.CreateAttributeList();
-            AppliedAttributes = AppliedAttributes.CreateAttributeList();
-        }
 
         public void SetId()
         {
@@ -47,9 +38,16 @@ namespace Game.Enemy
             };
         }
 
-        #region IF UNITY EDITOR
-
 #if UNITY_EDITOR
+
+        private void Awake()
+        {
+            //   AddToDataBase();           
+            Abilities = new List<Ability>();
+            Traits = new List<Trait>();
+            BaseAttributes = BaseAttributes.CreateAttributeList();
+            AppliedAttributes = AppliedAttributes.CreateAttributeList();
+        }
 
         [Button]
         public void AddToDataBase()
@@ -103,7 +101,5 @@ namespace Game.Enemy
         public void OnValuesChanged() => AddToDataBase();
 
 #endif 
-
-        #endregion      
     }
 }
