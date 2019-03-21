@@ -122,7 +122,7 @@ namespace Game.Spirit
             }
         }
 
-        private void OnEntityEnteredRange(object sender, IHealthComponent e)
+        private void OnEntityEnteredRange(object _, IHealthComponent e)
         {
             if (e is EnemySystem enemy)
                 if (enemy.Data.Type == EnemyType.Flying && !Data.CanAttackFlying)
@@ -131,7 +131,7 @@ namespace Game.Spirit
                     Targets.Add(e);
         }
 
-        private void OnEntityExitRange(object sender, IHealthComponent e) => Targets.Remove(e);
+        private void OnEntityExitRange(object _, IHealthComponent e) => Targets.Remove(e);
 
         public void AddExp(int amount) => DataSystem.AddExp(amount);
     }

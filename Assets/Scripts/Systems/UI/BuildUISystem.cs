@@ -82,13 +82,13 @@ namespace Game.Systems
             }
         }
 
-        private void OnClickedOnCell(object sender, GameObject go) => ActivateUI(true);
-        private void OnClickedOnGround(object sender, EventArgs e) => ActivateUI(false);
-        private void OnClicledOnSpirit(object sender, GameObject go) => ActivateUI(false);
-        private void OnSpiritPlaced(object sender, SpiritSystem spirit) => ActivateUI(false);
+        private void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
+        private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
+        private void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
+        private void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
 
 
-        private void UpdateUI(object sender, EventArgs e)
+        private void UpdateUI(object _, EventArgs e)
         {
             UpdateAvailableElement();
             UpdateRarity();
@@ -124,7 +124,7 @@ namespace Game.Systems
                 spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Element == ChoosedElement);                                                                                                    
         }
 
-        public void OnAllThisSpiritsUsed(object sender, SpiritButtonSystem spiritButton)
+        public void OnAllThisSpiritsUsed(object _, SpiritButtonSystem spiritButton)
         {
             spiritButtonGOs.Remove(spiritButton.gameObject);
             spiritButtons.Remove(spiritButton);

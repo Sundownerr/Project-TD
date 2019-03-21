@@ -20,7 +20,7 @@ namespace Game.Systems
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
 
-        private void OnSpiritEnteredRange(object sender, IHealthComponent e)
+        private void OnSpiritEnteredRange(object _, IHealthComponent e)
         {
             var spirit = e as SpiritSystem;
 
@@ -37,7 +37,7 @@ namespace Game.Systems
             spirit.AddEffect(effect);
         }
 
-        private void OnSpiritExitRange(object sender, IHealthComponent e) => RemoveEffect(e);
+        private void OnSpiritExitRange(object _, IHealthComponent e) => RemoveEffect(e);
 
         private void RemoveEffect(IHealthComponent entity)
         {
@@ -65,7 +65,7 @@ namespace Game.Systems
             range.SetShow(true);
         }
 
-        private void OnRangeDestroyed(object sender, System.EventArgs e) => End();
+        private void OnRangeDestroyed(object _, System.EventArgs e) => End();
         
         public override void Continue()
         {

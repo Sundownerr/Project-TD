@@ -85,7 +85,7 @@ public class LobbyListUISystem : MonoBehaviour
         }
     }
 
-    private void OnLobbyButtonClicked(object sender, LobbyList.Lobby lobby)
+    private void OnLobbyButtonClicked(object _, LobbyList.Lobby lobby)
     {
         if (lobby == null)
             return;

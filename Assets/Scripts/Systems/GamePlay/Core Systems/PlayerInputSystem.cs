@@ -88,18 +88,18 @@ namespace Game.Systems
                     if (isMouseOnSpirit)
                     {                      
                         GetChoosedSpirit();
-                        ClickedOnSpirit?.Invoke(this, hit.transform.gameObject);                       
+                        ClickedOnSpirit?.Invoke(null, hit.transform.gameObject);                       
                     }
 
                     if(isMouseOnEnemy)
                     {
                         GetChoosedEnemy();
-                        ClickedOnEnemy?.Invoke(this, hit.transform.gameObject);
+                        ClickedOnEnemy?.Invoke(null, hit.transform.gameObject);
                     }
 
                     if (isMouseOnGround)
                     {
-                        ClikedOnGround?.Invoke(this, null);
+                        ClikedOnGround?.Invoke(null, null);
                         ChoosedSpirit = null;
                         choosedEnemy = null;
                         SetSelection(false);
@@ -108,7 +108,7 @@ namespace Game.Systems
                     if (isMouseOnCell)
                     {
 
-                        ClickedOnCell?.Invoke(this, hit.transform.gameObject);
+                        ClickedOnCell?.Invoke(null, hit.transform.gameObject);
                         ChoosedSpirit = null;
                         choosedEnemy = null;
                         SetSelection(false);
@@ -119,7 +119,7 @@ namespace Game.Systems
 
             if (Input.GetMouseButtonDown(1))
             {
-                RMBPresed?.Invoke(this, null);
+                RMBPresed?.Invoke(null, null);
                 ChoosedSpirit = null;
                 choosedEnemy = null;
                 SetSelection(false);
@@ -170,7 +170,7 @@ namespace Game.Systems
                 selection.SetActive(activate);
         }
 
-        public void OnPlacingNewSpirit(object sender, SpiritData spiritData)
+        public void OnPlacingNewSpirit(object _, SpiritData spiritData)
         {
             for (int i = 0; i < Owner.AvailableSpirits.Count; i++)           
                 if (Owner.AvailableSpirits[i] == spiritData)
@@ -179,10 +179,10 @@ namespace Game.Systems
                     break;
                 }    
    
-            PlacingSpirit?.Invoke(this, null);
+            PlacingSpirit?.Invoke(null, null);
         }
 
-        private void OnSelling(object sender, EventArgs e) => SpiritSold?.Invoke(this, ChoosedSpirit);
+        private void OnSelling(object _, EventArgs e) => SpiritSold?.Invoke(null, ChoosedSpirit);
             
         private bool CheckGradeListOk(out List<SpiritData> grades)
         {
@@ -206,7 +206,7 @@ namespace Game.Systems
             return false;
         }        
 
-        private void OnUpgrading(object sender, EventArgs e) 
+        private void OnUpgrading(object _, EventArgs e) 
         {           
             if (CheckGradeListOk(out List<SpiritData> grades))
             {              
@@ -220,8 +220,8 @@ namespace Game.Systems
                 upgradedSpirit.DataSystem.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);                            
                 upgradedSpirit.SetSystem(Owner);                                         
                 
-                SpiritUpgraded?.Invoke(this, upgradedSpirit);      
-                SpiritSold?.Invoke(this, ChoosedSpirit);      
+                SpiritUpgraded?.Invoke(null, upgradedSpirit);      
+                SpiritSold?.Invoke(null, ChoosedSpirit);      
                 ChoosedSpirit = upgradedSpirit;
             }
             Owner.SpiritUISystem.ActivateUpgradeButton(ChoosedSpirit.Data.GradeCount < grades.Count - 1);

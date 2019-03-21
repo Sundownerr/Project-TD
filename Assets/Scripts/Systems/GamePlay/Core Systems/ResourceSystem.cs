@@ -36,34 +36,34 @@ namespace Game.Systems
             Owner.ItemDropSystem.ItemUICreated += OnItemUICreated;
         }
 
-        private void OnItemUICreated(object sender, ItemUISystem e)
+        private void OnItemUICreated(object _, ItemUISystem e)
         {
             e.System.ConsumedMagicCrystals += OnMagicCrystalsConsumed;
             e.System.ConsumedSpiritVessels += OnSpiritVesselsConsumed;
         }
 
-        private void OnSpiritSold(object sender, SpiritSystem spirit)
+        private void OnSpiritSold(object _, SpiritSystem spirit)
         {
             AddResource(ResourceType.Gold, spirit.Data.Get(Numeral.GoldCost, From.Base).Value);
             AddResource(ResourceType.SpiritLimit, -spirit.Data.Get(Numeral.SpiritLimit, From.Base).Value);
         }
 
-        private void OnSpiritCreated(object sender, SpiritSystem spirit)
+        private void OnSpiritCreated(object _, SpiritSystem spirit)
         {
             AddResource(ResourceType.Gold, -spirit.Data.Get(Numeral.GoldCost, From.Base).Value);
             AddResource(ResourceType.SpiritLimit, spirit.Data.Get(Numeral.SpiritLimit, From.Base).Value);
         }
 
-        private void OnEnemyDied(object sender, EnemySystem enemy)
+        private void OnEnemyDied(object _, EnemySystem enemy)
         {
             if(enemy.LastDamageDealer != null)
                 AddResource(ResourceType.Gold, enemy.Data.GetValue(Numeral.GoldCost));        
         }
 
-        private  void OnElementLearned(object sender, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);
-        private  void OnAllEnemiesKilled(object sender, EventArgs e) => AddResource(ResourceType.MagicCrystal, 5f);
-        private  void OnMagicCrystalsConsumed(object sender, double value) => AddResource(ResourceType.MagicCrystal, value);
-        private  void OnSpiritVesselsConsumed(object sender, double value) => AddResource(ResourceType.MaxSpiritLimit, value);
+        private  void OnElementLearned(object _, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);
+        private  void OnAllEnemiesKilled(object _, EventArgs e) => AddResource(ResourceType.MagicCrystal, 5f);
+        private  void OnMagicCrystalsConsumed(object _, double value) => AddResource(ResourceType.MagicCrystal, value);
+        private  void OnSpiritVesselsConsumed(object _, double value) => AddResource(ResourceType.MaxSpiritLimit, value);
 
         private  void AddResource(ResourceType type, double amount)
         {

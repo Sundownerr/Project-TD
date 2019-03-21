@@ -17,7 +17,7 @@ public class LobbyButtonUISystem : MonoBehaviour
         var button = GetComponent<Button>();
         Label = transform.GetChild(0).GetComponent<Text>();
 
-        button.onClick.AddListener(() => Clicked?.Invoke(this, Lobby));
+        button.onClick.AddListener(() => Clicked?.Invoke(null, Lobby));
     }
    
 }

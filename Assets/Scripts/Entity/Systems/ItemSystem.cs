@@ -32,10 +32,10 @@ namespace Game.Systems
             InstanceId.Add((owner as PlayerSystem).ItemsCount);
         }
 
-        public void OnSpiritLevelUp(object sender, SpiritSystem e) =>
+        public void OnSpiritLevelUp(object _, SpiritSystem e) =>
             IncreaseStatsPerLevel();
 
-        public void OnConsumableApplied(object sender, ConsumableEventArgs e)
+        public void OnConsumableApplied(object _, ConsumableEventArgs e)
         {
             if (e.ItemUI.System == this)
                 ApplyStats();
@@ -47,7 +47,7 @@ namespace Game.Systems
             {
                 AddValues(OwnerSystem);
                 isStatsApplied = true;
-                StatsApplied?.Invoke(this, null);
+                StatsApplied?.Invoke(null, null);
             }
         }
 
@@ -68,10 +68,10 @@ namespace Game.Systems
             {
                 if (Data is Consumable item)
                     if (item.Type == ConsumableType.MagicCrystals)
-                        ConsumedMagicCrystals?.Invoke(this, item.Attributes[0].Value);
+                        ConsumedMagicCrystals?.Invoke(null, item.Attributes[0].Value);
                     else
                         if (item.Type == ConsumableType.SpiritVessel)
-                        ConsumedSpiritVessels?.Invoke(this, item.Attributes[0].Value);
+                        ConsumedSpiritVessels?.Invoke(null, item.Attributes[0].Value);
             }
         }
 

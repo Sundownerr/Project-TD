@@ -89,7 +89,7 @@ namespace Game.Enemy
                     else
                         WaypointIndex++;
                 else
-                    LastWaypointReached?.Invoke(this, this);
+                    LastWaypointReached?.Invoke(null, this);
             }
 
             #region  Helper functions

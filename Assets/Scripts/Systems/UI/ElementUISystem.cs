@@ -53,10 +53,10 @@ namespace Game.Systems
             }
         }
 
-        private void OnClickedOnCell(object sender, GameObject go)      => ActivateUI(true);
-        private void OnClickedOnGround(object sender, EventArgs e)      => ActivateUI(false);        
-        private void OnClicledOnSpirit(object sender, GameObject go)     => ActivateUI(false);
-        private void OnSpiritPlaced(object sender, SpiritSystem spirit)    => ActivateUI(false);
+        private void OnClickedOnCell(object _, GameObject go)      => ActivateUI(true);
+        private void OnClickedOnGround(object _, EventArgs e)      => ActivateUI(false);        
+        private void OnClicledOnSpirit(object _, GameObject go)     => ActivateUI(false);
+        private void OnSpiritPlaced(object _, SpiritSystem spirit)    => ActivateUI(false);
 
         public void SetSystem(PlayerSystem player)
         {
@@ -81,7 +81,7 @@ namespace Game.Systems
             FireLevel.text      = Owner.Data.ElementLevels[6].ToString();
         }
 
-        private void OnElementLearned(object sender, int learnCost) => UpdateUI();
+        private void OnElementLearned(object _, int learnCost) => UpdateUI();
 
         private void LearnAstral()  => Owner.ElementSystem.LearnElement(0);
         private void LearnDarkness() => Owner.ElementSystem.LearnElement(1);

@@ -35,9 +35,9 @@ namespace Game.Systems
                 Enemies[i].UpdateSystem();
         }
 
-        private void OnEnemySpawned(object sender, EnemySystem e) => AddEnemy(e);
-        private void OnEnemyDied(object sender, IHealthComponent e) => DestroyEnemy(e as EnemySystem);
-        private void OnLastWaypointReached(object sender, EnemySystem e) => DestroyEnemy(e);
+        private void OnEnemySpawned(object _, EnemySystem e) => AddEnemy(e);
+        private void OnEnemyDied(object _, IHealthComponent e) => DestroyEnemy(e as EnemySystem);
+        private void OnLastWaypointReached(object _, EnemySystem e) => DestroyEnemy(e);
 
         private void AddEnemy(EnemySystem enemy)
         {
@@ -51,7 +51,7 @@ namespace Game.Systems
 
         private void DestroyEnemy(EnemySystem enemy)
         {
-            EnemyDied?.Invoke(this, enemy);
+            EnemyDied?.Invoke(null, enemy);
 
             if (enemy != null)
             {

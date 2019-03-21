@@ -93,7 +93,7 @@ namespace Game.Systems
             GameManager.Instance.StateChanged += OnGameStateChanged;
         }
 
-        private void OnGameStateChanged(object sender, GameState e)
+        private void OnGameStateChanged(object _, GameState e)
         {
             Coroutine networkCoroutine = null;
 
@@ -155,14 +155,12 @@ namespace Game.Systems
 
             if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
             {
-                Debug.Log("set local pls");
                 NetworkPlayer.LocalPlayer = Player;
             }
         }
 
         private void FixedUpdate()
-        {
-            
+        {            
             Player?.UpdateSystem();
         }
     }

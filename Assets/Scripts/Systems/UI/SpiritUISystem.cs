@@ -56,7 +56,7 @@ namespace Game.Systems
             UpgradeButton.onClick.AddListener(Upgrade);
         }
 
-        private void OnItemUICreated(object sender, ItemUISystem itemUI)
+        private void OnItemUICreated(object _, ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -97,12 +97,12 @@ namespace Game.Systems
             }
         }
 
-        private void OnClickedOnSpirit(object sender, GameObject spirit) => ActivateUI(true);
-        private void OnClickedOnCell(object sender, GameObject spirit) => ActivateUI(false);
-        private void OnClickedOnGround(object sender, EventArgs e) => ActivateUI(false);
-        public void OnStatsApplied(object sender, EventArgs e) => UpdateValues();
+        private void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
+        private void OnClickedOnCell(object _, GameObject spirit) => ActivateUI(false);
+        private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
+        public void OnStatsApplied(object _, EventArgs e) => UpdateValues();
 
-        private void OnMoveItemToSpirit(object sender, ItemUISystem itemUI)
+        private void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
         {
             var freeSlotIndex = -1;
 
@@ -115,7 +115,7 @@ namespace Game.Systems
 
             if (freeSlotIndex < 0)
             {
-                MoveItemToPlayer?.Invoke(this, itemUI);
+                MoveItemToPlayer?.Invoke(null, itemUI);
                 return;
             }
             else
@@ -129,24 +129,24 @@ namespace Game.Systems
             }
         }
 
-        public void OnItemDoubleClicked(object sender, ItemUISystem itemUI)
+        public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
         {
             if (itemUI.DraggedFrom == DraggedFrom.SpiritInventory)
             {
                 RemoveItemFromSpirit(itemUI);
-                MoveItemToPlayer?.Invoke(this, itemUI);
+                MoveItemToPlayer?.Invoke(null, itemUI);
             }
         }
 
         private void Sell()
         {
-            Selling?.Invoke(this, null);
+            Selling?.Invoke(null, null);
             ActivateUI(false);
         }
 
         private void Upgrade()
         {
-            Upgrading?.Invoke(this, null);
+            Upgrading?.Invoke(null, null);
             UpdateUI();
         }
 
@@ -269,13 +269,13 @@ namespace Game.Systems
             UpdateTraits();
         }
 
-        public void OnItemBeingDragged(object sender, ItemDragEventArgs e)
+        public void OnItemBeingDragged(object _, ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
             RemoveItemFromSpirit(e.ItemUI);
         }
 
-        public void OnItemDragEnd(object sender, ItemDragEventArgs e)
+        public void OnItemDragEnd(object _, ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
 
@@ -300,7 +300,7 @@ namespace Game.Systems
             itemUI.DraggedFrom = DraggedFrom.SpiritInventory;
             itemUI.SlotNumber = slotNumber;
 
-            ItemAddedToSpirit?.Invoke(this, new SpiritItemEventArgs(choosedSpirit, itemUI));
+            ItemAddedToSpirit?.Invoke(null, new SpiritItemEventArgs(choosedSpirit, itemUI));
             UpdateItems();
             UpdateValues();
         }
@@ -313,7 +313,7 @@ namespace Game.Systems
                 isSlotEmpty[itemUI.SlotNumber] = true;
                 ItemSlots[itemUI.SlotNumber].gameObject.SetActive(true);
 
-                ItemRemovedFromSpirit?.Invoke(this, new SpiritItemEventArgs(choosedSpirit, itemUI));
+                ItemRemovedFromSpirit?.Invoke(null, new SpiritItemEventArgs(choosedSpirit, itemUI));
                 UpdateValues();
             }
         }

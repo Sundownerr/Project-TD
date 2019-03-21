@@ -35,15 +35,15 @@ namespace Game.Systems
             ActivateUI(true);  
         }
 
-        private void OnWaveStarted(object sender, EventArgs e) => ActivateUI(false);
-        private void OnWaveEnded(object sender, EventArgs e) => ActivateUI(true);
+        private void OnWaveStarted(object _, EventArgs e) => ActivateUI(false);
+        private void OnWaveEnded(object _, EventArgs e) => ActivateUI(true);
 
         private void StartWave()
         {
             if (Owner.WaveSystem.WaveNumber <= Owner.WaveAmount)
             {
                 StartWaveButton.gameObject.SetActive(false);
-                WaveStarted?.Invoke(this, null);
+                WaveStarted?.Invoke(null, null);
                 GC.Collect();
             }
         }

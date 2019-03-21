@@ -52,7 +52,7 @@ namespace Game.Systems
             startPos = transform.position;
             parent = transform.parent;
 
-            BeingDragged?.Invoke(this, new ItemDragEventArgs(this));
+            BeingDragged?.Invoke(null, new ItemDragEventArgs(this));
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -83,7 +83,7 @@ namespace Game.Systems
                 transform.SetParent(parent);
             }
 
-            DragEnd?.Invoke(this, new ItemDragEventArgs(this, overlappedSlot));
+            DragEnd?.Invoke(null, new ItemDragEventArgs(this, overlappedSlot));
 
             overlappedSlot = null;
         }
@@ -92,9 +92,9 @@ namespace Game.Systems
         {
             if (eventData.clickCount == 2)
                 if (DraggedFrom == DraggedFrom.PlayerInventory)
-                    DoubleClickedInPlayerInventory?.Invoke(this, this);
+                    DoubleClickedInPlayerInventory?.Invoke(null, this);
                 else
-                    DoubleClickedInSpiritInventory?.Invoke(this, this);
+                    DoubleClickedInSpiritInventory?.Invoke(null, this);
         }
 
         public void GetDescription()

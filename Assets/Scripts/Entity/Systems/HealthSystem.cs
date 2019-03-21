@@ -67,7 +67,7 @@ public class HealthSystem
                 GiveResources();
                 IsVulnerable = false;
 
-                Died?.Invoke(this, owner);
+                Died?.Invoke(null, owner);
             }
         }
 

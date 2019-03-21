@@ -37,7 +37,7 @@ namespace Game.Systems
 
         private void OnDestroy()
         {
-            Destroyed?.Invoke(this, null);
+            Destroyed?.Invoke(null, null);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -83,7 +83,7 @@ namespace Game.Systems
                     {
                         EntitySystems.Add(entitySystem);
                         Entities.Add(entitySystem.Prefab);      
-                        EntityEntered?.Invoke(this, entitySystem);
+                        EntityEntered?.Invoke(null, entitySystem);
                         return true;                  
                     }       
                     return false;       
@@ -100,7 +100,7 @@ namespace Game.Systems
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (other.gameObject == EntitySystems[i].Prefab)
                 {
-                    EntityExit?.Invoke(this, EntitySystems[i]);
+                    EntityExit?.Invoke(null, EntitySystems[i]);
                     EntitySystems.Remove(EntitySystems[i]);
                     Entities.Remove(other.gameObject);                   
                 }            
@@ -111,7 +111,7 @@ namespace Game.Systems
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (EntitySystems[i] == null || EntitySystems[i].Prefab == null )
                 {
-                    EntityExit?.Invoke(this, EntitySystems[i]);
+                    EntityExit?.Invoke(null, EntitySystems[i]);
                     Entities.RemoveAt(i);
                     EntitySystems.RemoveAt(i);                   
                 }

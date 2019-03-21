@@ -47,7 +47,7 @@ namespace Game.Systems
             Owner.SpiritUISystem.MoveItemToPlayer += OnItemMovedToPlayer;
         }
 
-        private void OnItemUICreated(object sender, ItemUISystem itemUI)
+        private void OnItemUICreated(object _, ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -55,7 +55,7 @@ namespace Game.Systems
             ApplyConsumable += itemUI.System.OnConsumableApplied;
         }
 
-        private void OnItemMovedToPlayer(object sender, ItemUISystem itemUI)
+        private void OnItemMovedToPlayer(object _, ItemUISystem itemUI)
         {          
             var freeSlotIndex = -1;
 
@@ -74,7 +74,7 @@ namespace Game.Systems
             AddItemToPlayer(itemUI, freeSlotIndex);
         }
 
-        private void OnItemCreated(object sender, ItemSystem item)
+        private void OnItemCreated(object _, ItemSystem item)
         {
             for (int i = 0; i < isSlotEmpty.Count; i++)
                 if (isSlotEmpty[i])
@@ -84,22 +84,22 @@ namespace Game.Systems
                     isSlotEmpty[i] = false;
                     Slots[i].SetActive(false);
 
-                    ItemAddedToPlayer?.Invoke(this, ItemsUI[ItemsUI.Count - 1]);
+                    ItemAddedToPlayer?.Invoke(null, ItemsUI[ItemsUI.Count - 1]);
                     return;
                 }       
         }
 
-        public void OnItemBeingDragged(object sender, ItemDragEventArgs e) =>
+        public void OnItemBeingDragged(object _, ItemDragEventArgs e) =>
             RemoveItemFromPlayer(e.ItemUI);
 
-        public void OnItemDoubleClicked(object sender, ItemUISystem itemUI)
+        public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
         {
             var isSpiritChoosed = Owner.PlayerInputSystem.ChoosedSpirit != null;
 
             if (itemUI.System.Data is Consumable item)
                 if (item.Type != ConsumableType.Essence)
                 {
-                    ApplyConsumable?.Invoke(this, new ConsumableEventArgs(Owner, itemUI));
+                    ApplyConsumable?.Invoke(null, new ConsumableEventArgs(Owner, itemUI));
                     RemoveItemFromPlayer(itemUI);
                     Destroy(itemUI.gameObject);
                     return;
@@ -107,7 +107,7 @@ namespace Game.Systems
                 else
                     if (isSpiritChoosed && item.Type == ConsumableType.Essence)
                     {
-                        ApplyConsumable?.Invoke(this, new ConsumableEventArgs(Owner.PlayerInputSystem.ChoosedSpirit, itemUI));
+                        ApplyConsumable?.Invoke(null, new ConsumableEventArgs(Owner.PlayerInputSystem.ChoosedSpirit, itemUI));
                         RemoveItemFromPlayer(itemUI);
                         Destroy(itemUI.gameObject);
                         return;
@@ -117,12 +117,12 @@ namespace Game.Systems
                 if (itemUI.DraggedFrom == DraggedFrom.PlayerInventory)
                 {
                     RemoveItemFromPlayer(itemUI);
-                    MoveItemToSpirit?.Invoke(this, itemUI);
+                    MoveItemToSpirit?.Invoke(null, itemUI);
                 }
             
         }
 
-        public void OnItemDragEnd(object sender, ItemDragEventArgs e)
+        public void OnItemDragEnd(object _, ItemDragEventArgs e)
         {
             if (e.OverlappedSlot == null && e.ItemUI.DraggedFrom == DraggedFrom.PlayerInventory)
                 AddItemToPlayer(e.ItemUI, e.ItemUI.SlotNumber);
@@ -140,7 +140,7 @@ namespace Game.Systems
                 Slots[itemUI.SlotNumber].SetActive(true);
                 ItemsUI.Remove(itemUI);
 
-                ItemRemovedFromPlayer?.Invoke(this, itemUI);
+                ItemRemovedFromPlayer?.Invoke(null, itemUI);
             }
 
         }
@@ -153,7 +153,7 @@ namespace Game.Systems
             Slots[slotNumber].SetActive(false);
             isSlotEmpty[slotNumber] = false;
 
-            ItemAddedToPlayer?.Invoke(this, itemUI);
+            ItemAddedToPlayer?.Invoke(null, itemUI);
         }
     }
 }

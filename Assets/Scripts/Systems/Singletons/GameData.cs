@@ -48,7 +48,7 @@ public class GameData : MonoBehaviour
         #endregion
     }
 
-    private void OnGameStateChanged(object sender, GameState e)
+    private void OnGameStateChanged(object _, GameState e)
     {
         if(e == GameState.InLobby)
         {

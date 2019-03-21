@@ -25,7 +25,7 @@ namespace Game.Systems
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;
         }
       
-        private void OnEnemyDied(object sender, EnemySystem enemy)
+        private void OnEnemyDied(object _, EnemySystem enemy)
         {
             // 0 - Item dropped
             // 1 - Item not dropped

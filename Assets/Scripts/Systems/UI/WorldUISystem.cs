@@ -41,7 +41,7 @@ namespace Game.Systems
             };
         }
 
-        private void OnDamageDealt(object sender, DamageEventArgs e)
+        private void OnDamageDealt(object _, DamageEventArgs e)
         {
             if (e.Target == null || e.Target.Prefab == null)
                 return;
@@ -92,11 +92,11 @@ namespace Game.Systems
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
         }
 
-        private void OnSpiritPlaced(object sender, SpiritSystem e) =>
+        private void OnSpiritPlaced(object _, SpiritSystem e) =>
             e.DataSystem.LeveledUp += OnSpiritLevelUp;
         
 
-        private void OnSpiritLevelUp(object sender, SpiritSystem spirit)
+        private void OnSpiritLevelUp(object _, SpiritSystem spirit)
         {
             var text = levelUpTextPool.GetObject();
             var random = UnityEngine.Random.Range(-20, 20);

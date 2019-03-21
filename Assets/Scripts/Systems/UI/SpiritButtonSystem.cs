@@ -30,14 +30,14 @@ namespace Game.Systems
 
             if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
             {
-                PlaceNewSpirit?.Invoke(this, SpiritData);
+                PlaceNewSpirit?.Invoke(null, SpiritData);
                 Count--;
 
                 if (Count >= 1)
                     SpiritCountText.text = Count.ToString();
                 else
                 {
-                    AllThisSpiritsPlaced?.Invoke(this, this);
+                    AllThisSpiritsPlaced?.Invoke(null, this);
                     Destroy(gameObject);
                 }                              
             }

@@ -73,7 +73,7 @@ namespace Game.Spirit.System
 
             void ShotBullet()
             {              
-                PrepareToShoot?.Invoke(this, null);
+                PrepareToShoot?.Invoke(null, null);
  
                 for (int i = 0; i < shotCount; i++)
                     CreateBullet(ownerSpirit.Targets[i]);
@@ -87,7 +87,7 @@ namespace Game.Spirit.System
 
                     SetBulletData(bullets[bullets.Count - 1]);
 
-                    Shooting?.Invoke(this, bullets[bullets.Count - 1]);
+                    Shooting?.Invoke(null, bullets[bullets.Count - 1]);
                     bulletGOs[bulletGOs.Count - 1].SetActive(true);
 
                     void SetBulletData(BulletSystem bullet)
@@ -164,6 +164,6 @@ namespace Game.Spirit.System
             }                   
         }
 
-        private void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(this, bullet);         
+        private void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(null, bullet);         
     }
 }

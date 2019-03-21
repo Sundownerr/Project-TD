@@ -5,11 +5,14 @@ using Game.Data;
 using NaughtyAttributes;
 using Game.Systems;
 using System.Text;
+using System;
+using UnityEditor;
 
 namespace Game.Enemy
 {
     [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy")]
 
+    [Serializable]
     public class EnemyData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
     {
         public List<Trait> Traits { get; set; }
@@ -68,6 +71,7 @@ namespace Game.Enemy
                             SetId();
                             SetName();
                             DataControlSystem.Save(dataBase);
+                            EditorUtility.SetDirty(this);
                             return;
                         }
                 }

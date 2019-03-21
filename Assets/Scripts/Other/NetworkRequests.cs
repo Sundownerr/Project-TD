@@ -24,16 +24,35 @@ public class EnemyCreationRequest
     [SerializeField] public Vector3 Position;
 }
 
+
+[Serializable]
+public struct SpiritCreationRequestData
+{
+    [SerializeField] public int[] ID;
+    [SerializeField] public int ElementID;
+    [SerializeField] public int RarityID;
+    [SerializeField] public Vector3 Position;
+
+    public SpiritCreationRequestData(int[] id, int elementID, int rarityID, Vector3 position)
+    {
+        ID = id;
+        ElementID = elementID;
+        RarityID = rarityID;
+        Position = position;
+    }
+}
+
 public static class NetworkRequest
 {
     public static event EventHandler<SpiritSystem> SpiritCreatingRequestDone = delegate { };
     public static event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
 
+    #region Spirit Creation Request
+
     public static void Send(SpiritCreationRequest request)
     {
-        var id = new int[request.Data.Id.Count];
-        request.Data.Id.CopyTo(id, 0);
-
+        var id = request.Data.Id.ToArray();
+     
         CmdCreateSpirit(id, (int)request.Data.Element, (int)request.Data.Rarity, request.Position);
     }
 
@@ -43,9 +62,7 @@ public static class NetworkRequest
     [ClientRpc]
     private static void RpcCreateSpirit(int[] id, int elementID, int rarityID, Vector3 position)
     {
-        var listId = new List<int>();
-        listId.AddRange(id);
-
+        var listId = new List<int>(id);
         var spiritData = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[elementID].Rarities[rarityID].Spirits.Find(x => x.CompareId(listId));
         var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells.Find(x => x.transform.position == position);
 
@@ -56,10 +73,13 @@ public static class NetworkRequest
         SpiritCreatingRequestDone?.Invoke(null, newSpirit);
     }
 
+    #endregion
+
+    #region Enemy Creation Request
+
     public static void Send(EnemyCreationRequest request)
     {
-        var id = new int[request.Data.Id.Count];
-        request.Data.Id.CopyTo(id, 0);
+        var id = request.Data.Id.ToArray();
 
         CmdCreateEnemy(id, (int)request.Data.Race, request.Position);
     }
@@ -70,12 +90,13 @@ public static class NetworkRequest
     [ClientRpc]
     private static void RpcCreateEnemy(int[] id, int race, Vector3 spawnPosition)
     {
-        var listId = new List<int>();
-        listId.AddRange(id);
-
-        var enemyData = ReferenceHolder.Get.EnemyDataBase.Races[race].Enemies.Find(x => x.CompareId(listId));
+        var listID = new List<int>(id);
+        var enemyData = ReferenceHolder.Get.EnemyDataBase.Races[race].Enemies.Find(x => x.CompareId(listID));
         var newEnemy = StaticMethods.CreateEnemy(enemyData, ReferenceHolder.Get.Player);
 
         EnemyCreatingRequestDone?.Invoke(null, newEnemy);
     }
+
+    #endregion
+    
 }

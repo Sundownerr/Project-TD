@@ -90,6 +90,7 @@ namespace Game.Spirit.Data
                                 SetId();
                                 elements[i].Rarities[j].Spirits.Add(this);
                                 DataControlSystem.Save(dataBase);
+                                EditorUtility.SetDirty(this);
                                 return;
                             }
             }

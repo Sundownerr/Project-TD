@@ -30,7 +30,7 @@ namespace Game.Systems
             }
         }
 
-        public void OnPlacingNewSpirit(object sender, SpiritData spiritData)
+        public void OnPlacingNewSpirit(object _, SpiritData spiritData)
         {
             if (Owner.CellControlSystem.IsGridBuilded)
             {
@@ -45,7 +45,7 @@ namespace Game.Systems
                     else
                     {
                         var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, Owner);
-                        SpiritPlaced?.Invoke(this, newSpirit);
+                        SpiritPlaced?.Invoke(null, newSpirit);
                     }
                 }
             }
@@ -60,7 +60,7 @@ namespace Game.Systems
                     Position = Owner.CellControlSystem.ChoosedCell.transform.position
                 };
 
-                SpiritCreationRequested?.Invoke(this, requestData);
+                SpiritCreationRequested?.Invoke(null, requestData);
             } 
 
             #endregion

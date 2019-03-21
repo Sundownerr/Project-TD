@@ -27,7 +27,7 @@ public class UIControlSystem : MonoBehaviour
         playerNames = new List<string>();
         chatTexts = new List<InputField>();
 
-        IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(this, null));
+        IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(null, null));
         QuitButton.onClick.AddListener(QuitGame);
     }
 

@@ -32,14 +32,13 @@ namespace Game.Systems
                 Spirits[i].UpdateSystem();
         }
 
-        private void OnSpiritCreated(object sender, SpiritSystem spirit) => AddSpirit(spirit);
-        private void OnSpiritRemoved(object sender, SpiritSystem spirit) => RemoveSpirit(spirit);
+        private void OnSpiritCreated(object _, SpiritSystem spirit) => AddSpirit(spirit);
+        private void OnSpiritRemoved(object _, SpiritSystem spirit) => RemoveSpirit(spirit);
 
         private void AddSpirit(SpiritSystem spirit)
         {
             Spirits.Add(spirit);
 
-            spirit.OwnerSystem = player;
             spirit.UsedCell.GetComponent<Cell>().IsBusy = true;
             spirit.Prefab.layer = 14;
             spirit.IsOn = true;

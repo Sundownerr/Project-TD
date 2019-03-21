@@ -79,11 +79,11 @@ namespace Game.Systems
             #endregion
         }
 
-        private void OnSpiritPlaced(object sender, SpiritSystem spirit) => ChoosedCell = null;
-        private void OnRMBPressed(object sender, EventArgs e) => ChoosedCell = null;
-        private void OnClickedOnGround(object sender, EventArgs e) => ChoosedCell = null;
-        private void OnClickedOnSpirit(object sender, GameObject spirit) => ChoosedCell = null;
-        private void OnClickedOnCell(object sender, GameObject cellGO)
+        private void OnSpiritPlaced(object _, SpiritSystem spirit) => ChoosedCell = null;
+        private void OnRMBPressed(object _, EventArgs e) => ChoosedCell = null;
+        private void OnClickedOnGround(object _, EventArgs e) => ChoosedCell = null;
+        private void OnClickedOnSpirit(object _, GameObject spirit) => ChoosedCell = null;
+        private void OnClickedOnCell(object _, GameObject cellGO)
         {
 
             ChoosedCell = ChoosedCell ?? cellGO.GetComponent<Cell>();

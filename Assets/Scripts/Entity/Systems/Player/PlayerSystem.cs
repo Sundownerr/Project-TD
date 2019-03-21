@@ -12,11 +12,11 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
-    [Serializable]
+
     public class PlayerSystem : IEntitySystem
     {
-        [SerializeField] public List<int> InstanceId { get; private set; }
-        [SerializeField] public IEntitySystem OwnerSystem { get; set; }
+        public List<int> InstanceId { get; private set; }
+        public IEntitySystem OwnerSystem { get; set; }
         public PlayerInputSystem PlayerInputSystem { get; set; }
         public CellControlSystem CellControlSystem { get; private set; }        
         public EnemyControlSystem EnemyControlSystem { get; private set; }
@@ -40,7 +40,7 @@ namespace Game.Systems
         public List<SpiritSystem> Spirits { get => SpiritControlSystem.Spirits; }
         public List<EnemySystem> Enemies { get => EnemyControlSystem.Enemies; }
         public List<SpiritData> AvailableSpirits;
-        [SerializeField] public Player Data { get; set; }
+        public Player Data { get; set; }
         public Canvas UICanvas { get; set; }
         public Canvas WorldCanvas { get; set; }
         public NetworkPlayer NetworkPlayer;
@@ -56,7 +56,7 @@ namespace Game.Systems
                 map.Owner = this;
             }
         }
-       [SerializeField]  private PlayerMap map;
+        private PlayerMap map;
 
         public PlayerSystem(PlayerMap map)
         {

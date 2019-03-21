@@ -22,7 +22,7 @@ namespace Game.Systems
             UpdateUI();
         }
 
-        private void OnResourcesChanged(object sender, EventArgs e) => UpdateUI();
+        private void OnResourcesChanged(object _, EventArgs e) => UpdateUI();
 
         public void UpdateUI()
         {

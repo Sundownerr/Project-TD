@@ -11,7 +11,7 @@ using Game.Enemy;
 using U = UnityEngine.Object;
 
 public class NetworkPlayer : NetworkBehaviour
-{ 
+{
     [SyncVar] public PlayerData PlayerData;
     [SyncVar] public int MapID;
     public GameObject LocalMap;
@@ -43,7 +43,6 @@ public class NetworkPlayer : NetworkBehaviour
         var uiCanvasPrefab = Instantiate(UICanvasPrefab);
 
         LocalMap = localMaps[MapID];
-
         UiControlSystem = uiCanvasPrefab.GetComponent<UIControlSystem>();
         UiControlSystem.IncreaseLevelButtonClicked += (s, e) => CmdIncreaseLevel(PlayerData);
 
@@ -62,15 +61,13 @@ public class NetworkPlayer : NetworkBehaviour
         ReferenceHolder.Get.NetworkPlayer = this;
     }
 
-    private void OnEnemyCreatingRequest(object sender, EnemyCreationRequest e)
+    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
     {
-        if (!isLocalPlayer) return;
         NetworkRequest.Send(e);
     }
- 
-    private void OnSpiritCreatingRequest(object sender, SpiritCreationRequest e)
+
+    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
-        if (!isLocalPlayer) return;
         NetworkRequest.Send(e);
     }
 

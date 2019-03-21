@@ -6,6 +6,7 @@ using System;
 using Game.Enemy.Data;
 using U = UnityEngine.Object;
 using Game.Data;
+using Game.Spirit;
 
 namespace Game.Systems
 {
@@ -37,7 +38,7 @@ namespace Game.Systems
         public void SetSystem()
         {
             if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                NetworkRequest.EnemyCreatingRequestDone += (_, e) => EnemyCreated?.Invoke(null, e);
+                NetworkRequest.EnemyCreatingRequestDone += NetworkEnemyCreated;
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
@@ -64,6 +65,12 @@ namespace Game.Systems
                 return tempWaves;
             }
 
+            void NetworkEnemyCreated(object _, EnemySystem e)
+            {
+                wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
+                EnemyCreated?.Invoke(_, e);
+            }
+
             #endregion
         }
 
@@ -85,7 +92,7 @@ namespace Game.Systems
                             killedEnemyCount++;
                             if (killedEnemyCount == currentEnemyCount[waveId])
                             {
-                                AllWaveEnemiesKilled?.Invoke(this, null);
+                                AllWaveEnemiesKilled?.Invoke(null, null);
                                 wavesEnemySystem.RemoveAt(waveId);
                                 currentEnemyCount.RemoveAt(waveId);
                                 break;
@@ -97,7 +104,7 @@ namespace Game.Systems
             #endregion
         }
 
-        public void OnWaveStarted(object sender, EventArgs e)
+        public void OnWaveStarted(object _, EventArgs e)
         {
             currentEnemyCount.Add(wavesEnemyData[WaveNumber - 1].Count);
             wavesEnemySystem.Add(new List<EnemySystem>());
@@ -111,7 +118,7 @@ namespace Game.Systems
                 var spawned = 0;
                 var spawnDelay = new WaitForSeconds(delay);
 
-                WaveStarted?.Invoke(this, null);
+                WaveStarted?.Invoke(null, null);
 
                 while (spawned < CurrentWaveEnemies.Count)
                 {
@@ -128,7 +135,7 @@ namespace Game.Systems
                 {
                     CurrentWaveEnemies = wavesEnemyData[WaveNumber];
                     WaveNumber++;
-                    WaveEnded?.Invoke(this, null);
+                    WaveEnded?.Invoke(null, null);
                 }
 
                 #region  Helper functions
@@ -139,7 +146,7 @@ namespace Game.Systems
 
                     wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
 
-                    EnemyCreated?.Invoke(this, newEnemy);
+                    EnemyCreated?.Invoke(null, newEnemy);
                 }
 
                 void CreateRequest()
@@ -154,7 +161,7 @@ namespace Game.Systems
                         Position = spawnPosition
                     };
 
-                    EnemyCreationRequested?.Invoke(this, requestData);
+                    EnemyCreationRequested?.Invoke(null, requestData);
                 }
 
                 #endregion
