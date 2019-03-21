@@ -1,0 +1,166 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using Game.Enemy;
+using UnityEngine;
+using System;
+using Game.Enemy.Data;
+using U = UnityEngine.Object;
+using Game.Data;
+
+namespace Game.Systems
+{
+
+    public class WaveSystem
+    {
+        public int WaveNumber { get; set; }
+        public List<EnemyData> CurrentWaveEnemies { get; set; }
+        public event EventHandler WaveEnded = delegate { };
+        public event EventHandler WaveStarted = delegate { };
+        public event EventHandler AllWaveEnemiesKilled = delegate { };
+        public event EventHandler<EnemySystem> EnemyCreated = delegate { };
+        public event EventHandler<EnemyCreationRequest> EnemyCreationRequested = delegate { };
+
+        private List<List<EnemySystem>> wavesEnemySystem;
+        private List<List<EnemyData>> wavesEnemyData;
+        private List<int> currentEnemyCount;
+        public PlayerSystem Owner { get; set; }
+
+        public WaveSystem(PlayerSystem player)
+        {
+            Owner = player;
+
+            CurrentWaveEnemies = new List<EnemyData>();
+            wavesEnemySystem = new List<List<EnemySystem>>();
+            wavesEnemyData = new List<List<EnemyData>>();
+        }
+
+        public void SetSystem()
+        {
+            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                NetworkRequest.EnemyCreatingRequestDone += (_, e) => EnemyCreated?.Invoke(null, e);
+
+            Owner.WaveUISystem.WaveStarted += OnWaveStarted;
+
+            currentEnemyCount = new List<int>();
+            wavesEnemyData = GenerateWaves(Owner.WaveAmount);
+            WaveNumber = 1;
+            CurrentWaveEnemies = wavesEnemyData[0];
+
+            #region  Helper functions
+
+            List<List<EnemyData>> GenerateWaves(int waveAmount)
+            {
+                var randomWaveIds = new List<int>(waveAmount);
+                var raceTypes = Enum.GetValues(typeof(RaceType));
+                var tempWaves = new List<List<EnemyData>>(waveAmount);
+                var waves = ReferenceHolder.Get.WaveDataBase.Waves;
+
+                for (int i = 0; i < waveAmount; i++)
+                    randomWaveIds.Add(StaticRandom.Instance.Next(0, waves.Count));
+
+                for (int i = 0; i < waveAmount; i++)
+                    tempWaves.Add(WaveCreatingSystem.CreateWave(waves[randomWaveIds[i]], i));
+
+                return tempWaves;
+            }
+
+            #endregion
+        }
+
+        public void UpdateSystem()
+        {
+            AddMagicCrystalAfterWaveEnd();
+
+            #region  Helper functions
+
+            void AddMagicCrystalAfterWaveEnd()
+            {
+                for (int waveId = 0; waveId < wavesEnemySystem.Count; waveId++)
+                {
+                    var killedEnemyCount = 0;
+
+                    for (int enemyId = 0; enemyId < wavesEnemySystem[waveId].Count; enemyId++)
+                        if (wavesEnemySystem[waveId][enemyId].Prefab == null)
+                        {
+                            killedEnemyCount++;
+                            if (killedEnemyCount == currentEnemyCount[waveId])
+                            {
+                                AllWaveEnemiesKilled?.Invoke(this, null);
+                                wavesEnemySystem.RemoveAt(waveId);
+                                currentEnemyCount.RemoveAt(waveId);
+                                break;
+                            }
+                        }
+                }
+            }
+
+            #endregion
+        }
+
+        public void OnWaveStarted(object sender, EventArgs e)
+        {
+            currentEnemyCount.Add(wavesEnemyData[WaveNumber - 1].Count);
+            wavesEnemySystem.Add(new List<EnemySystem>());
+
+            ReferenceHolder.Get.StartCoroutine(SpawnEnemyWave(0.2f));
+
+            #region  Helper functions
+
+            IEnumerator SpawnEnemyWave(float delay)
+            {
+                var spawned = 0;
+                var spawnDelay = new WaitForSeconds(delay);
+
+                WaveStarted?.Invoke(this, null);
+
+                while (spawned < CurrentWaveEnemies.Count)
+                {
+                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                        CreateRequest();
+                    else
+                        CreateEnemy();
+
+                    spawned++;
+                    yield return spawnDelay;
+                }
+
+                if (WaveNumber <= Owner.WaveAmount)
+                {
+                    CurrentWaveEnemies = wavesEnemyData[WaveNumber];
+                    WaveNumber++;
+                    WaveEnded?.Invoke(this, null);
+                }
+
+                #region  Helper functions
+
+                void CreateEnemy()
+                {
+                    var newEnemy = StaticMethods.CreateEnemy(CurrentWaveEnemies[spawned], Owner);
+
+                    wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
+
+                    EnemyCreated?.Invoke(this, newEnemy);
+                }
+
+                void CreateRequest()
+                {
+                    var spawnPosition = CurrentWaveEnemies[spawned].Type == EnemyType.Flying ?
+                        Owner.Map.FlyingSpawnPoint.transform.position :
+                        Owner.Map.GroundSpawnPoint.transform.position;
+
+                    var requestData = new EnemyCreationRequest
+                    {
+                        Data = CurrentWaveEnemies[spawned],
+                        Position = spawnPosition
+                    };
+
+                    EnemyCreationRequested?.Invoke(this, requestData);
+                }
+
+                #endregion
+            }
+
+            #endregion
+        }
+    }
+}
