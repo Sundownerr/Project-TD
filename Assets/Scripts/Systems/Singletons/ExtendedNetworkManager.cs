@@ -21,7 +21,6 @@ public class ExtendedNetworkManager : NetworkManager
 
         base.OnServerSceneChanged(sceneName);
     }
-
     
     public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
     {            
@@ -41,15 +40,12 @@ public class ExtendedNetworkManager : NetworkManager
         NetworkServer.AddPlayerForConnection(conn, playerGO);
     }
 
-
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        var playerSystem = conn.playerController.GetComponent<NetworkPlayer>();
+        var player = conn.playerController;
 
-        NetworkGameManager.RemovePlayer(conn.playerController.gameObject, playerSystem.PlayerData);
+        NetworkGameManager.RemovePlayer(player.gameObject, player.GetComponent<NetworkPlayer>().PlayerData);
 
         base.OnServerDisconnect(conn);
     }
-
-
 }

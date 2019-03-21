@@ -56,7 +56,7 @@ namespace Game.Systems
             if (enemy != null)
             {
                 Enemies.Remove(enemy);
-                U.Destroy(enemy.Data);
+                
                 U.Destroy(enemy.Prefab);
             }
         }

@@ -61,37 +61,29 @@ public class NetworkPlayer : NetworkBehaviour
         ReferenceHolder.Get.NetworkPlayer = this;
     }
 
-    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
-    {
-        NetworkRequest.Send(e);
-    }
-
-    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
-    {
-        NetworkRequest.Send(e);
-    }
+    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e) => NetworkRequest.Send(e);
+    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e) => NetworkRequest.Send(e);   
 
     #region Save-load methods
 
     private void LoadData()
     {
-        if (!StaticMethods.CheckLocalPlayer(this)) return;
+        if (!isLocalPlayer) return;
 
-        var data = new PlayerData(GameData.Instance.PlayerData.Level, FPClient.Instance.SteamId);
+        var data = GameData.Instance.PlayerData;
         var userName = FPClient.Instance.Username;
+        
 
         CmdSendData(gameObject, data, userName);
     }
 
     private void SaveData()
     {
-        if (!StaticMethods.CheckLocalPlayer(this))
-            return;
+        if (!isLocalPlayer) return;
 
         GameData.Instance.SaveData(new PlayerData(PlayerData.Level));
 
-        if (FPClient.Instance == null)
-            return;
+        if (FPClient.Instance == null) return;
 
         FPClient.Instance.Lobby.OnLobbyStateChanged = null;
         FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
@@ -117,7 +109,6 @@ public class NetworkPlayer : NetworkBehaviour
                 break;
             }
         }
-
 
         manager.NetworkGameManager.Players.Add(gameObject);
         player.GetComponent<NetworkPlayer>().PlayerData = new PlayerData(data.Level, data.SteamID);

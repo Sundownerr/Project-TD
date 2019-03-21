@@ -20,32 +20,17 @@ public class GameData : MonoBehaviour
     public PlayerData PlayerData { get; private set; }
 
     private static GameData instance;
-    private WaitForSeconds retryDelay;
-
+    
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
         Instance = this;
-        LoadData();
-        retryDelay = new WaitForSeconds(0.5f);
+        LoadData();       
     }
 
     private void Start()
     {
-        StartCoroutine(ListenToGameState());
-
-        #region Helper functions
-
-        IEnumerator ListenToGameState()
-        {
-            while (GameManager.Instance == null)
-                yield return retryDelay;
-
-            GameManager.Instance.StateChanged += OnGameStateChanged;
-            StopAllCoroutines();
-        } 
-
-        #endregion
+        GameManager.Instance.StateChanged += OnGameStateChanged;
     }
 
     private void OnGameStateChanged(object _, GameState e)

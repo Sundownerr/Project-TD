@@ -83,17 +83,17 @@ public static class StaticMethods
         return newSpirit;
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData spiritData, Vector3 podition, PlayerSystem owner)
+    public static SpiritSystem CreateSpirit(SpiritData spiritData, Vector3 position, PlayerSystem owner)
     {
         var newSpiritPrefab = U.Instantiate(
             spiritData.Prefab,
-            podition,
+            position,
             Quaternion.identity,
             ReferenceHolder.Get.SpiritParent);
 
         var newSpirit = new SpiritSystem(newSpiritPrefab)
         {
-            Data = spiritData,
+            Data = U.Instantiate(spiritData),
             UsedCell = null
         };
 
@@ -114,9 +114,10 @@ public static class StaticMethods
             spawnPoint.transform.position,
             Quaternion.identity, 
             ReferenceHolder.Get.EnemyParent);
+
         enemy.gameObject.layer = 12;
 
-        var enemySystem = new EnemySystem(enemy) { Data = data };
+        var enemySystem = new EnemySystem(enemy) { Data = data};
         enemySystem.SetSystem(owner);
     
         return enemySystem;
