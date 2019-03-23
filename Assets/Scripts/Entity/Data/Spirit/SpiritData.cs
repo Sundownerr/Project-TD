@@ -30,66 +30,51 @@ namespace Game.Spirit.Data
         [SerializeField] public List<Ability> Abilities { get => AbilityList; set => AbilityList = value; }
         [SerializeField] public List<Trait> Traits { get => TraitList; set => TraitList = value; }
 
-        private int numberInList;
+        [SerializeField] public int numberInList;
 
         public void SetData()
         {
             Grades = new List<SpiritData>();
             Inventory = new Inventory(this.Get(Numeral.MaxInventorySlots, From.Base).Value);
 
-            AppliedAttributes = AppliedAttributes.CreateAttributeList();
+            AppliedAttributes = ExtensionMethods.CreateAttributeList();
 
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);
         }
 
-        public void SetId()
-        {
-            Id = new List<int>
-            {
-                (int)Element,
-                (int)Rarity,
-                numberInList,
-            };
-        }
-
-        #region IF UNITY EDITOR
-
-#if UNITY_EDITOR
-
         private void Awake()
         {
             if (Attributes == null || Attributes.Count == 0)
-                Attributes = Attributes.CreateAttributeList();
+                Attributes = ExtensionMethods.CreateAttributeList();
+
+            ID.Add((int)Element);
+            ID.Add((int)Rarity);
+            ID.Add(numberInList);
         }
+
+#if UNITY_EDITOR
 
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
             if (!IsGradeSpirit)
-            {
-                var dataBase = DataControlSystem.Load<SpiritDataBase>() as SpiritDataBase;
-                var elements = dataBase.Spirits.Elements;
+                if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)
+                {
+                    var thisElementAndRarityList = dataBase.Spirits.Elements[(int)Element].Rarities[(int)Rarity].Spirits;
 
-                for (int i = 0; i < elements.Count; i++)
-                    if ((int)Element == i)
-                        for (int j = 0; j < elements[i].Rarities.Count; j++)
-                            if ((int)Rarity == j)
-                            {
-                                var spirits = elements[i].Rarities[j].Spirits;
-                                for (int k = 0; k < spirits.Count; k++)
-                                    if (this.CompareId(spirits[k].Id))
-                                        return;
+                    if (!thisElementAndRarityList.Contains(this))
+                    {
+                        numberInList = thisElementAndRarityList.Count;
 
-                                numberInList = spirits.Count;
-                                SetId();
-                                elements[i].Rarities[j].Spirits.Add(this);
-                                DataControlSystem.Save(dataBase);
-                                EditorUtility.SetDirty(this);
-                                return;
-                            }
-            }
+                        ID = new ID() { (int)Element, (int)Rarity, numberInList };
+
+                        thisElementAndRarityList.Add(this);
+                        EditorUtility.SetDirty(this);
+                        DataControlSystem.Save(dataBase);
+                    }
+                }
         }
 
         private void RemoveFromDataBase()
@@ -101,10 +86,6 @@ namespace Game.Spirit.Data
                     DataControlSystem.Save(dataBase);
                 }
         }
-
-        private void OnValuesChanged() => SetId();
 #endif 
-
-        #endregion   
     }
 }

@@ -9,19 +9,20 @@ using Game.Cells;
 using System;
 using Game.Enemy;
 using U = UnityEngine.Object;
+using Game.Data;
 
 public class NetworkPlayer : NetworkBehaviour
 {
     [SyncVar] public PlayerData PlayerData;
-    [SyncVar] public int MapID;
+    public int MapID;
     public GameObject LocalMap;
     public GameObject UICanvasPrefab;
-    private PlayerSystem localPlayer;
-
     public UIControlSystem UiControlSystem { get; private set; }
+
     public event EventHandler<SpiritSystem> SpiritCreatingRequestDone = delegate { };
     public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
-
+    public event EventHandler WavesReceived = delegate { };
+    private List<WaveEnemyID> waveEnenmyIDs;
     public PlayerSystem LocalPlayer
     {
         get => localPlayer;
@@ -32,8 +33,21 @@ public class NetworkPlayer : NetworkBehaviour
             localPlayer = value;
             localPlayer.SpiritPlaceSystem.SpiritCreationRequested += OnSpiritCreatingRequest;
             localPlayer.WaveSystem.EnemyCreationRequested += OnEnemyCreatingRequest;
+
         }
     }
+
+    public List<WaveEnemyID> WaveEnenmyIDs
+    {
+        get => waveEnenmyIDs;
+        set
+        {
+            waveEnenmyIDs = value;
+            ReferenceHolder.Get.NetworkPlayer = this;
+        }
+    }
+
+    private PlayerSystem localPlayer;
 
     public override void OnStartLocalPlayer()
     {
@@ -47,17 +61,26 @@ public class NetworkPlayer : NetworkBehaviour
         UiControlSystem.IncreaseLevelButtonClicked += (s, e) => CmdIncreaseLevel(PlayerData);
 
         LoadData();
-
-        base.OnStartLocalPlayer();
+        CmdGetWaves();
+        base.OnStartLocalPlayer();   
     }
 
     private void OnDestroy() => SaveData();
     private void OnApplicationQuit() => SaveData();
 
-    private void Start()
+
+    [Command]
+    private void CmdGetWaves()
     {
-        if (!isLocalPlayer) return;
-        ReferenceHolder.Get.NetworkPlayer = this;
+        var manager = NetworkManager.singleton as ExtendedNetworkManager;
+        TargetGetWaves(connectionToClient, manager.NetworkGameManager.WaveEnenmyIDs.Serializer());
+    }
+
+    [TargetRpc]
+    private void TargetGetWaves(NetworkConnection conn, byte[] byteData)
+    {
+        var data = byteData.Deserializer<List<WaveEnemyID>>();
+        WaveEnenmyIDs = data;
     }
 
     #region Spirit creating request

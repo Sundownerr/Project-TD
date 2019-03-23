@@ -52,7 +52,7 @@ namespace Game.Systems
         public Canvas WorldCanvas;
 
         public PlayerSystem Player;
-        public NetworkPlayer NetworkPlayer;
+        private NetworkPlayer networkPlayer;
         public GameObject MpMap;
 
         public static List<int> ExpToLevelUp { get; } = new List<int>(25)
@@ -83,7 +83,18 @@ namespace Game.Systems
             601,
             649
         };
-
+        public NetworkPlayer NetworkPlayer
+        {
+            get => networkPlayer;
+            set
+            {
+                if(networkPlayer == null)
+                {
+                    networkPlayer = value;
+                    GetReferences();
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -95,14 +106,6 @@ namespace Game.Systems
 
         private void OnGameStateChanged(object _, GameState e)
         {
-            Coroutine networkCoroutine = null;
-
-            if (e == GameState.MultiplayerInGame)
-            {
-                networkCoroutine = StartCoroutine(WaitNetworkStart());
-                return;
-            }
-
             if (e == GameState.SingleplayerInGame)
             {
                 GetReferences();
@@ -110,21 +113,6 @@ namespace Game.Systems
             }
 
             Player = null;
-
-            #region Helper functions
-
-            IEnumerator WaitNetworkStart()
-            {
-                var endOfFrame = new WaitForEndOfFrame();
-
-                while (Get.NetworkPlayer == null)
-                    yield return endOfFrame;
-
-                GetReferences();
-                StopCoroutine(networkCoroutine);
-            }
-
-            #endregion
         }
 
         private void Start()
@@ -160,7 +148,7 @@ namespace Game.Systems
         }
 
         private void FixedUpdate()
-        {            
+        {
             Player?.UpdateSystem();
         }
     }

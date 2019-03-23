@@ -29,15 +29,19 @@ namespace Game.Systems
 			//	return;
 			//}
 #if UNITY_EDITOR			
-			if (data is SpiritDataBase)		
+			if (data is SpiritDataBase spiritDB)		
 			{	
-				EditorUtility.SetDirty(data as SpiritDataBase); 
+				AssetDatabase.Refresh();	
+				EditorUtility.SetDirty(spiritDB); 
+				AssetDatabase.SaveAssets();
 				return;
 			}
 
-			if (data is EnemyDataBase)		
+			if (data is EnemyDataBase enemyDB)		
 			{	
-				EditorUtility.SetDirty(data as EnemyDataBase); 						
+				AssetDatabase.Refresh();	
+				EditorUtility.SetDirty(enemyDB); 	
+				AssetDatabase.SaveAssets();			
 				return;
 			}
 #endif
@@ -97,10 +101,10 @@ namespace Game.Systems
 			//}		
 #if UNITY_EDITOR
 			SpiritDataBase LoadSpiritDB() =>					
-				AssetDatabase.LoadAssetAtPath("Assets/DataBase/SpiritDB.asset", typeof(SpiritDataBase)) as SpiritDataBase;
+				(SpiritDataBase)AssetDatabase.LoadAssetAtPath("Assets/DataBase/SpiritDB.asset", typeof(SpiritDataBase));
 
 			EnemyDataBase LoadEnemyDB() =>					
-				AssetDatabase.LoadAssetAtPath("Assets/DataBase/EnemyDB.asset", typeof(EnemyDataBase)) as EnemyDataBase;
+				(EnemyDataBase)AssetDatabase.LoadAssetAtPath("Assets/DataBase/EnemyDB.asset", typeof(EnemyDataBase));
 #endif
 			#endregion
 		}

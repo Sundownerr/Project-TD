@@ -10,6 +10,7 @@ namespace Game.Enemy.Data
         public ArmorType Type { get; set; }
         public float Value { get; set; }
 
+        [Serializable]
         public enum ArmorType
         {
             Cloth,

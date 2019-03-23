@@ -176,6 +176,7 @@
      <Compile Include="Assets\Scripts\Other\ExtensionMethods.cs" />
      <Compile Include="Assets\Scripts\Other\FPClientExtension.cs" />
      <Compile Include="Assets\Scripts\Other\GameEventArgs.cs" />
+     <Compile Include="Assets\Scripts\Other\ID.cs" />
      <Compile Include="Assets\Scripts\Other\Iterfaces.cs" />
      <Compile Include="Assets\Scripts\Other\LobbyDataConsts.cs" />
      <Compile Include="Assets\Scripts\Other\NetworkRequests.cs" />

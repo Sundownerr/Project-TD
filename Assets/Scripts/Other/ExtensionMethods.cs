@@ -66,9 +66,9 @@ public static class ExtensionMethods
     ///<summary>
     /// Fill list with attributes
     ///</summary>   
-    public static List<NumeralAttribute> CreateAttributeList(this List<NumeralAttribute> attributeList)
+    public static List<NumeralAttribute> CreateAttributeList()
     {
-        attributeList = new List<NumeralAttribute>();
+        var attributeList = new List<NumeralAttribute>();
         var numerals = Enum.GetValues(typeof(Numeral));
 
         for (int i = 0; i < numerals.Length; i++)
@@ -91,55 +91,14 @@ public static class ExtensionMethods
     }
 
     ///<summary>
-    /// Return true if IEntitySystems ids are same
-    ///</summary>   
-    public static bool CompareId(this IEntitySystem entity, IEntitySystem otherEntity)
-    {
-        var instanceId = entity.InstanceId;
-        var otherInstanceId = otherEntity.InstanceId;
-
-        if (otherInstanceId == null || instanceId == null)
-            return false;
-
-        if (instanceId.Count != otherInstanceId.Count)
-            return false;
-
-        for (int i = 0; i < instanceId.Count; i++)
-            if (instanceId[i] != otherInstanceId[i])
-                return false;
-
-        return true;
-    }
-
-    ///<summary>
-    /// Return true if Entities ids same
-    ///</summary>   
-    public static bool CompareId(this Entity entity, List<int> otherId)
-    {
-        var Id = entity.Id;
-
-        if (otherId == null || Id == null)
-            return false;
-
-        if (Id.Count != otherId.Count)
-            return false;
-
-        for (int i = 0; i < Id.Count; i++)
-            if (Id[i] != otherId[i])
-                return false;
-
-        return true;
-    }
-
-    ///<summary>
     /// Set effect system owner, id
     ///</summary>
     public static void Set(this EffectSystem effectSystem, AbilitySystem ownerAbility)
     {
         effectSystem.OwnerSystem = ownerAbility;
-        effectSystem.InstanceId = new List<int>();
-        effectSystem.InstanceId.AddRange(ownerAbility.InstanceId);
-        effectSystem.InstanceId.Add(ownerAbility.EffectSystems.IndexOf(effectSystem));
+        effectSystem.ID = new ID();
+        effectSystem.ID.AddRange(ownerAbility.ID);
+        effectSystem.ID.Add(ownerAbility.EffectSystems.IndexOf(effectSystem));
     }
 
     ///<summary>
@@ -150,7 +109,7 @@ public static class ExtensionMethods
         var player = spiritSystem.GetOwnerOfType<PlayerSystem>();
 
         spiritSystem.OwnerSystem = player;
-        spiritSystem.InstanceId = new List<int> { player.SpiritControlSystem.Spirits.Count };
+        spiritSystem.ID = new ID() { player.SpiritControlSystem.Spirits.Count };
     }
 
     ///<summary>
@@ -161,7 +120,7 @@ public static class ExtensionMethods
         var player = enemySystem.GetOwnerOfType<PlayerSystem>();
 
         enemySystem.OwnerSystem = player;
-        enemySystem.InstanceId = new List<int> { player.EnemyControlSystem.Enemies.Count };
+        enemySystem.ID = new ID() { player.EnemyControlSystem.Enemies.Count };
     }
 
     ///<summary>
@@ -170,9 +129,9 @@ public static class ExtensionMethods
     public static void Set(this AbilitySystem abilitySystem, IAbilitiySystem owner)
     {
         abilitySystem.OwnerSystem = owner;
-        abilitySystem.InstanceId = new List<int>();
-        abilitySystem.InstanceId.AddRange(owner.InstanceId);
-        abilitySystem.InstanceId.Add(owner.AbilitySystems.IndexOf(abilitySystem));
+        abilitySystem.ID = new ID();
+        abilitySystem.ID.AddRange(owner.ID);
+        abilitySystem.ID.Add(owner.AbilitySystems.IndexOf(abilitySystem));
 
         for (int i = 0; i < abilitySystem.EffectSystems.Count; i++)
         {
@@ -194,7 +153,7 @@ public static class ExtensionMethods
         var appliedEffects = vulnerable.HealthSystem.AppliedEffects;
 
         for (int i = 0; i < appliedEffects.Count; i++)
-            if (effect.CompareId(appliedEffects[i].Id))
+            if (effect.ID.Compare(appliedEffects[i].ID))
                 count++;
         return count;
     }
@@ -213,7 +172,7 @@ public static class ExtensionMethods
         var appliedEffects = vulnerable.HealthSystem.AppliedEffects;
 
         for (int i = 0; i < appliedEffects.Count; i++)
-            if (effect.CompareId(appliedEffects[i].Id))
+            if (effect.ID.Compare(appliedEffects[i].ID))
             {
                 appliedEffects.RemoveAt(i);
                 return;

@@ -25,8 +25,8 @@ namespace Game.Data
         private void UpdateItemId()
         {
             for (int i = 0; i < Items.Count; i++)
-                if (Items[i].Id.Count == 0)              
-                    Items[i].Id = new List<int> { i };              
+                if (Items[i].ID.Count == 0)              
+                    Items[i].ID = new ID() { i };              
         }
     }
 }

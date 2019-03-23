@@ -14,7 +14,7 @@ namespace Game.Systems
         public bool IsNeedStack { get; set; }
         public List<EffectSystem> EffectSystems { get; set; }
         public Ability Ability { get; set; }
-        public List<int> InstanceId { get; set; }
+        public ID ID { get; set; }
         public IEntitySystem OwnerSystem { get; set; }
 
         private int effectCount;

@@ -193,7 +193,7 @@ namespace Game.Systems
                 Spirits;
 
             for (int i = 0; i < allSpirits.Count; i++)            
-                if(allSpirits[i].CompareId(ChoosedSpirit.Data.Id))
+                if(allSpirits[i].ID.Compare(ChoosedSpirit.Data.ID))
                 {
                     grades = allSpirits[i].Grades;
 

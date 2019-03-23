@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace Game.Enemy
 {
-    [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy")]
+    [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy New")]
 
     [Serializable]
     public class EnemyData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
@@ -21,68 +21,48 @@ namespace Game.Enemy
         [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
 
         [SerializeField] public Armor.ArmorType ArmorType { get; set; }
-        [SerializeField] public bool IsInstanced { get; set; }
 
         [SerializeField] public int WaveLevel;
         [SerializeField] public RaceType Race;
         [SerializeField] public EnemyType Type;
+        [SerializeField] public int numberInList;
 
-        protected int numberInList;
-
-        public void SetId()
+        private void Awake()
         {
-            Id = new List<int>
-            {
-                (int)Race,
-                numberInList
-            };
+            ID.Add((int)Race);
+            ID.Add(numberInList);
         }
 
 #if UNITY_EDITOR
 
-        private void Awake()
-        {
-            //   AddToDataBase();           
-            Abilities = new List<Ability>();
-            Traits = new List<Trait>();
-            BaseAttributes = BaseAttributes.CreateAttributeList();
-            AppliedAttributes = AppliedAttributes.CreateAttributeList();
-        }
-
         [Button]
         public void AddToDataBase()
         {
-            if (!IsInstanced)
-                if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
+            if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
+            {
+                var thisEnemyRace = dataBase.Races[(int)Race];
+
+                if (!thisEnemyRace.Enemies.Contains(this))
                 {
-                    var races = dataBase.Races;
-                    for (int i = 0; i < races.Count; i++)
-                        if (i == (int)Race)
-                        {
-                            for (int j = 0; j < races[i].Enemies.Count; j++)
-                                if (this.CompareId(races[i].Enemies[j].Id) || Name == races[i].Enemies[j].Name)
-                                    return;
+                    numberInList = thisEnemyRace.Enemies.Count;
 
-                            races[i].Enemies.Add(this);
-                            numberInList = races[i].Enemies.Count - 1;
+                    ID = new ID() { (int)Race, numberInList };
+                    SetName();
 
-                            SetId();
-                            SetName();
-                            DataControlSystem.Save(dataBase);
-                            EditorUtility.SetDirty(this);
-                            return;
-                        }
+                    thisEnemyRace.Enemies.Add(this);
+                    EditorUtility.SetDirty(this);
+                    DataControlSystem.Save(dataBase);
                 }
+            }
         }
 
         private void RemoveFromDataBase()
         {
-            if (!IsInstanced)
-                if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
-                {
-                    dataBase.Races[(int)Race].Enemies.RemoveAt(numberInList);
-                    DataControlSystem.Save(dataBase);
-                }
+            if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
+            {
+                dataBase.Races[(int)Race].Enemies.RemoveAt(numberInList);
+                DataControlSystem.Save(dataBase);
+            }
         }
 
         private void SetName()
@@ -95,10 +75,6 @@ namespace Game.Enemy
 
             Name = tempName.ToString();
         }
-
-        // private void OnDestroy() => RemoveFromDataBase();
-
-        public void OnValuesChanged() => AddToDataBase();
 
 #endif 
     }

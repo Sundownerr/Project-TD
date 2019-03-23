@@ -12,7 +12,7 @@ namespace Game.Systems
     {
         public Item Data { get; set; }
         public IEntitySystem OwnerSystem { get ; set ; }
-        public List<int> InstanceId { get ; set ; }
+        public ID ID { get ; set ; }
 
         public event EventHandler<double> ConsumedMagicCrystals = delegate { };
         public event EventHandler<double> ConsumedSpiritVessels = delegate { };
@@ -27,9 +27,9 @@ namespace Game.Systems
             Data = U.Instantiate(data);          
             defaultData = data;
 
-            InstanceId = new List<int>();
-            InstanceId.AddRange(data.Id);
-            InstanceId.Add((owner as PlayerSystem).ItemsCount);
+            ID = new ID();
+            ID.AddRange(data.ID);
+            ID.Add((owner as PlayerSystem).ItemsCount);
         }
 
         public void OnSpiritLevelUp(object _, SpiritSystem e) =>

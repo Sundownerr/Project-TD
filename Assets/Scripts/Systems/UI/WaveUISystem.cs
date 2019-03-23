@@ -21,7 +21,7 @@ namespace Game.Systems
         protected override void Awake()
         {
             base.Awake();
-           
+
             StartWaveButton.onClick.AddListener(StartWave);
             animator = GetComponent<Animator>();
         }
@@ -31,10 +31,12 @@ namespace Game.Systems
             Owner = player;
             Owner.WaveSystem.WaveEnded += OnWaveEnded;
             Owner.WaveSystem.WaveStarted += OnWaveStarted;
-
-            ActivateUI(true);  
+            Owner.WaveSystem.WavesGenerated += OnWavesGenerated;
+            if (Owner.WaveSystem.WaveNumber == 1)
+                ActivateUI(true);
         }
 
+        private void OnWavesGenerated(object _, EventArgs e) { ActivateUI(true); Debug.Log("generated"); }
         private void OnWaveStarted(object _, EventArgs e) => ActivateUI(false);
         private void OnWaveEnded(object _, EventArgs e) => ActivateUI(true);
 
@@ -65,10 +67,11 @@ namespace Game.Systems
 
         private void UpdateUI()
         {
-            var enemies = Owner.WaveSystem.CurrentWaveEnemies;
+            var wave = Owner.WaveSystem.CurrentWave;
+       
 
-            Race.text = enemies[0].Race.ToString();
-            Armor.text = enemies[0].ArmorType.ToString();
+            Race.text = wave.EnemyTypes[0].Race.ToString();
+            Armor.text = wave.EnemyTypes[0].ArmorType.ToString();
             EnemyTypes.text = CalculateTypes();
             Traits.text = GetTraitsAndAbilities();
             WaveNumber.text = $"wave {Owner.WaveSystem.WaveNumber}";
@@ -79,14 +82,14 @@ namespace Game.Systems
             {
                 var traitsAndAbilities = new StringBuilder();
 
-                for (int i = 0; i < enemies[0].Traits.Count; i++)
-                    traitsAndAbilities.Append($"{enemies[0].Traits[i].Name}     ");
+                for (int i = 0; i < wave.EnemyTypes[0].Traits.Count; i++)
+                    traitsAndAbilities.Append($"{wave.EnemyTypes[0].Traits[i].Name}     ");
 
-                for (int i = 0; i < enemies.Count; i++)
-                    if (enemies[i].Type == EnemyType.Commander|| enemies[i].Type == EnemyType.Boss)
+                for (int i = 0; i < wave.EnemyTypes.Count; i++)
+                    if (wave.EnemyTypes[i].Type == EnemyType.Commander || wave.EnemyTypes[i].Type == EnemyType.Boss)
                     {
-                        for (int j = 0; j < enemies[i].Abilities.Count; j++)
-                            traitsAndAbilities.Append($"{enemies[i].Abilities[j].Name} ");
+                        for (int j = 0; j < wave.EnemyTypes[i].Abilities.Count; j++)
+                            traitsAndAbilities.Append($"{wave.EnemyTypes[i].Abilities[j].Name} ");
                         break;
                     }
                 return traitsAndAbilities.ToString();
@@ -101,13 +104,13 @@ namespace Game.Systems
                 var flyingCount = 0;
                 var bossCount = 0;
 
-                for (int i = 0; i < enemies.Count; i++)
+                for (int i = 0; i < wave.EnemyTypes.Count; i++)
                 {
-                    if (enemies[i].Type == EnemyType.Small) { smallCount++; continue; }
-                    if (enemies[i].Type == EnemyType.Normal) { normalCount++; continue; }
-                    if (enemies[i].Type == EnemyType.Commander) { commanterCount++; continue; }
-                    if (enemies[i].Type == EnemyType.Flying) { flyingCount++; continue; }
-                    if (enemies[i].Type == EnemyType.Boss) { bossCount++; continue; }
+                    if (wave.EnemyTypes[i].Type == EnemyType.Small) { smallCount++; continue; }
+                    if (wave.EnemyTypes[i].Type == EnemyType.Normal) { normalCount++; continue; }
+                    if (wave.EnemyTypes[i].Type == EnemyType.Commander) { commanterCount++; continue; }
+                    if (wave.EnemyTypes[i].Type == EnemyType.Flying) { flyingCount++; continue; }
+                    if (wave.EnemyTypes[i].Type == EnemyType.Boss) { bossCount++; continue; }
                 }
 
                 enemyTypes
@@ -120,6 +123,6 @@ namespace Game.Systems
             }
 
             #endregion
-        }        
+        }
     }
 }

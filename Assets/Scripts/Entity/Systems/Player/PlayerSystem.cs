@@ -15,28 +15,28 @@ namespace Game.Systems
 
     public class PlayerSystem : IEntitySystem
     {
-        public List<int> InstanceId { get; private set; }
+        public ID ID { get; private set; }
         public IEntitySystem OwnerSystem { get; set; }
         public PlayerInputSystem PlayerInputSystem { get; set; }
-        public CellControlSystem CellControlSystem { get; private set; }        
+        public CellControlSystem CellControlSystem { get; private set; }
         public EnemyControlSystem EnemyControlSystem { get; private set; }
-        public EnemyUISystem EnemyUISystem { get; private set; }       
+        public EnemyUISystem EnemyUISystem { get; private set; }
         public SpiritPlaceSystem SpiritPlaceSystem { get; set; }
         public SpiritControlSystem SpiritControlSystem { get; private set; }
         public SpiritCreatingSystem SpiritCreatingSystem { get; private set; }
-        public SpiritUISystem SpiritUISystem { get; private set; }      
+        public SpiritUISystem SpiritUISystem { get; private set; }
         public ElementSystem ElementSystem { get; private set; }
         public ElementUISystem ElementUISystem { get; private set; }
         public WaveSystem WaveSystem { get; private set; }
         public WaveUISystem WaveUISystem { get; private set; }
         public ResourceSystem ResourceSystem { get; private set; }
-        public ResourceUISystem ResourceUISystem { get; private set; }                     
+        public ResourceUISystem ResourceUISystem { get; private set; }
         public InventorySystem InventorySystem { get; private set; }
         public InventoryUISystem InventoryUISystem { get; private set; }
         public BuildUISystem BuildUISystem { get; private set; }
         public ItemDropSystem ItemDropSystem { get; private set; }
         public WorldUISystem WorldUISystem { get; private set; }
-        public DescriptionUISystem DescriptionUISystem { get; private set; }       
+        public DescriptionUISystem DescriptionUISystem { get; private set; }
         public List<SpiritSystem> Spirits { get => SpiritControlSystem.Spirits; }
         public List<EnemySystem> Enemies { get => EnemyControlSystem.Enemies; }
         public List<SpiritData> AvailableSpirits;
@@ -48,7 +48,8 @@ namespace Game.Systems
         public int WaveAmount { get; set; }
         private bool isSet;
 
-        public PlayerMap Map {
+        public PlayerMap Map
+        {
             get => map;
             private set
             {
@@ -60,8 +61,11 @@ namespace Game.Systems
 
         public PlayerSystem(PlayerMap map)
         {
-            ReferenceHolder.Get.Player = this;
+            WaveAmount = 100;
             Map = map;
+            ReferenceHolder.Get.Player = this;
+            NetworkPlayer = ReferenceHolder.Get.NetworkPlayer;
+
             AvailableSpirits = new List<SpiritData>();
             Data = ScriptableObject.CreateInstance<Player>();
             Data.System = this;
@@ -76,7 +80,7 @@ namespace Game.Systems
             WaveSystem = new WaveSystem(this);
             ElementSystem = new ElementSystem(this);
             InventorySystem = new InventorySystem(this);
-            WaveAmount = 100;
+
             UICanvas = ReferenceHolder.Get.UICanvas;
             WorldCanvas = ReferenceHolder.Get.WorldCanvas;
 
@@ -91,9 +95,9 @@ namespace Game.Systems
             WorldUISystem = U.Instantiate(ReferenceHolder.Get.WorldUISystem.gameObject, WorldCanvas.transform).GetComponent<WorldUISystem>();
             DescriptionUISystem = U.Instantiate(ReferenceHolder.Get.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
 
-            NetworkPlayer = ReferenceHolder.Get.NetworkPlayer;
 
-            SetSystem();
+           
+             SetSystem();
         }
 
         private void SetSystem()
@@ -107,24 +111,24 @@ namespace Game.Systems
             ResourceSystem.SetSystem();
             ItemDropSystem.SetSystem();
             WaveSystem.SetSystem();
+            WaveUISystem.SetSystem(this);
             InventorySystem.SetSystem();
             WorldUISystem.SetSystem(this);
             ResourceUISystem.SetSystem(this);
             ElementUISystem.SetSystem(this);
             BuildUISystem.SetSystem(this);
             EnemyUISystem.SetSystem(this);
-            WaveUISystem.SetSystem(this);
             InventoryUISystem.SetSystem(this);
             DescriptionUISystem.SetSystem(this);
             SpiritControlSystem.SetSystem();
 
-            ReferenceHolder.Get.StartCoroutine(SetCameraPos());          
-             isSet = true;
+         ReferenceHolder.Get.StartCoroutine(SetCameraPos());
+            isSet = true;
         }
 
         public void UpdateSystem()
         {
-            if(isSet)
+            if (isSet)
             {
                 EnemyControlSystem.UpdateSystem();
                 SpiritControlSystem.UpdateSystem();
@@ -142,10 +146,11 @@ namespace Game.Systems
 
             cinemachineCamera.SetActive(false);
             cameraObject.position = cameraPos;
-            
+
             yield return new WaitForSeconds(0.1f);
             cinemachineCamera.SetActive(true);
            
+
         }
     }
 }

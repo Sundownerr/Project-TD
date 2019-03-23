@@ -12,7 +12,7 @@ namespace Game.Systems
         public bool IsMaxStackCount { get => isMaxStackCount; set => isMaxStackCount = value; }
         public IHealthComponent Target { get => target; set => target = value; }       
         public IEntitySystem OwnerSystem { get; set; }
-        public List<int> InstanceId { get; set; }
+        public ID ID { get; set; }
 
         protected bool isSet, isEnded, isMaxStackCount;
         protected float effectTimer;

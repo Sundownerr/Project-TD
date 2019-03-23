@@ -10,6 +10,7 @@ public class ExtendedNetworkManager : NetworkManager
     public GameObject GamemanagerPrefab;
     public NetworkGameManager NetworkGameManager;
 
+  
     public override void OnServerSceneChanged(string sceneName)
     {
         var gmPrefab = Instantiate(GamemanagerPrefab);
@@ -21,17 +22,19 @@ public class ExtendedNetworkManager : NetworkManager
 
         base.OnServerSceneChanged(sceneName);
     }
-    
-    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
-    {            
-        var freeMapID = NetworkGameManager.GetFreeMapID();
 
-        if (freeMapID == -1)
+    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
+    {
+        var freeMapID = NetworkGameManager.GetFreeMapID();
+        var maxPlayers = FPClient.Instance.Lobby.NumMembers;
+        var currentPlayers = NetworkServer.connections.Count;
+
+        if (currentPlayers > maxPlayers)
         {
             conn.Disconnect();
             return;
         }
-       
+
         var playerGO = Instantiate(playerPrefab);
         var player = playerGO.GetComponent<NetworkPlayer>();
 

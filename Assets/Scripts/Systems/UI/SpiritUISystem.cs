@@ -215,7 +215,7 @@ namespace Game.Systems
 
             for (int i = 0; i < spiritItems.Count; i++)
                 for (int j = 0; j < ItemsUI.Count; j++)
-                    if (spiritItems[i].CompareId(ItemsUI[j].System))
+                    if (spiritItems[i].ID.Compare(ItemsUI[j].System.ID))
                     {
                         ItemsUI[j].gameObject.SetActive(true);
                         isSlotEmpty[ItemsUI[j].SlotNumber] = false;

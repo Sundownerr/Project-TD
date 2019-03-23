@@ -23,7 +23,7 @@ namespace Game.Enemy
         public GameObject Prefab { get; set; }
         public bool IsOn { get; set; }
         public IEntitySystem OwnerSystem { get; set; }
-        public List<int> InstanceId { get; set; }
+        public ID ID { get; set; }
         public List<IHealthComponent> Targets { get; set; }
         public List<ITraitHandler> TraitSystems { get; set; }
         public List<AbilitySystem> AbilitySystems { get; set; }

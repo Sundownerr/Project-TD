@@ -38,7 +38,7 @@ namespace Game.Spirit.System
         {
             Set(newData);
 
-            CurrentData.Id = previousSpirit.Data.Id;
+            CurrentData.ID = previousSpirit.Data.ID;
             CurrentData.GradeCount = previousSpirit.Data.GradeCount + 1;
             CurrentData.Get(Numeral.Exp, From.Base).Value = previousSpirit.Data.Get(Numeral.Exp, From.Base).Value;
             CurrentData.Get(Numeral.AttackSpeedModifier, From.Base).Value = previousSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value;

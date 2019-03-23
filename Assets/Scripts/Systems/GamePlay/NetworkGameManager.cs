@@ -5,6 +5,9 @@ using Mirror;
 using UnityEngine.UI;
 using Game.Systems;
 using System;
+using Game.Enemy;
+using FPClient = Facepunch.Steamworks.Client;
+using Game.Data;
 
 [SerializeField]
 public class GameObjectSyncList : SyncList<GameObject>
@@ -27,6 +30,8 @@ public class NetworkGameManager : NetworkBehaviour
     public GameObjectSyncList Players;
     public PlayerData[] PlayerDatas;
     public string[] PlayerNames;
+    public List<WaveEnemyID> WaveEnenmyIDs;
+    private int waveAmount;
 
     public void Set()
     {
@@ -35,17 +40,19 @@ public class NetworkGameManager : NetworkBehaviour
         PlayerNames = new string[maxPlayers];
         PlayerDatas = new PlayerData[maxPlayers];
         Players = new GameObjectSyncList();
+        NetworkMaps = new GameObjectSyncList();
+        WaveEnenmyIDs = new List<WaveEnemyID>();
+
+        waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves));
 
         if (NetworkServer.localClientActive)
             AddMapComponentsOnServer();
-       
+
     }
 
     private void AddMapComponentsOnServer()
     {
         var localMaps = GameObject.FindGameObjectsWithTag("map");
-
-        NetworkMaps = new GameObjectSyncList();
 
         for (int i = 0; i < localMaps.Length; i++)
         {
@@ -55,6 +62,16 @@ public class NetworkGameManager : NetworkBehaviour
 
             NetworkServer.Spawn(mapPrefab);
             NetworkMaps.Add(mapPrefab);
+        }
+        var waves = WaveCreatingSystem.GenerateWaves(waveAmount);
+
+        for (int i = 0; i < waves.Count; i++)
+        {
+            WaveEnenmyIDs.Add(new WaveEnemyID() { IDs = new ListID() });
+            for (int j = 0; j < waves[i].EnemyTypes.Count; j++)
+            {
+                WaveEnenmyIDs[i].IDs.Add(waves[i].EnemyTypes[j].ID);
+            }
         }
     }
 

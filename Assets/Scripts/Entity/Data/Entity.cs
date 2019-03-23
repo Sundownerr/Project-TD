@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using Game.Systems;
 using System.Text;
 using NaughtyAttributes;
+using System;
 
 namespace Game
 {
+    [Serializable]
     public abstract class Entity : ScriptableObject
     {
-        public List<int> Id;
+        [SerializeField] public ID ID = new ID();
 
-        public string Name;
-        public string Description;
+        [SerializeField] public string Name;
+        [SerializeField] public string Description;
 
-        [ShowAssetPreview(125, 125)]
+        [SerializeField, ShowAssetPreview(125, 125)]
         public GameObject Prefab;
 
-        [ShowAssetPreview(125, 125)]
+        [SerializeField, ShowAssetPreview(125, 125)]
         public Sprite Image;
     }
 }
