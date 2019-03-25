@@ -39,15 +39,20 @@ namespace Game.Systems
                 var newMagicCrystalCost = spiritData.Get(Numeral.MagicCrystalReq, From.Base).Value;
 
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
-                {
                     if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData, Owner.CellControlSystem.ChoosedCell.transform.position));
+                    {
+                        var position = new Coordinates3D(
+                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.x,
+                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.y,
+                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.z);
+
+                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData.ID, (int)spiritData.Rarity, (int)spiritData.Element, position));
+                    }
                     else
                     {
                         var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, Owner);
                         SpiritPlaced?.Invoke(null, newSpirit);
-                    }
-                }
+                    }               
             }
         }
     }

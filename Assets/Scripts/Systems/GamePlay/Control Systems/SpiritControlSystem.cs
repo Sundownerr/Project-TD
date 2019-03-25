@@ -39,7 +39,9 @@ namespace Game.Systems
         {
             Spirits.Add(spirit);
 
-            spirit.UsedCell.GetComponent<Cell>().IsBusy = true;
+            if(spirit.UsedCell != null)
+                spirit.UsedCell.GetComponent<Cell>().IsBusy = true;
+
             spirit.Prefab.layer = 14;
             spirit.IsOn = true;
         }

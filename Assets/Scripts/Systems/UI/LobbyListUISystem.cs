@@ -102,7 +102,7 @@ public class LobbyListUISystem : MonoBehaviour
     {
         var lobbyFilter = new LobbyList.Filter
         {
-            DistanceFilter = LobbyList.Filter.Distance.Worldwide
+            DistanceFilter = LobbyList.Filter.Distance.Worldwide,     
         };
 
         FPClient.Instance.LobbyList.Refresh(lobbyFilter);

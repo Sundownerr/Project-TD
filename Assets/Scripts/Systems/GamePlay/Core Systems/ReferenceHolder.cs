@@ -123,7 +123,6 @@ namespace Game.Systems
 
         private void GetReferences()
         {
-
             UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
             WorldCanvas = GameObject.FindWithTag("WorldCanvas").GetComponent<Canvas>();
             CellParent = GameObject.FindWithTag("CellParent").transform;

@@ -8,47 +8,50 @@ using Game.Systems;
 using Game.Spirit;
 using UnityEngine;
 
-public class HealthSystem 
+public class HealthSystem
 {
     public List<Effect> AppliedEffects { get; private set; }
     public event EventHandler<IHealthComponent> Died = delegate { };
     public bool IsVulnerable { get; set; }
 
     private IHealthComponent owner;
-	private double maxHealth, healthRegen, regenTimer;
+    private double maxHealth, healthRegen, regenTimer;
 
-	public HealthSystem(IHealthComponent owner)
-	{
-		this.owner = owner;
+    public HealthSystem(IHealthComponent owner)
+    {
+        this.owner = owner;
 
         AppliedEffects = new List<Effect>();
 
+
         if (owner is EnemySystem enemy)
-			maxHealth = enemy.Data.GetValue(Numeral.MaxHealth);
-	}
+        {
+            maxHealth = enemy.Data.GetValue(Numeral.MaxHealth);
+        }
+    }
 
-	public void UpdateSystem()
-	{
-		if (owner is EnemySystem enemy)
-		{
-			var health = enemy.Data.GetValue(Numeral.Health);
-			healthRegen = enemy.Data.GetValue(Numeral.HealthRegen);				
-				
-			if (health < maxHealth)
-			{
-				regenTimer = regenTimer > 1 ? 0 : regenTimer += Time.deltaTime;
+    public void UpdateSystem()
+    {
+        if (owner is EnemySystem enemy)
+        {
+            var health = enemy.Data.GetValue(Numeral.Health);
+            healthRegen = enemy.Data.GetValue(Numeral.HealthRegen);
 
-				if (regenTimer == 1)
-					health += healthRegen;
-			}				
-			else
-				if (health > maxHealth)
-					health = maxHealth;			
-		}		
-	}
+            if (health < maxHealth)
+            {
+                regenTimer = regenTimer > 1 ? 0 : regenTimer += Time.deltaTime;
+
+                if (regenTimer == 1)
+                    health += healthRegen;
+            }
+            else
+                if (health > maxHealth)
+                health = maxHealth;
+        }
+    }
 
     public void ChangeHealth(IDamageDealer changer, double damage)
-	{
+    {
         if (!IsVulnerable)
             return;
 
@@ -71,14 +74,14 @@ public class HealthSystem
             }
         }
 
-		#region  Helper functions
-		
-		void GiveResources()
+        #region  Helper functions
+
+        void GiveResources()
         {
-            if (enemy.LastDamageDealer is SpiritSystem spirit)           
+            if (enemy.LastDamageDealer is SpiritSystem spirit)
                 spirit.AddExp((int)enemy.Data.GetValue(Numeral.Exp));
         }
-		
-		#endregion
-	}
+
+        #endregion
+    }
 }

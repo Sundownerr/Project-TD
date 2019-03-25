@@ -63,17 +63,17 @@ public static class StaticMethods
         U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData spiritData, Cell cell, PlayerSystem owner)
+    public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, PlayerSystem owner)
     {
         var newSpiritPrefab = U.Instantiate(
-            spiritData.Prefab,
+            data.Prefab,
             cell.transform.position,
             Quaternion.identity,
             ReferenceHolder.Get.SpiritParent);
 
         var newSpirit = new SpiritSystem(newSpiritPrefab)
         {
-            Data = spiritData,
+            Data = data,
             UsedCell = cell.gameObject
         };
 
@@ -83,13 +83,12 @@ public static class StaticMethods
         return newSpirit;
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData spiritData, Vector3 position, PlayerSystem owner)
+    public static SpiritSystem CreateSpirit(SpiritData data, Vector3 position, PlayerSystem owner)
     {
-        var newSpiritPrefab = U.Instantiate(spiritData.Prefab, position, Quaternion.identity, ReferenceHolder.Get.SpiritParent);
-
+        var newSpiritPrefab = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.SpiritParent);
         var newSpirit = new SpiritSystem(newSpiritPrefab)
         {
-            Data = spiritData,
+            Data = data,
             UsedCell = null
         };
 
@@ -101,9 +100,10 @@ public static class StaticMethods
 
     public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, PlayerSystem owner)
     {
+       
         var enemy = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
         var enemySystem = new EnemySystem(enemy) { Data = data };
-
+       
         enemy.gameObject.layer = 12;
         enemySystem.SetSystem(owner);
 

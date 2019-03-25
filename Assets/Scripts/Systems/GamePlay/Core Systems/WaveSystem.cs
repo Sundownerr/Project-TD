@@ -10,7 +10,7 @@ using Game.Spirit;
 
 namespace Game.Systems
 {
-  
+
     public class WaveSystem
     {
         public int WaveNumber { get; set; }
@@ -22,39 +22,40 @@ namespace Game.Systems
         public event EventHandler<EnemyCreationRequest> EnemyCreationRequested = delegate { };
         public event EventHandler WavesGenerated = delegate { };
 
-        
+
         private List<List<EnemySystem>> wavesEnemySystem;
         private List<Wave> waves;
         private List<int> currentEnemyCount;
         public PlayerSystem Owner { get; set; }
+        public List<Wave> Waves { get => waves; private set => waves = value; }
 
         public WaveSystem(PlayerSystem player)
         {
             Owner = player;
             wavesEnemySystem = new List<List<EnemySystem>>();
-            waves = new List<Wave>();
+            Waves = new List<Wave>();
             currentEnemyCount = new List<int>();
         }
 
         public void SetSystem()
-        {          
+        {
             var generatedWaves = new List<Wave>();
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
             if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
             {
-                Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;           
+                Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
                 generatedWaves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
             }
             else
                 generatedWaves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
-            
-            waves = generatedWaves;
+
+            Waves = generatedWaves;
             WaveNumber = 1;
             CurrentWave = generatedWaves[0];
 
-         //   WavesGenerated?.Invoke(null, null);
+            //   WavesGenerated?.Invoke(null, null);
 
             #region  Helper functions
 
@@ -100,7 +101,7 @@ namespace Game.Systems
 
         public void OnWaveStarted(object _, EventArgs e)
         {
-            currentEnemyCount.Add(waves[WaveNumber - 1].EnemyTypes.Count);
+            currentEnemyCount.Add(Waves[WaveNumber - 1].EnemyTypes.Count);
             wavesEnemySystem.Add(new List<EnemySystem>());
 
             ReferenceHolder.Get.StartCoroutine(SpawnEnemyWave(0.2f));
@@ -120,8 +121,8 @@ namespace Game.Systems
                         Owner.Map.FlyingSpawnPoint.transform.position :
                         Owner.Map.GroundSpawnPoint.transform.position;
 
-                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                        EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest(CurrentWave.EnemyTypes[spawned], spawnPosition));
+                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)                   
+                        CreateEnemyRequest();                 
                     else
                         CreateEnemy();
 
@@ -133,10 +134,24 @@ namespace Game.Systems
                     void CreateEnemy()
                     {
                         var newEnemy = StaticMethods.CreateEnemy(CurrentWave.EnemyTypes[spawned], spawnPosition, Owner);
-
                         wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
-
                         EnemyCreated?.Invoke(null, newEnemy);
+                    }
+
+                    void CreateEnemyRequest()
+                    {
+                        var enemy = CurrentWave.EnemyTypes[spawned];
+                        var position = new Coordinates3D(spawnPosition.x, spawnPosition.y, spawnPosition.z);
+
+                        EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest()
+                        {
+                            ID = enemy.ID,
+                            Race = (int)enemy.Race,
+                            WaveNumber = WaveNumber,
+                            Position = position,
+                            AbilityIDs = enemy.Abilities.GetIDs<Ability>(),
+                            TraitIDs = enemy.Traits.GetIDs<Trait>()
+                        });
                     }
 
                     #endregion
@@ -144,7 +159,7 @@ namespace Game.Systems
 
                 if (WaveNumber <= Owner.WaveAmount)
                 {
-                    CurrentWave = waves[WaveNumber];
+                    CurrentWave = Waves[WaveNumber];
                     WaveNumber++;
                     WaveEnded?.Invoke(null, null);
                 }

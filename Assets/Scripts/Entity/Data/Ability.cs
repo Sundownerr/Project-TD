@@ -8,7 +8,8 @@ using Game.Spirit;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Ability")]
+    [CreateAssetMenu(fileName = "Neww Ability", menuName = "Data/Ability")]
+
 
     [Serializable]
     public class Ability : Entity
@@ -19,4 +20,6 @@ namespace Game.Data
         [Expandable]
         public List<Effect> Effects;
     }
+
+    public class AbilityList : List<Ability> {}
 }

@@ -27,3 +27,4 @@ Assets/Scripts/Transport.Steamworks-master
 *.dll
 .vs
 playerData.json
+*.zip

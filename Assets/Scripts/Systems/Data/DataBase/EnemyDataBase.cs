@@ -11,7 +11,7 @@ namespace Game.Data
     public class EnemyDataBase : ScriptableObject
     {
         [SerializeField]
-        public List<Race> Races;
+        public Race[] Races;
 
 #if UNITY_EDITOR
 
@@ -19,12 +19,12 @@ namespace Game.Data
         {
             if (Races == null)
             {
-                Races = new List<Race>();
-
                 var races = Enum.GetValues(typeof(RaceType));
 
+                Races = new Race[races.Length];
+
                 for (int i = 0; i < races.Length; i++)
-                    Races.Add(new Race());
+                    Races[i] = new Race();
             }
 
             EditorUtility.SetDirty(this);

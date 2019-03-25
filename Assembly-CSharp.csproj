@@ -178,6 +178,7 @@
      <Compile Include="Assets\Scripts\Other\GameEventArgs.cs" />
      <Compile Include="Assets\Scripts\Other\ID.cs" />
      <Compile Include="Assets\Scripts\Other\Iterfaces.cs" />
+     <Compile Include="Assets\Scripts\Other\ListWrappers.cs" />
      <Compile Include="Assets\Scripts\Other\LobbyDataConsts.cs" />
      <Compile Include="Assets\Scripts\Other\NetworkRequests.cs" />
      <Compile Include="Assets\Scripts\Other\ObjectPool.cs" />

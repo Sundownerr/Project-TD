@@ -90,6 +90,43 @@ public static class ExtensionMethods
         return null;
     }
 
+    public static List<NumeralAttribute> CopyFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)
+    {
+        that = new List<NumeralAttribute>();
+        that.AddRange(other);
+        return that;
+    }
+
+    public static NumeralAttributeList Wrap(this List<NumeralAttribute> list)
+    {
+        var wrappedList = new NumeralAttributeList();
+        wrappedList.AddRange(list);
+        return wrappedList;
+    }
+
+    public static List<NumeralAttribute> Unwrap(this NumeralAttributeList wrappedList) => new List<NumeralAttribute>(wrappedList);
+
+    public static List<NumeralAttribute> SetFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)
+    {
+        for (int i = 0; i < other.Count; i++)
+        {
+            var attribute = that.Find(x => x.Type == other[i].Type);
+            if (attribute != null)
+                attribute.Value = other[i].Value;
+        }
+        return that;
+    }
+
+    public static ListID GetIDs<T>(this List<T> entityList) where T : Entity
+    {
+        var ids = new ListID();
+
+        for (int i = 0; i < entityList.Count; i++)
+            ids.Add(entityList[i].ID);
+
+        return ids;
+    }
+
     ///<summary>
     /// Set effect system owner, id
     ///</summary>
@@ -161,7 +198,7 @@ public static class ExtensionMethods
     ///<summary>
     /// Add effect to IHealthComponent
     ///</summary>   
-    public static void AddEffect(this IHealthComponent vulnerable, Effect effect) => 
+    public static void AddEffect(this IHealthComponent vulnerable, Effect effect) =>
         vulnerable.HealthSystem.AppliedEffects.Add(effect);
 
     ///<summary>
@@ -197,7 +234,7 @@ public static class ExtensionMethods
     ///<summary>
     /// Return owner IEntitySystem of type T
     ///</summary>   
-    public static T GetOwnerOfType<T>(this IEntitySystem entitySystem) where T: IEntitySystem
+    public static T GetOwnerOfType<T>(this IEntitySystem entitySystem) where T : IEntitySystem
     {
         if (entitySystem.OwnerSystem is T system)
             return system;
@@ -217,6 +254,8 @@ public static class ExtensionMethods
 
         return stringBuilder.ToString();
     }
+
+    public static Vector3 ToVector3(this Coordinates3D position) => new Vector3(position.X, position.Y, position.Z);
 
     public static void Expand(this Cell ownerCell)
     {
@@ -286,7 +325,7 @@ public static class ExtensionMethods
         #endregion
     }
 
-  
+
 }
 
 

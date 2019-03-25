@@ -30,4 +30,6 @@ public class ListID : List<ID> { }
 public class WaveEnemyID
 {
     [SerializeField] public ListID IDs;
+    [SerializeField] public ListID AbilityIDs;
+    [SerializeField] public ListID TraitIDs;
 }

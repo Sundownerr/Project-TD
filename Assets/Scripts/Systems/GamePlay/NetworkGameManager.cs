@@ -65,12 +65,20 @@ public class NetworkGameManager : NetworkBehaviour
         }
         var waves = WaveCreatingSystem.GenerateWaves(waveAmount);
 
-        for (int i = 0; i < waves.Count; i++)
+        for (int wave = 0; wave < waves.Count; wave++)
         {
-            WaveEnenmyIDs.Add(new WaveEnemyID() { IDs = new ListID() });
-            for (int j = 0; j < waves[i].EnemyTypes.Count; j++)
+            WaveEnenmyIDs.Add(new WaveEnemyID() { IDs = new ListID(), AbilityIDs = new ListID(), TraitIDs = new ListID() });
+            for (int j = 0; j < waves[wave].EnemyTypes.Count; j++)
             {
-                WaveEnenmyIDs[i].IDs.Add(waves[i].EnemyTypes[j].ID);
+                var enemy = waves[wave].EnemyTypes[j];
+
+                WaveEnenmyIDs[wave].IDs.Add(enemy.ID);
+
+                for (int indx = 0; indx < enemy.Abilities.Count; indx++)
+                    WaveEnenmyIDs[wave].AbilityIDs.Add(enemy.Abilities[indx].ID);
+
+                for (int indx = 0; indx < enemy.Traits.Count; indx++)
+                    WaveEnenmyIDs[wave].TraitIDs.Add(enemy.Traits[indx].ID);
             }
         }
     }
