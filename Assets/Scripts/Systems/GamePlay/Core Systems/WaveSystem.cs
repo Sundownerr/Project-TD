@@ -28,6 +28,8 @@ namespace Game.Systems
         private List<int> currentEnemyCount;
         public PlayerSystem Owner { get; set; }
         public List<Wave> Waves { get => waves; private set => waves = value; }
+        public Vector3[] GroundWaypoints { get; private set; }
+        public Vector3[] FlyingWaypoints { get; private set; }
 
         public WaveSystem(PlayerSystem player)
         {
@@ -40,6 +42,7 @@ namespace Game.Systems
         public void SetSystem()
         {
             var generatedWaves = new List<Wave>();
+            SetWaypoints();
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
@@ -63,6 +66,18 @@ namespace Game.Systems
             {
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
                 EnemyCreated?.Invoke(_, e);
+            }
+
+            void SetWaypoints()
+            {
+                GroundWaypoints = new Vector3[Owner.Map.GroundWaypoints.Length];
+                FlyingWaypoints = new Vector3[Owner.Map.FlyingWaypoints.Length];
+
+                for (int i = 0; i < GroundWaypoints.Length; i++)
+                    GroundWaypoints[i] = Owner.Map.GroundWaypoints[i].transform.position;
+
+                for (int i = 0; i < FlyingWaypoints.Length; i++)
+                    FlyingWaypoints[i] = Owner.Map.FlyingWaypoints[i].transform.position;
             }
 
             #endregion
@@ -117,12 +132,12 @@ namespace Game.Systems
 
                 while (spawned < CurrentWave.EnemyTypes.Count)
                 {
-                    var spawnPosition = (int)CurrentWave.EnemyTypes[spawned].Type == (int)EnemyType.Flying ?
-                        Owner.Map.FlyingSpawnPoint.transform.position :
-                        Owner.Map.GroundSpawnPoint.transform.position;
+                    Vector3 spawnPosition;
+                    Vector3[] waypoints;
+                    GetSpawnAndWayPoints();
 
-                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)                   
-                        CreateEnemyRequest();                 
+                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                        CreateEnemyRequest();
                     else
                         CreateEnemy();
 
@@ -133,7 +148,7 @@ namespace Game.Systems
 
                     void CreateEnemy()
                     {
-                        var newEnemy = StaticMethods.CreateEnemy(CurrentWave.EnemyTypes[spawned], spawnPosition, Owner);
+                        var newEnemy = StaticMethods.CreateEnemy(CurrentWave.EnemyTypes[spawned], spawnPosition, Owner, waypoints);
                         wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
                         EnemyCreated?.Invoke(null, newEnemy);
                     }
@@ -141,7 +156,7 @@ namespace Game.Systems
                     void CreateEnemyRequest()
                     {
                         var enemy = CurrentWave.EnemyTypes[spawned];
-                        var position = new Coordinates3D(spawnPosition.x, spawnPosition.y, spawnPosition.z);
+                        var position = spawnPosition.ToCoordinates3D();
 
                         EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest()
                         {
@@ -150,8 +165,23 @@ namespace Game.Systems
                             WaveNumber = WaveNumber,
                             Position = position,
                             AbilityIDs = enemy.Abilities.GetIDs<Ability>(),
-                            TraitIDs = enemy.Traits.GetIDs<Trait>()
+                            TraitIDs = enemy.Traits.GetIDs<Trait>(),
+                            Waypoints = new ListCoordinates3D(waypoints)
                         });
+                    }
+
+                    void GetSpawnAndWayPoints()
+                    {
+                        if ((int)CurrentWave.EnemyTypes[spawned].Type == (int)EnemyType.Flying)
+                        {
+                            spawnPosition = Owner.Map.FlyingSpawnPoint.transform.position;
+                            waypoints = FlyingWaypoints;
+                        }
+                        else
+                        {
+                            spawnPosition = Owner.Map.GroundSpawnPoint.transform.position;
+                            waypoints = GroundWaypoints;
+                        }
                     }
 
                     #endregion

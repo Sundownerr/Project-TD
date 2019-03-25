@@ -256,6 +256,7 @@ public static class ExtensionMethods
     }
 
     public static Vector3 ToVector3(this Coordinates3D position) => new Vector3(position.X, position.Y, position.Z);
+    public static Coordinates3D ToCoordinates3D(this Vector3 position) => new Coordinates3D(position.x, position.y, position.z);
 
     public static void Expand(this Cell ownerCell)
     {

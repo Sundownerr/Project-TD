@@ -27,17 +27,16 @@ namespace Game.Enemy
         public List<IHealthComponent> Targets { get; set; }
         public List<ITraitHandler> TraitSystems { get; set; }
         public List<AbilitySystem> AbilitySystems { get; set; }
+        private Vector3[] waypoints;
 
-        private GameObject[] groundWaypoints;
-        private GameObject[] flyingWaypoints;
-
-        public EnemySystem(GameObject ownerPrefab)
+        public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints)
         {
             AbilitySystems = new List<AbilitySystem>();
             TraitSystems = new List<ITraitHandler>();
             Targets = new List<IHealthComponent>();
             AbilityControlSystem = new AbilityControlSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
+            this.waypoints = waypoints;
 
             Prefab = ownerPrefab;
         }
@@ -47,41 +46,45 @@ namespace Game.Enemy
             OwnerSystem = player;
             this.SetId();
 
-            groundWaypoints = player.Map.GroundWaypoints;
-            flyingWaypoints = player.Map.FlyingWaypoints;
-
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
+     
+            SetAbilitySystems();
+            SetTraitSystems();
 
-            for (int i = 0; i < Data.Abilities.Count; i++)
+            #region Helper functions
+
+            void SetTraitSystems()
             {
-                AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
-                AbilitySystems[AbilitySystems.Count - 1].Set(this);
+                for (int i = 0; i < Data.Traits.Count; i++)
+                {
+                    TraitSystems.Add(Data.Traits[i].GetSystem(this));
+                    TraitSystems[TraitSystems.Count - 1].Set();
+                }
+                TraitControlSystem.Set();
             }
 
-            for (int i = 0; i < Data.Traits.Count; i++)
+            void SetAbilitySystems()
             {
-                TraitSystems.Add(Data.Traits[i].GetSystem(this));
-                TraitSystems[TraitSystems.Count - 1].Set();
+                for (int i = 0; i < Data.Abilities.Count; i++)
+                {
+                    AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
+                    AbilitySystems[AbilitySystems.Count - 1].Set(this);
+                }
+                AbilityControlSystem.Set();
             }
 
-            AbilityControlSystem.Set();
-            TraitControlSystem.Set();
+            #endregion
         }
 
         public void UpdateSystem()
         {
-            var waypoints = Data.Type == EnemyType.Flying ?
-                flyingWaypoints : 
-                groundWaypoints;
-
+           
             HealthSystem?.UpdateSystem();
             AbilityControlSystem.UpdateSystem();
 
             if (IsOn)
             {
-                var waypointTransform = waypoints[WaypointIndex].transform;
-                var enemyTransform = Prefab.transform;
-                var waypointReached = enemyTransform.position.GetDistanceTo(waypointTransform.position) < 30;
+                var waypointReached = Prefab.transform.position.GetDistanceTo(waypoints[WaypointIndex]) < 30;
 
                 if (WaypointIndex < waypoints.Length - 1)
                     if (!waypointReached)
@@ -97,7 +100,7 @@ namespace Game.Enemy
             void MoveAndRotateEnemy()
             {
                 var lookRotation =
-                    Quaternion.LookRotation(waypoints[WaypointIndex].transform.position - Prefab.transform.position);
+                    Quaternion.LookRotation(waypoints[WaypointIndex] - Prefab.transform.position);
                 var rotation =
                     Quaternion.Lerp(Prefab.transform.rotation, lookRotation, Time.deltaTime * 10f);
 

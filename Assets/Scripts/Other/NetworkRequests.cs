@@ -11,6 +11,24 @@ using Game.Cells;
 using Game.Spirit;
 
 [Serializable]
+public class ListCoordinates3D : List<Coordinates3D>
+{
+    public Vector3[] ToVector3Array()
+    {
+        var newArray = new Vector3[this.Count];
+        for (int i = 0; i < this.Count; i++)        
+            newArray[i] = new Vector3(this[i].X, this[i].Y, this[i].Z);     
+        return newArray;
+    }
+
+    public ListCoordinates3D(Vector3[] positions)
+    {      
+        for (int i = 0; i < positions.Length; i++)
+            this.Add(positions[i].ToCoordinates3D());   
+    }
+}
+
+[Serializable]
 public readonly struct Coordinates3D
 {
     [SerializeField] public readonly float X, Y, Z;
@@ -50,4 +68,5 @@ public class EnemyCreationRequest
     [SerializeField] public int Race, WaveNumber;
     [SerializeField] public ListID AbilityIDs;
     [SerializeField] public ListID TraitIDs;
+    [SerializeField] public ListCoordinates3D Waypoints;
 }

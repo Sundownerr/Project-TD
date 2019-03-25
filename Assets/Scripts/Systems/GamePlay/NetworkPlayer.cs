@@ -14,14 +14,16 @@ using Game.Data;
 public class NetworkPlayer : NetworkBehaviour
 {
     [SyncVar] public PlayerData PlayerData;
-    public int MapID;
+    [SyncVar] public int MapID;
     public GameObject LocalMap;
     public GameObject UICanvasPrefab;
     public UIControlSystem UiControlSystem { get; private set; }
     public event EventHandler<SpiritSystem> SpiritCreatingRequestDone = delegate { };
     public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
     public event EventHandler WavesReceived = delegate { };
-    private List<WaveEnemyID> waveEnenmyIDs;
+    private float delay = 0.07f;
+    
+    private PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
     {
         //client rpc cant see this. not setted? 
@@ -36,6 +38,7 @@ public class NetworkPlayer : NetworkBehaviour
         }
     }
 
+    private List<WaveEnemyID> waveEnenmyIDs;
     public List<WaveEnemyID> WaveEnenmyIDs
     {
         get => waveEnenmyIDs;
@@ -45,11 +48,7 @@ public class NetworkPlayer : NetworkBehaviour
             ReferenceHolder.Get.NetworkPlayer = this;
         }
     }
-
-    private PlayerSystem localPlayer;
-    private float delay = 0.07f;
-
-
+    
     public override void OnStartLocalPlayer()
     {
         if (!isLocalPlayer) return;
@@ -65,8 +64,6 @@ public class NetworkPlayer : NetworkBehaviour
         CmdGetWaves();
         base.OnStartLocalPlayer();
     }
-
-
 
     public void WaitAndDo(float delay, Action function)
     {
@@ -85,14 +82,21 @@ public class NetworkPlayer : NetworkBehaviour
     private void CmdGetWaves()
     {
         var sendData = (NetworkManager.singleton as ExtendedNetworkManager).NetworkGameManager.WaveEnenmyIDs.Serializer();
-        TargetGetWaves(connectionToClient, sendData);
+
+        WaitAndDo(delay, () =>
+        {
+            TargetGetWaves(connectionToClient, sendData);
+        });
     }
 
     [TargetRpc]
     private void TargetGetWaves(NetworkConnection conn, byte[] byteData)
     {
         var receivedData = byteData.Deserializer<List<WaveEnemyID>>();
-        WaveEnenmyIDs = receivedData;
+        WaitAndDo(delay, () =>
+        {
+            WaveEnenmyIDs = receivedData;
+        });
     }
 
     #endregion
@@ -102,7 +106,11 @@ public class NetworkPlayer : NetworkBehaviour
     private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
     {
         var sendData = e.Serializer();
-        CmdCreateSpirit(sendData);
+
+        WaitAndDo(delay, () =>
+        {
+            CmdCreateSpirit(sendData);
+        });
     }
 
     [Command] private void CmdCreateSpirit(byte[] byteRequest) => RpcCreateSpirit(byteRequest);
@@ -111,15 +119,19 @@ public class NetworkPlayer : NetworkBehaviour
     private void RpcCreateSpirit(byte[] byteRequest)
     {
         var request = byteRequest.Deserializer<SpiritCreationRequest>();
-        var pos = request.Position.ToVector3();
-        var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells.Find(x => x.transform.position == pos);
-        var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits.Find(x => x.ID.Compare(request.ID));
 
-        var newSpirit = choosedCell != null ?
-            StaticMethods.CreateSpirit(spirit, choosedCell.GetComponent<Cell>(), LocalPlayer) :
-            StaticMethods.CreateSpirit(spirit, pos, LocalPlayer);
+        WaitAndDo(delay, () =>
+        {
+            var pos = request.Position.ToVector3();
+            var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells.Find(x => x.transform.position == pos);
+            var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits.Find(x => x.ID.Compare(request.ID));
 
-        SpiritCreatingRequestDone?.Invoke(null, newSpirit);
+            var newSpirit = choosedCell != null ?
+                StaticMethods.CreateSpirit(spirit, choosedCell.GetComponent<Cell>(), LocalPlayer) :
+                StaticMethods.CreateSpirit(spirit, pos, ReferenceHolder.Get.Player);
+
+            SpiritCreatingRequestDone?.Invoke(null, newSpirit);
+        });
     }
 
     #endregion
@@ -129,7 +141,11 @@ public class NetworkPlayer : NetworkBehaviour
     private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
         var sendData = e.Serializer();
-        CmdCreateEnemy(sendData);
+
+        WaitAndDo(delay, () =>
+        {
+            CmdCreateEnemy(sendData);
+        });
     }
 
     [Command] private void CmdCreateEnemy(byte[] byteRequest) => RpcCreateEnemy(byteRequest);
@@ -137,11 +153,13 @@ public class NetworkPlayer : NetworkBehaviour
     private void RpcCreateEnemy(byte[] byteRequest)
     {
         var request = byteRequest.Deserializer<EnemyCreationRequest>();
-
-        request.WaveNumber -= 1;
-        var enemy = ReferenceHolder.Get.Player.WaveSystem.Waves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
-        var newEnemy = StaticMethods.CreateEnemy(enemy, request.Position.ToVector3(), LocalPlayer);
-        EnemyCreatingRequestDone?.Invoke(null, newEnemy);
+        WaitAndDo(delay, () =>
+        {
+            request.WaveNumber -= 1;
+            var enemy = ReferenceHolder.Get.Player.WaveSystem.Waves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            var newEnemy = StaticMethods.CreateEnemy(enemy, request.Position.ToVector3(), LocalPlayer, request.Waypoints.ToVector3Array());
+            EnemyCreatingRequestDone?.Invoke(null, newEnemy);
+        });
     }
 
     #endregion
