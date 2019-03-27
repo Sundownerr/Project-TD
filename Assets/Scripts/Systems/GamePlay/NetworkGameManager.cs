@@ -46,41 +46,51 @@ public class NetworkGameManager : NetworkBehaviour
         waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves));
 
         if (NetworkServer.localClientActive)
+        {
             AddMapComponentsOnServer();
-
-    }
-
-    private void AddMapComponentsOnServer()
-    {
-        var localMaps = GameObject.FindGameObjectsWithTag("map");
-
-        for (int i = 0; i < localMaps.Length; i++)
-        {
-            NetworkServer.Spawn(localMaps[i]);
-
-            var mapPrefab = Instantiate(MapComponentPrefab, localMaps[i].transform.position, Quaternion.identity);
-
-            NetworkServer.Spawn(mapPrefab);
-            NetworkMaps.Add(mapPrefab);
+            GenerateWaves();
         }
-        var waves = WaveCreatingSystem.GenerateWaves(waveAmount);
 
-        for (int wave = 0; wave < waves.Count; wave++)
+        #region Helper functions
+
+        void GenerateWaves()
         {
-            WaveEnenmyIDs.Add(new WaveEnemyID() { IDs = new ListID(), AbilityIDs = new ListID(), TraitIDs = new ListID() });
-            for (int j = 0; j < waves[wave].EnemyTypes.Count; j++)
+            var waves = new List<Wave>(WaveCreatingSystem.GenerateWaves(waveAmount));
+
+            for (int wave = 0; wave < waves.Count; wave++)
             {
-                var enemy = waves[wave].EnemyTypes[j];
+                WaveEnenmyIDs.Add(new WaveEnemyID()
+                {
+                    IDs = waves[wave].EnemyTypes.GetIDs(),
+                    AbilityIDs = new ListID(),
+                    TraitIDs = new ListID()
+                });
 
-                WaveEnenmyIDs[wave].IDs.Add(enemy.ID);
-
-                for (int indx = 0; indx < enemy.Abilities.Count; indx++)
-                    WaveEnenmyIDs[wave].AbilityIDs.Add(enemy.Abilities[indx].ID);
-
-                for (int indx = 0; indx < enemy.Traits.Count; indx++)
-                    WaveEnenmyIDs[wave].TraitIDs.Add(enemy.Traits[indx].ID);
+                for (int j = 0; j < waves[wave].EnemyTypes.Count; j++)
+                {
+                    var enemy = waves[wave].EnemyTypes[j];
+                    WaveEnenmyIDs[wave].AbilityIDs.AddRange(enemy.Abilities.GetIDs());
+                    WaveEnenmyIDs[wave].TraitIDs.AddRange(enemy.Traits.GetIDs());
+                }
             }
         }
+
+        void AddMapComponentsOnServer()
+        {
+            var localMaps = GameObject.FindGameObjectsWithTag("map");
+
+            for (int i = 0; i < localMaps.Length; i++)
+            {
+                NetworkServer.Spawn(localMaps[i]);
+
+                var mapPrefab = Instantiate(MapComponentPrefab, localMaps[i].transform.position, Quaternion.identity);
+
+                NetworkServer.Spawn(mapPrefab);
+                NetworkMaps.Add(mapPrefab);
+            }
+        }
+
+        #endregion
     }
 
     public int GetFreeMapID()

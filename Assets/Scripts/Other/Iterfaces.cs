@@ -11,14 +11,18 @@ using System;
 
 namespace Game
 {
-    public interface IPrefabComponent
-    {
+    public interface IPrefabComponent : IIDComponent
+    {     
         [SerializeField] GameObject Prefab { get; set; }
     }
 
-    public interface IEntitySystem
+    public interface IIDComponent
     {
         [SerializeField] ID ID { get; }
+    }
+
+    public interface IEntitySystem : IIDComponent
+    {      
         [SerializeField] IEntitySystem OwnerSystem { get; set; }
     }
 

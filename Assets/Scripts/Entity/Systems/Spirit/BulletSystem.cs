@@ -16,7 +16,7 @@ namespace Game.Spirit
         public GameObject Prefab { get; set; }
         public bool IsOn { get; set; }
 
-        public List<int> InstanceId { get; set; }
+        public ID ID { get; set; }
         public IPrefabComponent Owner { get ; set ; }
 
         private ParticleSystem.EmissionModule emissionModule;

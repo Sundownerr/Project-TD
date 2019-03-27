@@ -19,12 +19,12 @@ namespace Game.Data
         {
             if (Spirits == null)
             {
-                Spirits = new ElementList { Elements = new List<Element>() };
-
                 var elementNames = Enum.GetNames(typeof(ElementType));
 
+                Spirits = new ElementList { Elements = new Element[elementNames.Length] };
+                
                 for (int i = 0; i < elementNames.Length; i++)
-                    Spirits.Elements.Add(new Element(elementNames[i]));
+                    Spirits.Elements[i] = new Element(elementNames[i]);
             }
 
             EditorUtility.SetDirty(this);

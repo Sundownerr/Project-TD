@@ -8,9 +8,9 @@ using System;
 namespace Game
 {
     [Serializable]
-    public abstract class Entity : ScriptableObject
+    public abstract class Entity : ScriptableObject, IIDComponent
     {
-        [SerializeField] public ID ID = new ID();
+        [SerializeField] public ID ID { get; set; } = new ID();
 
         [SerializeField] public string Name;
         [SerializeField] public string Description;

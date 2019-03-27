@@ -10,6 +10,7 @@ namespace Game.Systems
 {
     public class ReferenceHolder : MonoBehaviour
     {
+        public event EventHandler<PlayerMap> MapAssigned = delegate { };
         private static ReferenceHolder get;
         public static ReferenceHolder Get
         {
@@ -50,10 +51,8 @@ namespace Game.Systems
         public Transform EnemyParent;
         public Canvas UICanvas;
         public Canvas WorldCanvas;
-
         public PlayerSystem Player;
-        private NetworkPlayer networkPlayer;
-        public GameObject MpMap;
+        public GameObject NetworkEnemy;
 
         public static List<int> ExpToLevelUp { get; } = new List<int>(25)
         {
@@ -83,12 +82,14 @@ namespace Game.Systems
             601,
             649
         };
+
+        private NetworkPlayer networkPlayer;
         public NetworkPlayer NetworkPlayer
         {
             get => networkPlayer;
             set
             {
-                if(networkPlayer == null)
+                if (networkPlayer == null)
                 {
                     networkPlayer = value;
                     GetReferences();
@@ -100,8 +101,21 @@ namespace Game.Systems
         {
             DontDestroyOnLoad(this);
             Get = this;
-            Player = null;
+            GC.Collect();
+        }
+
+        private void Start()
+        {
             GameManager.Instance.StateChanged += OnGameStateChanged;
+            GameLoop.Instance.PlayerCreated += OnPlayerCreated;
+        }
+
+        private void OnPlayerCreated(object _, PlayerSystem e)
+        {
+            Player = e;
+
+            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                NetworkPlayer.LocalPlayer = e;
         }
 
         private void OnGameStateChanged(object _, GameState e)
@@ -115,12 +129,6 @@ namespace Game.Systems
             Player = null;
         }
 
-        private void Start()
-        {
-            Player = null;
-            GC.Collect();
-        }
-
         private void GetReferences()
         {
             UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
@@ -131,24 +139,9 @@ namespace Game.Systems
 
             DescriptionUISystem = Instantiate(DescriptionUISystem, UICanvas.transform);
 
-            PlayerMap map = null;
-
-            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-                map = NetworkPlayer.LocalMap.GetComponent<PlayerMap>();
-            else
-                map = GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
-
-            Player = new PlayerSystem(map);
-
-            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-            {
-                NetworkPlayer.LocalPlayer = Player;
-            }
-        }
-
-        private void FixedUpdate()
-        {
-            Player?.UpdateSystem();
+            MapAssigned?.Invoke(null, GameManager.Instance.GameState == GameState.MultiplayerInGame ?
+                NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
+                GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>());
         }
     }
 }

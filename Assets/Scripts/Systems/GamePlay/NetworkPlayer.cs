@@ -22,7 +22,7 @@ public class NetworkPlayer : NetworkBehaviour
     public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
     public event EventHandler WavesReceived = delegate { };
     private float delay = 0.07f;
-    
+
     private PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
     {
@@ -48,7 +48,7 @@ public class NetworkPlayer : NetworkBehaviour
             ReferenceHolder.Get.NetworkPlayer = this;
         }
     }
-    
+
     public override void OnStartLocalPlayer()
     {
         if (!isLocalPlayer) return;
@@ -148,18 +148,43 @@ public class NetworkPlayer : NetworkBehaviour
         });
     }
 
-    [Command] private void CmdCreateEnemy(byte[] byteRequest) => RpcCreateEnemy(byteRequest);
+    [Command]
+    private void CmdCreateEnemy(byte[] byteRequest)
+    {
+        RpcCreateEnemy(byteRequest);
+    }
+
     [ClientRpc]
     private void RpcCreateEnemy(byte[] byteRequest)
     {
         var request = byteRequest.Deserializer<EnemyCreationRequest>();
+
         WaitAndDo(delay, () =>
         {
-            request.WaveNumber -= 1;
-            var enemy = ReferenceHolder.Get.Player.WaveSystem.Waves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
-            var newEnemy = StaticMethods.CreateEnemy(enemy, request.Position.ToVector3(), LocalPlayer, request.Waypoints.ToVector3Array());
+            var waypoints = request.Waypoints.ToVector3Array();
+            var spawnPosition = request.Position.ToVector3();
+            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.Waves.Peek().EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            if (enemyFromDB == null)
+                return;
+
+            var networkEnemy = Instantiate(ReferenceHolder.Get.NetworkEnemy, spawnPosition, Quaternion.identity);
+            var newEnemy = StaticMethods.CreateEnemy(enemyFromDB, spawnPosition, LocalPlayer, waypoints, networkEnemy.gameObject);
+            var modelPrefab = Instantiate(enemyFromDB.Prefab, newEnemy.Prefab.transform.position, Quaternion.identity, newEnemy.Prefab.transform);
+
             EnemyCreatingRequestDone?.Invoke(null, newEnemy);
+
+            if (!NetworkServer.active)
+                CmdSpawn(networkEnemy);
+            else
+                NetworkServer.Spawn(networkEnemy);
+
         });
+    }
+
+    [Command]
+    private void CmdSpawn(GameObject netIdentity)
+    {
+        NetworkServer.Spawn(netIdentity);
     }
 
     #endregion

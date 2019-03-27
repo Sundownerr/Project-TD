@@ -20,10 +20,8 @@ public class HealthSystem
     public HealthSystem(IHealthComponent owner)
     {
         this.owner = owner;
-
         AppliedEffects = new List<Effect>();
-
-
+       
         if (owner is EnemySystem enemy)
         {
             maxHealth = enemy.Data.GetValue(Numeral.MaxHealth);

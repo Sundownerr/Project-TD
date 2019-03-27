@@ -27,13 +27,14 @@ namespace Game.Systems
             //     GM.Instance.AvailableTowerList.Clear();
             //     GM.Instance.PlayerData.StartTowerRerollCount--;
             // }
+            
 
             var elementLevels = Owner.Data.ElementLevels;
             var dataBaseElements = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements;
 
             for (int lvldUpElementId = 0; lvldUpElementId < elementLevels.Count; lvldUpElementId++)
                 if (elementLevels[lvldUpElementId] > 0)
-                    for (int dbElementId = 0; dbElementId < dataBaseElements.Count; dbElementId++)
+                    for (int dbElementId = 0; dbElementId < dataBaseElements.Length; dbElementId++)
                         if (dbElementId == lvldUpElementId) 
                             GetNewSpirit(lvldUpElementId);  
 
@@ -45,7 +46,7 @@ namespace Game.Systems
             {  
                 var elements = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements;
 
-                for (int i = 0; i < elements[elementId].Rarities.Count; i++)
+                for (int i = 0; i < elements[elementId].Rarities.Length; i++)
                     for (int j = 0; j < elements[elementId].Rarities[i].Spirits.Count; j++)           
                         if (elements[elementId].Rarities[i].Spirits[j].Get(Numeral.WaveLevel, From.Base).Value <= Owner.WaveSystem.WaveNumber)
                         {

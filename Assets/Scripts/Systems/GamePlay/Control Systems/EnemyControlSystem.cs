@@ -41,10 +41,11 @@ namespace Game.Systems
 
         private void AddEnemy(EnemySystem enemy)
         {
+           
             Enemies.Add(enemy);
 
             enemy.IsOn = true;
-            enemy.OwnerSystem = Owner;
+           // enemy.OwnerSystem = Owner;
             enemy.LastWaypointReached += OnLastWaypointReached;
             enemy.HealthSystem.Died += OnEnemyDied;
         }

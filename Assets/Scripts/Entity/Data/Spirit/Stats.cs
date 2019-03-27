@@ -9,14 +9,14 @@ namespace Game.Spirit.Data.Stats
     public class ElementList
     {
         [SerializeField]
-        public List<Element> Elements;
+        public Element[] Elements;
     }
 
     [Serializable]
     public class Element
     {
         [SerializeField]
-        public List<Rarity> Rarities;
+        public Rarity[] Rarities;
 
         [SerializeField]
         public string Name;
@@ -24,7 +24,7 @@ namespace Game.Spirit.Data.Stats
         public Element(string name)
         {
             Name = name;        
-            Rarities = new List<Rarity>
+            Rarities = new Rarity[4]
             {
                 new Rarity(RarityType.Common.ToString()),
                 new Rarity(RarityType.Uncommon.ToString()),

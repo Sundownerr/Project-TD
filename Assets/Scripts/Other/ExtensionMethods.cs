@@ -117,15 +117,17 @@ public static class ExtensionMethods
         return that;
     }
 
-    public static ListID GetIDs<T>(this List<T> entityList) where T : Entity
+    public static ListID GetIDs<T>(this List<T> list) where T : IIDComponent
     {
         var ids = new ListID();
 
-        for (int i = 0; i < entityList.Count; i++)
-            ids.Add(entityList[i].ID);
+        for (int i = 0; i < list.Count; i++)
+            ids.Add(list[i].ID);
 
         return ids;
     }
+
+   
 
     ///<summary>
     /// Set effect system owner, id
@@ -133,8 +135,7 @@ public static class ExtensionMethods
     public static void Set(this EffectSystem effectSystem, AbilitySystem ownerAbility)
     {
         effectSystem.OwnerSystem = ownerAbility;
-        effectSystem.ID = new ID();
-        effectSystem.ID.AddRange(ownerAbility.ID);
+        effectSystem.ID = new ID(ownerAbility.ID);
         effectSystem.ID.Add(ownerAbility.EffectSystems.IndexOf(effectSystem));
     }
 
@@ -143,9 +144,8 @@ public static class ExtensionMethods
     ///</summary>
     public static void SetId(this SpiritSystem spiritSystem)
     {
-        var player = spiritSystem.GetOwnerOfType<PlayerSystem>();
+        var player = spiritSystem.GetOwnerOfType<PlayerSystem>() ?? ReferenceHolder.Get.Player;
 
-        spiritSystem.OwnerSystem = player;
         spiritSystem.ID = new ID() { player.SpiritControlSystem.Spirits.Count };
     }
 
@@ -154,11 +154,12 @@ public static class ExtensionMethods
     ///</summary>   
     public static void SetId(this EnemySystem enemySystem)
     {
-        var player = enemySystem.GetOwnerOfType<PlayerSystem>();
+        var player = enemySystem.GetOwnerOfType<PlayerSystem>() ?? ReferenceHolder.Get.Player;
 
-        enemySystem.OwnerSystem = player;
         enemySystem.ID = new ID() { player.EnemyControlSystem.Enemies.Count };
     }
+
+    public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
 
     ///<summary>
     /// Set ability system owner, id and effect systems
@@ -166,8 +167,7 @@ public static class ExtensionMethods
     public static void Set(this AbilitySystem abilitySystem, IAbilitiySystem owner)
     {
         abilitySystem.OwnerSystem = owner;
-        abilitySystem.ID = new ID();
-        abilitySystem.ID.AddRange(owner.ID);
+        abilitySystem.ID = new ID(owner.ID);
         abilitySystem.ID.Add(owner.AbilitySystems.IndexOf(abilitySystem));
 
         for (int i = 0; i < abilitySystem.EffectSystems.Count; i++)

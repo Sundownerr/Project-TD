@@ -32,7 +32,6 @@ namespace Game.Systems
             Owner.WaveSystem.WaveEnded += OnWaveEnded;
             Owner.WaveSystem.WaveStarted += OnWaveStarted;
             Owner.WaveSystem.WavesGenerated += OnWavesGenerated;
-            if (Owner.WaveSystem.WaveNumber == 1)
                 ActivateUI(true);
         }
 
@@ -67,7 +66,7 @@ namespace Game.Systems
 
         private void UpdateUI()
         {
-            var wave = Owner.WaveSystem.CurrentWave;
+            var wave = Owner.WaveSystem.Waves.Peek();
        
 
             Race.text = wave.EnemyTypes[0].Race.ToString();

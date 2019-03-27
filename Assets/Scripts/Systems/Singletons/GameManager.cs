@@ -19,10 +19,11 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    
-    public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab;
-    public event EventHandler<GameState> StateChanged = delegate { };
 
+    public event EventHandler<GameState> StateChanged = delegate { };
+    public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab, GameLoopPrefab;
+
+    private static GameManager instance;
     public static GameManager Instance
     {
         get => instance;
@@ -32,39 +33,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameState GameState {
+    private GameState gameState;
+    public GameState GameState
+    {
         get => gameState;
         set
-        {           
+        {
             gameState = value;
             StateChanged?.Invoke(null, gameState);
             Debug.Log(value);
         }
     }
 
-    private static GameManager instance;
-    private GameState gameState;
-
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+        Instance = this;
+
         Application.targetFrameRate = 70;
         QualitySettings.vSyncCount = 0;
         Cursor.lockState = CursorLockMode.Confined;
-
-        DontDestroyOnLoad(gameObject);
-        Instance = this;
     }
 
     private void Start()
     {
-        if (GameData.Instance == null)
-            Instantiate(GameDataPrefab);
-
-        if (Steam.Instance == null)
-            Instantiate(SteamInstancePrefab);
-
-        if (ReferenceHolder.Get == null)
-           Instantiate(ReferenceHolderPrefab);
+        if (GameData.Instance == null) Instantiate(GameDataPrefab);
+        if (Steam.Instance == null) Instantiate(SteamInstancePrefab);
+        if (ReferenceHolder.Get == null) Instantiate(ReferenceHolderPrefab);
+        if (GameLoop.Instance == null) Instantiate(GameLoopPrefab);
     }
 
     public void GoToMainMenu()

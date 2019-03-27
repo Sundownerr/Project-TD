@@ -21,6 +21,10 @@ public class ID : List<int>
 
         return true;
     }
+
+    public ID() {}
+    public ID(ID other) => this.AddRange(other);
+    
  }
 
 [Serializable]

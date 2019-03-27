@@ -39,6 +39,8 @@ namespace Game.Enemy
             this.waypoints = waypoints;
 
             Prefab = ownerPrefab;
+
+          
         }
 
         public void SetSystem(PlayerSystem player)
@@ -47,7 +49,7 @@ namespace Game.Enemy
             this.SetId();
 
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
-     
+
             SetAbilitySystems();
             SetTraitSystems();
 
@@ -78,7 +80,6 @@ namespace Game.Enemy
 
         public void UpdateSystem()
         {
-           
             HealthSystem?.UpdateSystem();
             AbilityControlSystem.UpdateSystem();
 
@@ -94,24 +95,26 @@ namespace Game.Enemy
                 else
                     LastWaypointReached?.Invoke(null, this);
             }
-
-            #region  Helper functions
-
-            void MoveAndRotateEnemy()
-            {
-                var lookRotation =
-                    Quaternion.LookRotation(waypoints[WaypointIndex] - Prefab.transform.position);
-                var rotation =
-                    Quaternion.Lerp(Prefab.transform.rotation, lookRotation, Time.deltaTime * 10f);
-
-                rotation.z = 0;
-                rotation.x = 0;
-
-                Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
-                Prefab.transform.localRotation = rotation;
-            }
-
-            #endregion
         }
+
+        #region  Helper functions
+
+        void MoveAndRotateEnemy()
+        {
+            var lookRotation =
+                Quaternion.LookRotation(waypoints[WaypointIndex] - Prefab.transform.position);
+            var rotation =
+                Quaternion.Lerp(Prefab.transform.rotation, lookRotation, Time.deltaTime * 10f);
+
+            rotation.z = 0;
+            rotation.x = 0;
+
+            Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
+            Prefab.transform.localRotation = rotation;
+
+        }
+
+        #endregion
     }
+
 }

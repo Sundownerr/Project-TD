@@ -22,7 +22,7 @@ public class ListCoordinates3D : List<Coordinates3D>
     }
 
     public ListCoordinates3D(Vector3[] positions)
-    {      
+    { 
         for (int i = 0; i < positions.Length; i++)
             this.Add(positions[i].ToCoordinates3D());   
     }
@@ -65,7 +65,7 @@ public class EnemyCreationRequest
 {
     [SerializeField] public Coordinates3D Position;
     [SerializeField] public ID ID;
-    [SerializeField] public int Race, WaveNumber;
+    [SerializeField] public int Race;
     [SerializeField] public ListID AbilityIDs;
     [SerializeField] public ListID TraitIDs;
     [SerializeField] public ListCoordinates3D Waypoints;

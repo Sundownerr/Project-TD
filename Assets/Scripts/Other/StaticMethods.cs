@@ -98,14 +98,15 @@ public static class StaticMethods
         return newSpirit;
     }
 
-   
-    public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, PlayerSystem owner, Vector3[] waypoints)
+
+    public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, PlayerSystem owner, Vector3[] waypoints, GameObject prefab = null)
     {
-        var enemy = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
+      
+        var enemy = prefab ?? U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
         var enemySystem = new EnemySystem(enemy, waypoints) { Data = data };
-       
+
         enemy.gameObject.layer = 12;
-        
+
         enemySystem.SetSystem(owner);
 
         return enemySystem;
