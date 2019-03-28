@@ -19,7 +19,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-
+    public bool UseLocalTransport;
     public event EventHandler<GameState> StateChanged = delegate { };
     public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab, GameLoopPrefab;
 

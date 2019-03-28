@@ -12,8 +12,8 @@ using System;
 namespace Game
 {
     public interface IPrefabComponent : IIDComponent
-    {     
-        [SerializeField] GameObject Prefab { get; set; }
+    {
+        [SerializeField] GameObject Prefab { get; }
     }
 
     public interface IIDComponent
@@ -22,53 +22,53 @@ namespace Game
     }
 
     public interface IEntitySystem : IIDComponent
-    {      
-        [SerializeField] IEntitySystem OwnerSystem { get; set; }
+    {
+        [SerializeField] IEntitySystem OwnerSystem { get; }
     }
 
     public interface IAbilitiySystem : IEntitySystem, ICombatComponent
     {
-        [SerializeField] AbilityControlSystem AbilityControlSystem { get; set; }
-        [SerializeField] List<AbilitySystem> AbilitySystems { get; set; }
+        [SerializeField] AbilityControlSystem AbilityControlSystem { get; }
+        [SerializeField] List<AbilitySystem> AbilitySystems { get; }
     }
 
     public interface ITraitSystem : IEntitySystem, ICombatComponent
     {
-        [SerializeField] TraitControlSystem TraitControlSystem { get; set; }
-        [SerializeField] List<ITraitHandler> TraitSystems { get; set; }
+        [SerializeField] TraitControlSystem TraitControlSystem { get; }
+        [SerializeField] List<ITraitHandler> TraitSystems { get; }
     }
 
     public interface ICombatComponent : IPrefabComponent
     {
-        [SerializeField] List<IHealthComponent> Targets { get; set; }
+        [SerializeField] List<IHealthComponent> Targets { get; }
     }
 
     public interface IHealthComponent : IPrefabComponent
     {
         [SerializeField] bool IsOn { get; set; }
-        [SerializeField] HealthSystem HealthSystem { get; set; }
+        [SerializeField] HealthSystem HealthSystem { get; }
     }
 
 
     public interface IAttributeComponent
     {
-        [SerializeField] List<NumeralAttribute> BaseAttributes { get; set; }
-        [SerializeField] List<NumeralAttribute> AppliedAttributes { get; set; }
+        [SerializeField] List<NumeralAttribute> BaseAttributes { get; }
+        [SerializeField] List<NumeralAttribute> AppliedAttributes { get; }
     }
 
     public interface IAbilityComponent
     {
-        [SerializeField] List<Ability> Abilities { get; set; }
+        [SerializeField] List<Ability> Abilities { get; }
     }
 
     public interface ITraitComponent
     {
-        [SerializeField] List<Trait> Traits { get; set; }
+        [SerializeField] List<Trait> Traits { get; }
     }
 
     public interface IDamageDealerChild : IDamageDealer
     {
-        [SerializeField] IDamageDealer Owner { get; set; }
+        [SerializeField] IDamageDealer Owner { get; set;}
     }
 
     public interface IDamageDealer : IEntitySystem
@@ -77,7 +77,7 @@ namespace Game
 
     public interface ITraitHandler
     {
-        [SerializeField] ITraitSystem Owner { get; set; }
+        [SerializeField] ITraitSystem Owner { get; }
         void IncreaseStatsPerLevel();
         void Apply(IPrefabComponent entity);
         void Set();

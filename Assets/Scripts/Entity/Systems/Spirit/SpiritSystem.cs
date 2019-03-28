@@ -13,28 +13,26 @@ namespace Game.Spirit
 {
     public class SpiritSystem : IAbilitiySystem, ITraitSystem, IHealthComponent, IDamageDealer
     {
-        public Transform RangeTransform { get;  set; }
-        public Transform MovingPart { get;  set; }
-        public Transform StaticPart { get;  set; }
-        public Transform ShootPoint { get;  set; }
+        public Transform RangeTransform { get; private set; }
+        public Transform MovingPart { get; private set; }
+        public Transform StaticPart { get; private set; }
+        public Transform ShootPoint { get; private set; }
         public GameObject UsedCell { get; set; }
-        public GameObject Bullet { get;  set; }
-        public GameObject Range { get;  set; }
-        public RangeSystem RangeSystem { get;  set; }
-        public ShootSystem ShootSystem { get;  set; }
-        public SpiritDataSystem DataSystem { get;  set; }
+        public RangeSystem RangeSystem { get; private set; }
+        public ShootSystem ShootSystem { get; private set; }
+        public SpiritDataSystem DataSystem { get; private set; }
         public SpiritData Data { get => DataSystem.CurrentData; set => DataSystem.CurrentData = value; }
         public Renderer[] Renderers { get; private set; }
-        public AbilityControlSystem AbilityControlSystem { get; set; }
-        public TraitControlSystem TraitControlSystem { get; set; }             
-        public HealthSystem HealthSystem { get ; set ; }
-        public GameObject Prefab { get; set ; }
+        public AbilityControlSystem AbilityControlSystem { get; private set; }
+        public TraitControlSystem TraitControlSystem { get; private set; }
+        public HealthSystem HealthSystem { get; private set; }
+        public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
-        public IEntitySystem OwnerSystem { get ; set ; }
-        public ID ID { get; set; }
-        public List<IHealthComponent> Targets { get; set; }
-        public List<ITraitHandler> TraitSystems { get; set; }
-        public List<AbilitySystem> AbilitySystems { get; set; }
+        public IEntitySystem OwnerSystem { get; private set; }
+        public ID ID { get; private set; }
+        public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
+        public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
+        public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
 
         public SpiritSystem(GameObject ownerPrefab)
         {
@@ -42,49 +40,73 @@ namespace Game.Spirit
             MovingPart = ownerPrefab.transform.GetChild(0);
             StaticPart = ownerPrefab.transform.GetChild(1);
             ShootPoint = MovingPart.GetChild(0).GetChild(0);
-            Bullet = ownerPrefab.transform.GetChild(2).gameObject;
 
             DataSystem = new SpiritDataSystem(this);
             HealthSystem = new HealthSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
             ShootSystem = new ShootSystem(this);
             AbilityControlSystem = new AbilityControlSystem(this);
-            AbilitySystems = new List<AbilitySystem>();
-            TraitSystems = new List<ITraitHandler>();
-            Targets = new List<IHealthComponent>();
 
-            Bullet.SetActive(false);
             HealthSystem.IsVulnerable = false;
         }
 
         public void SetSystem(PlayerSystem player)
         {
+            if (player == null)
+            {
+                Debug.LogError($"{this} owner player is null");
+                return;
+            }
+
             OwnerSystem = player;
-            this.SetId();
+            ID = new ID() { player.SpiritControlSystem.Spirits.Count };
 
             if (!Data.IsGradeSpirit)
                 DataSystem.Set();
 
-            for (int i = 0; i < Data.Abilities.Count; i++)
+            SetTraitSystems();
+            SetAbilitySystems();
+            SetShootSystem();
+            SetRangeSystem();
+
+            #region Helper functions
+
+            void SetRangeSystem()
             {
-                AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
-                AbilitySystems[AbilitySystems.Count - 1].Set(this);
+                RangeSystem = StaticMethods.CreateRange(this, Data.Get(Numeral.Range, From.Base).Value, CollideWith.Enemies);
+                RangeSystem.EntityEntered += OnEntityEnteredRange;
+                RangeSystem.EntityExit += OnEntityExitRange;
+                Renderers = Prefab.GetComponentsInChildren<Renderer>();
             }
 
-            for (int i = 0; i < Data.Traits.Count; i++)
+            void SetTraitSystems()
             {
-                TraitSystems.Add(Data.Traits[i].GetSystem(this));
-                TraitSystems[TraitSystems.Count - 1].Set();
+                for (int i = 0; i < Data.Traits.Count; i++)
+                {
+                    TraitSystems.Add(Data.Traits[i].GetSystem(this));
+                    TraitSystems[TraitSystems.Count - 1].Set();
+                }
+                TraitControlSystem.Set();
             }
 
-            ShootSystem.Set();
-            AbilityControlSystem.Set();
-            TraitControlSystem.Set();
+            void SetAbilitySystems()
+            {
+                for (int i = 0; i < Data.Abilities.Count; i++)
+                {
+                    AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
+                    AbilitySystems[AbilitySystems.Count - 1].Set(this);
+                }
+                AbilityControlSystem.Set();
+            }
 
-            RangeSystem = StaticMethods.CreateRange(this, Data.Get(Numeral.Range, From.Base).Value, CollideWith.Enemies);
-            RangeSystem.EntityEntered += OnEntityEnteredRange;
-            RangeSystem.EntityExit += OnEntityExitRange;
-            Renderers = Prefab.GetComponentsInChildren<Renderer>();
+            void SetShootSystem()
+            {
+                var bullet = Prefab.transform.GetChild(2).gameObject;
+                bullet.SetActive(false);
+                ShootSystem.Set(bullet);
+            }
+
+            #endregion
         }
 
         public void UpdateSystem()

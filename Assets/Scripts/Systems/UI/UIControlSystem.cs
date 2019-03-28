@@ -15,18 +15,13 @@ public class UIControlSystem : MonoBehaviour
 
 
     private List<Text> textPrefabs = new List<Text>();
-    private List<PlayerData> playerDatas;
-    private List<string> playerNames;
-    private List<InputField> chatTexts;
+    private List<PlayerData> playerDatas= new List<PlayerData>();
+    private List<string> playerNames = new List<string>();
+    private List<InputField> chatTexts = new List<InputField>();
 
     private void Awake()
     {
         FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
-
-        playerDatas = new List<PlayerData>();
-        playerNames = new List<string>();
-        chatTexts = new List<InputField>();
-
         IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(null, null));
         QuitButton.onClick.AddListener(QuitGame);
     }

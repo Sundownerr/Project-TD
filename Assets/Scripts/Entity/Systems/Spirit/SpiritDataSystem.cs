@@ -17,7 +17,7 @@ namespace Game.Spirit.System
         public event EventHandler<SpiritSystem> LeveledUp = delegate { };
 
         private SpiritSystem ownerSpirit;
-        private List<Consumable> appliedConsumables;
+        private List<Consumable> appliedConsumables = new List<Consumable>();
 
         public SpiritDataSystem(SpiritSystem spirit) => ownerSpirit = spirit;
 
@@ -29,8 +29,7 @@ namespace Game.Spirit.System
             CurrentData.SetData();
 
             BaseData = data;
-            appliedConsumables = new List<Consumable>();
-
+   
             StatsChanged?.Invoke(null, null);
         }
 

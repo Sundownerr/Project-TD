@@ -9,21 +9,17 @@ namespace Game.Systems
 {
     public class SpiritControlSystem
     {
-        public List<SpiritSystem> Spirits { get; private set; }
+        public List<SpiritSystem> Spirits { get; private set; } = new List<SpiritSystem>();
 
-        private PlayerSystem player;
+        private PlayerSystem Owner;
 
-        public SpiritControlSystem(PlayerSystem player)
-        {
-            this.player = player;
-            Spirits = new List<SpiritSystem>();
-        }
+        public SpiritControlSystem(PlayerSystem player) => Owner = player;
 
         public void SetSystem()
         {
-            player.SpiritPlaceSystem.SpiritPlaced += OnSpiritCreated;
-            player.PlayerInputSystem.SpiritUpgraded += OnSpiritCreated;
-            player.PlayerInputSystem.SpiritSold += OnSpiritRemoved;
+            Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritCreated;
+            Owner.PlayerInputSystem.SpiritUpgraded += OnSpiritCreated;
+            Owner.PlayerInputSystem.SpiritSold += OnSpiritRemoved;
         }
 
         public void UpdateSystem()

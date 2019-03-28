@@ -18,27 +18,22 @@ namespace Game.Systems
         public ElementType ChoosedElement;
         public GameObject Rarity, ParentGO;
         public bool IsChoosedNewSpirit;    
-
-        private List<SpiritData> availableSpirits;      
-        private List<GameObject> spiritButtonGOs;
-        private List<SpiritButtonSystem> spiritButtons;
+ 
+        private List<GameObject> spiritButtonGOs  = new List<GameObject>();
+        private List<SpiritButtonSystem> spiritButtons = new List<SpiritButtonSystem>();
         private Transform rarityTransform;
-        private Vector2 newSpiritButtonPos;
+        private Vector2 newSpiritButtonPos = new Vector2(0, 1);
         private Animator animator;
 
         private void Start()
         {
-            ParentGO = transform.parent.gameObject;
-            spiritButtonGOs = new List<GameObject>();
-            spiritButtons = new List<SpiritButtonSystem>();
-            availableSpirits = new List<SpiritData>();
-            newSpiritButtonPos = new Vector2(0, 1);       
+            ParentGO = transform.parent.gameObject;    
         }
 
         public void SetSystem(PlayerSystem player)
         {
             Owner = player;
-            availableSpirits = Owner.AvailableSpirits;
+           
             rarityTransform = Rarity.transform;
 
             ElementButtons[0].onClick.AddListener(ShowAstral);

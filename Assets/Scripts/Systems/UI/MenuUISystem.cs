@@ -8,7 +8,7 @@ using System.Collections;
 public class MenuUISystem : MonoBehaviour
 {
     public GameObject LobbyList, GameStateManagerPrefab;
-    public Button SingleplayerButton, MultiplayerButton, QuitButton;
+    public Button SingleplayerButton, MultiplayerButton, TestButton, QuitButton;
 
     
 
@@ -38,6 +38,7 @@ public class MenuUISystem : MonoBehaviour
         SingleplayerButton.onClick.AddListener(StartSingleplayer);
         MultiplayerButton.onClick.AddListener(StartMultiplayer);
         QuitButton.onClick.AddListener(() => Application.Quit());
+       
  
         GameManager.Instance.GameState = GameState.MainMenu;
     }

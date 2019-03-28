@@ -25,11 +25,8 @@ namespace Game.Systems
         // 3 - Unique
         private double[] itemRarityProbabilities = new double[] { 50, 20, 10, 5 };
 
-        public ItemDropSystem(PlayerSystem player)
-        {
-            Owner = player;
-        }
-
+        public ItemDropSystem(PlayerSystem player) => Owner = player;
+        
         public void SetSystem()
         {
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;

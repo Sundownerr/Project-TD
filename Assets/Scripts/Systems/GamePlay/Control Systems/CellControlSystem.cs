@@ -11,24 +11,23 @@ namespace Game.Systems
     public class CellControlSystem
     {
         public bool IsGridBuilded { get; set; }
-        public List<Cell> Cells { get; set; }
+        public List<Cell> Cells { get; set; } = new List<Cell>();
         public Cell ChoosedCell { get; set; }
 
         private Color blue, red, green, choosedColor;
-        private Camera mainCam;
+        private Camera mainCam = Camera.main;
+        private RaycastHit hit;
         public PlayerSystem Owner { get; set; }
 
         public CellControlSystem(PlayerSystem player)
         {
             Owner = player;
-            Cells = new List<Cell>();
 
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             green = new Color(0.1f, 2f, 0.1f, 0.9f);
             blue = new Color(0.1f, 0.1f, 0.3f, 0.7f);
             choosedColor = green + new Color(0.5f, 0.5f, 0.5f, 1f);
-            mainCam = Camera.main;       
-        }       
+        }
 
         public void SetSystem()
         {
@@ -45,7 +44,6 @@ namespace Game.Systems
             void CreateGrid()
             {
                 var cellAreas = Owner.Map.CellAreas;
-                
 
                 for (var i = 0; i < cellAreas.Length; i++)
                 {
@@ -59,9 +57,9 @@ namespace Game.Systems
                             new Vector3(0, cellAreas[i].transform.localScale.y / 1.9f, 0);
 
                         var prefab = U.Instantiate(
-                            ReferenceHolder.Get.CellPrefab, 
+                            ReferenceHolder.Get.CellPrefab,
                             spawnPos,
-                            Quaternion.identity, 
+                            Quaternion.identity,
                             ReferenceHolder.Get.CellParent).GetComponent<Cell>();
 
                         prefab.Owner = Owner;
@@ -83,24 +81,20 @@ namespace Game.Systems
         private void OnRMBPressed(object _, EventArgs e) => ChoosedCell = null;
         private void OnClickedOnGround(object _, EventArgs e) => ChoosedCell = null;
         private void OnClickedOnSpirit(object _, GameObject spirit) => ChoosedCell = null;
-        private void OnClickedOnCell(object _, GameObject cellGO)
-        {
+        private void OnClickedOnCell(object _, GameObject cellGO) => ChoosedCell = ChoosedCell ?? cellGO.GetComponent<Cell>();
 
-            ChoosedCell = ChoosedCell ?? cellGO.GetComponent<Cell>();
-        }
 
         public void UpdateSystem()
-        {           
-            if (IsGridBuilded)            
+        {
+            if (IsGridBuilded)
                 if (ChoosedCell == null)
                 {
                     var mousePosRay = mainCam.ScreenPointToRay(Input.mousePosition);
                     var terrainLayer = 1 << 9;
                     var cellLayer = 1 << 15;
                     var layerMask = terrainLayer | cellLayer;
-                    var hit = new RaycastHit();
-
-                    if (Physics.Raycast(mousePosRay, out hit, 99999, layerMask))                  
+                    
+                    if (Physics.Raycast(mousePosRay, out hit, 99999, layerMask))
                         for (int i = 0; i < Cells.Count; i++)
                         {
                             var color = Cells[i].Renderer.material.color;
@@ -110,16 +104,16 @@ namespace Game.Systems
 
                             Cells[i].gameObject.SetActive(color.a > 0.01);
                             Cells[i].Renderer.material.color = distance < 20 ? choosedColor : notChoosedColor;
-                        }                   
+                        }
                 }
-                else               
+                else
                     for (int i = 0; i < Cells.Count; i++)
-                        Cells[i].Renderer.material.color = 
+                        Cells[i].Renderer.material.color =
                             Cells[i] == ChoosedCell ? choosedColor : new Color(
                                 Cells[i].Renderer.material.color.r,
                                 Cells[i].Renderer.material.color.g,
                                 Cells[i].Renderer.material.color.b,
-                                Mathf.Lerp(Cells[i].Renderer.material.color.a, 0, 0.1f));           
+                                Mathf.Lerp(Cells[i].Renderer.material.color.a, 0, 0.1f));
         }
     }
 }

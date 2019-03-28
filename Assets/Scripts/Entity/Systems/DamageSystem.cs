@@ -11,29 +11,31 @@ namespace Game.Systems
     {
         public static event EventHandler<DamageEventArgs> DamageDealt = delegate { };
 
-        public static void DealDamage(this IDamageDealer dealer, IHealthComponent target, double damage)
+        public static void DealDamage(this IDamageDealer damageDealer, IHealthComponent target, double damage)
         {
             if (target == null || !target.HealthSystem.IsVulnerable)
                 return;
 
-            var dealerEntity = dealer;
+            target.HealthSystem.ChangeHealth(GetDealerEntity(), CalculateDamage());
 
-            if (dealerEntity is IDamageDealerChild dealerChild)
-                if (dealerChild.Owner is IDamageDealer)
-                    dealerEntity = dealerChild.Owner;
-                else
-                    while (dealerChild.Owner != null && !(dealerEntity is IDamageDealer))
-                        dealerEntity = dealerChild.Owner;
+            #region Helper functions
 
-            target.HealthSystem.ChangeHealth(dealerEntity, CalculateDamage());
-            
+            IDamageDealer GetDealerEntity()
+            {
+                var dealerEntity = damageDealer;
+                if (dealerEntity is IDamageDealerChild dealerChild)
+                    dealerEntity = dealerChild.GetOwnerOfType<IDamageDealer>();
+                return dealerEntity;
+            }
+
             double CalculateDamage()
             {
                 var critCount = 0;
-                if (dealer is SpiritSystem spirit)
+
+                if (damageDealer is SpiritSystem spirit)
                 {
                     var critChance = spirit.Data.GetValue(Numeral.CritChance);
-                    var isCrit = new List<double>() { critChance, 100 - critChance }.RollDice();
+                    var isCrit = new double[] { critChance, 100 - critChance }.RollDice();
 
                     if (target is EnemySystem enemy)
                         damage = damage.GetPercent(spirit.Data.DamageToRace[(int)enemy.Data.Race]);
@@ -42,25 +44,29 @@ namespace Game.Systems
                     {
                         var multicritCount = spirit.Data.GetValue(Numeral.MulticritCount);
                         var critMultiplier = 1 + spirit.Data.GetValue(Numeral.CritMultiplier);
-                        var multicritChances = new List<double>();
+                        var multicritChances = new double[(int)multicritCount];
 
                         critCount = 1;
 
                         for (int multicritNumber = 0; multicritNumber < multicritCount; multicritNumber++)
                         {
                             var chanceToMulticrit = Math.Pow(critChance * 0.1d, 1 + multicritNumber) * Math.Pow(0.1d, multicritNumber - 1);
-                            multicritChances.Add(chanceToMulticrit);
+                            multicritChances[multicritNumber] = chanceToMulticrit;
                         }
 
-                        for (int multicritNumber = multicritChances.Count - 1; multicritNumber > 0; multicritNumber--)
+                        var chances = new double[2];
+
+                        for (int multicritNumber = multicritChances.Length - 1; multicritNumber > 0; multicritNumber--)
                         {
-                            var isMulticrit =
-                                new List<double>() { multicritChances[multicritNumber], 100 - multicritChances[multicritNumber] }.RollDice();
+                            chances[0] = multicritChances[multicritNumber];
+                            chances[1] = 100 - multicritChances[multicritNumber];
+
+                            var isMulticrit = chances.RollDice();
 
                             if (isMulticrit == 0)
                             {
                                 critCount = multicritNumber + 1;
-                                for (int j = 0; j < multicritNumber; j++)
+                                for (int i = 0; i < multicritNumber; i++)
                                     critMultiplier += critMultiplier;
                                 break;
                             }
@@ -69,11 +75,13 @@ namespace Game.Systems
                         damage *= critMultiplier;
                     }
                     // add armor modificator
-                }         
+                }
 
                 DamageDealt?.Invoke(null, new DamageEventArgs(target, damage, critCount));
                 return damage;
             }
+
+            #endregion  
         }
     }
 }

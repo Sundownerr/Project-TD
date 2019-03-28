@@ -19,14 +19,11 @@ namespace Game.Systems
         public List<GameObject> Slots;
         public List<ItemUISystem> ItemsUI;
                
-        private List<bool> isSlotEmpty;
+        private List<bool> isSlotEmpty = new List<bool>();
 
         private void Awake()
         {
-          
             InventoryButton.onClick.AddListener(ShowButton);
-
-            isSlotEmpty = new List<bool>();
 
             for (int i = 0; i < Slots.Count; i++)
                 isSlotEmpty.Add(true);           

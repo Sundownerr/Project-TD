@@ -40,9 +40,9 @@ namespace Game.Systems
         public List<SpiritSystem> Spirits { get => SpiritControlSystem.Spirits; }
         public List<EnemySystem> Enemies { get => EnemyControlSystem.Enemies; }
         public List<SpiritData> AvailableSpirits;
-        public Player Data { get; set; }
-        public Canvas UICanvas { get; set; }
-        public Canvas WorldCanvas { get; set; }
+        public Player Data { get; private set; }
+        public Canvas UICanvas { get; private set; }
+        public Canvas WorldCanvas { get; private set; }
         public NetworkPlayer NetworkPlayer;
         public int ItemsCount { get; set; }
         public int WaveAmount { get; set; }
@@ -96,8 +96,8 @@ namespace Game.Systems
             DescriptionUISystem = U.Instantiate(ReferenceHolder.Get.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
 
 
-           
-             SetSystem();
+
+            SetSystem();
         }
 
         private void SetSystem()
@@ -122,7 +122,7 @@ namespace Game.Systems
             DescriptionUISystem.SetSystem(this);
             SpiritControlSystem.SetSystem();
 
-         ReferenceHolder.Get.StartCoroutine(SetCameraPos());
+            ReferenceHolder.Get.StartCoroutine(SetCameraPos());
             isSet = true;
         }
 
@@ -149,7 +149,7 @@ namespace Game.Systems
 
             yield return new WaitForSeconds(0.1f);
             cinemachineCamera.SetActive(true);
-           
+
 
         }
     }

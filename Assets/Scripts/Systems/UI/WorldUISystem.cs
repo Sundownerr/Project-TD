@@ -16,29 +16,37 @@ namespace Game.Systems
         public GameObject LevelUpText;
 
         private ObjectPool damageNumbersPool, levelUpTextPool;
-        private List<TextMeshProUGUI> damageNumbers, levelUpTexts;
+        private List<TextMeshProUGUI> damageNumbers = new List<TextMeshProUGUI>(), levelUpTexts = new List<TextMeshProUGUI>();
+        private WaitForSeconds levelUpTextFadeDelay = new WaitForSeconds(0.7f);
+        private Color defaultFontColor = new Color(1, 1, 1, 1);
+        private Color critFontColor = new Color(2f, 0.5f, 0.3f, 1);
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             DamageSystem.DamageDealt += OnDamageDealt;
-            damageNumbers = new List<TextMeshProUGUI>();
-            levelUpTexts = new List<TextMeshProUGUI>();
 
-            damageNumbersPool = new ObjectPool
-            {
-                PoolObject = DamageNumber,
-                PoolLenght = 5,
-                Parent = transform
-            };
+            damageNumbersPool = new ObjectPool(DamageNumber, transform, 15);
+            levelUpTextPool = new ObjectPool(LevelUpText, transform, 5);
+        }
 
-            levelUpTextPool = new ObjectPool
-            {
-                PoolObject = LevelUpText,
-                PoolLenght = 5,
-                Parent = transform
-            };
+        public void SetSystem(PlayerSystem player)
+        {
+            Owner = player;
+            Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
+        }
+
+        private void FixedUpdate()
+        {
+            for (int i = 0; i < damageNumbers.Count; i++)
+                if (damageNumbers[i].fontSize > 11)
+                    damageNumbers[i].fontSize -= 0.3f;
+                else
+                {
+                    damageNumbers[i].gameObject.SetActive(false);
+                    damageNumbers.RemoveAt(i);
+                }
         }
 
         private void OnDamageDealt(object _, DamageEventArgs e)
@@ -49,18 +57,18 @@ namespace Game.Systems
             var damageNumber = damageNumbersPool.GetObject();
             var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
             var damageText = StaticMethods.KiloFormat(e.Damage);
-            var fontColor = new Color(1, 1, 1, 1);
+            var fontColor = defaultFontColor;
             var random = UnityEngine.Random.Range(-20, 20);
-            var pos = e.Target.Prefab.transform.position + new Vector3(random, 90 + random, random);
+            var textPositionOffset = new Vector3(random, 90 + random, random);
 
             if (e.CritCount > 0)
             {
                 var sb = new StringBuilder();
-                if (e.CritCount > 1)
-                    for (int i = 0; i < e.CritCount; i++)
-                        sb.Append("!");
 
-                fontColor = new Color(2f, 0.5f, 0.3f, 1);
+                for (int i = 1; i < e.CritCount; i++)
+                    sb.Append("!");
+
+                fontColor = critFontColor;
                 damageText = $"{damageText} {sb.ToString()}";
             }
 
@@ -71,38 +79,20 @@ namespace Game.Systems
             textComponent.fontSize = 18 + e.CritCount * 2;
             textComponent.color = fontColor;
 
-            damageNumber.transform.position = pos;
+            damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
         }
 
-        private void FixedUpdate()
-        {
-            for (int i = 0; i < damageNumbers.Count; i++)
-                if (damageNumbers[i].fontSize > 11)
-                    damageNumbers[i].fontSize -= 0.3f;               
-                else
-                {
-                    damageNumbers[i].gameObject.SetActive(false);
-                    damageNumbers.RemoveAt(i);
-                }
-        }
-
-        public void SetSystem(PlayerSystem player)
-        {
-            Owner = player;
-            Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
-        }
-
-        private void OnSpiritPlaced(object _, SpiritSystem e) =>
-            e.DataSystem.LeveledUp += OnSpiritLevelUp;
-        
+        private void OnSpiritPlaced(object _, SpiritSystem e) => e.DataSystem.LeveledUp += OnSpiritLevelUp;
 
         private void OnSpiritLevelUp(object _, SpiritSystem spirit)
         {
             var text = levelUpTextPool.GetObject();
             var random = UnityEngine.Random.Range(-20, 20);
-            text.SetActive(true);           
-            text.transform.position = 
-                spirit.Prefab.transform.position + new Vector3(random, Math.Abs(random + 10), random);
+            var textPositionOffset = new Vector3(random, Math.Abs(random + 10), random);
+
+
+            text.SetActive(true);
+            text.transform.position = spirit.Prefab.transform.position + textPositionOffset;
 
             var textComponent = text.GetComponent<TextMeshProUGUI>();
             levelUpTexts.Add(textComponent);
@@ -113,11 +103,11 @@ namespace Game.Systems
 
             IEnumerator DeactivateLevelUpText()
             {
-                yield return new WaitForSeconds(0.7f);
+                yield return levelUpTextFadeDelay;
                 text.SetActive(false);
             }
 
             #endregion
-        } 
+        }
     }
 }

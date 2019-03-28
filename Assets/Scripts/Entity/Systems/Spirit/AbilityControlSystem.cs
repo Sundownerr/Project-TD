@@ -9,7 +9,7 @@ namespace Game.Systems
     public class AbilityControlSystem
     {
         private IAbilitiySystem owner;
-        private List<AbilitySystem> abilityStacks;
+        private List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
         private bool isAllEffectsEnded, isInContinueState;
 
         public AbilityControlSystem(IAbilitiySystem owner)
@@ -17,10 +17,7 @@ namespace Game.Systems
             this.owner = owner;
         }
 
-        public void Set()
-        {
-            abilityStacks = new List<AbilitySystem>();
-        }
+        public void Set() { }
 
         public void UpdateSystem()
         {

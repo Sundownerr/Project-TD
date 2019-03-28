@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class HealthSystem
 {
-    public List<Effect> AppliedEffects { get; private set; }
+    public List<Effect> AppliedEffects { get; private set; } = new List<Effect>();
     public event EventHandler<IHealthComponent> Died = delegate { };
     public bool IsVulnerable { get; set; }
 
@@ -20,7 +20,6 @@ public class HealthSystem
     public HealthSystem(IHealthComponent owner)
     {
         this.owner = owner;
-        AppliedEffects = new List<Effect>();
        
         if (owner is EnemySystem enemy)
         {

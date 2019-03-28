@@ -211,7 +211,6 @@
      <Compile Include="Assets\Scripts\Systems\GamePlay\NetworkGameManager.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\NetworkPlayer.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\PlayerMap.cs" />
-     <Compile Include="Assets\Scripts\Systems\GamePlay\PoolSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\SpiritCreatingSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\SpiritPlaceSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\StateMachine.cs" />

@@ -127,7 +127,7 @@ public static class ExtensionMethods
         return ids;
     }
 
-   
+
 
     ///<summary>
     /// Set effect system owner, id
@@ -137,26 +137,6 @@ public static class ExtensionMethods
         effectSystem.OwnerSystem = ownerAbility;
         effectSystem.ID = new ID(ownerAbility.ID);
         effectSystem.ID.Add(ownerAbility.EffectSystems.IndexOf(effectSystem));
-    }
-
-    ///<summary>
-    /// Set spirit system owner, id
-    ///</summary>
-    public static void SetId(this SpiritSystem spiritSystem)
-    {
-        var player = spiritSystem.GetOwnerOfType<PlayerSystem>() ?? ReferenceHolder.Get.Player;
-
-        spiritSystem.ID = new ID() { player.SpiritControlSystem.Spirits.Count };
-    }
-
-    ///<summary>
-    /// Set enemy system owner, id
-    ///</summary>   
-    public static void SetId(this EnemySystem enemySystem)
-    {
-        var player = enemySystem.GetOwnerOfType<PlayerSystem>() ?? ReferenceHolder.Get.Player;
-
-        enemySystem.ID = new ID() { player.EnemyControlSystem.Enemies.Count };
     }
 
     public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
@@ -222,13 +202,10 @@ public static class ExtensionMethods
     ///</summary>   
     public static GameObject GetPrefab(this IEntitySystem entitySystem)
     {
-        if (entitySystem == null)
-            return null;
-        if (entitySystem is IPrefabComponent prefabComponent)
-            return prefabComponent.Prefab;
-        if (entitySystem.OwnerSystem == null)
-            return null;
-        return GetPrefab(entitySystem.OwnerSystem);
+        return entitySystem == null ? null :
+                entitySystem is IPrefabComponent prefabComponent ? prefabComponent.Prefab :
+                entitySystem.OwnerSystem == null ? null :
+                GetPrefab(entitySystem.OwnerSystem);
     }
 
     ///<summary>

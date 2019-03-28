@@ -32,7 +32,7 @@ namespace Game.Systems
         private EnemySystem choosedEnemy;
         private GameObject selection;
         private PointerEventData pointerEventData;
-        private List<RaycastResult> resultsUI, resultsWorldUI;
+       
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI, isHitWorldUI;
@@ -42,9 +42,7 @@ namespace Game.Systems
         {
             base.Awake();
 
-            EventSystem = EventSystem.current;
-            resultsUI = new List<RaycastResult>();
-            resultsWorldUI = new List<RaycastResult>();
+            EventSystem = EventSystem.current;         
             pointerEventData = new PointerEventData(EventSystem);
         
             terrainLayer    = 1 << 9;
@@ -69,14 +67,11 @@ namespace Game.Systems
         {
             pointerEventData.position = Input.mousePosition;
             
-            var mouseTopEdge = Input.mousePosition.y < Screen.height / 2;
-            
             if (Input.GetMouseButtonDown(0))
             {              
                 WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 isHitUI = EventSystem.currentSelectedGameObject != null;
-                isHitWorldUI = resultsWorldUI.Count > 0;
 
                 if (Physics.Raycast(WorldRay, out hit, 100000, layerMask))
                 {

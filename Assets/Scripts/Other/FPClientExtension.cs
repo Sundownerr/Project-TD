@@ -55,6 +55,7 @@ public static class LobbyExtension
     /// </summary>
     public static void SendChatMessage(InputField chatInputField)
     {
+        
         if (string.IsNullOrWhiteSpace(chatInputField.text))
         {
             chatInputField.DeactivateInputField();

@@ -9,8 +9,8 @@ namespace Game.Systems
 {
     public class RangeSystem : ExtendedMonoBehaviour
     {
-        public List<IHealthComponent> EntitySystems { get; set; }
-        public List<GameObject> Entities { get; set; }
+        public List<IHealthComponent> EntitySystems { get; set; } = new List<IHealthComponent>();
+        public List<GameObject> Entities { get; set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
         public event EventHandler<IHealthComponent> EntityEntered = delegate{};
@@ -25,10 +25,7 @@ namespace Game.Systems
         {
             base.Awake();
 
-            Entities = new List<GameObject>();
-            EntitySystems = new List<IHealthComponent>();
             rend = GetComponent<Renderer>();
-
             transform.position += new Vector3(0, -5, 0);
 
             transparent = new Color(0f, 0f, 0f, 0f);

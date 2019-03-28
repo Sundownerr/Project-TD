@@ -12,7 +12,7 @@ namespace Game.Systems
         public IHealthComponent Target { get; set; }
         public bool IsStacked { get; set; }
         public bool IsNeedStack { get; set; }
-        public List<EffectSystem> EffectSystems { get; set; }
+        public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
         public Ability Ability { get; set; }
         public ID ID { get; set; }
         public IEntitySystem OwnerSystem { get; set; }
@@ -23,8 +23,6 @@ namespace Game.Systems
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
             Ability = ability;
-
-            EffectSystems = new List<EffectSystem>();
 
             for (int i = 0; i < Ability.Effects.Count; i++)
                 EffectSystems.Add(Ability.Effects[i].EffectSystem);

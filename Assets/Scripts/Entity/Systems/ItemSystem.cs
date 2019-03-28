@@ -27,8 +27,7 @@ namespace Game.Systems
             Data = U.Instantiate(data);          
             defaultData = data;
 
-            ID = new ID();
-            ID.AddRange(data.ID);
+            ID = new ID(data.ID);
             ID.Add((owner as PlayerSystem).ItemsCount);
         }
 

@@ -24,29 +24,29 @@ namespace Game.Enemy
         public bool IsOn { get; set; }
         public IEntitySystem OwnerSystem { get; set; }
         public ID ID { get; set; }
-        public List<IHealthComponent> Targets { get; set; }
-        public List<ITraitHandler> TraitSystems { get; set; }
-        public List<AbilitySystem> AbilitySystems { get; set; }
+        public List<IHealthComponent> Targets { get; set; } = new List<IHealthComponent>();
+        public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
+        public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
         private Vector3[] waypoints;
 
         public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints)
         {
-            AbilitySystems = new List<AbilitySystem>();
-            TraitSystems = new List<ITraitHandler>();
-            Targets = new List<IHealthComponent>();
             AbilityControlSystem = new AbilityControlSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
             this.waypoints = waypoints;
-
             Prefab = ownerPrefab;
-
-          
         }
 
         public void SetSystem(PlayerSystem player)
         {
+            if (player == null)
+            {
+                Debug.LogError($"{this} owner player is null");
+                return;
+            }
+
             OwnerSystem = player;
-            this.SetId();
+            ID = new ID() { player.EnemyControlSystem.Enemies.Count };
 
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
 

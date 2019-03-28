@@ -66,8 +66,7 @@ namespace Game.Systems
 
         private void UpdateUI()
         {
-            var wave = Owner.WaveSystem.Waves.Peek();
-       
+            var wave = Owner.WaveSystem.Waves.Peek();      
 
             Race.text = wave.EnemyTypes[0].Race.ToString();
             Armor.text = wave.EnemyTypes[0].ArmorType.ToString();

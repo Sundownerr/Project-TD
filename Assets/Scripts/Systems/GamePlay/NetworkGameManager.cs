@@ -43,13 +43,13 @@ public class NetworkGameManager : NetworkBehaviour
         NetworkMaps = new GameObjectSyncList();
         WaveEnenmyIDs = new List<WaveEnemyID>();
 
-        waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves));
+        //waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves) ?? "100");
 
-        if (NetworkServer.localClientActive)
-        {
+        waveAmount = 100;
+       
             AddMapComponentsOnServer();
             GenerateWaves();
-        }
+        
 
         #region Helper functions
 

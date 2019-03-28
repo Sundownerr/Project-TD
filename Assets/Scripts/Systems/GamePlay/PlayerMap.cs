@@ -14,26 +14,4 @@ public class PlayerMap : MonoBehaviour
     public GameObject[] GroundWaypoints;
     public GameObject[] FlyingWaypoints;
 
-    private void Awake()
-    {
-        if (GameManager.Instance.GameState == GameState.InLobby)
-        {
-            // if (!NetworkServer.localClientActive)
-            //     Destroy(gameObject);
-            
-            
-        }
-    }
-
-    private void Start()
-    {
-        if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
-        {
-            // Debug.Log("add c");
-            // gameObject.AddComponent<NetworkIdentity>();
-            // gameObject.AddComponent<NetworkTransform>();
-            // ClientScene.RegisterPrefab(gameObject, GetComponent<NetworkIdentity>().assetId);
-            // NetworkManager.singleton.spawnPrefabs.Add(gameObject);
-        }
-    }
 }

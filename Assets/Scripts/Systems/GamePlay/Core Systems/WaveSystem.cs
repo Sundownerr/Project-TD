@@ -14,8 +14,8 @@ namespace Game.Systems
     public class WaveSystem
     {
         public int WaveNumber { get; set; }
-        public PlayerSystem Owner { get; set; }
-        public Queue<Wave> Waves { get; private set; }
+        public PlayerSystem Owner { get; private set; }
+        public Queue<Wave> Waves { get; private set; }  = new Queue<Wave>();
         public List<Wave> ListWaves { get; private set; }
         public Vector3[] GroundWaypoints { get; private set; }
         public Vector3[] FlyingWaypoints { get; private set; }
@@ -26,38 +26,29 @@ namespace Game.Systems
         public event EventHandler<EnemyCreationRequest> EnemyCreationRequested = delegate { };
         public event EventHandler WavesGenerated = delegate { };
 
-        private List<List<EnemySystem>> wavesEnemySystem;
-        private List<int> currentEnemyCount;
+        private List<List<EnemySystem>> wavesEnemySystem  = new List<List<EnemySystem>>();
+        private List<int> currentEnemyCount = new List<int>();
         private WaitForSeconds spawnDelay = new WaitForSeconds(0.2f);
         private int spawned;
         private Coroutine spawnCoroutine;
 
-        public WaveSystem(PlayerSystem player)
-        {
-            Owner = player;
-            wavesEnemySystem = new List<List<EnemySystem>>();
-            Waves = new Queue<Wave>();
-            currentEnemyCount = new List<int>();
-        }
-
+        public WaveSystem(PlayerSystem player) => Owner = player;
+        
         public void SetSystem()
         {
             SetWaypoints();
-            var generatedWaves = new Queue<Wave>();
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
             if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
             {
                 Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
-                generatedWaves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
+                Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
             }
             else
-                generatedWaves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
+                Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
 
-            Waves = generatedWaves;
-            ListWaves = new List<Wave>(generatedWaves);
-            WaveNumber = 0;
+            ListWaves = new List<Wave>(Waves);
             
             //   WavesGenerated?.Invoke(null, null);
 
@@ -65,8 +56,6 @@ namespace Game.Systems
 
             void NetworkEnemyCreated(object _, EnemySystem e)
             {
-                Debug.Log(spawned);
-
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
                 EnemyCreated?.Invoke(_, e);
 

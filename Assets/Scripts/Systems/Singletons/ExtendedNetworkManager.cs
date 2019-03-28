@@ -26,14 +26,14 @@ public class ExtendedNetworkManager : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
     {
         var freeMapID = NetworkGameManager.GetFreeMapID();
-        var maxPlayers = FPClient.Instance.Lobby.NumMembers;
-        var currentPlayers = NetworkServer.connections.Count;
+        // var maxPlayers = FPClient.Instance != null ? FPClient.Instance.Lobby.NumMembers : 4;
+        // var currentPlayers = NetworkServer.connections.Count;
 
-        if (currentPlayers > maxPlayers)
-        {
-            conn.Disconnect();
-            return;
-        }
+        // if (currentPlayers > maxPlayers)
+        // {
+        //     conn.Disconnect();
+        //     return;
+        // }
 
         var playerGO = Instantiate(playerPrefab);
         var player = playerGO.GetComponent<NetworkPlayer>();

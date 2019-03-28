@@ -8,32 +8,31 @@ namespace Game.Systems
     {
         public event EventHandler<int> LearnedElement = delegate { };
 
-        private PlayerSystem player;
+        private PlayerSystem owner;
 
-        public ElementSystem(PlayerSystem player)
-        {
-            this.player = player;
-        }
-
+        public ElementSystem(PlayerSystem player) => owner = player;
+        
         public void LearnElement(int elementId)
         {
-            if (CheckCanLearn(player.Data.ElementLevels[elementId], out int learnCost))
+            var check = CheckCanLearn(owner.Data.ElementLevels[elementId]);
+
+            if (check.canLearn)
             {
-                player.Data.ElementLevels[elementId]++;
-                LearnedElement?.Invoke(null, learnCost);
+                owner.Data.ElementLevels[elementId]++;
+                LearnedElement?.Invoke(null, check.learnCost);
             }
 
             #region Helper functions 
 
-            bool CheckCanLearn(int elementLevel, out int learnPrice)
+            (bool canLearn, int learnCost) CheckCanLearn(int elementLevel)
             {
                 var baseLearnCost = 20;
                 var levelLimit = 15;
-                learnPrice = elementLevel + baseLearnCost;
-                var isCanLearn = elementLevel < levelLimit;
-                var isLearnCostOk = learnPrice <= player.Data.Resources.MagicCrystals;
+                var learnCost = elementLevel + baseLearnCost;
+                var canLearn = elementLevel < levelLimit;
+                var isLearnCostOk = learnCost <= owner.Data.Resources.MagicCrystals;
 
-                return isCanLearn && isLearnCostOk;
+                return (canLearn && isLearnCostOk, learnCost);
             }
 
             #endregion
