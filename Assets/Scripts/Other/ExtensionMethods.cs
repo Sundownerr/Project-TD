@@ -46,16 +46,16 @@ public static class ExtensionMethods
     ///<summary>
     /// Return random element from given probabilites
     ///</summary>
-    public static int RollDice(this List<double> probabilities)
+    public static int RollDice(this double[] probabilities)
     {
         var total = 0d;
 
-        for (int i = 0; i < probabilities.Count; i++)
+        for (int i = 0; i < probabilities.Length; i++)
             total += probabilities[i];
 
         var randomProbability = (double)StaticRandom.Instance.Next(0, (int)total);
 
-        for (int i = 0; i < probabilities.Count; i++)
+        for (int i = 0; i < probabilities.Length; i++)
             if (randomProbability < probabilities[i])
                 return i;
             else

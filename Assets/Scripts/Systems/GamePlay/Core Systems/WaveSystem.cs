@@ -16,6 +16,7 @@ namespace Game.Systems
         public int WaveNumber { get; set; }
         public PlayerSystem Owner { get; set; }
         public Queue<Wave> Waves { get; private set; }
+        public List<Wave> ListWaves { get; private set; }
         public Vector3[] GroundWaypoints { get; private set; }
         public Vector3[] FlyingWaypoints { get; private set; }
         public event EventHandler WaveEnded = delegate { };
@@ -55,9 +56,9 @@ namespace Game.Systems
                 generatedWaves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
 
             Waves = generatedWaves;
+            ListWaves = new List<Wave>(generatedWaves);
             WaveNumber = 0;
-            Waves.Dequeue();
-
+            
             //   WavesGenerated?.Invoke(null, null);
 
             #region  Helper functions
@@ -69,12 +70,12 @@ namespace Game.Systems
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
                 EnemyCreated?.Invoke(_, e);
 
-                if (spawned == Waves.Peek().EnemyTypes.Count)
-                {
-                    ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
+                if (spawned == Waves.Peek().EnemyTypes.Count - 1)
                     if (WaveNumber <= Owner.WaveAmount)
+                    {
+                        ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
                         SetNextWave();
-                }
+                    }     
             }
 
             void SetWaypoints()
@@ -177,6 +178,7 @@ namespace Game.Systems
                         {
                             ID = enemy.ID,
                             Race = (int)enemy.Race,
+                            WaveNumber = WaveNumber,
                             Position = position,
                             AbilityIDs = enemy.Abilities.GetIDs(),
                             TraitIDs = enemy.Traits.GetIDs(),

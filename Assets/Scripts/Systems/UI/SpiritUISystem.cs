@@ -11,14 +11,14 @@ namespace Game.Systems
 {
     public class SpiritUISystem : ExtendedMonoBehaviour
     {
-        public PlayerSystem Owner { get; set; }
+        public PlayerSystem Owner { get; private set; }
         public GameObject SlotWithDescriptionPrefab;
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI SpiritName, CritChance, Level;
         public Image Image;
         public Button SellButton, UpgradeButton;
         public List<DescriptionBlock> ItemSlots, AbilitySlots, TraitSlots;
-        public List<ItemUISystem> ItemsUI;
+        public List<ItemUISystem> AllItemsUIInSpirits;
         public event EventHandler Selling = delegate { };
         public event EventHandler Upgrading = delegate { };
         public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit = delegate { };
@@ -32,7 +32,7 @@ namespace Game.Systems
         protected override void Awake()
         {
             base.Awake();
-            ItemsUI = new List<ItemUISystem>();
+            AllItemsUIInSpirits = new List<ItemUISystem>();
             isSlotEmpty = new List<bool>();
 
             animator = GetComponent<Animator>();
@@ -118,15 +118,13 @@ namespace Game.Systems
                 MoveItemToPlayer?.Invoke(null, itemUI);
                 return;
             }
-            else
-            {
-                var freeSlot = ItemSlots[freeSlotIndex];
 
-                itemUI.transform.position = freeSlot.transform.position;
-                itemUI.transform.SetParent(freeSlot.transform.parent);
+            var freeSlot = ItemSlots[freeSlotIndex];
 
-                AddItemToSpirit(itemUI, freeSlotIndex);
-            }
+            itemUI.transform.position = freeSlot.transform.position;
+            itemUI.transform.SetParent(freeSlot.transform.parent);
+
+            AddItemToSpirit(itemUI, freeSlotIndex);
         }
 
         public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
@@ -197,7 +195,7 @@ namespace Game.Systems
 
         private void UpdateItems()
         {
-            choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
+            
             var spiritItems = choosedSpirit.Data.Inventory.Items;
             var maxSlots = choosedSpirit.Data.Get(Numeral.MaxInventorySlots, From.Base).Value;
 
@@ -210,23 +208,25 @@ namespace Game.Systems
                 isSlotEmpty.Add(isInSlotLimit);
             }
 
-            for (int i = 0; i < ItemsUI.Count; i++)
-                ItemsUI[i].gameObject.SetActive(false);
+            for (int i = 0; i < AllItemsUIInSpirits.Count; i++)
+                AllItemsUIInSpirits[i].gameObject.SetActive(false);
+
 
             for (int i = 0; i < spiritItems.Count; i++)
-                for (int j = 0; j < ItemsUI.Count; j++)
-                    if (spiritItems[i].ID.Compare(ItemsUI[j].System.ID))
+            {
+                for (int j = 0; j < AllItemsUIInSpirits.Count; j++)
+                    if (spiritItems[i].ID.Compare(AllItemsUIInSpirits[j].System.ID))
                     {
-                        ItemsUI[j].gameObject.SetActive(true);
-                        isSlotEmpty[ItemsUI[j].SlotNumber] = false;
+                        AllItemsUIInSpirits[j].gameObject.SetActive(true);
+                        isSlotEmpty[AllItemsUIInSpirits[j].SlotNumber] = false;
                         break;
                     }
+            }
         }
 
         private void UpdateAbilities()
         {
-            choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
-
+            
             var abilities = choosedSpirit.Data.Abilities;
             var maxSlots = choosedSpirit.Data.Abilities.Count;
 
@@ -243,8 +243,7 @@ namespace Game.Systems
 
         private void UpdateTraits()
         {
-            choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
-
+            
             var traits = choosedSpirit.Data.Traits;
             var maxSlots = choosedSpirit.Data.Traits.Count;
 
@@ -293,7 +292,7 @@ namespace Game.Systems
 
         private void AddItemToSpirit(ItemUISystem itemUI, int slotNumber)
         {
-            ItemsUI.Add(itemUI);
+            AllItemsUIInSpirits.Add(itemUI);
             isSlotEmpty[slotNumber] = false;
             ItemSlots[slotNumber].gameObject.SetActive(false);
 
@@ -309,7 +308,7 @@ namespace Game.Systems
         {
             if (itemUI.DraggedFrom == DraggedFrom.SpiritInventory)
             {
-                ItemsUI.Remove(itemUI);
+                AllItemsUIInSpirits.Remove(itemUI);
                 isSlotEmpty[itemUI.SlotNumber] = true;
                 ItemSlots[itemUI.SlotNumber].gameObject.SetActive(true);
 

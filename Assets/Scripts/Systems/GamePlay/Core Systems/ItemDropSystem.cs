@@ -15,6 +15,16 @@ namespace Game.Systems
 
         public PlayerSystem Owner { get; set; }
 
+        // 0 - Item dropped
+        // 1 - Item not dropped
+        private double[] itemDropProbabilities = new double[] { 40, 50 };
+
+        // 0 - Common
+        // 1 - Uncommon
+        // 2 - Rare
+        // 3 - Unique
+        private double[] itemRarityProbabilities = new double[] { 50, 20, 10, 5 };
+
         public ItemDropSystem(PlayerSystem player)
         {
             Owner = player;
@@ -24,48 +34,37 @@ namespace Game.Systems
         {
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;
         }
-      
+
         private void OnEnemyDied(object _, EnemySystem enemy)
         {
-            // 0 - Item dropped
-            // 1 - Item not dropped
-
-            var itemDropProbabilities = new List<double>() { 40, 50 };
-
-            // 0 - Common
-            // 1 - Uncommon
-            // 2 - Rare
-            // 3 - Unique
-
-            var itemRarityProbabilities = new List<double>() { 50, 20, 10, 5 };
             var isItemDropped = itemDropProbabilities.RollDice() == 0;
 
             if (isItemDropped)
-            {           
+            {
                 var newItem = CreateItem(itemRarityProbabilities.RollDice());
                 Owner.ItemsCount++;
 
                 ItemCreated?.Invoke(null, newItem);
-               // Debug.Log($"{newItem.Data.Name} {newItem.Data.Rarity}");
+                // Debug.Log($"{newItem.Data.Name} {newItem.Data.Rarity}");
             }
-    
+
             #region Helper functions
-            
+
             ItemSystem CreateItem(int rarityId)
             {
                 var allItems = ReferenceHolder.Get.ItemDataBase.Items;
-                var fittingItems = new List<ItemSystem>();
-                var fittingItemsWeigths = new List<double>();
+                var fittingItems = new ItemSystem[allItems.Length];
+                var fittingItemsWeigths = new double[allItems.Length];
 
-                for (int i = 0; i < allItems.Count; i++)               
+                for (int i = 0; i < allItems.Length; i++)
                     if (allItems[i].WaveLevel <= Owner.WaveSystem.WaveNumber)
                     {
                         var newItem = new ItemSystem(allItems[i], Owner);
-                        fittingItems.Add(newItem);
-                        fittingItemsWeigths.Add(allItems[i].Weigth);
+                        fittingItems[i] = newItem;
+                        fittingItemsWeigths[i] = allItems[i].Weigth;
                     }
-                
-                return fittingItems[fittingItemsWeigths.RollDice()];              
+
+                return fittingItems[fittingItemsWeigths.RollDice()];
             }
 
             #endregion
@@ -75,14 +74,14 @@ namespace Game.Systems
         {
             var itemUIGO = UnityEngine.Object.Instantiate(
                 ReferenceHolder.Get.ItemPrefab,
-                slotTransform.position, 
-                Quaternion.identity, 
+                slotTransform.position,
+                Quaternion.identity,
                 slotTransform.parent);
 
             var itemUI = itemUIGO.GetComponent<ItemUISystem>();
 
             itemUI.SetSystem(owner);
-            itemUIGO.GetComponent<Image>().sprite = item.Image;            
+            itemUIGO.GetComponent<Image>().sprite = item.Image;
             itemUI.DraggedFrom = owner is PlayerSystem ? DraggedFrom.PlayerInventory : DraggedFrom.SpiritInventory;
             itemUI.SlotNumber = slotNumber;
 

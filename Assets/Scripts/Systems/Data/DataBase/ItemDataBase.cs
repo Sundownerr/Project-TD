@@ -10,12 +10,12 @@ namespace Game.Data
     [Serializable]
     public class ItemDataBase : ScriptableObject
     {
-        public List<Item> Items;
+        public Item[] Items;
 
         private void Awake()
         {
             if (Items == null)
-                Items = new List<Item>();
+                Items = new Item[1];
             else
                 UpdateItemId();
         }
@@ -24,7 +24,7 @@ namespace Game.Data
 
         private void UpdateItemId()
         {
-            for (int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < Items.Length; i++)
                 if (Items[i].ID.Count == 0)              
                     Items[i].ID = new ID() { i };              
         }

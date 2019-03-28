@@ -18,6 +18,7 @@ Assets/DataBase
 Assets/_TerrainAutoUpgrade
 Assets/Models
 Assets/Scripts/Transport.Steamworks-master
+Assets/CinemachinePostProcessingV2/
 /Library
 /Build
 /Temp
@@ -28,3 +29,7 @@ Assets/Scripts/Transport.Steamworks-master
 .vs
 playerData.json
 *.zip
+*.png
+*.csproj
+
+
