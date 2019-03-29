@@ -38,7 +38,7 @@ namespace Game.Systems
         private void AddEnemy(EnemySystem enemy)
         {
             Enemies.Add(enemy);
-
+          
             enemy.IsOn = true;
             enemy.LastWaypointReached += OnLastWaypointReached;
             enemy.HealthSystem.Died += OnEnemyDied;

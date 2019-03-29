@@ -39,19 +39,19 @@ public class CameraMovementScript : ExtendedMonoBehaviour
         var onBottomEdge = Input.mousePosition.y < 0 + boundary;
 
 
-        //var vel = 
-        //        transform.position.x < 240f     & onLeftEdge    ? Vector3.right * speed :
-        //        transform.position.x > -305f    & onRightEdge   ? Vector3.left * speed :
-        //        transform.position.z > -700f    & onBottomEdge  ? Vector3.back * speed :
-        //        transform.position.z < 104f     & onTopEdge     ? Vector3.forward * speed :
-        //        Vector3.zero;
-
-        var vel =
-              onLeftEdge ? Vector3.right * speed :
-              onRightEdge ? Vector3.left * speed :
-              onBottomEdge ? Vector3.back * speed :
-              onTopEdge ? Vector3.forward * speed :
+        var vel = 
+               transform.position.x < 540f     & onLeftEdge    ? Vector3.right * speed :
+               transform.position.x > -2205f    & onRightEdge   ? Vector3.left * speed :
+               transform.position.z > -700f    & onBottomEdge  ? Vector3.back * speed :
+               transform.position.z < 104f     & onTopEdge     ? Vector3.forward * speed :
                Vector3.zero;
+
+        // var vel =
+        //       onLeftEdge ? Vector3.right * speed :
+        //       onRightEdge ? Vector3.left * speed :
+        //       onBottomEdge ? Vector3.back * speed :
+        //       onTopEdge ? Vector3.forward * speed :
+        //        Vector3.zero;
 
         transform.position = Vector3.Lerp(Vector3.SmoothDamp(transform.position, transform.position + vel, ref velocity, 0.1f), transform.position + vel, 0.01f);
     }

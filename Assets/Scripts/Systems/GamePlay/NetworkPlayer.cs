@@ -15,6 +15,7 @@ public class NetworkPlayer : NetworkBehaviour
 {
     [SyncVar] public PlayerData PlayerData;
     [SyncVar] public int MapID;
+    [SyncVar] public GameObject NetEnemy;
     public GameObject LocalMap;
     public GameObject UICanvasPrefab;
     public UIControlSystem UiControlSystem { get; private set; }
@@ -22,6 +23,7 @@ public class NetworkPlayer : NetworkBehaviour
     public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
     public event EventHandler WavesReceived = delegate { };
     private float delay = 0.07f;
+
 
     private PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
@@ -62,8 +64,10 @@ public class NetworkPlayer : NetworkBehaviour
 
         LoadData();
         CmdGetWaves();
+        ClientScene.RegisterPrefab(ReferenceHolder.Get.NetworkEnemy);
         base.OnStartLocalPlayer();
     }
+
 
     public void WaitAndDo(float delay, Action function)
     {
@@ -141,40 +145,43 @@ public class NetworkPlayer : NetworkBehaviour
     private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
         var sendData = e.Serializer();
-        var networkEnemy = Instantiate(ReferenceHolder.Get.NetworkEnemy, e.Position.ToVector3(), Quaternion.identity);
-        var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.Waves.Peek().EnemyTypes.Find(x => x.ID.Compare(e.ID));
-        var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, e.Position.ToVector3(), LocalPlayer, e.Waypoints.ToVector3Array(), networkEnemy);
-
-        EnemyCreatingRequestDone?.Invoke(null, newEnemySystem);
-       
         WaitAndDo(delay, () =>
         {
-            CmdCreateEnemy(sendData, networkEnemy);
+            CmdCreateEnemy(sendData, e.Position.ToVector3());
         });
-
     }
 
     [Command]
-    private void CmdCreateEnemy(byte[] byteRequest, GameObject netIdentity)
+    public void CmdCreateEnemy(byte[] byteRequest, Vector3 spawnPosition)
     {
-        var newEnemy = netIdentity;
-        NetworkServer.Spawn(netIdentity);
-        RpcCreateEnemy(byteRequest, newEnemy);
+        var networkEnemy = Instantiate(ReferenceHolder.Get.NetworkEnemy, spawnPosition, Quaternion.identity);
+        NetworkServer.Spawn(networkEnemy);
+        networkEnemy.GetComponent<NetworkIdentity>().AssignClientAuthority(connectionToClient);
+
+        RpcCreateEnemy(byteRequest, networkEnemy);
     }
 
     [ClientRpc]
-    private void RpcCreateEnemy(byte[] byteRequest, GameObject newEnemy)
+    public void RpcCreateEnemy(byte[] byteRequest, GameObject newEnemy)
     {
         var request = byteRequest.Deserializer<EnemyCreationRequest>();
 
         WaitAndDo(delay, () =>
         {
-            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber ].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+
             if (enemyFromDB == null)
+            {
+                Debug.LogError("enemyfromdb is null");
                 return;
-       
-           // var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, spawnPosition, LocalPlayer, waypoints, newEnemy.gameObject);
-            var modelPrefab = Instantiate(enemyFromDB.Prefab, newEnemy.gameObject.transform.position, newEnemy.transform.rotation, newEnemy.gameObject.transform);
+            }
+            var modelPrefab = Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform);
+
+            if (isLocalPlayer)
+            {
+                var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, request.Position.ToVector3(), ReferenceHolder.Get.Player, request.Waypoints.ToVector3Array(), newEnemy);
+                EnemyCreatingRequestDone?.Invoke(null, newEnemySystem);
+            }
         });
     }
 

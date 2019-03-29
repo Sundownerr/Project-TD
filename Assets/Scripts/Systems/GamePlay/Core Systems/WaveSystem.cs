@@ -62,7 +62,8 @@ namespace Game.Systems
                 if (spawned == Waves.Peek().EnemyTypes.Count - 1)
                     if (WaveNumber <= Owner.WaveAmount)
                     {
-                        ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
+                        if(spawnCoroutine != null)
+                            ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
                         SetNextWave();
                     }     
             }

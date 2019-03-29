@@ -45,6 +45,7 @@ namespace Game.Enemy
                 return;
             }
 
+           
             OwnerSystem = player;
             ID = new ID() { player.EnemyControlSystem.Enemies.Count };
 
@@ -111,7 +112,7 @@ namespace Game.Enemy
 
             Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
             Prefab.transform.localRotation = rotation;
-
+            
         }
 
         #endregion
