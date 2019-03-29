@@ -28,7 +28,6 @@ public class NetworkPlayer : NetworkBehaviour
     private PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
     {
-        //client rpc cant see this. not setted? 
         get => localPlayer;
         set
         {
@@ -64,7 +63,6 @@ public class NetworkPlayer : NetworkBehaviour
 
         LoadData();
         CmdGetWaves();
-        ClientScene.RegisterPrefab(ReferenceHolder.Get.NetworkEnemy);
         base.OnStartLocalPlayer();
     }
 
@@ -145,18 +143,14 @@ public class NetworkPlayer : NetworkBehaviour
     private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
         var sendData = e.Serializer();
-        WaitAndDo(delay, () =>
-        {
-            CmdCreateEnemy(sendData, e.Position.ToVector3());
-        });
+        WaitAndDo(delay, () => { CmdCreateEnemy(sendData, e.Position.ToVector3()); });
     }
 
     [Command]
     public void CmdCreateEnemy(byte[] byteRequest, Vector3 spawnPosition)
     {
         var networkEnemy = Instantiate(ReferenceHolder.Get.NetworkEnemy, spawnPosition, Quaternion.identity);
-        NetworkServer.Spawn(networkEnemy);
-        networkEnemy.GetComponent<NetworkIdentity>().AssignClientAuthority(connectionToClient);
+        NetworkServer.SpawnWithClientAuthority(networkEnemy, connectionToClient);
 
         RpcCreateEnemy(byteRequest, networkEnemy);
     }
@@ -169,18 +163,18 @@ public class NetworkPlayer : NetworkBehaviour
         WaitAndDo(delay, () =>
         {
             var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            var spawnPos = request.Position.ToVector3();
+            var waypoints = request.Waypoints.ToVector3Array();
 
             if (enemyFromDB == null)
-            {
                 Debug.LogError("enemyfromdb is null");
-                return;
-            }
-            var modelPrefab = Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform);
-
-            if (isLocalPlayer)
+            else
             {
-                var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, request.Position.ToVector3(), ReferenceHolder.Get.Player, request.Waypoints.ToVector3Array(), newEnemy);
-                EnemyCreatingRequestDone?.Invoke(null, newEnemySystem);
+                Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform);
+
+                if (isLocalPlayer)
+                    EnemyCreatingRequestDone?.Invoke(null,
+                        StaticMethods.CreateEnemy(enemyFromDB, spawnPos, LocalPlayer, waypoints, newEnemy));
             }
         });
     }

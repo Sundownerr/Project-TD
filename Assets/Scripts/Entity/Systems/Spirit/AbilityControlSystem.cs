@@ -68,7 +68,7 @@ namespace Game.Systems
                 var stack = new AbilitySystem(abilitySystems[index].Ability, owner);
 
                 stack.StackReset(owner);
-                stack.SetTarget(abilitySystems[index].Target);
+                stack.Target = abilitySystems[index].Target;
 
                 abilityStacks.Add(stack);
                 abilitySystems[index].IsNeedStack = false;
@@ -104,11 +104,11 @@ namespace Game.Systems
                 {
                     if (!abilitySystem.IsStacked)
                         if (!isInContinueState)
-                            abilitySystem.SetTarget(owner.Targets[0]);
+                            abilitySystem.Target = owner.Targets[0];
                         else
                         {
                             abilitySystem.CooldownReset();
-                            abilitySystem.SetTarget(null);
+                            abilitySystem.Target = null;
                         }
                     else
                     {

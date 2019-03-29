@@ -10,14 +10,22 @@ namespace Game.Systems
         public bool IsSet { get => isSet; set => isSet = value; }
         public bool IsEnded { get => isEnded; set => isEnded = value; }
         public bool IsMaxStackCount { get => isMaxStackCount; set => isMaxStackCount = value; }
-        public IHealthComponent Target { get => target; set => target = value; }       
         public IEntitySystem OwnerSystem { get; set; }
         public ID ID { get; set; }
 
         protected bool isSet, isEnded, isMaxStackCount;
         protected float effectTimer;
-        protected IHealthComponent target;
         protected Effect effect;
+
+        protected IHealthComponent target;
+        public IHealthComponent Target
+        {
+            get => target;
+            set
+            {
+                Target = Target ?? value;
+            }
+        }
 
         public EffectSystem(Effect effect)
         {
@@ -26,7 +34,7 @@ namespace Game.Systems
             if (!effect.IsStackable)
                 effect.MaxStackCount = 1;
         }
-          
+
         public virtual void Init()
         {
             if (!IsSet)
@@ -74,7 +82,8 @@ namespace Game.Systems
         {
             if (effect.IsStackable)
                 RestartState();
-            else if (IsEnded)
+            else 
+            if (IsEnded)
                 RestartState();
         }
 
@@ -84,11 +93,6 @@ namespace Game.Systems
             IsMaxStackCount = false;
             IsEnded = false;
             IsSet = false;
-        }
-
-        public virtual void SetTarget(IHealthComponent newTarget)
-        {
-            Target = Target ?? newTarget;
         }
     }
 }
