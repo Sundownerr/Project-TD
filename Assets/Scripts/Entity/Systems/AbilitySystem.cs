@@ -9,7 +9,7 @@ namespace Game.Systems
 {
     public class AbilitySystem : IEntitySystem
     {
-        
+
         public bool IsStacked { get; set; }
         public bool IsNeedStack { get; set; }
         public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
@@ -19,19 +19,7 @@ namespace Game.Systems
 
         private int effectCount;
         private float cooldownTimer, nextEffectTimer;
-        
-        private IHealthComponent target;
-        public IHealthComponent Target
-        {
-            get => target;
-            set
-            {
-                target = value;
-
-                for (int i = 0; i < EffectSystems.Count; i++)
-                    EffectSystems[i].Target = target;
-            }
-        }
+        public IHealthComponent Target { get; private set; }
 
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
@@ -79,6 +67,14 @@ namespace Game.Systems
             }
 
             #endregion
+        }
+
+        public void SetTarget(IHealthComponent target)
+        {
+            Target = target;
+
+            for (int i = 0; i < EffectSystems.Count; i++)
+                EffectSystems[i].SetTarget(target);
         }
 
 

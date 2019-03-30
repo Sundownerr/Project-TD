@@ -16,16 +16,9 @@ namespace Game.Systems
         protected bool isSet, isEnded, isMaxStackCount;
         protected float effectTimer;
         protected Effect effect;
-
         protected IHealthComponent target;
-        public IHealthComponent Target
-        {
-            get => target;
-            set
-            {
-                Target = Target ?? value;
-            }
-        }
+
+        public IHealthComponent Target { get => target; private set => target = value; }
 
         public EffectSystem(Effect effect)
         {
@@ -82,7 +75,7 @@ namespace Game.Systems
         {
             if (effect.IsStackable)
                 RestartState();
-            else 
+            else
             if (IsEnded)
                 RestartState();
         }
@@ -93,6 +86,11 @@ namespace Game.Systems
             IsMaxStackCount = false;
             IsEnded = false;
             IsSet = false;
+        }
+
+        public virtual void SetTarget(IHealthComponent newTarget)
+        {
+            Target = Target ?? newTarget;
         }
     }
 }
