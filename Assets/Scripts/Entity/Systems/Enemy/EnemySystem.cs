@@ -22,7 +22,7 @@ namespace Game.Enemy
         public HealthSystem HealthSystem { get; set; }
         public GameObject Prefab { get; set; }
         public bool IsOn { get; set; }
-        public IEntitySystem OwnerSystem { get; set; }
+        public IEntitySystem Owner { get; set; }
         public ID ID { get; set; }
         public List<IHealthComponent> Targets { get; set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
@@ -45,8 +45,8 @@ namespace Game.Enemy
                 return;
             }
 
-           
-            OwnerSystem = player;
+
+            Owner = player;
             ID = new ID() { player.EnemyControlSystem.Enemies.Count };
 
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
@@ -69,10 +69,8 @@ namespace Game.Enemy
             void SetAbilitySystems()
             {
                 for (int i = 0; i < Data.Abilities.Count; i++)
-                {
                     AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
-                    AbilitySystems[AbilitySystems.Count - 1].Set(this);
-                }
+
                 AbilityControlSystem.Set();
             }
 
@@ -112,7 +110,7 @@ namespace Game.Enemy
 
             Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
             Prefab.transform.localRotation = rotation;
-            
+
         }
 
         #endregion

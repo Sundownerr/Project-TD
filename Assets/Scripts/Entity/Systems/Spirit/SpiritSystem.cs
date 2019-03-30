@@ -28,7 +28,7 @@ namespace Game.Spirit
         public HealthSystem HealthSystem { get; private set; }
         public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
-        public IEntitySystem OwnerSystem { get; private set; }
+        public IEntitySystem Owner { get; private set; }
         public ID ID { get; private set; }
         public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
@@ -58,7 +58,7 @@ namespace Game.Spirit
                 return;
             }
 
-            OwnerSystem = player;
+            Owner = player;
             ID = new ID() { player.SpiritControlSystem.Spirits.Count };
 
             if (!Data.IsGradeSpirit)
@@ -92,10 +92,8 @@ namespace Game.Spirit
             void SetAbilitySystems()
             {
                 for (int i = 0; i < Data.Abilities.Count; i++)
-                {
                     AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
-                    AbilitySystems[AbilitySystems.Count - 1].Set(this);
-                }
+
                 AbilityControlSystem.Set();
             }
 

@@ -13,9 +13,9 @@ namespace Game.Systems
         public bool IsStacked { get; set; }
         public bool IsNeedStack { get; set; }
         public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
-        public Ability Ability { get; set; }
-        public ID ID { get; set; }
-        public IEntitySystem OwnerSystem { get; set; }
+        public Ability Ability { get; private set; }
+        public ID ID { get; private set; }
+        public IEntitySystem Owner { get; private set; }
 
         private int effectCount;
         private float cooldownTimer, nextEffectTimer;
@@ -27,6 +27,8 @@ namespace Game.Systems
 
             for (int i = 0; i < Ability.Effects.Count; i++)
                 EffectSystems.Add(Ability.Effects[i].EffectSystem);
+
+            SetSystem(owner);
         }
 
         public void Init()
@@ -77,11 +79,27 @@ namespace Game.Systems
                 EffectSystems[i].SetTarget(target);
         }
 
-
         public void StackReset(IAbilitiySystem owner)
         {
             IsStacked = true;
-            this.Set(owner);
+            SetSystem(owner);
+        }
+
+        private void SetSystem(IAbilitiySystem owner)
+        {
+            Owner = owner;
+            ID = new ID(owner.ID);
+            ID.Add(owner.AbilitySystems.IndexOf(this));
+
+            for (int i = 0; i < EffectSystems.Count; i++)
+            {
+                EffectSystems[i].SetSystem(this);
+
+                if (EffectSystems[i] is IDamageDealerChild child)
+                    child.OwnerDamageDealer = this.GetOwnerOfType<IDamageDealer>();
+            }
+
+            Ability.Effects[Ability.Effects.Count - 1].NextInterval = 0.01f;
         }
 
         public void CooldownReset()

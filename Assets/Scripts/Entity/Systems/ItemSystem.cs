@@ -11,7 +11,7 @@ namespace Game.Systems
     public class ItemSystem : IEntitySystem
     {
         public Item Data { get; set; }
-        public IEntitySystem OwnerSystem { get ; set ; }
+        public IEntitySystem Owner { get ; set ; }
         public ID ID { get ; set ; }
 
         public event EventHandler<double> ConsumedMagicCrystals = delegate { };
@@ -23,7 +23,7 @@ namespace Game.Systems
 
         public ItemSystem(Item data, IEntitySystem owner)
         {
-            OwnerSystem = owner;
+            Owner = owner;
             Data = U.Instantiate(data);          
             defaultData = data;
 
@@ -44,7 +44,7 @@ namespace Game.Systems
         {
             if (!isStatsApplied)
             {
-                AddValues(OwnerSystem);
+                AddValues(Owner);
                 isStatsApplied = true;
                 StatsApplied?.Invoke(null, null);
             }
@@ -77,7 +77,7 @@ namespace Game.Systems
         public void RemoveStats()
         {
             if (isStatsApplied)
-                if (OwnerSystem is SpiritSystem spirit)
+                if (Owner is SpiritSystem spirit)
                 {
                     isStatsApplied = false;
                     for (int i = 0; i < Data.Attributes.Count; i++)
@@ -90,7 +90,7 @@ namespace Game.Systems
 
         private void IncreaseStatsPerLevel()
         {
-            if (OwnerSystem is SpiritSystem spirit)
+            if (Owner is SpiritSystem spirit)
                 for (int i = 0; i < Data.Attributes.Count; i++)
                 {
                     var valuePerLevel = GetValuePerLevel(Data.Attributes[i]);

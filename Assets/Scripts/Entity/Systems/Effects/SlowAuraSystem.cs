@@ -70,7 +70,7 @@ namespace Game.Systems
         public override void Continue()
         {
             base.Continue();
-            if (OwnerSystem == null)
+            if (Owner == null)
                 End();
         }
 

@@ -10,7 +10,7 @@ namespace Game.Systems
         public bool IsSet { get => isSet; set => isSet = value; }
         public bool IsEnded { get => isEnded; set => isEnded = value; }
         public bool IsMaxStackCount { get => isMaxStackCount; set => isMaxStackCount = value; }
-        public IEntitySystem OwnerSystem { get; set; }
+        public IEntitySystem Owner { get; set; }
         public ID ID { get; set; }
 
         protected bool isSet, isEnded, isMaxStackCount;
@@ -27,6 +27,14 @@ namespace Game.Systems
             if (!effect.IsStackable)
                 effect.MaxStackCount = 1;
         }
+
+        public void SetSystem(AbilitySystem ownerAbility)
+        {
+            Owner = ownerAbility;
+            ID = new ID(ownerAbility.ID);
+            ID.Add(ownerAbility.EffectSystems.IndexOf(this));
+        }
+
 
         public virtual void Init()
         {

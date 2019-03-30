@@ -21,14 +21,14 @@ namespace Game.Systems
         {
             isSet = true;
             isEnded = false;
-            var owner = OwnerSystem.GetOwnerOfType<IEntitySystem>();
+            var owner = Owner.GetOwnerOfType<IEntitySystem>();
 
             range = StaticMethods.CreateRange(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
         }
 
         public override void Continue()
         {
-            if (OwnerSystem == null)
+            if (Owner == null)
                 End();
         }
 

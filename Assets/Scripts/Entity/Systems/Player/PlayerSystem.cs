@@ -16,7 +16,7 @@ namespace Game.Systems
     public class PlayerSystem : IEntitySystem
     {
         public ID ID { get; private set; }
-        public IEntitySystem OwnerSystem { get; set; }
+        public IEntitySystem Owner { get; set; }
         public PlayerInputSystem PlayerInputSystem { get; set; }
         public CellControlSystem CellControlSystem { get; private set; }
         public EnemyControlSystem EnemyControlSystem { get; private set; }

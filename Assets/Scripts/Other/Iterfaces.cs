@@ -23,7 +23,7 @@ namespace Game
 
     public interface IEntitySystem : IIDComponent
     {
-        [SerializeField] IEntitySystem OwnerSystem { get; }
+        [SerializeField] IEntitySystem Owner { get; }
     }
 
     public interface IAbilitiySystem : IEntitySystem, ICombatComponent
@@ -68,7 +68,7 @@ namespace Game
 
     public interface IDamageDealerChild : IDamageDealer
     {
-        [SerializeField] IDamageDealer Owner { get; set;}
+        [SerializeField] IDamageDealer OwnerDamageDealer { get; set;}
     }
 
     public interface IDamageDealer : IEntitySystem

@@ -132,34 +132,8 @@ public static class ExtensionMethods
     ///<summary>
     /// Set effect system owner, id
     ///</summary>
-    public static void Set(this EffectSystem effectSystem, AbilitySystem ownerAbility)
-    {
-        effectSystem.OwnerSystem = ownerAbility;
-        effectSystem.ID = new ID(ownerAbility.ID);
-        effectSystem.ID.Add(ownerAbility.EffectSystems.IndexOf(effectSystem));
-    }
-
+   
     public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
-
-    ///<summary>
-    /// Set ability system owner, id and effect systems
-    ///</summary>   
-    public static void Set(this AbilitySystem abilitySystem, IAbilitiySystem owner)
-    {
-        abilitySystem.OwnerSystem = owner;
-        abilitySystem.ID = new ID(owner.ID);
-        abilitySystem.ID.Add(owner.AbilitySystems.IndexOf(abilitySystem));
-
-        for (int i = 0; i < abilitySystem.EffectSystems.Count; i++)
-        {
-            abilitySystem.EffectSystems[i].Set(abilitySystem);
-
-            if (abilitySystem.EffectSystems[i] is IDamageDealerChild child)
-                child.Owner = abilitySystem.GetOwnerOfType<IDamageDealer>();
-        }
-
-        abilitySystem.Ability.Effects[abilitySystem.Ability.Effects.Count - 1].NextInterval = 0.01f;
-    }
 
     ///<summary>
     /// Return count of effect in IHealthComponent
@@ -204,8 +178,8 @@ public static class ExtensionMethods
     {
         return entitySystem == null ? null :
                 entitySystem is IPrefabComponent prefabComponent ? prefabComponent.Prefab :
-                entitySystem.OwnerSystem == null ? null :
-                GetPrefab(entitySystem.OwnerSystem);
+                entitySystem.Owner == null ? null :
+                GetPrefab(entitySystem.Owner);
     }
 
     ///<summary>
@@ -213,10 +187,10 @@ public static class ExtensionMethods
     ///</summary>   
     public static T GetOwnerOfType<T>(this IEntitySystem entitySystem) where T : IEntitySystem
     {
-        if (entitySystem.OwnerSystem is T system)
+        if (entitySystem.Owner is T system)
             return system;
 
-        return entitySystem.OwnerSystem == null ? default(T) : entitySystem.OwnerSystem.GetOwnerOfType<T>();
+        return entitySystem.Owner == null ? default(T) : entitySystem.Owner.GetOwnerOfType<T>();
     }
 
     ///<summary>

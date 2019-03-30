@@ -75,7 +75,7 @@ namespace Game.Systems
                 choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
                 choosedSpirit.DataSystem.StatsChanged += OnStatsApplied;
 
-                if (choosedSpirit.OwnerSystem == Owner)
+                if (choosedSpirit.Owner == Owner)
                 {
                     SellButton.gameObject.SetActive(true);
 

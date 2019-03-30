@@ -10,7 +10,7 @@ namespace Game.Systems.Effects
 {
     public class DoTSystem : EffectSystem, IDamageDealerChild
     {
-        public IDamageDealer Owner { get; set; }
+        public IDamageDealer OwnerDamageDealer { get; set; }
 
         private float tickTimer;
         private new DoT effect;

@@ -29,17 +29,17 @@ namespace Game.Data
         {
             if (e.Entity is SpiritSystem spirit)
             {
-                e.ItemUI.System.OwnerSystem = spirit;
+                e.ItemUI.System.Owner = spirit;
                 spirit.DataSystem.LeveledUp += e.ItemUI.System.OnSpiritLevelUp;
             }
 
             if (e.Entity is PlayerSystem player)
-                e.ItemUI.System.OwnerSystem = player;
+                e.ItemUI.System.Owner = player;
         }
 
         private void OnItemAddedToSpirit(object _, SpiritItemEventArgs e)
         {          
-            e.ItemUI.System.OwnerSystem = e.Spirit;
+            e.ItemUI.System.Owner = e.Spirit;
             AddItem(e.Spirit.Data.Inventory, e.ItemUI.System);
             e.ItemUI.System.ApplyStats();           
         }
@@ -52,7 +52,7 @@ namespace Game.Data
 
         private void OnItemAddedToPlayer(object _, ItemUISystem itemUI)
         {          
-            itemUI.System.OwnerSystem = Owner;
+            itemUI.System.Owner = Owner;
             AddItem(Owner.Data.Inventory, itemUI.System);
         }
 
@@ -67,7 +67,7 @@ namespace Game.Data
             {
                 inventory.Items.Add(item);
 
-                if (item.OwnerSystem is SpiritSystem spirit)               
+                if (item.Owner is SpiritSystem spirit)               
                     spirit.DataSystem.LeveledUp += item.OnSpiritLevelUp;              
             }
         }
@@ -76,7 +76,7 @@ namespace Game.Data
         {
             inventory.Items.Remove(item);
 
-            if (item.OwnerSystem is SpiritSystem spirit)
+            if (item.Owner is SpiritSystem spirit)
                 spirit.DataSystem.LeveledUp -= item.OnSpiritLevelUp;
         }
     }
