@@ -33,7 +33,7 @@ namespace Game.Systems
         private Transform parent;
         private GameObject overlappedSlot;
         private List<GameObject> inventorySlots;
-        private List<DescriptionBlock> spiritSlots;
+        private List<SlotWithCooldown> spiritSlots;
 
         private void Awake()
         {

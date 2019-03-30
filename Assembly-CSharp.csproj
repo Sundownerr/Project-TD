@@ -233,6 +233,7 @@
      <Compile Include="Assets\Scripts\Systems\UI\MenuUISystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\ReadyButtonTextChange.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\ResourceUISystem.cs" />
+     <Compile Include="Assets\Scripts\Systems\UI\SlotWithCooldown.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\SpiritButtonSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\SpiritUISystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\UIControlSystem.cs" />

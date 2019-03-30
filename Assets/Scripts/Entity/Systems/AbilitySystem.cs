@@ -9,17 +9,18 @@ namespace Game.Systems
 {
     public class AbilitySystem : IEntitySystem
     {
-
-        public bool IsStacked { get; set; }
+        public event EventHandler<AbilitySystem> Used = delegate { };
+        public ID ID { get; private set; }
+        public IEntitySystem Owner { get; private set; }
+        public bool IsStacked { get; private set; }
         public bool IsNeedStack { get; set; }
         public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
         public Ability Ability { get; private set; }
-        public ID ID { get; private set; }
-        public IEntitySystem Owner { get; private set; }
+        public IHealthComponent Target { get; private set; }
 
         private int effectCount;
         private float cooldownTimer, nextEffectTimer;
-        public IHealthComponent Target { get; private set; }
+        private bool used;
 
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
@@ -35,9 +36,17 @@ namespace Game.Systems
         {
             if (!IsStacked)
                 if (cooldownTimer < Ability.Cooldown)
+                {
+                    if (!used)
+                    {
+                        used = true;
+                        Used?.Invoke(null, this);
+                    }
                     cooldownTimer += Time.deltaTime;
+                }
                 else
                 {
+                    used = false;
                     cooldownTimer = 0;
                     IsNeedStack = CheckNeedStack();
                     CooldownReset();
