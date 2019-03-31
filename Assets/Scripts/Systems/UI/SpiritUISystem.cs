@@ -15,7 +15,7 @@ namespace Game.Systems
         public GameObject SlotWithDescriptionPrefab;
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI SpiritName, CritChance, Level;
-        public Image Image;
+        public Image Image, ExpBar;
         public Button SellButton, UpgradeButton;
         public List<SlotWithCooldown> ItemSlots, AbilitySlots, TraitSlots;
         public List<ItemUISystem> AllItemsUIInSpirits = new List<ItemUISystem>();
@@ -27,12 +27,22 @@ namespace Game.Systems
 
         private List<bool> isSlotEmpty = new List<bool>();
         private SpiritSystem choosedSpirit;
-        private Animator animator;
-
+        private Animator baseAnimator, expandAnimator;
+        private Button expandButton;
+       
         protected override void Awake()
         {
             base.Awake();
-            animator = GetComponent<Animator>();
+            baseAnimator = GetComponent<Animator>();
+            expandButton = SpiritName.transform.parent.GetComponent<Button>();
+           
+            expandButton.onClick.AddListener(ExpandStats);
+        }
+
+        private void ExpandStats()
+        {
+            var isExpanded = baseAnimator.GetBool("isExpanded");
+            baseAnimator.SetBool("isExpanded", !isExpanded);
         }
 
         public void SetSystem(PlayerSystem player)
@@ -68,7 +78,7 @@ namespace Game.Systems
 
             if (activate)
             {
-                animator.SetBool("isOpen", true);
+                baseAnimator.SetBool("isOpen", true);
                 choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
                 choosedSpirit.DataSystem.StatsChanged += OnStatsApplied;
 
@@ -80,6 +90,7 @@ namespace Game.Systems
                     UpgradeButton.transform.position = choosedSpirit.Prefab.transform.position + new Vector3(40, 60, 30);
                 }
 
+                SubscribeToSpiritEvents();
                 UpdateUI();
             }
             else
@@ -90,14 +101,33 @@ namespace Game.Systems
                 SellButton.gameObject.SetActive(false);
                 UpgradeButton.gameObject.SetActive(false);
 
-                animator.SetBool("isOpen", false);
+                baseAnimator.SetBool("isOpen", false);
+                baseAnimator.SetBool("isExpanded", false);
+
+                UnsubscribeFromSpiritEvents();
             }
+
+            #region Helper functions
+
+            void SubscribeToSpiritEvents()
+            {
+                for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
+                    choosedSpirit.AbilitySystems[i].Used += OnAbilityUsed;
+            }
+
+            void UnsubscribeFromSpiritEvents()
+            {
+                for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
+                    choosedSpirit.AbilitySystems[i].Used -= OnAbilityUsed;
+            }
+
+            #endregion
         }
 
         private void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
         private void OnClickedOnCell(object _, GameObject spirit) => ActivateUI(false);
         private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        public void OnStatsApplied(object _, EventArgs e) => UpdateValues();
+        private void OnStatsApplied(object _, EventArgs e) => UpdateValues();
 
         private void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
         {
@@ -152,6 +182,9 @@ namespace Game.Systems
 
             Image.sprite = spirit.Image;
 
+            var expBarValue = 1 / (float)(ReferenceHolder.ExpToLevelUp[(int)spirit.GetValue(Numeral.Level)] /  spirit.GetValue(Numeral.Exp));
+            ExpBar.fillAmount = expBarValue;
+           
             Level.text = StaticMethods.KiloFormat(
                 spirit.Get(Numeral.Level, From.Base).Value +
                 spirit.Get(Numeral.Level, From.Applied).Value);
@@ -221,7 +254,6 @@ namespace Game.Systems
         {
             var spiritAbilities = choosedSpirit.Data.Abilities;
 
-
             for (int i = 0; i < AbilitySlots.Count; i++)
                 AbilitySlots[i].gameObject.SetActive(false);
 
@@ -232,27 +264,30 @@ namespace Game.Systems
                 AbilitySlots[i].GetComponent<Image>().sprite = spiritAbilities[i].Image;
                 AbilitySlots[i].CooldownImage.fillAmount = 0;
                 AbilitySlots[i].EntityID = choosedSpirit.AbilitySystems[i].ID;
-                choosedSpirit.AbilitySystems[i].Used += OnAbilityUsed;
             }
         }
 
         private void OnAbilityUsed(object sender, AbilitySystem e)
         {
-
             var slot = AbilitySlots.Find(x => x.EntityID == e.ID);
             var delay = new WaitForSeconds(Time.deltaTime);
+
             slot.CooldownImage.fillAmount = 1f;
 
             StartCoroutine(Cooldown());
 
+            #region Helper functions
+
             IEnumerator Cooldown()
             {
                 while (slot.CooldownImage.fillAmount > 0)
-                {            
+                {
                     slot.CooldownImage.fillAmount -= 1 / e.Ability.Cooldown * Time.deltaTime * 2;
                     yield return delay;
                 }
             }
+
+            #endregion
         }
 
         private void UpdateTraits()

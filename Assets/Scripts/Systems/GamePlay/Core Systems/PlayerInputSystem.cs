@@ -19,10 +19,10 @@ namespace Game.Systems
         public GameObject Selection;
         public EventSystem EventSystem;
 
-        public event EventHandler MouseOnSpirit = delegate {};
-        public event EventHandler PlacingSpirit = delegate {};
-        public event EventHandler<SpiritSystem> SpiritSold = delegate{};
-        public event EventHandler<SpiritSystem> SpiritUpgraded = delegate{};
+        public event EventHandler MouseOnSpirit = delegate { };
+        public event EventHandler PlacingSpirit = delegate { };
+        public event EventHandler<SpiritSystem> SpiritSold = delegate { };
+        public event EventHandler<SpiritSystem> SpiritUpgraded = delegate { };
         public event EventHandler<GameObject> ClickedOnCell = delegate { };
         public event EventHandler<GameObject> ClickedOnSpirit = delegate { };
         public event EventHandler<GameObject> ClickedOnEnemy = delegate { };
@@ -32,24 +32,24 @@ namespace Game.Systems
         private EnemySystem choosedEnemy;
         private GameObject selection;
         private PointerEventData pointerEventData;
-       
+
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI, isHitWorldUI;
         private int terrainLayer, enemyLayer, spiritLayer, cellLayer, uiLayer, layerMask;
-       
+
         protected override void Awake()
         {
             base.Awake();
 
-            EventSystem = EventSystem.current;         
+            EventSystem = EventSystem.current;
             pointerEventData = new PointerEventData(EventSystem);
-        
-            terrainLayer    = 1 << 9;
-            enemyLayer      = 1 << 12;
-            spiritLayer      = 1 << 14;
-            cellLayer       = 1 << 15;
-            uiLayer         = 1 << 5;
+
+            terrainLayer = 1 << 9;
+            enemyLayer = 1 << 12;
+            spiritLayer = 1 << 14;
+            cellLayer = 1 << 15;
+            uiLayer = 1 << 5;
             layerMask = terrainLayer | enemyLayer | spiritLayer | cellLayer | uiLayer;
         }
 
@@ -63,53 +63,53 @@ namespace Game.Systems
             selection.SetActive(false);
         }
 
-        private void Update() 
+        private void Update()
         {
             pointerEventData.position = Input.mousePosition;
-            
+
             if (Input.GetMouseButtonDown(0))
-            {              
+            {
                 WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 isHitUI = EventSystem.currentSelectedGameObject != null;
 
-                if (Physics.Raycast(WorldRay, out hit, 100000, layerMask))
-                {
-                    var isMouseOnSpirit = !isHitUI && hit.transform.gameObject.layer == 14;
-                    var isMouseOnGround = !isHitUI && hit.transform.gameObject.layer == 9;
-                    var isMouseOnCell = !isHitUI && hit.transform.gameObject.layer == 15;
-                    var isMouseOnEnemy = !isHitUI && hit.transform.gameObject.layer == 12;
-
-                    if (isMouseOnSpirit)
-                    {                      
-                        GetChoosedSpirit();
-                        ClickedOnSpirit?.Invoke(null, hit.transform.gameObject);                       
-                    }
-
-                    if(isMouseOnEnemy)
+                if (!isHitUI)
+                    if (Physics.Raycast(WorldRay, out hit, 100000, layerMask))
                     {
-                        GetChoosedEnemy();
-                        ClickedOnEnemy?.Invoke(null, hit.transform.gameObject);
-                    }
+                        var isMouseOnSpirit = hit.transform.gameObject.layer == 14;
+                        var isMouseOnGround = hit.transform.gameObject.layer == 9;
+                        var isMouseOnCell = hit.transform.gameObject.layer == 15;
+                        var isMouseOnEnemy = hit.transform.gameObject.layer == 12;
 
-                    if (isMouseOnGround)
-                    {
-                        ClikedOnGround?.Invoke(null, null);
-                        ChoosedSpirit = null;
-                        choosedEnemy = null;
-                        SetSelection(false);
-                    }
+                        if (isMouseOnSpirit)
+                        {
+                            GetChoosedSpirit();
+                            ClickedOnSpirit?.Invoke(null, hit.transform.gameObject);
+                        }
 
-                    if (isMouseOnCell)
-                    {
+                        if (isMouseOnEnemy)
+                        {
+                            GetChoosedEnemy();
+                            ClickedOnEnemy?.Invoke(null, hit.transform.gameObject);
+                        }
 
-                        ClickedOnCell?.Invoke(null, hit.transform.gameObject);
-                        ChoosedSpirit = null;
-                        choosedEnemy = null;
-                        SetSelection(false);
+                        if (isMouseOnGround)
+                        {
+                            ClikedOnGround?.Invoke(null, null);
+                            ChoosedSpirit = null;
+                            choosedEnemy = null;
+                            SetSelection(false);
+                        }
+
+                        if (isMouseOnCell)
+                        {
+
+                            ClickedOnCell?.Invoke(null, hit.transform.gameObject);
+                            ChoosedSpirit = null;
+                            choosedEnemy = null;
+                            SetSelection(false);
+                        }
                     }
-                    
-                }
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -120,19 +120,19 @@ namespace Game.Systems
                 SetSelection(false);
             }
 
-         
+
             #region Helper functions
 
             void GetChoosedSpirit()
             {
-                for (int i = 0; i < Owner.Spirits.Count; i++)               
+                for (int i = 0; i < Owner.Spirits.Count; i++)
                     if (Owner.Spirits[i].Prefab == hit.transform.gameObject)
-                    {                      
+                    {
                         ChoosedSpirit = Owner.Spirits[i];
                         Owner.SpiritUISystem.ActivateUpgradeButton(CheckGradeListOk(out _));
                         ActivateSelection(ChoosedSpirit);
                         return;
-                    }               
+                    }
             }
 
             void GetChoosedEnemy()
@@ -143,8 +143,8 @@ namespace Game.Systems
                         choosedEnemy = Owner.Enemies[i];
                         ActivateSelection(Owner.Enemies[i]);
                         return;
-                    }                             
-            }  
+                    }
+            }
 
             #endregion
         }
@@ -167,56 +167,56 @@ namespace Game.Systems
 
         public void OnPlacingNewSpirit(object _, SpiritData spiritData)
         {
-            for (int i = 0; i < Owner.AvailableSpirits.Count; i++)           
+            for (int i = 0; i < Owner.AvailableSpirits.Count; i++)
                 if (Owner.AvailableSpirits[i] == spiritData)
                 {
                     Owner.AvailableSpirits.RemoveAt(i);
                     break;
-                }    
-   
+                }
+
             PlacingSpirit?.Invoke(null, null);
         }
 
         private void OnSelling(object _, EventArgs e) => SpiritSold?.Invoke(null, ChoosedSpirit);
-            
+
         private bool CheckGradeListOk(out List<SpiritData> grades)
         {
-           
+
             var allSpirits = ReferenceHolder.Get.SpiritDataBase.Spirits.
                 Elements[(int)ChoosedSpirit.Data.Element].
                 Rarities[(int)ChoosedSpirit.Data.Rarity].
                 Spirits;
 
-            for (int i = 0; i < allSpirits.Count; i++)            
-                if(allSpirits[i].ID.Compare(ChoosedSpirit.Data.ID))
+            for (int i = 0; i < allSpirits.Count; i++)
+                if (allSpirits[i].ID.Compare(ChoosedSpirit.Data.ID))
                 {
                     grades = allSpirits[i].Grades;
 
-                    return 
+                    return
                         grades.Count > 0 &&
                         ChoosedSpirit.Data.GradeCount < grades.Count - 1;
                 }
 
             grades = null;
             return false;
-        }        
+        }
 
-        private void OnUpgrading(object _, EventArgs e) 
-        {           
+        private void OnUpgrading(object _, EventArgs e)
+        {
             if (CheckGradeListOk(out List<SpiritData> grades))
-            {              
+            {
                 var upgradedSpiritPrefab = Instantiate(
-                    grades[ChoosedSpirit.Data.GradeCount + 1].Prefab, 
-                    ChoosedSpirit.Prefab.transform.position, 
-                    Quaternion.identity, 
+                    grades[ChoosedSpirit.Data.GradeCount + 1].Prefab,
+                    ChoosedSpirit.Prefab.transform.position,
+                    Quaternion.identity,
                     ReferenceHolder.Get.SpiritParent);
-                var upgradedSpirit= new SpiritSystem(upgradedSpiritPrefab); 
-                
-                upgradedSpirit.DataSystem.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);                            
-                upgradedSpirit.SetSystem(Owner);                                         
-                
-                SpiritUpgraded?.Invoke(null, upgradedSpirit);      
-                SpiritSold?.Invoke(null, ChoosedSpirit);      
+                var upgradedSpirit = new SpiritSystem(upgradedSpiritPrefab);
+
+                upgradedSpirit.DataSystem.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);
+                upgradedSpirit.SetSystem(Owner);
+
+                SpiritUpgraded?.Invoke(null, upgradedSpirit);
+                SpiritSold?.Invoke(null, ChoosedSpirit);
                 ChoosedSpirit = upgradedSpirit;
             }
             Owner.SpiritUISystem.ActivateUpgradeButton(ChoosedSpirit.Data.GradeCount < grades.Count - 1);

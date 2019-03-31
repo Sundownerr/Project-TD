@@ -52,6 +52,7 @@ namespace Game.Spirit.System
         private void IncreaseStatsPerLevel()
         {
             CurrentData.Get(Numeral.Level, From.Base).Value += 1;
+            CurrentData.Get(Numeral.Exp, From.Base).Value = 0;
             //currentData.Get(Numeral.Damage, LookFor.BaseAttribute).Value    += Math.Floor(QoL.GetPercentOfValue(4f, baseData.Get(Numeral.Damage, LookFor.BaseAttribute).Value));
             //currentData.Get(Numeral.AttackSpeed, LookFor.BaseAttribute).Value     -= QoL.GetPercentOfValue(1.2f, baseData.Get(Numeral.AttackSpeed, LookFor.BaseAttribute).Value);
             //currentData.Get(Numeral.CritChance, LookFor.BaseAttribute).Value      += QoL.GetPercentOfValue(0.2f, baseData.Get(Numeral.CritChance, LookFor.BaseAttribute).Value);
