@@ -96,7 +96,7 @@ namespace Game.Systems
 
             var textComponent = text.GetComponent<TextMeshProUGUI>();
             levelUpTexts.Add(textComponent);
-            textComponent.text = $"level up!\n{spirit.Data.Get(Numeral.Level, From.Base).Value}";
+            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level, From.Base).Value}";
             StartCoroutine(DeactivateLevelUpText());
 
             #region Helper functions

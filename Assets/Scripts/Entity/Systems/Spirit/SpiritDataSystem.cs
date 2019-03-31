@@ -40,7 +40,7 @@ namespace Game.Spirit.System
             CurrentData.ID = previousSpirit.Data.ID;
             CurrentData.GradeCount = previousSpirit.Data.GradeCount + 1;
             CurrentData.Get(Numeral.Exp, From.Base).Value = previousSpirit.Data.Get(Numeral.Exp, From.Base).Value;
-            CurrentData.Get(Numeral.AttackSpeedModifier, From.Base).Value = previousSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value;
+            
             ownerSpirit.UsedCell = previousSpirit.UsedCell;
 
             for (int i = 0; i < previousSpirit.Data.Get(Numeral.Level, From.Base).Value; i++)
@@ -53,11 +53,17 @@ namespace Game.Spirit.System
         {
             CurrentData.Get(Numeral.Level, From.Base).Value += 1;
             CurrentData.Get(Numeral.Exp, From.Base).Value = 0;
-            //currentData.Get(Numeral.Damage, LookFor.BaseAttribute).Value    += Math.Floor(QoL.GetPercentOfValue(4f, baseData.Get(Numeral.Damage, LookFor.BaseAttribute).Value));
-            //currentData.Get(Numeral.AttackSpeed, LookFor.BaseAttribute).Value     -= QoL.GetPercentOfValue(1.2f, baseData.Get(Numeral.AttackSpeed, LookFor.BaseAttribute).Value);
-            //currentData.Get(Numeral.CritChance, LookFor.BaseAttribute).Value      += QoL.GetPercentOfValue(0.2f, baseData.Get(Numeral.CritChance, LookFor.BaseAttribute).Value);
-            //currentData.Get(Numeral.SpellCritChance, LookFor.BaseAttribute).Value += QoL.GetPercentOfValue(0.2f, baseData.Get(Numeral.SpellCritChance, LookFor.BaseAttribute).Value);
 
+            for (int i = 0; i < CurrentData.BaseAttributes.Count; i++)
+            {
+                var stat = CurrentData.Get(CurrentData.BaseAttributes[i].Type, From.Base);
+
+                if(stat.ChangeType == Change.ByValue)
+                    stat.Value += stat.IncreasePerLevel.Value;
+                else
+                    stat.Value += stat.Value.GetPercent(30);
+            }
+           
             ownerSpirit.TraitControlSystem.IncreaseStatsPerLevel();
 
             var effect = U.Instantiate(

@@ -238,6 +238,9 @@ namespace Game.Systems
                         value == Numeral.CritMultiplier ||
                         value == Numeral.BuffDuration ||
                         value == Numeral.DebuffDuration;
+                    
+                    if(value == Numeral.Level)
+                        return $"{StaticMethods.KiloFormat((int)spirit.GetValue(value))}";
 
                     return $"{StaticMethods.KiloFormat(spirit.GetValue(value))}{(withPercent ? "%" : string.Empty)}";
                 }
