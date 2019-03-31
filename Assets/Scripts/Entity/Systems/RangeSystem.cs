@@ -9,12 +9,12 @@ namespace Game.Systems
 {
     public class RangeSystem : ExtendedMonoBehaviour
     {
-        public List<IHealthComponent> EntitySystems { get; set; } = new List<IHealthComponent>();
+        public List<IVulnerable> EntitySystems { get; set; } = new List<IVulnerable>();
         public List<GameObject> Entities { get; set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
-        public event EventHandler<IHealthComponent> EntityEntered = delegate{};
-        public event EventHandler<IHealthComponent> EntityExit = delegate{};
+        public event EventHandler<IVulnerable> EntityEntered = delegate{};
+        public event EventHandler<IVulnerable> EntityExit = delegate{};
         public event EventHandler Destroyed = delegate { };
 
         private Renderer rend;
@@ -59,7 +59,7 @@ namespace Game.Systems
                     
                 #region  Helper functions
 
-                void AddEntity<T>() where T: IHealthComponent
+                void AddEntity<T>() where T: IVulnerable
                 {
                     var owner = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
 
@@ -74,7 +74,7 @@ namespace Game.Systems
                                 return;
                 }
                 
-                bool CheckFound(IHealthComponent entitySystem)
+                bool CheckFound(IVulnerable entitySystem)
                 {
                     if (other.gameObject == entitySystem.Prefab)
                     {

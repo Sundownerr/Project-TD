@@ -54,7 +54,7 @@ namespace Game.Systems
             if (e.Target == null || e.Target.Prefab == null)
                 return;
 
-            var damageNumber = damageNumbersPool.GetObject();
+            var damageNumber = damageNumbersPool.PopObject();
             var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
             var damageText = StaticMethods.KiloFormat(e.Damage);
             var fontColor = defaultFontColor;
@@ -86,7 +86,7 @@ namespace Game.Systems
 
         private void OnSpiritLevelUp(object _, SpiritSystem spirit)
         {
-            var text = levelUpTextPool.GetObject();
+            var text = levelUpTextPool.PopObject();
             var random = UnityEngine.Random.Range(-20, 20);
             var textPositionOffset = new Vector3(random, Math.Abs(random + 10), random);
 

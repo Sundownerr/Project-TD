@@ -10,8 +10,8 @@ using UnityEngine;
 
 public class HealthSystem
 {
-    public List<Effect> AppliedEffects { get; private set; } = new List<Effect>();
-    public event EventHandler<IHealthComponent> Died = delegate { };
+    
+    public event EventHandler<IHealthComponent> ZeroHealth = delegate { };
     public bool IsVulnerable { get; set; }
 
     private IHealthComponent owner;
@@ -20,7 +20,8 @@ public class HealthSystem
     public HealthSystem(IHealthComponent owner)
     {
         this.owner = owner;
-       
+        ZeroHealth += owner.OnZeroHealth;
+
         if (owner is EnemySystem enemy)
         {
             maxHealth = enemy.Data.GetValue(Numeral.MaxHealth);
@@ -67,7 +68,7 @@ public class HealthSystem
                 GiveResources();
                 IsVulnerable = false;
 
-                Died?.Invoke(null, owner);
+                ZeroHealth?.Invoke(null, owner);
             }
         }
 

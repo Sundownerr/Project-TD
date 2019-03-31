@@ -76,7 +76,7 @@ public class LobbyListUISystem : MonoBehaviour
                 .Append($"{lobbies[i]?.NumMembers} / ")
                 .Append(lobbies[i]?.MemberLimit);
 
-            var lobbyButton = lobbyButtonsPool.GetObject().GetComponent<LobbyButtonUISystem>();
+            var lobbyButton = lobbyButtonsPool.PopObject().GetComponent<LobbyButtonUISystem>();
 
             lobbyButton.Lobby = lobbies[i];
             lobbyButton.Label.text = sb.ToString();
@@ -95,7 +95,7 @@ public class LobbyListUISystem : MonoBehaviour
         lobbyInfoTextPool.DeactivateAll();
 
         foreach (var pair in lobby.GetAllData())       
-            lobbyInfoTextPool.GetObject().GetComponent<Text>().text = $"{pair.Key} {pair.Value}";        
+            lobbyInfoTextPool.PopObject().GetComponent<Text>().text = $"{pair.Key} {pair.Value}";        
     }
 
     private void UpdateLobbyList()

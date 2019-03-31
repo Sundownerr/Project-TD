@@ -74,7 +74,7 @@ public class LobbyUISystem : MonoBehaviour
 
     private void ChatMessageReceived(ulong senderID, string message) => CreateChatMessage(message);
     
-    private void CreateChatMessage(string message) => chatTextsPool.GetObject().GetComponent<InputField>().text = message;    
+    private void CreateChatMessage(string message) => chatTextsPool.PopObject().GetComponent<InputField>().text = message;    
 
     private void LobbyDataUpdated()
     {

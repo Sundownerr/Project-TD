@@ -16,21 +16,21 @@ public class ObjectPool
         Parent = parent;
         PoolLenght = poolLength;
         Initialize();
-    }
 
-    public void Initialize()
-    {
-        if (PoolObject == null)
+        void Initialize()
         {
-            Debug.LogError("ObjectPooler missing prefab");
-            return;
-        }
+            if (PoolObject == null)
+            {
+                Debug.LogError("ObjectPooler missing prefab");
+                return;
+            }
 
-        for (int i = 0; i < PoolLenght; i++)
-            CreateObject(Parent);
+            for (int i = 0; i < PoolLenght; i++)
+                CreateObject(Parent);
+        }
     }
 
-    public GameObject GetObject()
+    public GameObject PopObject()
     {
         for (int i = 0; i < poolList.Count; i++)
             if (!poolList[i].activeSelf)
@@ -47,6 +47,14 @@ public class ObjectPool
         return poolList[poolList.Count - 1];
     }
 
+   
+
+    private void CreateObject(Transform parent)
+    {
+        poolList.Add(Object.Instantiate(PoolObject, parent));
+        poolList[poolList.Count - 1].SetActive(false);
+    }
+
     public void DestroyPool()
     {
         for (int i = poolList.Count - 1; i > 0; i--)
@@ -55,15 +63,9 @@ public class ObjectPool
         poolList.Clear();
     }
 
-    protected void CreateObject(Transform parent)
-    {
-        poolList.Add(Object.Instantiate(PoolObject, parent));
-        poolList[poolList.Count - 1].SetActive(false);
-    }
-
     public void DeactivateAll()
     {
-        for (int i = 0; i < poolList.Count; i++)        
-            poolList[i].SetActive(false);      
+        for (int i = 0; i < poolList.Count; i++)
+            poolList[i].SetActive(false);
     }
 }

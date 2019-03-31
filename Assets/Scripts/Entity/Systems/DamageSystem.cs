@@ -13,10 +13,10 @@ namespace Game.Systems
 
         public static void DealDamage(this IDamageDealer damageDealer, IHealthComponent target, double damage)
         {
-            if (target == null || !target.HealthSystem.IsVulnerable)
+            if (target == null)
                 return;
 
-            target.HealthSystem.ChangeHealth(GetDealerEntity(), CalculateDamage());
+            target.ChangeHealth(GetDealerEntity(), CalculateDamage());
 
             #region Helper functions
 

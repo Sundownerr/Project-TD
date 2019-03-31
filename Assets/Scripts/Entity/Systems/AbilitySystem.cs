@@ -85,7 +85,7 @@ namespace Game.Systems
             Target = target;
 
             for (int i = 0; i < EffectSystems.Count; i++)
-                EffectSystems[i].SetTarget(target);
+                EffectSystems[i].SetTarget(target as ICanApplyEffects);
         }
 
         public void StackReset(IAbilitiySystem owner)

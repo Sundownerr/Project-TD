@@ -136,41 +136,6 @@ public static class ExtensionMethods
     public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
 
     ///<summary>
-    /// Return count of effect in IHealthComponent
-    ///</summary>   
-    public static int CountOf(this IHealthComponent vulnerable, Effect effect)
-    {
-        var count = 0;
-        var appliedEffects = vulnerable.HealthSystem.AppliedEffects;
-
-        for (int i = 0; i < appliedEffects.Count; i++)
-            if (effect.ID.Compare(appliedEffects[i].ID))
-                count++;
-        return count;
-    }
-
-    ///<summary>
-    /// Add effect to IHealthComponent
-    ///</summary>   
-    public static void AddEffect(this IHealthComponent vulnerable, Effect effect) =>
-        vulnerable.HealthSystem.AppliedEffects.Add(effect);
-
-    ///<summary>
-    /// Remove effect from IHealthComponent
-    ///</summary>   
-    public static void RemoveEffect(this IHealthComponent vulnerable, Effect effect)
-    {
-        var appliedEffects = vulnerable.HealthSystem.AppliedEffects;
-
-        for (int i = 0; i < appliedEffects.Count; i++)
-            if (effect.ID.Compare(appliedEffects[i].ID))
-            {
-                appliedEffects.RemoveAt(i);
-                return;
-            }
-    }
-
-    ///<summary>
     /// Return prefab of IEntitySystem with IPrefabComponent.
     /// If null then search in owner IEntitySystem
     ///</summary>   

@@ -12,11 +12,12 @@ namespace Game.Systems
     public class SpiritUISystem : ExtendedMonoBehaviour
     {
         public PlayerSystem Owner { get; private set; }
-        public GameObject SlotWithDescriptionPrefab;
+        public GameObject SlotWithDescriptionPrefab, SlotWithCooldownPrefab, BuffGroup;
         public TextMeshProUGUI SpiritName;
         public Image Image, ExpBar;
         public Button SellButton, UpgradeButton;
         public List<SlotWithCooldown> ItemSlots, AbilitySlots, TraitSlots;
+
         public List<ItemUISystem> AllItemsUIInSpirits = new List<ItemUISystem>();
         public event EventHandler Selling = delegate { };
         public event EventHandler Upgrading = delegate { };
@@ -26,6 +27,8 @@ namespace Game.Systems
         public List<StatValueUI> StatValues;
 
         private List<bool> isSlotEmpty = new List<bool>();
+        private ObjectPool appliedEffectsUIPool;
+        private List<SlotWithCooldown> appliedEffectsUI = new List<SlotWithCooldown>();
         private SpiritSystem choosedSpirit;
         private Animator baseAnimator, expandAnimator;
         private Button expandButton;
@@ -49,8 +52,9 @@ namespace Game.Systems
             base.Awake();
             baseAnimator = GetComponent<Animator>();
             expandButton = SpiritName.transform.parent.GetComponent<Button>();
-
             expandButton.onClick.AddListener(ExpandStats);
+
+            appliedEffectsUIPool = new ObjectPool(SlotWithCooldownPrefab, BuffGroup.transform, 7);
 
             #region Helper functions
 
@@ -95,6 +99,8 @@ namespace Game.Systems
             if (Owner.PlayerInputSystem.ChoosedSpirit == null)
                 return;
 
+            UnsubscribeFromSpiritEvents();
+
             if (activate)
             {
                 baseAnimator.SetBool(isOpen, true);
@@ -131,17 +137,48 @@ namespace Game.Systems
 
             void SubscribeToSpiritEvents()
             {
+                if (choosedSpirit == null)
+                    return;
+
                 for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
                     choosedSpirit.AbilitySystems[i].Used += OnAbilityUsed;
+
+                choosedSpirit.EffectApplied += OnEffectApplied;
+                choosedSpirit.EffectRemoved += OnEffectRemoved;
             }
 
             void UnsubscribeFromSpiritEvents()
             {
+                if (choosedSpirit == null)
+                    return;
+
                 for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
                     choosedSpirit.AbilitySystems[i].Used -= OnAbilityUsed;
+
+                choosedSpirit.EffectApplied -= OnEffectApplied;
+                choosedSpirit.EffectRemoved -= OnEffectRemoved;
             }
 
             #endregion
+        }
+
+        private void OnEffectRemoved(object sender, Effect e)
+        {
+            var effectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
+
+            effectUI.gameObject.SetActive(false);
+            appliedEffectsUI.Remove(effectUI);
+        }
+
+        private void OnEffectApplied(object sender, Effect e)
+        {
+            var poolObject = appliedEffectsUIPool.PopObject();
+            var effectUI = poolObject.GetComponent<SlotWithCooldown>();
+
+            poolObject.GetComponent<Image>().sprite = e.Image;
+            appliedEffectsUI.Add(effectUI);
+            effectUI.EntityID = e.ID;
+            effectUI.Description = e.Description;
         }
 
         private void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
@@ -238,8 +275,8 @@ namespace Game.Systems
                         value == Numeral.CritMultiplier ||
                         value == Numeral.BuffDuration ||
                         value == Numeral.DebuffDuration;
-                    
-                    if(value == Numeral.Level)
+
+                    if (value == Numeral.Level)
                         return $"{StaticMethods.KiloFormat((int)spirit.GetValue(value))}";
 
                     return $"{StaticMethods.KiloFormat(spirit.GetValue(value))}{(withPercent ? "%" : string.Empty)}";

@@ -41,7 +41,7 @@ namespace Game.Systems
           
             enemy.IsOn = true;
             enemy.LastWaypointReached += OnLastWaypointReached;
-            enemy.HealthSystem.Died += OnEnemyDied;
+            enemy.Died += OnEnemyDied;
         }
 
         private void DestroyEnemy(EnemySystem enemy)

@@ -10,9 +10,12 @@ using System;
 
 namespace Game.Enemy
 {
-    public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent
+    public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanApplyEffects
     {
         public event EventHandler<EnemySystem> LastWaypointReached = delegate { };
+        public event EventHandler<Effect> EffectApplied = delegate { };
+        public event EventHandler<Effect> EffectRemoved = delegate { };
+        public event EventHandler<IHealthComponent> Died = delegate { };
 
         public EnemyData Data { get; set; }
         public int WaypointIndex { get; set; }
@@ -27,12 +30,15 @@ namespace Game.Enemy
         public List<IHealthComponent> Targets { get; set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
+        public AppliedEffectSystem AppliedEffectSystem { get; private set; }
+
         private Vector3[] waypoints;
 
         public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints)
         {
             AbilityControlSystem = new AbilityControlSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
+            AppliedEffectSystem = new AppliedEffectSystem();
             this.waypoints = waypoints;
             Prefab = ownerPrefab;
         }
@@ -94,26 +100,43 @@ namespace Game.Enemy
                 else
                     LastWaypointReached?.Invoke(null, this);
             }
+
+            #region  Helper functions
+
+            void MoveAndRotateEnemy()
+            {
+                var lookRotation =
+                    Quaternion.LookRotation(waypoints[WaypointIndex] - Prefab.transform.position);
+                var rotation =
+                    Quaternion.Lerp(Prefab.transform.rotation, lookRotation, Time.deltaTime * 10f);
+
+                rotation.z = 0;
+                rotation.x = 0;
+
+                Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
+                Prefab.transform.localRotation = rotation;
+
+            }
+
+            #endregion
         }
 
-        #region  Helper functions
-
-        void MoveAndRotateEnemy()
+        public void AddEffect(Effect effect)
         {
-            var lookRotation =
-                Quaternion.LookRotation(waypoints[WaypointIndex] - Prefab.transform.position);
-            var rotation =
-                Quaternion.Lerp(Prefab.transform.rotation, lookRotation, Time.deltaTime * 10f);
+            AppliedEffectSystem.AddEffect(effect);
 
-            rotation.z = 0;
-            rotation.x = 0;
-
-            Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
-            Prefab.transform.localRotation = rotation;
-
+            EffectApplied?.Invoke(null, effect);
         }
 
-        #endregion
-    }
+        public void RemoveEffect(Effect effect)
+        {
+            AppliedEffectSystem.RemoveEffect(effect);
 
+            EffectRemoved?.Invoke(null, effect);
+        }
+
+        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);   
+        public void ChangeHealth(IDamageDealer changer, double damage) => HealthSystem.ChangeHealth(changer, damage);
+        public void OnZeroHealth(object _, IHealthComponent entity) => Died?.Invoke(null, entity);
+    }
 }

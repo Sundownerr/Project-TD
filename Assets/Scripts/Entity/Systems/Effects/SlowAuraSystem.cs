@@ -16,11 +16,11 @@ namespace Game.Systems
         public SlowAuraSystem(SlowAura effect) : base(effect)
         {
             this.effect = effect;
-           
+
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
 
-        private void OnSpiritEnteredRange(object _, IHealthComponent e)
+        private void OnSpiritEnteredRange(object _, IVulnerable e)
         {
             var spirit = e as SpiritSystem;
 
@@ -28,18 +28,21 @@ namespace Game.Systems
                     (int)spirit.Data.GetValue(Numeral.AttackSpeedModifier).GetPercent(effect.SlowPercent);
 
             if (spirit.CountOf(effect) <= 0)
+            {
                 spirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value -= removedAttackSpeedMod;
+                spirit.AddEffect(effect);
+            }
             else
                 removedAttackSpeedMod =
                     (int)(spirit.Data.GetValue(Numeral.AttackSpeedModifier) + effect.SlowPercent).GetPercent(effect.SlowPercent);
 
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
-            spirit.AddEffect(effect);
+
         }
 
-        private void OnSpiritExitRange(object _, IHealthComponent e) => RemoveEffect(e);
+        private void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanApplyEffects);
 
-        private void RemoveEffect(IHealthComponent entity)
+        private void RemoveEffect(ICanApplyEffects entity)
         {
             var spirit = entity as SpiritSystem;
 
@@ -66,7 +69,7 @@ namespace Game.Systems
         }
 
         private void OnRangeDestroyed(object _, System.EventArgs e) => End();
-        
+
         public override void Continue()
         {
             base.Continue();
@@ -75,9 +78,9 @@ namespace Game.Systems
         }
 
         public override void End()
-        {          
+        {
             for (int i = 0; i < range.EntitySystems.Count; i++)
-                RemoveEffect(range.EntitySystems[i]);
+                RemoveEffect(range.EntitySystems[i] as ICanApplyEffects);
 
             removedAttackSpeedMods.Clear();
 

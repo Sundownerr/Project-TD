@@ -16,9 +16,9 @@ namespace Game.Systems
         protected bool isSet, isEnded, isMaxStackCount;
         protected float effectTimer;
         protected Effect effect;
-        protected IHealthComponent target;
+        protected ICanApplyEffects target;
 
-        public IHealthComponent Target { get => target; private set => target = value; }
+        public ICanApplyEffects Target { get => target; private set => target = value; }
 
         public EffectSystem(Effect effect)
         {
@@ -96,7 +96,7 @@ namespace Game.Systems
             IsSet = false;
         }
 
-        public virtual void SetTarget(IHealthComponent newTarget)
+        public virtual void SetTarget(ICanApplyEffects newTarget)
         {
             Target = Target ?? newTarget;
         }

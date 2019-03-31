@@ -34,7 +34,7 @@ namespace Game.Spirit.System
                 .GetPercent(ownerSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value);
 
             bulletPool = new ObjectPool(bullet, ownerSpirit.Prefab.transform, 2);
-            bulletPool.Initialize();
+           
         }
 
         public void UpdateSystem()
@@ -75,7 +75,7 @@ namespace Game.Spirit.System
 
                 void CreateBullet(IHealthComponent target)
                 {
-                    var bulletGO = bulletPool.GetObject();
+                    var bulletGO = bulletPool.PopObject();
 
                     bulletGOs.Add(bulletGO);
                     bullets.Add(new BulletSystem(bulletGO));

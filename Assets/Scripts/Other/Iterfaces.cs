@@ -43,12 +43,28 @@ namespace Game
         [SerializeField] List<IHealthComponent> Targets { get; }
     }
 
-    public interface IHealthComponent : IPrefabComponent
+    public interface IVulnerable : IPrefabComponent
     {
-        [SerializeField] bool IsOn { get; set; }
-        [SerializeField] HealthSystem HealthSystem { get; }
+        [SerializeField] bool IsOn { get; set; }      
     }
 
+    public interface ICanApplyEffects : IPrefabComponent, IVulnerable
+    {
+        AppliedEffectSystem AppliedEffectSystem { get; }
+        void AddEffect(Effect Effect);
+        void RemoveEffect(Effect Effect);
+        int CountOf(Effect Effect);
+        event EventHandler<Effect> EffectApplied;
+        event EventHandler<Effect> EffectRemoved;
+    }
+
+    public interface IHealthComponent : IPrefabComponent, IVulnerable
+    {
+        void ChangeHealth(IDamageDealer changer, double damage);
+        void OnZeroHealth(object _, IHealthComponent entity);
+        HealthSystem HealthSystem { get; }
+        event EventHandler<IHealthComponent> Died;
+    }
 
     public interface IAttributeComponent
     {
@@ -68,7 +84,7 @@ namespace Game
 
     public interface IDamageDealerChild : IDamageDealer
     {
-        [SerializeField] IDamageDealer OwnerDamageDealer { get; set;}
+        [SerializeField] IDamageDealer OwnerDamageDealer { get; set; }
     }
 
     public interface IDamageDealer : IEntitySystem

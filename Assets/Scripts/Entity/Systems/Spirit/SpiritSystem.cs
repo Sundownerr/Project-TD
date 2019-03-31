@@ -11,8 +11,12 @@ using U = UnityEngine.Object;
 
 namespace Game.Spirit
 {
-    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IHealthComponent, IDamageDealer
+    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanApplyEffects
     {
+        public event EventHandler<Effect> EffectApplied = delegate { };
+        public event EventHandler<Effect> EffectRemoved = delegate { };
+        public event EventHandler<IHealthComponent> Died = delegate { };
+
         public Transform RangeTransform { get; private set; }
         public Transform MovingPart { get; private set; }
         public Transform StaticPart { get; private set; }
@@ -25,7 +29,7 @@ namespace Game.Spirit
         public Renderer[] Renderers { get; private set; }
         public AbilityControlSystem AbilityControlSystem { get; private set; }
         public TraitControlSystem TraitControlSystem { get; private set; }
-        public HealthSystem HealthSystem { get; private set; }
+
         public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; private set; }
@@ -33,6 +37,7 @@ namespace Game.Spirit
         public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
+        public AppliedEffectSystem AppliedEffectSystem { get; private set; }
 
         public SpiritSystem(GameObject ownerPrefab)
         {
@@ -42,12 +47,10 @@ namespace Game.Spirit
             ShootPoint = MovingPart.GetChild(0).GetChild(0);
 
             DataSystem = new SpiritDataSystem(this);
-            HealthSystem = new HealthSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
             ShootSystem = new ShootSystem(this);
             AbilityControlSystem = new AbilityControlSystem(this);
-
-            HealthSystem.IsVulnerable = false;
+            AppliedEffectSystem = new AppliedEffectSystem();
         }
 
         public void SetSystem(PlayerSystem player)
@@ -142,17 +145,31 @@ namespace Game.Spirit
             }
         }
 
-        private void OnEntityEnteredRange(object _, IHealthComponent e)
+        private void OnEntityEnteredRange(object _, IVulnerable e)
         {
             if (e is EnemySystem enemy)
                 if (enemy.Data.Type == EnemyType.Flying && !Data.CanAttackFlying)
                     return;
                 else
-                    Targets.Add(e);
+                    Targets.Add(e as IHealthComponent);
         }
 
-        private void OnEntityExitRange(object _, IHealthComponent e) => Targets.Remove(e);
+        private void OnEntityExitRange(object _, IVulnerable e) => Targets.Remove(e as IHealthComponent);
 
         public void AddExp(int amount) => DataSystem.AddExp(amount);
+
+        public void AddEffect(Effect effect)
+        {
+            AppliedEffectSystem.AddEffect(effect);
+            EffectApplied?.Invoke(null, effect);
+        }
+
+        public void RemoveEffect(Effect effect)
+        {
+            AppliedEffectSystem.RemoveEffect(effect);
+            EffectRemoved?.Invoke(null, effect);
+        }
+
+        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
     }
 }
