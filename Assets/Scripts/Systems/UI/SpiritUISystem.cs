@@ -13,8 +13,7 @@ namespace Game.Systems
     {
         public PlayerSystem Owner { get; private set; }
         public GameObject SlotWithDescriptionPrefab;
-        public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
-        public TextMeshProUGUI SpiritName, CritChance, Level;
+        public TextMeshProUGUI SpiritName;
         public Image Image, ExpBar;
         public Button SellButton, UpgradeButton;
         public List<SlotWithCooldown> ItemSlots, AbilitySlots, TraitSlots;
@@ -24,25 +23,45 @@ namespace Game.Systems
         public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit = delegate { };
         public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit = delegate { };
         public event EventHandler<ItemUISystem> MoveItemToPlayer = delegate { };
+        public List<StatValueUI> StatValues;
 
         private List<bool> isSlotEmpty = new List<bool>();
         private SpiritSystem choosedSpirit;
         private Animator baseAnimator, expandAnimator;
         private Button expandButton;
-       
+        private string isOpen = "isOpen", isExpanded = "isExpanded";
+        private Numeral[] hidedStats = new Numeral[]
+            {
+                Numeral.AttackSpeedModifier,
+                Numeral.BuffDuration,
+                Numeral.DebuffDuration,
+                Numeral.GoldRatio,
+                Numeral.ExpRatio,
+                Numeral.ManaRegen,
+                Numeral.MulticritCount,
+                Numeral.CritMultiplier,
+                Numeral.ItemDropRatio,
+                Numeral.ItemQuialityRatio
+            };
+
         protected override void Awake()
         {
             base.Awake();
             baseAnimator = GetComponent<Animator>();
             expandButton = SpiritName.transform.parent.GetComponent<Button>();
-           
-            expandButton.onClick.AddListener(ExpandStats);
-        }
 
-        private void ExpandStats()
-        {
-            var isExpanded = baseAnimator.GetBool("isExpanded");
-            baseAnimator.SetBool("isExpanded", !isExpanded);
+            expandButton.onClick.AddListener(ExpandStats);
+
+            #region Helper functions
+
+            void ExpandStats()
+            {
+                var isExpanded = baseAnimator.GetBool("isExpanded");
+                baseAnimator.SetBool("isExpanded", !isExpanded);
+                HideExpandedStatValues(isExpanded);
+            }
+
+            #endregion
         }
 
         public void SetSystem(PlayerSystem player)
@@ -78,7 +97,7 @@ namespace Game.Systems
 
             if (activate)
             {
-                baseAnimator.SetBool("isOpen", true);
+                baseAnimator.SetBool(isOpen, true);
                 choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
                 choosedSpirit.DataSystem.StatsChanged += OnStatsApplied;
 
@@ -90,6 +109,7 @@ namespace Game.Systems
                     UpgradeButton.transform.position = choosedSpirit.Prefab.transform.position + new Vector3(40, 60, 30);
                 }
 
+                HideExpandedStatValues(true);
                 SubscribeToSpiritEvents();
                 UpdateUI();
             }
@@ -101,8 +121,8 @@ namespace Game.Systems
                 SellButton.gameObject.SetActive(false);
                 UpgradeButton.gameObject.SetActive(false);
 
-                baseAnimator.SetBool("isOpen", false);
-                baseAnimator.SetBool("isExpanded", false);
+                baseAnimator.SetBool(isOpen, false);
+                baseAnimator.SetBool(isExpanded, false);
 
                 UnsubscribeFromSpiritEvents();
             }
@@ -174,52 +194,58 @@ namespace Game.Systems
             UpdateUI();
         }
 
+        private void HideExpandedStatValues(bool hide)
+        {
+            for (int i = 0; i < hidedStats.Length; i++)
+                StatValues.Find(x => x.Type == hidedStats[i]).gameObject.SetActive(!hide);
+        }
+
         private void UpdateValues()
         {
             var spirit = choosedSpirit.Data;
 
             SpiritName.text = spirit.Name;
-
             Image.sprite = spirit.Image;
 
-            var expBarValue = 1 / (float)(ReferenceHolder.ExpToLevelUp[(int)spirit.GetValue(Numeral.Level)] /  spirit.GetValue(Numeral.Exp));
-            ExpBar.fillAmount = expBarValue;
-           
-            Level.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.Level, From.Base).Value +
-                spirit.Get(Numeral.Level, From.Applied).Value);
+            SetExpBarValue();
+            SetStatValues();
 
-            Damage.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.Damage, From.Base).Value +
-                spirit.Get(Numeral.Damage, From.Applied).Value);
+            #region Helper functions
 
-            Range.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.Range, From.Base).Value +
-                spirit.Get(Numeral.Range, From.Applied).Value);
+            void SetExpBarValue()
+            {
+                var expBarValue = 1 / (float)(ReferenceHolder.ExpToLevelUp[(int)spirit.GetValue(Numeral.Level)] / spirit.GetValue(Numeral.Exp));
+                ExpBar.fillAmount = expBarValue;
+            }
 
-            Mana.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.Mana, From.Base).Value +
-                spirit.Get(Numeral.Mana, From.Applied).Value);
+            void SetStatValues()
+            {
+                for (int i = 0; i < StatValues.Count; i++)
+                    StatValues[i].Value.text = GetTextFromValue(StatValues[i].Type);
 
-            AttackSpeed.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.AttackSpeed, From.Base).Value +
-                spirit.Get(Numeral.AttackSpeed, From.Applied).Value);
+                #region Helper functions
 
-            TriggerChance.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.TriggerChance, From.Base).Value +
-                spirit.Get(Numeral.TriggerChance, From.Base).Value) + "%";
+                string GetTextFromValue(Numeral value)
+                {
+                    var withPercent =
+                        value == Numeral.SpellCritChance ||
+                        value == Numeral.SpellDamage ||
+                        value == Numeral.CritChance ||
+                        value == Numeral.ExpRatio ||
+                        value == Numeral.ItemDropRatio ||
+                        value == Numeral.ItemQuialityRatio ||
+                        value == Numeral.GoldRatio ||
+                        value == Numeral.CritMultiplier ||
+                        value == Numeral.BuffDuration ||
+                        value == Numeral.DebuffDuration;
 
-            SpellCritChance.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.SpellCritChance, From.Base).Value +
-                spirit.Get(Numeral.SpellCritChance, From.Base).Value) + "%";
+                    return $"{StaticMethods.KiloFormat(spirit.GetValue(value))}{(withPercent ? "%" : string.Empty)}";
+                }
 
-            SpellDamage.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.SpellDamage, From.Base).Value +
-                spirit.Get(Numeral.SpellDamage, From.Base).Value) + "%";
+                #endregion
+            }
 
-            CritChance.text = StaticMethods.KiloFormat(
-                spirit.Get(Numeral.CritChance, From.Base).Value +
-                spirit.Get(Numeral.CritChance, From.Base).Value) + "%";
+            #endregion
         }
 
         private void UpdateItems()

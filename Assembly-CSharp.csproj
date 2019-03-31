@@ -236,6 +236,7 @@
      <Compile Include="Assets\Scripts\Systems\UI\SlotWithCooldown.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\SpiritButtonSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\SpiritUISystem.cs" />
+     <Compile Include="Assets\Scripts\Systems\UI\StatValueUI.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\UIControlSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\WaveUISystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\WorldUISystem.cs" />
