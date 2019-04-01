@@ -110,9 +110,9 @@ namespace Game.Systems
 
                 void SetArmor()
                 {
-                    var armorTypes = Enum.GetValues(typeof(Armor.ArmorType));
+                    var armorTypes = Enum.GetValues(typeof(ArmorType));
                     var randomArmorId = StaticRandom.Instance.Next(0, armorTypes.Length);
-                    newData.ArmorType = (Armor.ArmorType)armorTypes.GetValue(randomArmorId);
+                    newData.ArmorType = (ArmorType)armorTypes.GetValue(randomArmorId);
                 }
 
                 #endregion

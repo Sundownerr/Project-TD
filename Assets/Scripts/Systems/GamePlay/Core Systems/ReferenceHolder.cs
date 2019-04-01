@@ -46,6 +46,7 @@ namespace Game.Systems
         public EnemyTraitDataBase EnemyTraitDataBase;
         public ItemDataBase ItemDataBase;
         public EnemySettings EnemySettings;
+        public DamageToArmorSettings DamageToArmorSettings;
         public Transform CellParent;
         public Transform SpiritParent;
         public Transform EnemyParent;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "EnemySettings", menuName = "Data/Enemy Settings")]
+    [CreateAssetMenu(fileName = "EnemySettings", menuName = "Data/Settings/Enemy Gold and Exp settings")]
 
     public class EnemySettings : ScriptableObject
     {

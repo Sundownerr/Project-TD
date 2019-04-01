@@ -20,7 +20,7 @@ namespace Game.Enemy
         [SerializeField] public List<NumeralAttribute> BaseAttributes { get; set; }
         [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
 
-        [SerializeField] public Armor.ArmorType ArmorType { get; set; }
+        [SerializeField] public ArmorType ArmorType { get; set; }
 
         [SerializeField] public int WaveLevel;
         [SerializeField] public RaceType Race;

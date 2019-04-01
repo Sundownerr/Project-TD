@@ -4,7 +4,7 @@ using System;
 
 namespace Game.Spirit.Data.Stats
 {
-    
+
     [Serializable]
     public class ElementList
     {
@@ -23,7 +23,7 @@ namespace Game.Spirit.Data.Stats
 
         public Element(string name)
         {
-            Name = name;        
+            Name = name;
             Rarities = new Rarity[4]
             {
                 new Rarity(RarityType.Common.ToString()),
@@ -31,7 +31,7 @@ namespace Game.Spirit.Data.Stats
                 new Rarity(RarityType.Rare.ToString()),
                 new Rarity(RarityType.Unique.ToString())
             };
-        }           
+        }
     }
 
     [Serializable]
@@ -43,11 +43,21 @@ namespace Game.Spirit.Data.Stats
         [SerializeField]
         public string Name;
 
-        public Rarity(string name) 
+        public Rarity(string name)
         {
-            Name = name;          
-            Spirits = new List<SpiritData>();          
+            Name = name;
+            Spirits = new List<SpiritData>();
         }
+    }
+
+    [Serializable]
+    public enum DamageType
+    {
+        Spell = 0,
+        Decay = 1,
+        Energy = 2,
+        Physical = 3,
+        Elemental = 4,
     }
 
     [Serializable]
@@ -58,15 +68,5 @@ namespace Game.Spirit.Data.Stats
 
         [SerializeField]
         public float Value;
-
-        [Serializable]
-        public enum DamageType
-        {
-            Spell,
-            Decay,
-            Energy,
-            Physical,
-            Elemental,
-        }
     }
 }

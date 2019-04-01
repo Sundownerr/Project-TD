@@ -6,7 +6,7 @@ using Game.Spirit.Data.Stats;
 using Game.Data;
 using UnityEditor;
 using Game.Systems;
-
+using Game.Enemy.Data;
 
 namespace Game.Spirit.Data
 {
@@ -20,6 +20,7 @@ namespace Game.Spirit.Data
         [SerializeField] public List<Ability> AbilityList;
         [SerializeField] public List<Trait> TraitList;
         [SerializeField] public RarityType Rarity;
+        [SerializeField] public DamageType DamageType;
         [SerializeField] public ElementType Element;
         [SerializeField] public List<SpiritData> Grades;
         [SerializeField] public List<float> DamageToRace;
@@ -29,7 +30,6 @@ namespace Game.Spirit.Data
         [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
         [SerializeField] public List<Ability> Abilities { get => AbilityList; set => AbilityList = value; }
         [SerializeField] public List<Trait> Traits { get => TraitList; set => TraitList = value; }
-
         [SerializeField] public int numberInList;
 
         public void SetData()
@@ -39,8 +39,10 @@ namespace Game.Spirit.Data
 
             AppliedAttributes = ExtensionMethods.CreateAttributeList();
 
+            var races = Enum.GetValues(typeof(RaceType));
+
             if (DamageToRace == null)
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < races.Length; i++)
                     DamageToRace.Add(100f);
         }
 

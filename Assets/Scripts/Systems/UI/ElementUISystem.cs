@@ -86,13 +86,13 @@ namespace Game.Systems
 
         private void UpdateUI()
         {
-            astralLevel.text = Owner.Data.ElementLevels[0].ToString();
-            darknessLevel.text = Owner.Data.ElementLevels[1].ToString();
-            iceLevel.text = Owner.Data.ElementLevels[2].ToString();
-            ironLevel.text = Owner.Data.ElementLevels[3].ToString();
-            stormLevel.text = Owner.Data.ElementLevels[4].ToString();
-            natureLevel.text = Owner.Data.ElementLevels[5].ToString();
-            fireLevel.text = Owner.Data.ElementLevels[6].ToString();
+            astralLevel.text = Owner.Data.ElementLevels[(int)ElementType.Astral].ToString();
+            darknessLevel.text = Owner.Data.ElementLevels[(int)ElementType.Darkness].ToString();
+            iceLevel.text = Owner.Data.ElementLevels[(int)ElementType.Ice].ToString();
+            ironLevel.text = Owner.Data.ElementLevels[(int)ElementType.Iron].ToString();
+            stormLevel.text = Owner.Data.ElementLevels[(int)ElementType.Storm].ToString();
+            natureLevel.text = Owner.Data.ElementLevels[(int)ElementType.Nature].ToString();
+            fireLevel.text = Owner.Data.ElementLevels[(int)ElementType.Fire].ToString();
         }
     }
 }

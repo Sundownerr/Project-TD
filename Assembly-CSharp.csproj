@@ -173,6 +173,7 @@
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\ValidatorAttributes\RequiredAttribute.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\ValidatorAttributes\ValidateInputAttribute.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\ValidatorAttributes\ValidatorAttribute.cs" />
+     <Compile Include="Assets\Scripts\Other\DamageToArmorSettings.cs" />
      <Compile Include="Assets\Scripts\Other\EnemySettings.cs" />
      <Compile Include="Assets\Scripts\Other\Enums.cs" />
      <Compile Include="Assets\Scripts\Other\ExtensionMethods.cs" />
