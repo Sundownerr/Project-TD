@@ -49,6 +49,7 @@ namespace Game.Systems
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
 
             ListWaves = new List<Wave>(Waves);
+            Waves.Dequeue();
             
             //   WavesGenerated?.Invoke(null, null);
 

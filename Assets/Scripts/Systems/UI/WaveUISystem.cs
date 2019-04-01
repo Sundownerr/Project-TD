@@ -72,7 +72,7 @@ namespace Game.Systems
             Armor.text = wave.EnemyTypes[0].ArmorType.ToString();
             EnemyTypes.text = CalculateTypes();
             Traits.text = GetTraitsAndAbilities();
-            WaveNumber.text = $"wave {Owner.WaveSystem.WaveNumber}";
+            WaveNumber.text = $"wave {Owner.WaveSystem.WaveNumber + 1}";
 
             #region  Helper functions
 

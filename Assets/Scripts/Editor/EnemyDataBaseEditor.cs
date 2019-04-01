@@ -20,13 +20,13 @@ public class EnemyDataBaseEditor : Editor
     {
         allCreeps = serializedObject.FindProperty("Races");
 
-        races = new SerializedProperty[]
+        races = new SerializedProperty[allCreeps.arraySize];
+
+        for (int i = 0; i < races.Length; i++)
         {
-            allCreeps.GetArrayElementAtIndex(0).FindPropertyRelative("Enemies"), 
-			allCreeps.GetArrayElementAtIndex(1).FindPropertyRelative("Enemies"), 
-			allCreeps.GetArrayElementAtIndex(2).FindPropertyRelative("Enemies"), 
-			allCreeps.GetArrayElementAtIndex(3).FindPropertyRelative("Enemies")
-        };
+            races[i] = allCreeps.GetArrayElementAtIndex(i).FindPropertyRelative("Enemies");
+        }
+    
     }
 
     public override void OnInspectorGUI()
