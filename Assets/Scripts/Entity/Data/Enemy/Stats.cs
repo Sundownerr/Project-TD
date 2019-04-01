@@ -8,10 +8,12 @@ namespace Game.Enemy.Data
     [Serializable]
     public enum ArmorType
     {
-        Cloth = 0,
-        Plate = 1,
-        Chainmail = 2,
-        Magic = 3
+        Mytherite = 0,
+        Luanem = 1,
+        Solphyr = 2,
+        Helleum = 3,
+        Zoddth = 4,
+        Siffat = 5,
     }
 
     [Serializable]

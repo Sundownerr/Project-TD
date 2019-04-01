@@ -12,16 +12,27 @@ namespace Game.Systems
     {
         public static Queue<Wave> GenerateWaves(int waveAmount)
         {
-            var randomWaveIds = new int[waveAmount];
+            var randomWaveIDs = new int[waveAmount];
             var raceTypes = Enum.GetValues(typeof(RaceType));
             var generatedWaves = new Queue<Wave>(waveAmount);
-            var waves = ReferenceHolder.Get.WaveDataBase.Waves;
+            var standartWaves = ReferenceHolder.Get.WaveDataBase.Waves;
+            var riftBreakerWaves = ReferenceHolder.Get.WaveDataBase.RiftbreakersWaves;
 
             for (int i = 0; i < waveAmount; i++)
-                randomWaveIds[i] = StaticRandom.Instance.Next(0, waves.Count);
+            {
+                var isRiftbreakerWave = i % 8 == 0;
+                var maxID = isRiftbreakerWave ? riftBreakerWaves.Count : standartWaves.Count;
+
+                randomWaveIDs[i] = StaticRandom.Instance.Next(0, maxID);
+            }
 
             for (int i = 0; i < waveAmount; i++)
-                generatedWaves.Enqueue(CreateWave(waves[randomWaveIds[i]], i));
+            {
+                var isRiftbreakerWave = i % 8 == 0;
+                var waves = isRiftbreakerWave ? riftBreakerWaves : standartWaves;
+
+                generatedWaves.Enqueue(CreateWave(waves[randomWaveIDs[i]], i));
+            }
 
             return generatedWaves;
         }
@@ -49,7 +60,7 @@ namespace Game.Systems
             return newData;
 
             #region Helper functions
-            
+
             void CalculateStats()
             {
                 newData.AppliedAttributes = ExtensionMethods.CreateAttributeList();
@@ -58,12 +69,21 @@ namespace Game.Systems
                 SetArmor();
                 SetGoldAndExp();
 
-                newData.Get(Numeral.ArmorValue, From.Base).Value = waveNumber;
-                newData.Get(Numeral.DefaultMoveSpeed, From.Base).Value = 120 + waveNumber * 5;
-                newData.Get(Numeral.GoldCost, From.Base).Value = 1 + waveNumber;        // waveCount / 7;
-                newData.Get(Numeral.Health, From.Base).Value = 500 + waveNumber * 10;
-                newData.Get(Numeral.MaxHealth, From.Base).Value = 500 + waveNumber * 10;
-                newData.Get(Numeral.MoveSpeed, From.Base).Value = 120 + waveNumber * 5;
+
+                newData.Get(Numeral.ArmorValue, From.Base).Value += waveNumber;            
+                newData.Get(Numeral.GoldCost, From.Base).Value += 1 + waveNumber;        // waveCount / 7;
+                newData.Get(Numeral.Health, From.Base).Value += 500 + waveNumber * 10;
+                
+                if (waveNumber % 8 == 0)
+                {
+                    newData.Get(Numeral.ArmorValue, From.Base).Value *= 2;
+                    newData.Get(Numeral.Health, From.Base).Value *= 2;
+                    newData.Get(Numeral.GoldCost, From.Base).Value = 0;
+                }
+
+                newData.Get(Numeral.MoveSpeed, From.Base).Value += 120 + waveNumber * 5;
+                newData.Get(Numeral.MaxHealth, From.Base).Value = newData.Get(Numeral.Health, From.Base).Value;
+                newData.Get(Numeral.DefaultMoveSpeed, From.Base).Value = newData.Get(Numeral.MoveSpeed, From.Base).Value;
 
                 #region Helper functions
 
@@ -193,6 +213,13 @@ namespace Game.Systems
             var fittingEnemies = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetRandomTraits();
             var waveAbilities = GetRandomAbilities();
+
+            if (waveNumber % 8 == 0)
+            {
+                waveRace = races[(int)RaceType.RiftCreature];
+                waveTraits = new List<Trait>();
+                waveAbilities = new List<Ability>();
+            }
 
             fittingEnemies.EnemyTypes = new List<EnemyData>();
 

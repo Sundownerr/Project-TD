@@ -53,11 +53,13 @@ namespace Game.Spirit.Data.Stats
     [Serializable]
     public enum DamageType
     {
-        Spell = 0,
-        Decay = 1,
+        Elemental = 0,
+        Magic = 1,
         Energy = 2,
-        Physical = 3,
-        Elemental = 4,
+        Essence = 3,
+        Decay = 4,
+        Physical = 5,
+        Spell = 6
     }
 
     [Serializable]

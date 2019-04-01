@@ -10,6 +10,6 @@ namespace Game.Data
 	public class WaveDataBase : ScriptableObject
 	{
 		[SerializeField]
-		public List<Wave> Waves;
+		public List<Wave> Waves, RiftbreakersWaves;
 	}
 }

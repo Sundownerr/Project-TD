@@ -32,7 +32,8 @@ public enum RaceType
     Humanoid = 0,
     Magical = 1,
     Undead = 2,
-    Nature = 3
+    Nature = 3,
+    RiftCreature = 4
 }
 
 [Serializable]

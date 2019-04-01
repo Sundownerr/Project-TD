@@ -6,8 +6,6 @@ using Game.Spirit.Data.Stats;
 
 namespace Game.Data
 {
-
-    
     [Serializable]
     public class DamageToArmor
     {
