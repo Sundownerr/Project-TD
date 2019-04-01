@@ -11,7 +11,22 @@ namespace Game.Systems
         private PlayerSystem owner;
 
         public ElementSystem(PlayerSystem player) => owner = player;
-        
+
+        public void SetSystem()
+        {
+            owner.ResourceSystem.ResourcesChanged += OnResourcesChanged;
+        }
+
+        private void OnResourcesChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < owner.ElementUISystem.Buttons.Length; i++)
+            {
+                var button = owner.ElementUISystem.Buttons[i];
+                var check = CheckCanLearn(owner.Data.ElementLevels[i]);
+                button.interactable = check.canLearn;
+            }
+        }
+
         public void LearnElement(int elementId)
         {
             var check = CheckCanLearn(owner.Data.ElementLevels[elementId]);
@@ -21,21 +36,17 @@ namespace Game.Systems
                 owner.Data.ElementLevels[elementId]++;
                 LearnedElement?.Invoke(null, check.learnCost);
             }
+        }
 
-            #region Helper functions 
+        private (bool canLearn, int learnCost) CheckCanLearn(int elementLevel)
+        {
+            var baseLearnCost = 20;
+            var levelLimit = 15;
+            var learnCost = elementLevel + baseLearnCost;
+            var canLearn = elementLevel < levelLimit;
+            var isLearnCostOk = learnCost <= owner.Data.Resources.MagicCrystals;
 
-            (bool canLearn, int learnCost) CheckCanLearn(int elementLevel)
-            {
-                var baseLearnCost = 20;
-                var levelLimit = 15;
-                var learnCost = elementLevel + baseLearnCost;
-                var canLearn = elementLevel < levelLimit;
-                var isLearnCostOk = learnCost <= owner.Data.Resources.MagicCrystals;
-
-                return (canLearn && isLearnCostOk, learnCost);
-            }
-
-            #endregion
+            return (canLearn && isLearnCostOk, learnCost);
         }
     }
 }

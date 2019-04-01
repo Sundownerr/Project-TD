@@ -87,15 +87,14 @@ namespace Game.Systems
             PlayerInputSystem = U.Instantiate(ReferenceHolder.Get.PlayerInputSystem.gameObject).GetComponent<PlayerInputSystem>();
             InventoryUISystem = U.Instantiate(ReferenceHolder.Get.InventoryUISystem.gameObject, UICanvas.transform).GetComponent<InventoryUISystem>();
             ResourceUISystem = U.Instantiate(ReferenceHolder.Get.ResourceUISystem.gameObject, UICanvas.transform).GetComponent<ResourceUISystem>();
-            ElementUISystem = U.Instantiate(ReferenceHolder.Get.ElementUISystem.gameObject, WorldCanvas.transform).GetComponent<ElementUISystem>();
+            
             SpiritUISystem = U.Instantiate(ReferenceHolder.Get.SpiritUISystem.gameObject, UICanvas.transform).GetComponent<SpiritUISystem>();
             BuildUISystem = U.Instantiate(ReferenceHolder.Get.BuildUISystem.gameObject, WorldCanvas.transform).GetComponentInChildren<BuildUISystem>();
+            ElementUISystem = BuildUISystem.transform.parent.GetComponentInChildren<ElementUISystem>();
             WaveUISystem = U.Instantiate(ReferenceHolder.Get.WaveUISystem.gameObject, UICanvas.transform).GetComponent<WaveUISystem>();
             EnemyUISystem = U.Instantiate(ReferenceHolder.Get.EnemyUISystem.gameObject, WorldCanvas.transform).GetComponent<EnemyUISystem>();
             WorldUISystem = U.Instantiate(ReferenceHolder.Get.WorldUISystem.gameObject, WorldCanvas.transform).GetComponent<WorldUISystem>();
             DescriptionUISystem = U.Instantiate(ReferenceHolder.Get.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
-
-
 
             SetSystem();
         }
@@ -116,6 +115,7 @@ namespace Game.Systems
             WorldUISystem.SetSystem(this);
             ResourceUISystem.SetSystem(this);
             ElementUISystem.SetSystem(this);
+            ElementSystem.SetSystem();
             BuildUISystem.SetSystem(this);
             EnemyUISystem.SetSystem(this);
             InventoryUISystem.SetSystem(this);
