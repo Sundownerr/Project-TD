@@ -22,6 +22,7 @@ namespace Game.Cells
             Owner.CellControlSystem.Cells.Add(this);
             Renderer = GetComponent<Renderer>();
             Renderer.material.color = new Color(0.1f, 0.2f, 0.1f, -1f);
+            gameObject.layer = 15;
         }
     }
 }

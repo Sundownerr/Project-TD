@@ -197,7 +197,6 @@ namespace Game.Systems
                 if (GameManager.Instance.GameState == GameState.SingleplayerInGame)
                     if (WaveNumber <= Owner.WaveAmount)
                         SetNextWave();
-
             }
 
             #endregion

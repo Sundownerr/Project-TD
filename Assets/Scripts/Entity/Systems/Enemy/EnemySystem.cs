@@ -41,6 +41,7 @@ namespace Game.Enemy
             AppliedEffectSystem = new AppliedEffectSystem();
             this.waypoints = waypoints;
             Prefab = ownerPrefab;
+            Prefab.layer = 12;
         }
 
         public void SetSystem(PlayerSystem player)

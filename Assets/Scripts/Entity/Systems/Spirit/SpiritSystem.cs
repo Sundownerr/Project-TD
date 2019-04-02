@@ -51,6 +51,7 @@ namespace Game.Spirit
             ShootSystem = new ShootSystem(this);
             AbilityControlSystem = new AbilityControlSystem(this);
             AppliedEffectSystem = new AppliedEffectSystem();
+            Prefab.layer = 14;
         }
 
         public void SetSystem(PlayerSystem player)
@@ -165,9 +166,9 @@ namespace Game.Spirit
         }
 
         public void RemoveEffect(Effect effect)
-        {
-            AppliedEffectSystem.RemoveEffect(effect);
+        {      
             EffectRemoved?.Invoke(null, effect);
+            AppliedEffectSystem.RemoveEffect(effect);
         }
 
         public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);

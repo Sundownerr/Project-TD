@@ -162,7 +162,7 @@ public class NetworkPlayer : NetworkBehaviour
 
         WaitAndDo(delay, () =>
         {
-            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber + 1].EnemyTypes.Find(x => x.ID.Compare(request.ID));
             var spawnPos = request.Position.ToVector3();
             var waypoints = request.Waypoints.ToVector3Array();
 
@@ -173,8 +173,10 @@ public class NetworkPlayer : NetworkBehaviour
                 Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform);
 
                 if (isLocalPlayer)
-                    EnemyCreatingRequestDone?.Invoke(null,
-                        StaticMethods.CreateEnemy(enemyFromDB, spawnPos, LocalPlayer, waypoints, newEnemy));
+                {
+                    var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, spawnPos, LocalPlayer, waypoints, newEnemy);
+                    EnemyCreatingRequestDone?.Invoke(null, newEnemySystem);
+                }
             }
         });
     }

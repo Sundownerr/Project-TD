@@ -30,19 +30,21 @@ namespace Game.Systems
             ParentGO = transform.parent.gameObject;
         }
 
+
+
         public void SetSystem(PlayerSystem player)
         {
             Owner = player;
 
             rarityTransform = Rarity.transform;
 
-            ElementButtons[0].onClick.AddListener(ShowAstral);
-            ElementButtons[1].onClick.AddListener(ShowDarkness);
-            ElementButtons[2].onClick.AddListener(ShowIce);
-            ElementButtons[3].onClick.AddListener(ShowIron);
-            ElementButtons[4].onClick.AddListener(ShowStorm);
-            ElementButtons[5].onClick.AddListener(ShowNature);
-            ElementButtons[6].onClick.AddListener(ShowFire);
+            ElementButtons[(int)ElementType.Astral].onClick.AddListener(() => ShowRarity(ElementType.Astral));
+            ElementButtons[(int)ElementType.Darkness].onClick.AddListener(() => ShowRarity(ElementType.Darkness));
+            ElementButtons[(int)ElementType.Ice].onClick.AddListener(() => ShowRarity(ElementType.Ice));
+            ElementButtons[(int)ElementType.Iron].onClick.AddListener(() => ShowRarity(ElementType.Iron));
+            ElementButtons[(int)ElementType.Storm].onClick.AddListener(() => ShowRarity(ElementType.Storm));
+            ElementButtons[(int)ElementType.Nature].onClick.AddListener(() => ShowRarity(ElementType.Nature));
+            ElementButtons[(int)ElementType.Fire].onClick.AddListener(() => ShowRarity(ElementType.Fire));
 
             UpdateAvailableElement();
             animator = transform.parent.GetComponent<Animator>();
@@ -54,7 +56,7 @@ namespace Game.Systems
             Owner.PlayerInputSystem.ClickedOnCell += OnClickedOnCell;
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
             Owner.PlayerInputSystem.ClickedOnSpirit += OnClicledOnSpirit;
-            Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;     
+            Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;
         }
 
         private void ActivateUI(bool activate)
@@ -202,12 +204,13 @@ namespace Game.Systems
             #endregion
         }
 
-        private void ShowAstral() => ShowRarity(ElementType.Astral);
-        private void ShowDarkness() => ShowRarity(ElementType.Darkness);
-        private void ShowIce() => ShowRarity(ElementType.Ice);
-        private void ShowIron() => ShowRarity(ElementType.Iron);
-        private void ShowStorm() => ShowRarity(ElementType.Storm);
-        private void ShowNature() => ShowRarity(ElementType.Nature);
-        private void ShowFire() => ShowRarity(ElementType.Fire);
+        private void OnDestroy()
+        {
+            for (int i = 0; i < ElementButtons.Count; i++)
+                ElementButtons[i].onClick.RemoveAllListeners();
+
+            for (int i = 0; i < spiritButtonGOs.Count; i++)
+                spiritButtonGOs[i].GetComponent<Button>().onClick.RemoveAllListeners();
+        }
     }
 }

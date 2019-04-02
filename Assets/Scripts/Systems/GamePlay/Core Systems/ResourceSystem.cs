@@ -9,7 +9,7 @@ namespace Game.Systems
 {
     public class ResourceSystem
     {
-        public event EventHandler ResourcesChanged = delegate{};
+        public event EventHandler ResourcesChanged = delegate { };
 
         private PlayerSystem Owner;
 
@@ -56,16 +56,21 @@ namespace Game.Systems
 
         private void OnEnemyDied(object _, EnemySystem enemy)
         {
-            if(enemy.LastDamageDealer != null)
-                AddResource(ResourceType.Gold, enemy.Data.GetValue(Numeral.GoldCost));        
+            if (enemy.LastDamageDealer != null)
+                AddResource(ResourceType.Gold, enemy.Data.GetValue(Numeral.GoldCost));
         }
 
-        private  void OnElementLearned(object _, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);
-        private  void OnAllEnemiesKilled(object _, EventArgs e) => AddResource(ResourceType.MagicCrystal, 5f);
-        private  void OnMagicCrystalsConsumed(object _, double value) => AddResource(ResourceType.MagicCrystal, value);
-        private  void OnSpiritVesselsConsumed(object _, double value) => AddResource(ResourceType.MaxSpiritLimit, value);
+        private void OnElementLearned(object _, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);
+        private void OnAllEnemiesKilled(object _, EventArgs e)
+        {
+            AddResource(ResourceType.MagicCrystal, 5f);
+            AddResource(ResourceType.Gold, Owner.WaveSystem.WaveNumber * 10 + Owner.Data.Resources.Gold.GetPercent(10));
+        }
 
-        private  void AddResource(ResourceType type, double amount)
+        private void OnMagicCrystalsConsumed(object _, double value) => AddResource(ResourceType.MagicCrystal, value);
+        private void OnSpiritVesselsConsumed(object _, double value) => AddResource(ResourceType.MaxSpiritLimit, value);
+
+        private void AddResource(ResourceType type, double amount)
         {
             if (type == ResourceType.Gold)
                 Owner.Data.Resources.Gold += amount;

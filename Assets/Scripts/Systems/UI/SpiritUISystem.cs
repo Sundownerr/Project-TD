@@ -166,6 +166,9 @@ namespace Game.Systems
         {
             var effectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
 
+            if (effectUI == null)
+                return;
+
             effectUI.gameObject.SetActive(false);
             appliedEffectsUI.Remove(effectUI);
         }
