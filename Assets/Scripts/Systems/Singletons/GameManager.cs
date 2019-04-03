@@ -53,20 +53,51 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 70;
         QualitySettings.vSyncCount = 0;
         Cursor.lockState = CursorLockMode.Confined;
-    }
 
-    private void Start()
-    {
+        SceneManager.sceneLoaded += (scene, loadMode) =>
+       {
+           if (scene.name == "SingleplayerMap")
+           {
+               GameManager.Instance.GameState = GameState.SingleplayerInGame;
+               return;
+           }
+
+           if (scene.name == "MultiplayerMap1")
+           {
+               GameManager.Instance.GameState = GameState.MultiplayerInGame;
+           }
+       };
+
         if (GameData.Instance == null) Instantiate(GameDataPrefab);
         if (Steam.Instance == null) Instantiate(SteamInstancePrefab);
         if (ReferenceHolder.Get == null) Instantiate(ReferenceHolderPrefab);
         if (GameLoop.Instance == null) Instantiate(GameLoopPrefab);
+
+    }
+
+    private void Start()
+    {
+
+        Steam.Instance.ConnectionLost += OnLostConnectionToSteam;
+    }
+
+    private void OnLostConnectionToSteam(object sender, EventArgs e)
+    {
+        var isUsingSteam =
+            GameState == GameState.MultiplayerInGame ||
+            GameState == GameState.InLobby ||
+            GameState == GameState.BrowsingLobbies ||
+            GameState == GameState.CreatingLobby;
+
+        if (isUsingSteam)
+            GoToMainMenu();
     }
 
     public void GoToMainMenu()
     {
         Destroy(Steam.Instance.gameObject);
         Destroy(NetworkManager.singleton.gameObject);
+
         NetworkManager.Shutdown();
         SceneManager.LoadSceneAsync("MainMenu");
     }

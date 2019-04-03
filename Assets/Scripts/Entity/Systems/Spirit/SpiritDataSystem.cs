@@ -51,17 +51,13 @@ namespace Game.Spirit.System
 
         private void IncreaseStatsPerLevel()
         {
-            CurrentData.Get(Numeral.Level, From.Base).Value += 1;
-            CurrentData.Get(Numeral.Exp, From.Base).Value = 0;
-
             for (int i = 0; i < CurrentData.BaseAttributes.Count; i++)
             {
                 var stat = CurrentData.Get(CurrentData.BaseAttributes[i].Type, From.Base);
-
-                if(stat.ChangeType == Change.ByValue)
-                    stat.Value += stat.IncreasePerLevel.Value;
-                else
-                    stat.Value += stat.Value.GetPercent(30);
+                
+                    stat.Value += stat.IncreacePerLevel == Change.ByValue ?
+                        stat.ValuePerLevel :
+                        stat.Value.GetPercent(stat.ValuePerLevel);
             }
            
             ownerSpirit.TraitControlSystem.IncreaseStatsPerLevel();

@@ -24,12 +24,21 @@ public class GameLoop : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
-        Instance = this;       
+        Instance = this;
     }
 
-    private void Start() 
+    private void Start()
     {
         ReferenceHolder.Get.MapAssigned += OnMapAssigned;
+        GameManager.Instance.StateChanged += OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(object sender, GameState e)
+    {
+        var inGame = e == GameState.MultiplayerInGame || e == GameState.SingleplayerInGame;
+
+        if (!inGame)
+            player = null;
     }
 
     private void OnMapAssigned(object _, PlayerMap e)

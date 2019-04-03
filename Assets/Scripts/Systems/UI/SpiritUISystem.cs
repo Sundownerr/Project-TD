@@ -191,26 +191,17 @@ namespace Game.Systems
 
         private void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
         {
-            var freeSlotIndex = -1;
-
             for (int i = 0; i < isSlotEmpty.Count; i++)
                 if (isSlotEmpty[i])
                 {
-                    freeSlotIndex = i;
-                    break;
+                    itemUI.transform.position = ItemSlots[i].transform.position;
+                    itemUI.transform.SetParent(ItemSlots[i].transform.parent);
+
+                    AddItemToSpirit(itemUI, i);
+                    return;
                 }
 
-            if (freeSlotIndex < 0)
-                MoveItemToPlayer?.Invoke(null, itemUI);
-            else
-            {
-                var freeSlot = ItemSlots[freeSlotIndex];
-
-                itemUI.transform.position = freeSlot.transform.position;
-                itemUI.transform.SetParent(freeSlot.transform.parent);
-
-                AddItemToSpirit(itemUI, freeSlotIndex);
-            }
+            MoveItemToPlayer?.Invoke(null, itemUI);
         }
 
         public void OnItemDoubleClicked(object _, ItemUISystem itemUI)

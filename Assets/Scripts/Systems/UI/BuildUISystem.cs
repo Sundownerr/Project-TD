@@ -206,11 +206,13 @@ namespace Game.Systems
 
         private void OnDestroy()
         {
-            for (int i = 0; i < ElementButtons.Count; i++)
-                ElementButtons[i].onClick.RemoveAllListeners();
+            if (ElementButtons != null)
+                for (int i = 0; i < ElementButtons.Count; i++)
+                    ElementButtons[i].onClick.RemoveAllListeners();
 
-            for (int i = 0; i < spiritButtonGOs.Count; i++)
-                spiritButtonGOs[i].GetComponent<Button>().onClick.RemoveAllListeners();
+            if (spiritButtonGOs != null)
+                for (int i = 0; i < spiritButtonGOs.Count; i++)
+                    spiritButtonGOs[i].GetComponent<Button>().onClick.RemoveAllListeners();
         }
     }
 }

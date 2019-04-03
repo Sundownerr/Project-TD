@@ -55,6 +55,8 @@ namespace Game.Systems
         public PlayerSystem Player;
         public GameObject NetworkEnemy;
 
+        private DescriptionUISystem descriptionUISystem;
+
         public static List<int> ExpToLevelUp { get; } = new List<int>(25)
         {
             12,
@@ -132,13 +134,16 @@ namespace Game.Systems
 
         private void GetReferences()
         {
+            if (descriptionUISystem == null)
+                descriptionUISystem = DescriptionUISystem;
+                
             UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
             WorldCanvas = GameObject.FindWithTag("WorldCanvas").GetComponent<Canvas>();
             CellParent = GameObject.FindWithTag("CellParent").transform;
             SpiritParent = GameObject.FindWithTag("SpiritParent").transform;
             EnemyParent = GameObject.FindWithTag("EnemyParent").transform;
 
-            DescriptionUISystem = Instantiate(DescriptionUISystem, UICanvas.transform);
+            DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
             MapAssigned?.Invoke(null, GameManager.Instance.GameState == GameState.MultiplayerInGame ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :

@@ -12,7 +12,7 @@ namespace Game.Spirit.Data
 {
     [CreateAssetMenu(fileName = "New Spirit", menuName = "Data/Spirit/Spirit")]
     [Serializable]
-    public class SpiritData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
+    public class SpiritData : Entity, IApplyableAttributeComponent, IAbilityComponent, ITraitComponent
     {
         [SerializeField] public bool IsGradeSpirit;
         [SerializeField] public bool CanAttackFlying;

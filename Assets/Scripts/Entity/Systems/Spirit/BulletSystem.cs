@@ -28,7 +28,7 @@ namespace Game.Spirit
         {
             Prefab = prefab;
             particleSystems = prefab.GetComponentsInChildren<ParticleSystem>(true);
-
+            Prefab.layer = 13;
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 5f);
             Lifetime = particleSystems[0].main.startLifetime.constant;

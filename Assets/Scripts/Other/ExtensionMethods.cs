@@ -40,7 +40,7 @@ public static class ExtensionMethods
     ///<summary>
     /// Return sum of base and applied attribute of type 
     ///</summary>
-    public static double GetValue(this IAttributeComponent data, Numeral type) =>
+    public static double GetValue(this IApplyableAttributeComponent data, Numeral type) =>
         data.Get(type, From.Base).Value + data.Get(type, From.Applied).Value;
 
     ///<summary>
@@ -80,7 +80,7 @@ public static class ExtensionMethods
     ///<summary>
     /// Return attribute from base or applied attribute list
     ///</summary>   
-    public static NumeralAttribute Get(this IAttributeComponent attributeHandler, Numeral type, From baseOrApplied)
+    public static NumeralAttribute Get(this IApplyableAttributeComponent attributeHandler, Numeral type, From baseOrApplied)
     {
         var attributes = baseOrApplied == From.Base ? attributeHandler.BaseAttributes : attributeHandler.AppliedAttributes;
 

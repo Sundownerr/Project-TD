@@ -13,7 +13,7 @@ namespace Game.Enemy
     [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy New")]
 
     [Serializable]
-    public class EnemyData : Entity, IAttributeComponent, IAbilityComponent, ITraitComponent
+    public class EnemyData : Entity, IApplyableAttributeComponent, IAbilityComponent, ITraitComponent
     {
         [SerializeField] public List<Trait> Traits { get; set; }
         [SerializeField] public List<Ability> Abilities { get; set; }

@@ -108,6 +108,7 @@
      <Compile Include="Assets\Scripts\Entity\Data\Enemy\EnemyData.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Enemy\Stats.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Entity.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Hero.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Inventory.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Item.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\NonConsumable.cs" />

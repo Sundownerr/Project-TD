@@ -15,7 +15,7 @@ public class UIControlSystem : MonoBehaviour
 
 
     private List<Text> textPrefabs = new List<Text>();
-    private List<PlayerData> playerDatas= new List<PlayerData>();
+    private List<PlayerData> playerDatas = new List<PlayerData>();
     private List<string> playerNames = new List<string>();
     private List<InputField> chatTexts = new List<InputField>();
 
@@ -30,13 +30,17 @@ public class UIControlSystem : MonoBehaviour
     {
         var manager = NetworkManager.singleton as ExtendedNetworkManager;
 
-        if (FPClient.Instance.Lobby.IsOwner)
+        if (FPClient.Instance.Lobby.CurrentLobby == 0)
         {
             manager.StopHost();
             manager.StopClient();
+            return;
         }
-        else
-            manager.StopClient();     
+
+        if (FPClient.Instance.Lobby.IsOwner)
+            manager.StopHost();
+
+        manager.StopClient();
     }
 
     private void OnDestroy()
@@ -61,8 +65,8 @@ public class UIControlSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))        
-            LobbyExtension.SendChatMessage(ChatInputField);        
+        if (Input.GetKeyDown(KeyCode.Return))
+            LobbyExtension.SendChatMessage(ChatInputField);
     }
 
     private void ChatMessageReceived(ulong senderID, string message)
@@ -75,7 +79,7 @@ public class UIControlSystem : MonoBehaviour
 
     void AddNewLines()
     {
-        for (int i = 0; i < textPrefabs.Count; i++)        
+        for (int i = 0; i < textPrefabs.Count; i++)
             Destroy(textPrefabs[i].gameObject);
 
         textPrefabs.Clear();
@@ -86,7 +90,7 @@ public class UIControlSystem : MonoBehaviour
             textPrefabs.Add(prefab.GetComponent<Text>());
         }
 
-        for (int i = 0; i < playerDatas.Count; i++)        
-            textPrefabs[i].text = $"{playerNames[i]} Lv.{playerDatas[i].Level}";      
+        for (int i = 0; i < playerDatas.Count; i++)
+            textPrefabs[i].text = $"{playerNames[i]} Lv.{playerDatas[i].Level}";
     }
 }

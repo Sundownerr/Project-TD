@@ -27,15 +27,13 @@ namespace Game.Systems
             var removedAttackSpeedMod =
                     (int)spirit.Data.GetValue(Numeral.AttackSpeedModifier).GetPercent(effect.SlowPercent);
 
-            if (spirit.CountOf(effect) <= 0)
-            {
-                spirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value -= removedAttackSpeedMod;
-                spirit.AddEffect(effect);
-            }
+            if (spirit.CountOf(effect) <= 0)          
+                spirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value -= removedAttackSpeedMod;       
             else
                 removedAttackSpeedMod =
                     (int)(spirit.Data.GetValue(Numeral.AttackSpeedModifier) + effect.SlowPercent).GetPercent(effect.SlowPercent);
 
+            spirit.AddEffect(effect);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
 
         }

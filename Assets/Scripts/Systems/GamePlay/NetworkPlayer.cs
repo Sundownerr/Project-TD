@@ -170,7 +170,7 @@ public class NetworkPlayer : NetworkBehaviour
                 Debug.LogError("enemyfromdb is null");
             else
             {
-                Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform);
+                Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform).layer = 0;
 
                 if (isLocalPlayer)
                 {

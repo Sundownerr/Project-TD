@@ -13,8 +13,8 @@ namespace Game.Systems
         public List<GameObject> Entities { get; set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
-        public event EventHandler<IVulnerable> EntityEntered = delegate{};
-        public event EventHandler<IVulnerable> EntityExit = delegate{};
+        public event EventHandler<IVulnerable> EntityEntered = delegate { };
+        public event EventHandler<IVulnerable> EntityExit = delegate { };
         public event EventHandler Destroyed = delegate { };
 
         private Renderer rend;
@@ -47,7 +47,7 @@ namespace Game.Systems
             {
                 if (CollideType == CollideWith.Enemies)
                     AddEntity<EnemySystem>();
-                    
+
                 if (CollideType == CollideWith.Spirits)
                     AddEntity<SpiritSystem>();
 
@@ -56,10 +56,10 @@ namespace Game.Systems
                     AddEntity<EnemySystem>();
                     AddEntity<SpiritSystem>();
                 }
-                    
+
                 #region  Helper functions
 
-                void AddEntity<T>() where T: IVulnerable
+                void AddEntity<T>() where T : IVulnerable
                 {
                     var owner = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
 
@@ -73,17 +73,19 @@ namespace Game.Systems
                             if (CheckFound(owner.Spirits[i]))
                                 return;
                 }
-                
+
                 bool CheckFound(IVulnerable entitySystem)
                 {
-                    if (other.gameObject == entitySystem.Prefab)
+                    if (other.gameObject == entitySystem.Prefab || other.gameObject == entitySystem.Prefab.transform.GetChild(0).gameObject)
                     {
                         EntitySystems.Add(entitySystem);
-                        Entities.Add(entitySystem.Prefab);      
+                        Entities.Add(entitySystem.Prefab);
                         EntityEntered?.Invoke(null, entitySystem);
-                        return true;                  
-                    }       
-                    return false;       
+
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 #endregion
@@ -93,24 +95,24 @@ namespace Game.Systems
         }
 
         private void OnTriggerExit(Collider other)
-        {          
+        {
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (other.gameObject == EntitySystems[i].Prefab)
                 {
                     EntityExit?.Invoke(null, EntitySystems[i]);
                     EntitySystems.Remove(EntitySystems[i]);
-                    Entities.Remove(other.gameObject);                   
-                }            
+                    Entities.Remove(other.gameObject);
+                }
         }
 
         private void OnTriggerStay(Collider other)
         {
             for (int i = 0; i < EntitySystems.Count; i++)
-                if (EntitySystems[i] == null || EntitySystems[i].Prefab == null )
+                if (EntitySystems[i] == null || EntitySystems[i].Prefab == null)
                 {
                     EntityExit?.Invoke(null, EntitySystems[i]);
                     Entities.RemoveAt(i);
-                    EntitySystems.RemoveAt(i);                   
+                    EntitySystems.RemoveAt(i);
                 }
         }
 

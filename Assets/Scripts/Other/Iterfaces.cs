@@ -45,7 +45,7 @@ namespace Game
 
     public interface IVulnerable : IPrefabComponent
     {
-        [SerializeField] bool IsOn { get; set; }      
+        [SerializeField] bool IsOn { get; set; }
     }
 
     public interface ICanApplyEffects : IPrefabComponent, IVulnerable
@@ -69,6 +69,10 @@ namespace Game
     public interface IAttributeComponent
     {
         [SerializeField] List<NumeralAttribute> BaseAttributes { get; }
+    }
+
+    public interface IApplyableAttributeComponent : IAttributeComponent
+    {
         [SerializeField] List<NumeralAttribute> AppliedAttributes { get; }
     }
 
