@@ -83,7 +83,7 @@ namespace Game.Systems
             damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
         }
 
-        private void OnSpiritPlaced(object _, SpiritSystem e) => e.DataSystem.LeveledUp += OnSpiritLevelUp;
+        private void OnSpiritPlaced(object _, SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
 
         private void OnSpiritLevelUp(object _, SpiritSystem spirit)
         {

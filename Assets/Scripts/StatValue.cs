@@ -23,19 +23,23 @@ public class EntityAttributeApplyable<EnumType, ValueType> : EntityAttribute<Enu
     public ValueType AppliedValue { get; set; }
 }
 
+
 [Serializable]
-public class NumeralAttribute : EntityAttributeApplyable<Numeral, double>
+public class EntityAttributeApplyableLevelUpable<EnumType, ValueType> : EntityAttributeApplyable<EnumType, ValueType>
 {
     [SerializeField] public Increase IncreacePerLevel;
     [SerializeField] public double ValuePerLevel;
+}
+
+[Serializable]
+public class NumeralAttribute : EntityAttributeApplyableLevelUpable<Numeral, double>
+{
     public double Sum => Value + AppliedValue;
 }
 
 [Serializable]
-public class SpiritAttribute : EntityAttributeApplyable<Spirit, double>
+public class SpiritAttribute : EntityAttributeApplyableLevelUpable<Spirit, double>
 {
-    [SerializeField] public Increase IncreacePerLevel;
-    [SerializeField] public double ValuePerLevel;
     public double Sum => Value + AppliedValue;
 }
 

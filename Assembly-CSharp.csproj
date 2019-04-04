@@ -154,6 +154,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Enemy\EnemySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\ItemSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\MageHeroSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Player\PlayerSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\RangeSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Spirit\AbilityControlSystem.cs" />

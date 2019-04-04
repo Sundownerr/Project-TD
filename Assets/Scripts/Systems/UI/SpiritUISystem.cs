@@ -113,7 +113,7 @@ namespace Game.Systems
             {
                 baseAnimator.SetBool(isOpen, true);
                 choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
-                choosedSpirit.DataSystem.StatsChanged += OnStatsApplied;
+                choosedSpirit.StatsChanged += OnStatsApplied;
 
                 if (choosedSpirit.Owner == Owner)
                 {
@@ -130,7 +130,7 @@ namespace Game.Systems
             else
             {
                 if (choosedSpirit != null)
-                    choosedSpirit.DataSystem.StatsChanged -= OnStatsApplied;
+                    choosedSpirit.StatsChanged -= OnStatsApplied;
 
                 SellButton.gameObject.SetActive(false);
                 UpgradeButton.gameObject.SetActive(false);

@@ -17,6 +17,8 @@ namespace Game.Spirit
         public event EventHandler<Effect> EffectApplied = delegate { };
         public event EventHandler<Effect> EffectRemoved = delegate { };
         public event EventHandler<IHealthComponent> Died = delegate { };
+        public event EventHandler<SpiritSystem> LeveledUp = delegate { };
+        public event EventHandler StatsChanged = delegate { };
 
         public Transform RangeTransform { get; private set; }
         public Transform MovingPart { get; private set; }
@@ -25,8 +27,7 @@ namespace Game.Spirit
         public GameObject UsedCell { get; set; }
         public RangeSystem RangeSystem { get; private set; }
         public ShootSystem ShootSystem { get; private set; }
-        public SpiritDataSystem DataSystem { get; private set; }
-        public SpiritData Data { get => DataSystem.CurrentData; set => DataSystem.CurrentData = value; }
+        public SpiritData Data { get => dataSystem.CurrentData; set => dataSystem.CurrentData = value; }
         public Renderer[] Renderers { get; private set; }
         public AbilityControlSystem AbilityControlSystem { get; private set; }
         public TraitControlSystem TraitControlSystem { get; private set; }
@@ -39,6 +40,7 @@ namespace Game.Spirit
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
+        private SpiritDataSystem dataSystem;
 
         public SpiritSystem(GameObject ownerPrefab)
         {
@@ -47,7 +49,7 @@ namespace Game.Spirit
             StaticPart = ownerPrefab.transform.GetChild(1);
             ShootPoint = MovingPart.GetChild(0).GetChild(0);
 
-            DataSystem = new SpiritDataSystem(this);
+            dataSystem = new SpiritDataSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
             ShootSystem = new ShootSystem(this);
             AbilityControlSystem = new AbilityControlSystem(this);
@@ -67,7 +69,11 @@ namespace Game.Spirit
             ID = new ID() { player.SpiritControlSystem.Spirits.Count };
 
             if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
-                DataSystem.Set();
+            {
+                dataSystem.Set();
+                dataSystem.LeveledUp += (_, e) => LeveledUp?.Invoke(null, this);
+                dataSystem.StatsChanged += (_, e) => StatsChanged?.Invoke(null, null);
+            }
 
             SetTraitSystems();
             SetAbilitySystems();
@@ -158,7 +164,9 @@ namespace Game.Spirit
 
         private void OnEntityExitRange(object _, IVulnerable e) => Targets.Remove(e as IHealthComponent);
 
-        public void AddExp(int amount) => DataSystem.AddExp(amount);
+        public void Upgrade(SpiritSystem previousSpirit, SpiritData newData) => dataSystem.Upgrade(previousSpirit, newData);
+
+        public void AddExp(int amount) => dataSystem.AddExp(amount);
 
         public void AddEffect(Effect effect)
         {
@@ -167,7 +175,7 @@ namespace Game.Spirit
         }
 
         public void RemoveEffect(Effect effect)
-        {      
+        {
             EffectRemoved?.Invoke(null, effect);
             AppliedEffectSystem.RemoveEffect(effect);
         }

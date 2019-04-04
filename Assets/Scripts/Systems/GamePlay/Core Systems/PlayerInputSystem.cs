@@ -212,7 +212,7 @@ namespace Game.Systems
                     ReferenceHolder.Get.SpiritParent);
                 var upgradedSpirit = new SpiritSystem(upgradedSpiritPrefab);
 
-                upgradedSpirit.DataSystem.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);
+                upgradedSpirit.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);
                 upgradedSpirit.SetSystem(Owner);
 
                 SpiritUpgraded?.Invoke(null, upgradedSpirit);

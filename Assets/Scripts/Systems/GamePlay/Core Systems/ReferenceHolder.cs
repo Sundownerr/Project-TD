@@ -10,7 +10,7 @@ namespace Game.Systems
 {
     public class ReferenceHolder : MonoBehaviour
     {
-        public event EventHandler<PlayerMap> MapAssigned = delegate { };
+        public event EventHandler<PlayerData> PlayerDataSet = delegate { };
         private static ReferenceHolder get;
         public static ReferenceHolder Get
         {
@@ -136,7 +136,7 @@ namespace Game.Systems
         {
             if (descriptionUISystem == null)
                 descriptionUISystem = DescriptionUISystem;
-                
+
             UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
             WorldCanvas = GameObject.FindWithTag("WorldCanvas").GetComponent<Canvas>();
             CellParent = GameObject.FindWithTag("CellParent").transform;
@@ -145,9 +145,13 @@ namespace Game.Systems
 
             DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
-            MapAssigned?.Invoke(null, GameManager.Instance.GameState == GameState.MultiplayerInGame ?
+            PlayerData playerData;
+            playerData.Map = GameManager.Instance.GameState == GameState.MultiplayerInGame ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
-                GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>());
+                GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
+            playerData.Mage = GameData.Instance.ChoosedMage;
+
+            PlayerDataSet?.Invoke(null, playerData);
         }
     }
 }

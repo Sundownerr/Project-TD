@@ -30,7 +30,7 @@ namespace Game.Data
             if (e.Entity is SpiritSystem spirit)
             {
                 e.ItemUI.System.Owner = spirit;
-                spirit.DataSystem.LeveledUp += e.ItemUI.System.OnSpiritLevelUp;
+                spirit.LeveledUp += e.ItemUI.System.OnSpiritLevelUp;
             }
 
             if (e.Entity is PlayerSystem player)
@@ -68,7 +68,7 @@ namespace Game.Data
                 inventory.Items.Add(item);
 
                 if (item.Owner is SpiritSystem spirit)               
-                    spirit.DataSystem.LeveledUp += item.OnSpiritLevelUp;              
+                    spirit.LeveledUp += item.OnSpiritLevelUp;              
             }
         }
 
@@ -77,7 +77,7 @@ namespace Game.Data
             inventory.Items.Remove(item);
 
             if (item.Owner is SpiritSystem spirit)
-                spirit.DataSystem.LeveledUp -= item.OnSpiritLevelUp;
+                spirit.LeveledUp -= item.OnSpiritLevelUp;
         }
     }
 }

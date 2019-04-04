@@ -12,6 +12,11 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
+    public struct PlayerData
+    {
+        public PlayerMap Map;
+        public MageHero Mage;
+    }
 
     public class PlayerSystem : IEntitySystem
     {
@@ -36,6 +41,7 @@ namespace Game.Systems
         public BuildUISystem BuildUISystem { get; private set; }
         public ItemDropSystem ItemDropSystem { get; private set; }
         public WorldUISystem WorldUISystem { get; private set; }
+        public MageHeroSystem MageHeroSystem { get; private set; }
         public DescriptionUISystem DescriptionUISystem { get; private set; }
         public List<SpiritSystem> Spirits { get => SpiritControlSystem.Spirits; }
         public List<EnemySystem> Enemies { get => EnemyControlSystem.Enemies; }
@@ -59,7 +65,7 @@ namespace Game.Systems
         }
         private PlayerMap map;
 
-        public PlayerSystem(PlayerMap map)
+        public PlayerSystem(PlayerMap map, MageHero mage)
         {
             WaveAmount = 100;
             Map = map;
@@ -70,6 +76,7 @@ namespace Game.Systems
             Data = ScriptableObject.CreateInstance<Player>();
             Data.System = this;
 
+            MageHeroSystem = new MageHeroSystem(this, mage);
             EnemyControlSystem = new EnemyControlSystem(this);
             SpiritControlSystem = new SpiritControlSystem(this);
             CellControlSystem = new CellControlSystem(this);
@@ -121,6 +128,7 @@ namespace Game.Systems
             InventoryUISystem.SetSystem(this);
             DescriptionUISystem.SetSystem(this);
             SpiritControlSystem.SetSystem();
+            MageHeroSystem.SetSystem();
 
             ReferenceHolder.Get.StartCoroutine(SetCameraPos());
             isSet = true;

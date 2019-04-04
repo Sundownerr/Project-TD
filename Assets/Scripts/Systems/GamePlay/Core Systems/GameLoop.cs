@@ -29,7 +29,7 @@ public class GameLoop : MonoBehaviour
 
     private void Start()
     {
-        ReferenceHolder.Get.MapAssigned += OnMapAssigned;
+        ReferenceHolder.Get.PlayerDataSet += OnPlayerDataSet;
         GameManager.Instance.StateChanged += OnGameStateChanged;
     }
 
@@ -41,9 +41,9 @@ public class GameLoop : MonoBehaviour
             player = null;
     }
 
-    private void OnMapAssigned(object _, PlayerMap e)
+    private void OnPlayerDataSet(object _, Game.Systems.PlayerData e)
     {
-        player = new PlayerSystem(e);
+        player = new PlayerSystem(e.Map, e.Mage);
         PlayerCreated?.Invoke(null, player);
     }
 

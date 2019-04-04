@@ -5,9 +5,11 @@ using UnityEngine;
 using Facepunch.Steamworks;
 using FPClient = Facepunch.Steamworks.Client;
 using Transport.Steamworks;
+using Game;
 
 public class GameData : MonoBehaviour
 {
+    private static GameData instance;
     public static GameData Instance
     {
         get => instance;
@@ -18,9 +20,8 @@ public class GameData : MonoBehaviour
     }
 
     public PlayerData PlayerData { get; private set; }
+    public MageHero ChoosedMage { get; private set; }
 
-    private static GameData instance;
-    
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);

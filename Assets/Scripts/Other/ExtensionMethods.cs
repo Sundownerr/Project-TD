@@ -132,12 +132,6 @@ public static class Ext
         return ids;
     }
 
-
-
-    ///<summary>
-    /// Set effect system owner, id
-    ///</summary>
-
     public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
 
     ///<summary>
