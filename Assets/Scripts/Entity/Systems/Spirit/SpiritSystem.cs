@@ -12,7 +12,7 @@ using Game.Enums;
 
 namespace Game.Spirit
 {
-    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanApplyEffects
+    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanApplyEffects, IDisposable
     {
         public event EventHandler<Effect> EffectApplied = delegate { };
         public event EventHandler<Effect> EffectRemoved = delegate { };
@@ -181,5 +181,38 @@ namespace Game.Spirit
         }
 
         public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    EffectApplied = null;
+                    EffectRemoved = null;
+                    Died = null;
+                    LeveledUp = null;
+                    StatsChanged = null;
+                    U.Destroy(Data);
+                    U.Destroy(Prefab);
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~SpiritSystem()
+        {
+          // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+          Dispose(false);
+        }
+    
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

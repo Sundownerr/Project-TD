@@ -57,7 +57,7 @@ namespace Game.Spirit.System
                 var attribute = CurrentData.NumeralAttributes[i];
                 if (attribute.ValuePerLevel == 0) continue;
 
-                attribute.Value += attribute.IncreacePerLevel == Increase.ByValue ?
+                attribute.Value += attribute.IncreasePerLevel == Increase.ByValue ?
                        attribute.ValuePerLevel :
                        attribute.Value.GetPercent(attribute.ValuePerLevel);
             }
@@ -67,7 +67,7 @@ namespace Game.Spirit.System
                 var attribute = CurrentData.SpiritAttributes[i];
                 if (attribute.ValuePerLevel == 0) continue;
 
-                attribute.Value += attribute.IncreacePerLevel == Increase.ByValue ?
+                attribute.Value += attribute.IncreasePerLevel == Increase.ByValue ?
                        attribute.ValuePerLevel :
                        attribute.Value.GetPercent(attribute.ValuePerLevel);
             }

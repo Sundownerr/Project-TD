@@ -103,13 +103,13 @@ namespace Game.Systems
                 }
 
             double GetValuePerLevel(NumeralAttribute attribute) =>
-                attribute.IncreacePerLevel == Increase.ByPercent ?
+                attribute.IncreasePerLevel == Increase.ByPercent ?
                     attribute.Value.GetPercent(attribute.ValuePerLevel) :
                     attribute.ValuePerLevel;
         }
 
         private double GetValue(NumeralAttribute attribute, IEntitySystem entity) =>
-            attribute.IncreacePerLevel == Increase.ByPercent && entity is SpiritSystem spirit ?
+            attribute.IncreasePerLevel == Increase.ByPercent && entity is SpiritSystem spirit ?
                 spirit.Data.Get(attribute.Type).Value.GetPercent(attribute.Value) :
                 attribute.Value;
     }

@@ -46,10 +46,8 @@ namespace Game.Systems
             if (spirit.UsedCell != null)
                 spirit.UsedCell.GetComponent<Cell>().IsBusy = false;
 
+            spirit.Dispose();
             Spirits.Remove(spirit);
-
-            Object.Destroy(spirit.Prefab);
-            Object.Destroy(spirit.Data);
         }
     }
 }

@@ -12,115 +12,83 @@ namespace Game
 {
     public class MageHeroSystem : IEntitySystem
     {
+        public IEntitySystem Owner { get; private set; }
+        public ID ID { get; private set; }
+        public MageHero Mage { get; private set; }
+
+        private enum From
+        {
+            StartingAttribute,
+            PerLevelAttribute
+        }
+
         public MageHeroSystem(PlayerSystem owner, MageHero data)
         {
             Owner = owner;
-            Data = data;
+            Mage = data;
         }
 
         public void SetSystem()
         {
-            (Owner as PlayerSystem).WaveSystem.EnemyCreated += OnEnemyCreated;
-            (Owner as PlayerSystem).SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
+            var ownerPlayer = Owner as PlayerSystem;
+            
+            ownerPlayer.WaveSystem.EnemyCreated += OnEnemyCreated;
+            ownerPlayer.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
         }
 
-        private void OnSpiritPlaced(object sender, SpiritSystem e) { Modify(e.Data); e.LeveledUp += OnSpiritLeveledUp; }
+        private void OnSpiritPlaced(object _, SpiritSystem e) { ModifyAttributes(e.Data, From.StartingAttribute); e.LeveledUp += OnSpiritLeveledUp; }
+        private void OnSpiritLeveledUp(object _, SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+        private void OnEnemyCreated(object _, EnemySystem e) => ModifyAttributes(e.Data, From.StartingAttribute);
 
-        private void OnSpiritLeveledUp(object sender, SpiritSystem e)
+        private void ModifyAttributes(EnemyData enemy, From getFrom)
         {
-            for (int i = 0; i < Data.SpiritAttributes.Count; i++)
-            {
-                var mageHeroModificator = Data.SpiritAttributes[i];
-                var attribute = e.Data.SpiritAttributes.Find(x => x.Type == mageHeroModificator.Type);
+            ModifyNumeralAttributes(enemy, getFrom);
 
-                attribute.AppliedValue += mageHeroModificator.ValuePerLevel;
-            }
-
-            for (int i = 0; i < Data.SpiritFlagAttributes.Count; i++)
-            {
-                var mageHeroModificator = Data.SpiritFlagAttributes[i];
-                var attribute = e.Data.FlagAttributes.Find(x => x.Type == mageHeroModificator.Type);
-
-                attribute.Value = mageHeroModificator.Value;
-            }
+            Mage.EnemyAttributes.ForEach(mageAttribute =>
+                enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
         }
 
-        private void ModifyAttribute<EnumType>(EntityAttributeApplyableLevelUpable<EnumType, double> entityAttribute, EntityAttributeApplyableLevelUpable<EnumType, double> mageAttribute)
+        private void ModifyAttributes(SpiritData spirit, From getFrom)
         {
-            if (mageAttribute.IncreacePerLevel == Increase.ByPercent)
-                entityAttribute.AppliedValue += Ext.GetPercent(entityAttribute.AppliedValue, mageAttribute.Value);
-            else
-                entityAttribute.AppliedValue += mageAttribute.Value;
+            ModifyNumeralAttributes(spirit, getFrom);
+
+            Mage.SpiritAttributes.ForEach(mageAttribute =>
+                ModifyEntityAttribute(
+                    spirit.SpiritAttributes.Find(attribute => attribute.Type == mageAttribute.Type),
+                    mageAttribute,
+                    getFrom));
+
+            Mage.SpiritFlagAttributes.ForEach(mageAttribute =>
+                spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
         }
 
-        private void OnEnemyCreated(object sender, EnemySystem e) => Modify(e.Data);
-
-        private void ModifyNumeralAttributes<EntityData>(EntityData data)
+        private void ModifyNumeralAttributes<EntityData>(EntityData data, From getFrom)
         {
-            var attribute = new NumeralAttribute();
-            for (int i = 0; i < Data.NumeralAttributes.Count; i++)
-            {
-                var mageHeroModificator = Data.NumeralAttributes[i];
+            var entityAttribute = new NumeralAttribute();
 
+            Mage.NumeralAttributes.ForEach(mageAttribute =>
+            {
                 if (data is EnemyData enemy)
-                    attribute = enemy.NumeralAttributes.Find(x => x.Type == mageHeroModificator.Type);
+                    entityAttribute = enemy.NumeralAttributes.Find(attribute => attribute.Type == mageAttribute.Type);
 
                 if (data is SpiritData spirit)
-                    attribute = spirit.NumeralAttributes.Find(x => x.Type == mageHeroModificator.Type);
+                    entityAttribute = spirit.NumeralAttributes.Find(attribute => attribute.Type == mageAttribute.Type);
 
-                ModifyAttribute(attribute, mageHeroModificator);
-            }
+                ModifyEntityAttribute(entityAttribute, mageAttribute, getFrom);
+            });
         }
 
-        void Modify<EntityData>(EntityData data) where EntityData : Entity
+        private void ModifyEntityAttribute<EnumType>(EntityAttributeApplyableLevelUpable<EnumType, double> entityAttribute, EntityAttributeApplyableLevelUpable<EnumType, double> mageAttribute, From getFrom)
         {
-            if (data is EnemyData enemy)
-                ModifyEnemyAttributes();
+            var value = getFrom == From.StartingAttribute ?
+                mageAttribute.Value :
+                mageAttribute.ValuePerLevel;
 
-            if (data is SpiritData spirit)
-                ModifySpiritAttributes();
+            var applyableValue = mageAttribute.IncreasePerLevel == Increase.ByPercent ?
+                Ext.GetPercent(entityAttribute.AppliedValue, value) :
+                value;
 
-            #region Helper functions
-
-            void ModifyEnemyAttributes()
-            {
-                ModifyNumeralAttributes(enemy);
-
-                for (int i = 0; i < Data.EnemyAttributes.Count; i++)
-                {
-                    var mageHeroModificator = Data.EnemyAttributes[i];
-                    var attribute = enemy.EnemyAttributes.Find(x => x.Type == mageHeroModificator.Type);
-
-                    attribute.AppliedValue += mageHeroModificator.Value;
-                }
-            }
-
-            void ModifySpiritAttributes()
-            {
-                ModifyNumeralAttributes(spirit);
-
-                for (int i = 0; i < Data.SpiritAttributes.Count; i++)
-                {
-                    var mageHeroModificator = Data.SpiritAttributes[i];
-                    var attribute = spirit.SpiritAttributes.Find(x => x.Type == mageHeroModificator.Type);
-
-                    ModifyAttribute(attribute, mageHeroModificator);
-                }
-
-                for (int i = 0; i < Data.SpiritFlagAttributes.Count; i++)
-                {
-                    var mageHeroModificator = Data.SpiritFlagAttributes[i];
-                    var attribute = spirit.FlagAttributes.Find(x => x.Type == mageHeroModificator.Type);
-
-                    attribute.Value = mageHeroModificator.Value;
-                }
-            }
-
-            #endregion
+            entityAttribute.AppliedValue += applyableValue;
         }
-
-        public IEntitySystem Owner { get; private set; }
-        public ID ID { get; private set; }
-        public MageHero Data { get; private set; }
     }
 }

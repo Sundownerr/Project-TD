@@ -27,7 +27,7 @@ public class EntityAttributeApplyable<EnumType, ValueType> : EntityAttribute<Enu
 [Serializable]
 public class EntityAttributeApplyableLevelUpable<EnumType, ValueType> : EntityAttributeApplyable<EnumType, ValueType>
 {
-    [SerializeField] public Increase IncreacePerLevel;
+    [SerializeField] public Increase IncreasePerLevel;
     [SerializeField] public double ValuePerLevel;
 }
 
