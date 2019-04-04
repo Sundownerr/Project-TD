@@ -114,7 +114,7 @@ namespace Game.Enemy
                 rotation.z = 0;
                 rotation.x = 0;
 
-                Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.GetValue(Numeral.MoveSpeed)), Space.Self);
+                Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.Get(Enums.Enemy.MoveSpeed).Sum), Space.Self);
                 Prefab.transform.localRotation = rotation;
 
             }

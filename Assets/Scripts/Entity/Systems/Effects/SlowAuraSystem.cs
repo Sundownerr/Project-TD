@@ -5,6 +5,7 @@ using Game.Enemy;
 using Game.Data;
 using Game.Data.Effects;
 using UnityEngine;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -25,13 +26,13 @@ namespace Game.Systems
             var spirit = e as SpiritSystem;
 
             var removedAttackSpeedMod =
-                    (int)spirit.Data.GetValue(Numeral.AttackSpeedModifier).GetPercent(effect.SlowPercent);
+                    (int)spirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value.GetPercent(effect.SlowPercent);
 
             if (spirit.CountOf(effect) <= 0)          
-                spirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value -= removedAttackSpeedMod;       
+                spirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value -= removedAttackSpeedMod;       
             else
                 removedAttackSpeedMod =
-                    (int)(spirit.Data.GetValue(Numeral.AttackSpeedModifier) + effect.SlowPercent).GetPercent(effect.SlowPercent);
+                    (int)(spirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value + effect.SlowPercent).GetPercent(effect.SlowPercent);
 
             spirit.AddEffect(effect);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
@@ -46,7 +47,7 @@ namespace Game.Systems
 
             if (spirit.CountOf(effect) <= 1)
                 if (removedAttackSpeedMods.TryGetValue(spirit, out int attackSpeedMod))
-                    spirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value += attackSpeedMod;
+                    spirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value += attackSpeedMod;
 
             removedAttackSpeedMods.Remove(spirit);
             spirit.RemoveEffect(effect);

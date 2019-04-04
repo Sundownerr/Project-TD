@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Game.Spirit.Data.Stats;
+using Game.Enums;
+using RotaryHeart.Lib.SerializableDictionary;
 
-namespace Game.Data
+namespace Game.Wrappers
 {
     [Serializable]
     public class DamageToArmor
@@ -12,5 +14,8 @@ namespace Game.Data
         public DamageType Type;
         public List<double> Percents;
     }
+
+
+
 }
 

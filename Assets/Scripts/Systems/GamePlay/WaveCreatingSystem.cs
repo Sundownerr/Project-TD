@@ -5,6 +5,8 @@ using Game.Enemy.Data;
 using Game.Data;
 using UnityEngine;
 using U = UnityEngine.Object;
+using Game.Enums;
+using Game.Wrappers;
 
 namespace Game.Systems
 {
@@ -63,27 +65,26 @@ namespace Game.Systems
 
             void CalculateStats()
             {
-                newData.AppliedAttributes = ExtensionMethods.CreateAttributeList();
-                newData.BaseAttributes = ExtensionMethods.CreateAttributeList();
+                newData.CreateNewAttributes();
 
                 SetArmor();
                 SetGoldAndExp();
 
 
-                newData.Get(Numeral.ArmorValue, From.Base).Value += waveNumber;            
-                newData.Get(Numeral.GoldCost, From.Base).Value += 1 + waveNumber;        // waveCount / 7;
-                newData.Get(Numeral.Health, From.Base).Value += 500 + waveNumber * 10;
-                
+                newData.Get(Enums.Enemy.ArmorValue).Value += waveNumber;
+                newData.Get(Numeral.GoldCost).Value += 1 + waveNumber;        // waveCount / 7;
+                newData.Get(Enums.Enemy.Health).Value += 500 + waveNumber * 10;
+
                 if (waveNumber % 8 == 0)
                 {
-                    newData.Get(Numeral.ArmorValue, From.Base).Value *= 2;
-                    newData.Get(Numeral.Health, From.Base).Value *= 2;
-                    newData.Get(Numeral.GoldCost, From.Base).Value = 0;
+                    newData.Get(Enums.Enemy.ArmorValue).Value *= 2;
+                    newData.Get(Enums.Enemy.Health).Value *= 2;
+                    newData.Get(Numeral.GoldCost).Value = 0;
                 }
 
-                newData.Get(Numeral.MoveSpeed, From.Base).Value += 120 + waveNumber * 5;
-                newData.Get(Numeral.MaxHealth, From.Base).Value = newData.Get(Numeral.Health, From.Base).Value;
-                newData.Get(Numeral.DefaultMoveSpeed, From.Base).Value = newData.Get(Numeral.MoveSpeed, From.Base).Value;
+                newData.Get(Enums.Enemy.MoveSpeed).Value += 120 + waveNumber * 5;
+                newData.Get(Enums.Enemy.MaxHealth).Value = newData.Get(Enums.Enemy.Health).Value;
+                newData.Get(Enums.Enemy.DefaultMoveSpeed).Value = newData.Get(Enums.Enemy.MoveSpeed).Value;
 
                 #region Helper functions
 
@@ -124,8 +125,8 @@ namespace Game.Systems
                             break;
                     }
 
-                    newData.Get(Numeral.Exp, From.Base).Value = exp;
-                    newData.Get(Numeral.GoldCost, From.Base).Value = gold;
+                    newData.Get(Numeral.Exp).Value = exp;
+                    newData.Get(Numeral.GoldCost).Value = gold;
                 }
 
                 void SetArmor()

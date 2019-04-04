@@ -44,7 +44,7 @@ namespace Game.Systems
                     if (bulletTraitCount == 0)
                     {
                         if (bullet.Target != null)
-                            spirit.DealDamage(bullet.Target, spirit.Data.GetValue(Numeral.Damage));
+                            spirit.DealDamage(bullet.Target, spirit.Data.Get(Enums.Spirit.Damage).Sum);
 
                         spirit.ShootSystem.SetTargetReached(bullet);
                     }

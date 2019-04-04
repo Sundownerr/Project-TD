@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using Game.Enemy.Data;
 using UnityEditor;
+using Game.Enums;
 
 namespace Game.Data
 {

@@ -11,12 +11,8 @@ namespace Game
     public abstract class Entity : ScriptableObject, IIDComponent
     {
         [SerializeField] public ID ID { get; set; } = new ID();
-
         [SerializeField] public string Name;
-        [SerializeField] public string Description;
-
-        [SerializeField, ShowAssetPreview(125, 125)]
-        public GameObject Prefab;
+        [SerializeField, NaughtyAttributes.ResizableTextArea] public string Description;
 
         [SerializeField, ShowAssetPreview(125, 125)]
         public Sprite Image;

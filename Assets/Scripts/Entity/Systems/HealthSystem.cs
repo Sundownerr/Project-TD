@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Game;
+using Game.Enums;
 using Game.Enemy;
 using Game.Data;
 using Game.Systems;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 public class HealthSystem
 {
-    
+
     public event EventHandler<IHealthComponent> ZeroHealth = delegate { };
     public bool IsVulnerable { get; set; }
 
@@ -24,7 +25,7 @@ public class HealthSystem
 
         if (owner is EnemySystem enemy)
         {
-            maxHealth = enemy.Data.GetValue(Numeral.MaxHealth);
+            maxHealth = enemy.Data.Get(Enemy.MaxHealth).Sum;
         }
     }
 
@@ -32,8 +33,8 @@ public class HealthSystem
     {
         if (owner is EnemySystem enemy)
         {
-            var health = enemy.Data.GetValue(Numeral.Health);
-            healthRegen = enemy.Data.GetValue(Numeral.HealthRegen);
+            var health = enemy.Data.Get(Enemy.Health).Sum;
+            healthRegen = enemy.Data.Get(Enemy.HealthRegen).Sum;
 
             if (health < maxHealth)
             {
@@ -55,15 +56,21 @@ public class HealthSystem
 
         if (owner is EnemySystem enemy)
         {
-            var remainingHealth =
-                enemy.Data.Get(Numeral.Health, From.Applied).Value > 0 ?
-                enemy.Data.Get(Numeral.Health, From.Applied) :
-                enemy.Data.Get(Numeral.Health, From.Base);
+
 
             enemy.LastDamageDealer = changer;
-            remainingHealth.Value -= damage;
 
-            if (remainingHealth.Value <= 0)
+            if (enemy.Data.Get(Enemy.Health).AppliedValue > 0)
+                enemy.Data.Get(Enemy.Health).AppliedValue -= damage;
+            else
+                enemy.Data.Get(Enemy.Health).Value -= damage;
+
+            var remainingHealth =
+                enemy.Data.Get(Enemy.Health).AppliedValue > 0 ?
+                enemy.Data.Get(Enemy.Health).AppliedValue :
+                enemy.Data.Get(Enemy.Health).Value;
+
+            if (remainingHealth <= 0)
             {
                 GiveResources();
                 IsVulnerable = false;
@@ -77,7 +84,7 @@ public class HealthSystem
         void GiveResources()
         {
             if (enemy.LastDamageDealer is SpiritSystem spirit)
-                spirit.AddExp((int)enemy.Data.GetValue(Numeral.Exp));
+                spirit.AddExp((int)enemy.Data.Get(Numeral.Exp).Sum);
         }
 
         #endregion

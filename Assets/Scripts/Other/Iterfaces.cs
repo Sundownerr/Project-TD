@@ -8,12 +8,18 @@ using Game.Spirit.Data;
 using Game.Spirit.System;
 using UnityEngine;
 using System;
+using Game.Enums;
+using RotaryHeart;
+using RotaryHeart.Lib.SerializableDictionary;
+using OneLine;
+using Game.Wrappers;
 
 namespace Game
 {
     public interface IPrefabComponent : IIDComponent
     {
         [SerializeField] GameObject Prefab { get; }
+
     }
 
     public interface IIDComponent
@@ -66,14 +72,17 @@ namespace Game
         event EventHandler<IHealthComponent> Died;
     }
 
-    public interface IAttributeComponent
+    public interface ISpiritAttributes 
     {
-        [SerializeField] List<NumeralAttribute> BaseAttributes { get; }
+        List<NumeralAttribute> NumeralAttributes { get; }
+        List<SpiritAttribute> SpiritAttributes { get; }
+        List<SpiritFlagAttribute> FlagAttributes { get; }
     }
 
-    public interface IApplyableAttributeComponent : IAttributeComponent
+    public interface IEnemyAttributes 
     {
-        [SerializeField] List<NumeralAttribute> AppliedAttributes { get; }
+        List<NumeralAttribute> NumeralAttributes { get; }
+        List<EnemyAttribute> EnemyAttributes { get; }
     }
 
     public interface IAbilityComponent

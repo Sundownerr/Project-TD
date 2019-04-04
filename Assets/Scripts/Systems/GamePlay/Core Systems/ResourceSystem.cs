@@ -4,6 +4,7 @@ using Game.Enemy;
 using Game.Data;
 using Game.Spirit;
 using UnityEngine;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -44,20 +45,20 @@ namespace Game.Systems
 
         private void OnSpiritSold(object _, SpiritSystem spirit)
         {
-            AddResource(ResourceType.Gold, spirit.Data.Get(Numeral.GoldCost, From.Base).Value);
-            AddResource(ResourceType.SpiritLimit, -spirit.Data.Get(Numeral.SpiritLimit, From.Base).Value);
+            AddResource(ResourceType.Gold, spirit.Data.Get(Numeral.GoldCost).Value);
+            AddResource(ResourceType.SpiritLimit, -spirit.Data.Get(Enums.Spirit.SpiritLimit).Value);
         }
 
         private void OnSpiritCreated(object _, SpiritSystem spirit)
         {
-            AddResource(ResourceType.Gold, -spirit.Data.Get(Numeral.GoldCost, From.Base).Value);
-            AddResource(ResourceType.SpiritLimit, spirit.Data.Get(Numeral.SpiritLimit, From.Base).Value);
+            AddResource(ResourceType.Gold, -spirit.Data.Get(Numeral.GoldCost).Value);
+            AddResource(ResourceType.SpiritLimit, spirit.Data.Get(Enums.Spirit.SpiritLimit).Value);
         }
 
         private void OnEnemyDied(object _, EnemySystem enemy)
         {
             if (enemy.LastDamageDealer != null)
-                AddResource(ResourceType.Gold, enemy.Data.GetValue(Numeral.GoldCost));
+                AddResource(ResourceType.Gold, enemy.Data.Get(Numeral.GoldCost).Sum);
         }
 
         private void OnElementLearned(object _, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);

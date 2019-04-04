@@ -6,6 +6,7 @@ using Game.Spirit;
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -24,7 +25,8 @@ namespace Game.Systems
         public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit = delegate { };
         public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit = delegate { };
         public event EventHandler<ItemUISystem> MoveItemToPlayer = delegate { };
-        public List<StatValueUI> StatValues;
+        private List<NumeralStatValueUI> numeralStatValues;
+        private List<SpiritStatValueUI> spiritStatValues;
 
         private List<bool> isSlotEmpty = new List<bool>();
         private ObjectPool appliedEffectsUIPool;
@@ -33,19 +35,23 @@ namespace Game.Systems
         private Animator baseAnimator, expandAnimator;
         private Button expandButton;
         private string isOpen = "isOpen", isExpanded = "isExpanded";
-        private Numeral[] hidedStats = new Numeral[]
-            {
-                Numeral.AttackSpeedModifier,
-                Numeral.BuffDuration,
-                Numeral.DebuffDuration,
-                Numeral.GoldRatio,
-                Numeral.ExpRatio,
-                Numeral.ManaRegen,
-                Numeral.MulticritCount,
-                Numeral.CritMultiplier,
-                Numeral.ItemDropRatio,
-                Numeral.ItemQuialityRatio
-            };
+        private Numeral[] hidedNumeralStats = new Numeral[]
+        {
+            Numeral.BuffDuration,
+            Numeral.DebuffDuration,
+            Numeral.ItemDropRatio,
+            Numeral.ItemQuialityRatio
+        };
+
+        private Enums.Spirit[] hidedSpiritStats = new Enums.Spirit[]
+        {
+            Enums.Spirit.AttackSpeedModifier,
+            Enums.Spirit.GoldRatio,
+            Enums.Spirit.ExpRatio,
+            Enums.Spirit.ManaRegen,
+            Enums.Spirit.MulticritCount,
+            Enums.Spirit.CritMultiplier,
+        };
 
         protected override void Awake()
         {
@@ -53,6 +59,8 @@ namespace Game.Systems
             baseAnimator = GetComponent<Animator>();
             expandButton = SpiritName.transform.parent.GetComponent<Button>();
             expandButton.onClick.AddListener(ExpandStats);
+            numeralStatValues = new List<NumeralStatValueUI>(GetComponentsInChildren<NumeralStatValueUI>(true));
+            spiritStatValues = new List<SpiritStatValueUI>(GetComponentsInChildren<SpiritStatValueUI>(true));
 
             appliedEffectsUIPool = new ObjectPool(SlotWithCooldownPrefab, BuffGroup.transform, 7);
 
@@ -227,8 +235,8 @@ namespace Game.Systems
 
         private void HideExpandedStatValues(bool hide)
         {
-            for (int i = 0; i < hidedStats.Length; i++)
-                StatValues.Find(x => x.Type == hidedStats[i]).gameObject.SetActive(!hide);
+            for (int i = 0; i < hidedNumeralStats.Length; i++)
+                numeralStatValues.Find(x => x.Numeral == hidedNumeralStats[i]).gameObject.SetActive(!hide);
         }
 
         private void UpdateValues()
@@ -245,47 +253,55 @@ namespace Game.Systems
 
             void SetExpBarValue()
             {
-                var expBarValue = 1 / (float)(ReferenceHolder.ExpToLevelUp[(int)spirit.GetValue(Numeral.Level)] / spirit.GetValue(Numeral.Exp));
+                var expBarValue = 1 / (float)(ReferenceHolder.ExpToLevelUp[(int)spirit.Get(Numeral.Level).Value] / spirit.Get(Numeral.Exp).Value);
                 ExpBar.fillAmount = expBarValue;
             }
 
             void SetStatValues()
             {
-                for (int i = 0; i < StatValues.Count; i++)
-                    StatValues[i].Value.text = GetTextFromValue(StatValues[i].Type);
+                for (int i = 0; i < numeralStatValues.Count; i++)
+                    numeralStatValues[i].Value.text = NumeralToString(numeralStatValues[i].Numeral);
+
+                for (int i = 0; i < spiritStatValues.Count; i++)
+                    spiritStatValues[i].Value.text = SpiritToString(spiritStatValues[i].Spirit);
 
                 #region Helper functions
 
-                string GetTextFromValue(Numeral value)
+                string NumeralToString(Numeral value)
                 {
                     var withPercent =
-                        value == Numeral.SpellCritChance ||
-                        value == Numeral.SpellDamage ||
-                        value == Numeral.CritChance ||
-                        value == Numeral.ExpRatio ||
                         value == Numeral.ItemDropRatio ||
                         value == Numeral.ItemQuialityRatio ||
-                        value == Numeral.GoldRatio ||
-                        value == Numeral.CritMultiplier ||
                         value == Numeral.BuffDuration ||
                         value == Numeral.DebuffDuration;
 
                     if (value == Numeral.Level)
-                        return $"{StaticMethods.KiloFormat((int)spirit.GetValue(value))}";
+                        return $"{StaticMethods.KiloFormat((int)spirit.Get(value).Sum)}";
 
-                    return $"{StaticMethods.KiloFormat(spirit.GetValue(value))}{(withPercent ? "%" : string.Empty)}";
+                    return $"{StaticMethods.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
                 }
 
+                string SpiritToString(Enums.Spirit value)
+                {
+                    var withPercent =
+                        value == Enums.Spirit.SpellCritChance ||
+                        value == Enums.Spirit.SpellDamage ||
+                        value == Enums.Spirit.CritChance ||
+                        value == Enums.Spirit.ExpRatio ||
+                        value == Enums.Spirit.GoldRatio ||
+                        value == Enums.Spirit.CritMultiplier;
+
+                    return $"{StaticMethods.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
+                }
                 #endregion
             }
-
             #endregion
         }
 
         private void UpdateItems()
         {
             var spiritItems = choosedSpirit.Data.Inventory.Items;
-            var maxSlots = choosedSpirit.Data.Get(Numeral.MaxInventorySlots, From.Base).Value;
+            var maxSlots = choosedSpirit.Data.Get(Enums.Spirit.MaxInventorySlots).Value;
 
             isSlotEmpty.Clear();
             for (int i = 0; i < ItemSlots.Count; i++)

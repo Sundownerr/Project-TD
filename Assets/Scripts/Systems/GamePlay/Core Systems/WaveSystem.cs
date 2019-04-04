@@ -7,6 +7,7 @@ using Game.Enemy.Data;
 using U = UnityEngine.Object;
 using Game.Data;
 using Game.Spirit;
+using Game.Enums;
 
 namespace Game.Systems
 {

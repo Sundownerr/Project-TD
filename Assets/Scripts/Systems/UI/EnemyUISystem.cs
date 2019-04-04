@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -43,8 +44,8 @@ namespace Game.Systems
             if (enemy != null && enemy.Prefab != null)
             {
                 EnemyUI.transform.position = enemy.Prefab.transform.position + new Vector3(0, 90, 0);
-                hpBar.fillAmount = (float)(enemy.Data.GetValue(Numeral.Health) / enemy.Data.GetValue(Numeral.MaxHealth));               
-                hpText.text = StaticMethods.KiloFormat(enemy.Data.GetValue(Numeral.Health));
+                hpBar.fillAmount = (float)(enemy.Data.Get(Enums.Enemy.Health).Sum / enemy.Data.Get(Enums.Enemy.MaxHealth).Sum);               
+                hpText.text = StaticMethods.KiloFormat(enemy.Data.Get(Enums.Enemy.Health).Sum);
             }
             else
                 EnemyUI.SetActive(false);           

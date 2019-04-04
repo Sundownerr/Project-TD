@@ -1,4 +1,5 @@
-﻿using Game.Spirit;
+﻿using Game.Enums;
+using Game.Spirit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -96,7 +97,7 @@ namespace Game.Systems
 
             var textComponent = text.GetComponent<TextMeshProUGUI>();
             levelUpTexts.Add(textComponent);
-            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level, From.Base).Value}";
+            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level).Value}";
             StartCoroutine(DeactivateLevelUpText());
 
             #region Helper functions

@@ -2,21 +2,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using OneLine;
+using Game;
+using Game.Enums;
+
 
 [Serializable]
-public class NumeralAttribute 
+public class EntityAttribute<EnumType, ValueType>
 {
-    [SerializeField] public Numeral Type;
+    [SerializeField] protected EnumType type;
+    [SerializeField] protected ValueType value;
 
-    [SerializeField] public Change IncreacePerLevel;
-    [SerializeField] public double Value;
-    [SerializeField] public double ValuePerLevel;
-
-    public NumeralAttribute(Numeral type, double value)
-    {
-        Value = value;
-        Type = type;
-    }
+    public ValueType Value { get => value; set => this.value = value; }
+    public EnumType Type { get => type; set => type = value; }
 }
 
+[Serializable]
+public class EntityAttributeApplyable<EnumType, ValueType> : EntityAttribute<EnumType, ValueType>
+{
+    public ValueType AppliedValue { get; set; }
+}
+
+[Serializable]
+public class NumeralAttribute : EntityAttributeApplyable<Numeral, double>
+{
+    [SerializeField] public Increase IncreacePerLevel;
+    [SerializeField] public double ValuePerLevel;
+    public double Sum => Value + AppliedValue;
+}
+
+[Serializable]
+public class SpiritAttribute : EntityAttributeApplyable<Spirit, double>
+{
+    [SerializeField] public Increase IncreacePerLevel;
+    [SerializeField] public double ValuePerLevel;
+    public double Sum => Value + AppliedValue;
+}
+
+[Serializable]
+public class EnemyAttribute : EntityAttributeApplyable<Enemy, double>
+{
+    public double Sum => Value + AppliedValue;
+}
+
+[Serializable]
+public class SpiritFlagAttribute : EntityAttribute<SpiritFlag, bool>
+{
+
+}
 

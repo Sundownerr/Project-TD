@@ -11,6 +11,7 @@ using Game.Spirit.Data;
 using Game.Spirit;
 using Game.Cells;
 using Game.Enemy;
+using Game.Enums;
 
 public static class StaticMethods
 {
@@ -78,7 +79,7 @@ public static class StaticMethods
         };
 
         newSpirit.SetSystem(owner);
-        CreatePlaceEffect(newSpirit.Data.Element, newSpiritPrefab.transform.position);
+        CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
        
         return newSpirit;
     }
@@ -93,7 +94,7 @@ public static class StaticMethods
         };
 
         newSpirit.SetSystem(owner);
-        CreatePlaceEffect(newSpirit.Data.Element, newSpiritPrefab.transform.position);
+        CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
         return newSpirit;
     }
 

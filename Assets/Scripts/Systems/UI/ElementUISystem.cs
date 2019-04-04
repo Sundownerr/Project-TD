@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using System;
 using Game.Spirit;
+using Game.Enums;
 
 namespace Game.Systems
 {

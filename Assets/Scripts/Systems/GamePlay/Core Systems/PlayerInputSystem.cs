@@ -183,8 +183,8 @@ namespace Game.Systems
         {
 
             var allSpirits = ReferenceHolder.Get.SpiritDataBase.Spirits.
-                Elements[(int)ChoosedSpirit.Data.Element].
-                Rarities[(int)ChoosedSpirit.Data.Rarity].
+                Elements[(int)ChoosedSpirit.Data.Base.Element].
+                Rarities[(int)ChoosedSpirit.Data.Base.Rarity].
                 Spirits;
 
             for (int i = 0; i < allSpirits.Count; i++)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Enemy;
+using Game.Enums;
 using Game.Systems;
 using UnityEngine;
 
@@ -30,8 +31,8 @@ namespace Game.Spirit.System
 
         public void Set(GameObject bullet)
         {
-            attackDelay = ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value
-                .GetPercent(ownerSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value);
+            attackDelay = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value
+                .GetPercent(ownerSpirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value);
 
             bulletPool = new ObjectPool(bullet, ownerSpirit.Prefab.transform, 2);
            
@@ -40,14 +41,12 @@ namespace Game.Spirit.System
         public void UpdateSystem()
         {
             var modifiedAttackSpeed =
-                ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value.GetPercent(
-                    ownerSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value);
+                ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value.GetPercent(
+                    ownerSpirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value);
 
-            var attackCooldown = ownerSpirit.Data.Get(Numeral.AttackSpeedModifier, From.Base).Value < 100 ?
-                    ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value +
-                    (ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value - modifiedAttackSpeed) :
-                    ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value -
-                    (modifiedAttackSpeed - ownerSpirit.Data.Get(Numeral.AttackSpeed, From.Base).Value);
+            var attackCooldown = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeedModifier).Value < 100 ?
+                    ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value + (ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value - modifiedAttackSpeed) :
+                    ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value - (modifiedAttackSpeed - ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value);
 
             attackDelay = attackDelay > attackCooldown ? 0 : attackDelay + Time.deltaTime * 0.5f;
             MoveBullet();

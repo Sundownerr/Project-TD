@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game;
+using Game.Enums;
 using Game.Systems;
 using TMPro;
 using UnityEngine;
@@ -8,9 +9,9 @@ using UnityEngine.EventSystems;
 
 namespace Game.Systems
 {
-   public class StatValueUI : MonoBehaviour, IHaveDescription, IPointerEnterHandler, IPointerExitHandler
+   public class NumeralStatValueUI : MonoBehaviour, IHaveDescription, IPointerEnterHandler, IPointerExitHandler
    {
-      public Numeral Type;
+      public Numeral Numeral;
       public TextMeshProUGUI Value;
 
       private void Awake()

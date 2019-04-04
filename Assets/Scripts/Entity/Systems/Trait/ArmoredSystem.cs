@@ -33,7 +33,7 @@ namespace Game.Systems
         
         public void Set()
         {
-            (Owner as EnemySystem).Data.Get(Numeral.ArmorValue, From.Base).Value += trait.AdditionalArmor;
+            (Owner as EnemySystem).Data.Get(Enums.Enemy.ArmorValue).Value += trait.AdditionalArmor;
         }
     }
 }

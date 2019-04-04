@@ -2,6 +2,7 @@
 using Game.Spirit.Data;
 using TMPro;
 using System;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -24,9 +25,9 @@ namespace Game.Systems
 
         private void OnClick()
         {
-            var goldCost            = SpiritData.Get(Numeral.GoldCost, From.Base).Value;
-            var spiritLimit          = SpiritData.Get(Numeral.SpiritLimit, From.Base).Value;
-            var magicCrystalsCost   = SpiritData.Get(Numeral.MagicCrystalReq, From.Base).Value;
+            var goldCost            = SpiritData.Get(Numeral.GoldCost).Value;
+            var spiritLimit          = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
+            var magicCrystalsCost   = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
             if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
             {

@@ -6,31 +6,46 @@ using NaughtyAttributes;
 using Game.Systems;
 using System.Text;
 using System;
+using Game.Enums;
+using Game.Wrappers;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Game.Enemy
 {
     [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy New")]
 
     [Serializable]
-    public class EnemyData : Entity, IApplyableAttributeComponent, IAbilityComponent, ITraitComponent
+    public class EnemyData : Entity, IEnemyAttributes, IAbilityComponent, ITraitComponent, IPrefabComponent
     {
-        [SerializeField] public List<Trait> Traits { get; set; }
-        [SerializeField] public List<Ability> Abilities { get; set; }
-        [SerializeField] public List<NumeralAttribute> BaseAttributes { get; set; }
-        [SerializeField] public List<NumeralAttribute> AppliedAttributes { get; set; }
-
-        [SerializeField] public ArmorType ArmorType { get; set; }
-
+        [SerializeField, ShowAssetPreview()] private GameObject prefab;
         [SerializeField] public int WaveLevel;
         [SerializeField] public RaceType Race;
         [SerializeField] public EnemyType Type;
         [SerializeField] public int numberInList;
 
+        public GameObject Prefab { get => prefab; set => prefab = value; }
+        public List<Trait> Traits { get; set; }
+        public List<Ability> Abilities { get; set; }
+        public List<NumeralAttribute> BaseAttributes { get; set; }
+        public List<NumeralAttribute> AppliedAttributes { get; set; }
+        public ArmorType ArmorType { get; set; }
+
+        public List<NumeralAttribute> NumeralAttributes { get ; private set ; }
+        public List<EnemyAttribute> EnemyAttributes { get ; private set; }
+
         private void Awake()
         {
             ID.Add((int)Race);
             ID.Add(numberInList);
+        }
+
+        public void CreateNewAttributes()
+        {
+            NumeralAttributes = NumeralAttributes.CreateAttributeList();
+            EnemyAttributes = EnemyAttributes.CreateAttributeList();
         }
 
 #if UNITY_EDITOR

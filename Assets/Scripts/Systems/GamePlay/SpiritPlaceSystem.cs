@@ -6,6 +6,7 @@ using Game.Spirit.Data.Stats;
 using UnityEngine;
 using U = UnityEngine.Object;
 using Mirror;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -34,9 +35,9 @@ namespace Game.Systems
         {
             if (Owner.CellControlSystem.IsGridBuilded)
             {
-                var newSpiritLimit = spiritData.Get(Numeral.SpiritLimit, From.Base).Value;
-                var newGoldCost = spiritData.Get(Numeral.GoldCost, From.Base).Value;
-                var newMagicCrystalCost = spiritData.Get(Numeral.MagicCrystalReq, From.Base).Value;
+                var newSpiritLimit = spiritData.Get(Enums.Spirit.SpiritLimit).Value;
+                var newGoldCost = spiritData.Get(Numeral.GoldCost).Value;
+                var newMagicCrystalCost = spiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
                     if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
@@ -46,7 +47,7 @@ namespace Game.Systems
                             (int)Owner.CellControlSystem.ChoosedCell.transform.position.y,
                             (int)Owner.CellControlSystem.ChoosedCell.transform.position.z);
 
-                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData.ID, (int)spiritData.Rarity, (int)spiritData.Element, position));
+                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData.ID, (int)spiritData.Base.Rarity, (int)spiritData.Base.Element, position));
                     }
                     else
                     {

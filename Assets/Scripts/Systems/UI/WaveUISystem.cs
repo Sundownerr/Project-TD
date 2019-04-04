@@ -6,6 +6,7 @@ using System;
 using Game.Enemy.Data;
 using System.Text;
 using UnityEngine.UI;
+using Game.Enums;
 
 namespace Game.Systems
 {

@@ -6,6 +6,7 @@ using Game.Spirit.Data;
 using System;
 using TMPro;
 using Game.Spirit;
+using Game.Enums;
 
 namespace Game.Systems
 {
@@ -118,7 +119,7 @@ namespace Game.Systems
         private void UpdateRarity()
         {
             for (int i = 0; i < spiritButtons.Count; i++)
-                spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Element == ChoosedElement);
+                spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Base.Element == ChoosedElement);
         }
 
         public void OnAllThisSpiritsUsed(object _, SpiritButtonSystem spiritButton)
@@ -128,8 +129,8 @@ namespace Game.Systems
             var buttonRects = new List<RectTransform>();
 
             for (int i = 0; i < spiritButtons.Count; i++)
-                if (spiritButtons[i].SpiritData.Element == spiritButton.SpiritData.Element)
-                    if (spiritButtons[i].SpiritData.Rarity == spiritButton.SpiritData.Rarity)
+                if (spiritButtons[i].SpiritData.Base.Element == spiritButton.SpiritData.Base.Element)
+                    if (spiritButtons[i].SpiritData.Base.Rarity == spiritButton.SpiritData.Base.Rarity)
                         buttonRects.Add(spiritButtons[i].GetComponent<RectTransform>());
 
             for (int i = 0; i < buttonRects.Count; i++)
@@ -165,8 +166,8 @@ namespace Game.Systems
                     AddSpiritAmount(i);
                 }
 
-                if (spiritButtons[i].SpiritData.Element == spiritData.Element)
-                    if (spiritButtons[i].SpiritData.Rarity == spiritData.Rarity)
+                if (spiritButtons[i].SpiritData.Base.Element == spiritData.Base.Element)
+                    if (spiritButtons[i].SpiritData.Base.Rarity == spiritData.Base.Rarity)
                         spiritCount++;
             }
 
@@ -185,7 +186,7 @@ namespace Game.Systems
 
             void CreateSpiritButton()
             {
-                spiritButtonGOs.Add(Instantiate(SpiritButtonPrefab, RarityGOs[(int)spiritData.Rarity].transform));
+                spiritButtonGOs.Add(Instantiate(SpiritButtonPrefab, RarityGOs[(int)spiritData.Base.Rarity].transform));
                 spiritButtons.Add(spiritButtonGOs[spiritButtonGOs.Count - 1].GetComponent<SpiritButtonSystem>());
 
                 var spiritButton = spiritButtons[spiritButtons.Count - 1];

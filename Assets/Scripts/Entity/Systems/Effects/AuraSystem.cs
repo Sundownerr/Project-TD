@@ -4,6 +4,7 @@ using Game.Enemy;
 using Game.Data;
 using Game.Spirit;
 using UnityEngine;
+using Game.Enums;
 
 namespace Game.Systems
 {

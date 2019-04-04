@@ -8,6 +8,7 @@ using Game.Spirit.Data;
 using Game.Spirit.System;
 using UnityEngine;
 using U = UnityEngine.Object;
+using Game.Enums;
 
 namespace Game.Spirit
 {
@@ -65,7 +66,7 @@ namespace Game.Spirit
             Owner = player;
             ID = new ID() { player.SpiritControlSystem.Spirits.Count };
 
-            if (!Data.IsGradeSpirit)
+            if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
                 DataSystem.Set();
 
             SetTraitSystems();
@@ -77,7 +78,7 @@ namespace Game.Spirit
 
             void SetRangeSystem()
             {
-                RangeSystem = StaticMethods.CreateRange(this, Data.Get(Numeral.Range, From.Base).Value, CollideWith.Enemies);
+                RangeSystem = StaticMethods.CreateRange(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies);
                 RangeSystem.EntityEntered += OnEntityEnteredRange;
                 RangeSystem.EntityExit += OnEntityExitRange;
                 Renderers = Prefab.GetComponentsInChildren<Renderer>();
@@ -149,7 +150,7 @@ namespace Game.Spirit
         private void OnEntityEnteredRange(object _, IVulnerable e)
         {
             if (e is EnemySystem enemy)
-                if (enemy.Data.Type == EnemyType.Flying && !Data.CanAttackFlying)
+                if (enemy.Data.Type == EnemyType.Flying && !Data.Get(Enums.SpiritFlag.CanAttackFlying).Value)
                     return;
                 else
                     Targets.Add(e as IHealthComponent);

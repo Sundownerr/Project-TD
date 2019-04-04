@@ -41,8 +41,8 @@ public readonly struct Coordinates3D
     }
 }
 
-[Serializable]
-public class NumeralAttributeList : List<NumeralAttribute> { }
+// [Serializable]
+// public class NumeralAttributeList : List<NumeralAttribute> { }
 
 [Serializable]
 public class SpiritCreationRequest

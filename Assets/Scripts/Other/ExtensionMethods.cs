@@ -10,8 +10,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using Game.Enums;
+using RotaryHeart.Lib.SerializableDictionary;
+using Game.Wrappers;
 
-public static class ExtensionMethods
+public static class Ext
 {
     ///<summary>
     /// Return distance between vectors
@@ -38,12 +41,6 @@ public static class ExtensionMethods
     public static double GetPercent(this double value, double desiredPercent) => value / 100 * desiredPercent;
 
     ///<summary>
-    /// Return sum of base and applied attribute of type 
-    ///</summary>
-    public static double GetValue(this IApplyableAttributeComponent data, Numeral type) =>
-        data.Get(type, From.Base).Value + data.Get(type, From.Applied).Value;
-
-    ///<summary>
     /// Return random element from given probabilites
     ///</summary>
     public static int RollDice(this double[] probabilities)
@@ -63,57 +60,65 @@ public static class ExtensionMethods
         return -1;
     }
 
-    ///<summary>
-    /// Fill list with attributes
-    ///</summary>   
-    public static List<NumeralAttribute> CreateAttributeList()
+    public static List<NumeralAttribute> CreateAttributeList(this List<NumeralAttribute> emptyList)
     {
-        var attributeList = new List<NumeralAttribute>();
-        var numerals = Enum.GetValues(typeof(Numeral));
+        var enums = Enum.GetValues(typeof(Numeral));
+        emptyList = new List<NumeralAttribute>();
 
-        for (int i = 0; i < numerals.Length; i++)
-            attributeList.Add(new NumeralAttribute((Numeral)numerals.GetValue(i), 0));
-
-        return attributeList;
+        for (int i = 0; i < enums.Length; i++)
+            emptyList.Add(new NumeralAttribute() { Type = (Numeral)enums.GetValue(i) });
+        return emptyList;
     }
 
-    ///<summary>
-    /// Return attribute from base or applied attribute list
-    ///</summary>   
-    public static NumeralAttribute Get(this IApplyableAttributeComponent attributeHandler, Numeral type, From baseOrApplied)
+    public static List<EnemyAttribute> CreateAttributeList(this List<EnemyAttribute> emptyList)
     {
-        var attributes = baseOrApplied == From.Base ? attributeHandler.BaseAttributes : attributeHandler.AppliedAttributes;
+        var enums = Enum.GetValues(typeof(Enemy));
+        emptyList = new List<EnemyAttribute>();
 
-        for (int i = 0; i < attributes.Count; i++)
-            if (attributes[i].Type == type)
-                return attributes[i];
-        return null;
+        for (int i = 0; i < enums.Length; i++)
+            emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i) });
+        return emptyList;
     }
+
+    public static List<SpiritAttribute> CreateAttributeList(this List<SpiritAttribute> emptyList)
+    {
+        var enums = Enum.GetValues(typeof(Spirit));
+        emptyList = new List<SpiritAttribute>();
+
+        for (int i = 0; i < enums.Length; i++)
+            emptyList.Add(new SpiritAttribute() { Type = (Spirit)enums.GetValue(i) });
+        return emptyList;
+    }
+
+    public static List<SpiritFlagAttribute> CreateAttributeList(this List<SpiritFlagAttribute> emptyList)
+    {
+        var enums = Enum.GetValues(typeof(SpiritFlag));
+        emptyList = new List<SpiritFlagAttribute>();
+
+        for (int i = 0; i < enums.Length; i++)
+            emptyList.Add(new SpiritFlagAttribute() { Type = (SpiritFlag)enums.GetValue(i) });
+        return emptyList;
+    }
+
+    public static NumeralAttribute Get(this ISpiritAttributes attributeHandler, Numeral type) =>
+        attributeHandler.NumeralAttributes.Find(x => x.Type == type);
+
+    public static NumeralAttribute Get(this IEnemyAttributes attributeHandler, Numeral type) =>
+       attributeHandler.NumeralAttributes.Find(x => x.Type == type);
+
+    public static SpiritAttribute Get(this ISpiritAttributes attributeHandler, Spirit type) =>
+       attributeHandler.SpiritAttributes.Find(x => x.Type == type);
+
+    public static SpiritFlagAttribute Get(this ISpiritAttributes attributeHandler, SpiritFlag type) =>
+        attributeHandler.FlagAttributes.Find(x => x.Type == type);
+
+    public static EnemyAttribute Get(this IEnemyAttributes attributeHandler, Enemy type) =>
+        attributeHandler.EnemyAttributes.Find(x => x.Type == type);
 
     public static List<NumeralAttribute> CopyFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)
     {
         that = new List<NumeralAttribute>();
         that.AddRange(other);
-        return that;
-    }
-
-    public static NumeralAttributeList Wrap(this List<NumeralAttribute> list)
-    {
-        var wrappedList = new NumeralAttributeList();
-        wrappedList.AddRange(list);
-        return wrappedList;
-    }
-
-    public static List<NumeralAttribute> Unwrap(this NumeralAttributeList wrappedList) => new List<NumeralAttribute>(wrappedList);
-
-    public static List<NumeralAttribute> SetFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)
-    {
-        for (int i = 0; i < other.Count; i++)
-        {
-            var attribute = that.Find(x => x.Type == other[i].Type);
-            if (attribute != null)
-                attribute.Value = other[i].Value;
-        }
         return that;
     }
 
@@ -132,7 +137,7 @@ public static class ExtensionMethods
     ///<summary>
     /// Set effect system owner, id
     ///</summary>
-   
+
     public static bool IsBossOrCommander(this EnemyData enemy) => enemy.Type == EnemyType.Boss || enemy.Type == EnemyType.Commander;
 
     ///<summary>

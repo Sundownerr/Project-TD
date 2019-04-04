@@ -46,12 +46,11 @@ namespace Game.Systems
                     if (damageDealer is SpiritSystem spirit)
                         if (target is EnemySystem enemy)
                         {
-                            var armorValue = enemy.Data.GetValue(Numeral.ArmorValue);
+                            var armorValue = enemy.Data.Get(Enums.Enemy.ArmorValue).Sum;
                             if (armorValue == 0) return;
 
                             var armorType = enemy.Data.ArmorType;
-                            var damageToArmor = ReferenceHolder.Get.DamageToArmorSettings.DamageToArmorList.Find(x => x.Type == spirit.Data.DamageType).Percents[(int)armorType];
-
+                            var damageToArmor = ReferenceHolder.Get.DamageToArmorSettings.DamageToArmorList.Find(x => x.Type == spirit.Data.Base.DamageType).Percents[(int)armorType];
                             damage = damage.GetPercent(damageToArmor);
 
                             if (armorValue > 0)
@@ -83,15 +82,15 @@ namespace Game.Systems
                 {
                     if (damageDealer is SpiritSystem spirit)
                     {
-                        var critChance = spirit.Data.GetValue(Numeral.CritChance);
+                        var critChance = spirit.Data.Get(Enums.Spirit.CritChance).Sum;
                         var isCrit = new double[] { critChance, 100 - critChance }.RollDice();
 
                         if (isCrit == 0)
                         {
                             critCount = 1;
 
-                            var multicritCount = spirit.Data.GetValue(Numeral.MulticritCount);
-                            var critMultiplier = 1 + spirit.Data.GetValue(Numeral.CritMultiplier);
+                            var multicritCount = spirit.Data.Get(Enums.Spirit.MulticritCount).Sum;
+                            var critMultiplier = 1 + spirit.Data.Get(Enums.Spirit.CritMultiplier).Sum;
                             var multicritChances = new double[(int)multicritCount];
 
                             CalculateMulticritChances();

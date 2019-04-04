@@ -5,9 +5,10 @@ using UnityEditor;
 using Game.Data;
 using Game.Enemy.Data;
 using System;
+using Game.Enums;
 
 #if UNITY_EDITOR
-    
+
 [CustomEditor(typeof(EnemyDataBase), true)]
 [CanEditMultipleObjects]
 

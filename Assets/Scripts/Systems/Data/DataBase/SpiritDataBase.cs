@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using Game.Spirit.Data.Stats;
 using UnityEditor;
+using Game.Enums;
 
 namespace Game.Data
 {

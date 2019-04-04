@@ -5,11 +5,12 @@ using Game.Systems;
 using Game.Spirit.Data;
 using UnityEngine;
 using U = UnityEngine.Object;
+using Game.Enums;
 
 namespace Game.Spirit.System
 {
     [Serializable]
-    public class SpiritDataSystem 
+    public class SpiritDataSystem
     {
         public SpiritData CurrentData { get; set; }
         public SpiritData BaseData { get; set; }
@@ -29,7 +30,7 @@ namespace Game.Spirit.System
             CurrentData.SetData();
 
             BaseData = data;
-   
+
             StatsChanged?.Invoke(null, null);
         }
 
@@ -39,11 +40,11 @@ namespace Game.Spirit.System
 
             CurrentData.ID = previousSpirit.Data.ID;
             CurrentData.GradeCount = previousSpirit.Data.GradeCount + 1;
-            CurrentData.Get(Numeral.Exp, From.Base).Value = previousSpirit.Data.Get(Numeral.Exp, From.Base).Value;
-            
+            CurrentData.Get(Numeral.Exp).Value = previousSpirit.Data.Get(Numeral.Exp).Value;
+
             ownerSpirit.UsedCell = previousSpirit.UsedCell;
 
-            for (int i = 0; i < previousSpirit.Data.Get(Numeral.Level, From.Base).Value; i++)
+            for (int i = 0; i < previousSpirit.Data.Get(Numeral.Level).Value; i++)
                 IncreaseStatsPerLevel();
 
             StatsChanged?.Invoke(null, null);
@@ -51,20 +52,31 @@ namespace Game.Spirit.System
 
         private void IncreaseStatsPerLevel()
         {
-            for (int i = 0; i < CurrentData.BaseAttributes.Count; i++)
+            for (int i = 0; i < CurrentData.NumeralAttributes.Count; i++)
             {
-                var stat = CurrentData.Get(CurrentData.BaseAttributes[i].Type, From.Base);
-                
-                    stat.Value += stat.IncreacePerLevel == Change.ByValue ?
-                        stat.ValuePerLevel :
-                        stat.Value.GetPercent(stat.ValuePerLevel);
+                var attribute = CurrentData.NumeralAttributes[i];
+                if (attribute.ValuePerLevel == 0) continue;
+
+                attribute.Value += attribute.IncreacePerLevel == Increase.ByValue ?
+                       attribute.ValuePerLevel :
+                       attribute.Value.GetPercent(attribute.ValuePerLevel);
             }
-           
+
+            for (int i = 0; i < CurrentData.SpiritAttributes.Count; i++)
+            {
+                var attribute = CurrentData.SpiritAttributes[i];
+                if (attribute.ValuePerLevel == 0) continue;
+
+                attribute.Value += attribute.IncreacePerLevel == Increase.ByValue ?
+                       attribute.ValuePerLevel :
+                       attribute.Value.GetPercent(attribute.ValuePerLevel);
+            }
+
             ownerSpirit.TraitControlSystem.IncreaseStatsPerLevel();
 
             var effect = U.Instantiate(
-                ReferenceHolder.Get.LevelUpEffect, 
-                ownerSpirit.Prefab.transform.position, 
+                ReferenceHolder.Get.LevelUpEffect,
+                ownerSpirit.Prefab.transform.position,
                 Quaternion.identity);
 
             U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
@@ -74,12 +86,12 @@ namespace Game.Spirit.System
 
         public void AddExp(int amount)
         {
-            CurrentData.Get(Numeral.Exp, From.Base).Value += amount;
+            CurrentData.Get(Numeral.Exp).Value += amount;
 
-            for (int i = (int)CurrentData.Get(Numeral.Level, From.Base).Value; i < 25; i++)
+            for (int i = (int)CurrentData.Get(Numeral.Level).Value; i < 25; i++)
             {
-                var nextLevel = (int)CurrentData.Get(Numeral.Level, From.Base).Value;
-                var currentExp = CurrentData.Get(Numeral.Exp, From.Base).Value;
+                var nextLevel = (int)CurrentData.Get(Numeral.Level).Value;
+                var currentExp = CurrentData.Get(Numeral.Exp).Value;
                 var neededExp = ReferenceHolder.ExpToLevelUp[nextLevel];
 
                 if (currentExp >= neededExp && nextLevel < 25)
