@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6263108A-EC56-3051-A46C-8ED65DBD59A8}</ProjectGuid>
+    <ProjectGuid>{8387747B-7C84-9667-3A72-F75ACBC9DAEE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -54,14 +54,78 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CinemachinePostProcessingV2\Editor\CinemachinePostProcessingEditor.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkAnimatorEditor.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkBehaviourInspector.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkIdentityEditor.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkInformationPreview.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkManagerEditor.cs" />
-     <Compile Include="Assets\Editor\Editor\NetworkScenePostProcess.cs" />
-     <Compile Include="Assets\Editor\Editor\PreprocessorDefine.cs" />
-     <Compile Include="Assets\Editor\Editor\SceneDrawer.cs" />
+     <Compile Include="Assets\Editor\Build.cs" />
+     <Compile Include="Assets\Editor\CopySteamLibraries.cs" />
+     <Compile Include="Assets\Editor\EnemyDataBaseEditor.cs" />
+     <Compile Include="Assets\Editor\ExpandableAttributeDrawer.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkAnimatorEditor.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkBehaviourInspector.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkIdentityEditor.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkInformationPreview.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkManagerEditor.cs" />
+     <Compile Include="Assets\Editor\Mirror\NetworkScenePostProcess.cs" />
+     <Compile Include="Assets\Editor\Mirror\PreprocessorDefine.cs" />
+     <Compile Include="Assets\Editor\Mirror\SceneDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\BaseAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\FieldDrawerAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\IAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\MethodDrawerAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\NativePropertyDrawerAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\PropertyDrawConditionAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\PropertyDrawerAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\PropertyGrouperAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\PropertyMetaAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Attributes\PropertyValidatorAttribute.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\CodeGenerator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\FieldDrawerDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\MethodDrawerDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\NativePropertyDrawerDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\PropertyDrawConditionDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\PropertyDrawerDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\PropertyGrouperDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\PropertyMetaDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\CodeGeneration\PropertyValidatorDatabase.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Editors\InspectorEditor.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\FieldDrawers\FieldDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\FieldDrawers\ShowNonSerializedFieldFieldDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\MethodDrawers\ButtonMethodDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\MethodDrawers\MethodDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\NativePropertyDrawers\NativePropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\NativePropertyDrawers\ShowNativePropertyNativePropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawConditions\HideIfPropertyDrawCondition.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawConditions\PropertyDrawCondition.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawConditions\ShowIfPropertyDrawCondition.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\DisableIfPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\DropdownPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\EnableIfPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\MinMaxSliderPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\ProgressBarPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\PropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\ReadOnlyPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\ReorderableListPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\ResizableTextAreaPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\ShowAssetPreviewPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyDrawers\SliderPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyGroupers\BoxGroupPropertyGrouper.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyGroupers\PropertyGrouper.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyMetas\InfoBoxPropertyMeta.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyMetas\OnValueChangedPropertyMeta.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyMetas\PropertyMeta.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyValidators\MaxValuePropertyValidator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyValidators\MinValuePropertyValidator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyValidators\PropertyValidator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyValidators\RequiredPropertyValidator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\PropertyValidators\ValidateInputPropertyValidator.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Utility\EditorDrawUtility.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Utility\IOUtility.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Utility\PropertyUtility.cs" />
+     <Compile Include="Assets\Editor\NaughtyAttributes\Utility\ReflectionUtility.cs" />
+     <Compile Include="Assets\Editor\SerializedDictionary\Constants.cs" />
+     <Compile Include="Assets\Editor\SerializedDictionary\Definer.cs" />
+     <Compile Include="Assets\Editor\SerializedDictionary\DictionaryPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\SerializedDictionary\PreferencesWindow.cs" />
+     <Compile Include="Assets\Editor\SerializedDictionary\SupportWindow.cs" />
+     <Compile Include="Assets\Editor\TowerDataBaseEditor.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanDocumentation.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanLocalization_Editor.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Drawers\Array\ArrayButtonsDrawer.cs" />
@@ -105,101 +169,37 @@
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Utils\NullableObjectExtension.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Utils\SerializedPropertyExtension.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Utils\SerializedPropertyReflectionExtension.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\Editor\Constants.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\Editor\Definer.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\Editor\DictionaryPropertyDrawer.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\Editor\PreferencesWindow.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\Editor\SupportWindow.cs" />
-     <Compile Include="Assets\Scripts\Editor\Build.cs" />
-     <Compile Include="Assets\Scripts\Editor\CopySteamLibraries.cs" />
-     <Compile Include="Assets\Scripts\Editor\EnemyDataBaseEditor.cs" />
-     <Compile Include="Assets\Scripts\Editor\ExpandableAttributeDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\BaseAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\FieldDrawerAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\IAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\MethodDrawerAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\NativePropertyDrawerAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\PropertyDrawConditionAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\PropertyDrawerAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\PropertyGrouperAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\PropertyMetaAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Attributes\PropertyValidatorAttribute.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\CodeGenerator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\FieldDrawerDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\MethodDrawerDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\NativePropertyDrawerDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\PropertyDrawConditionDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\PropertyDrawerDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\PropertyGrouperDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\PropertyMetaDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\PropertyValidatorDatabase.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Editors\InspectorEditor.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\FieldDrawers\FieldDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\FieldDrawers\ShowNonSerializedFieldFieldDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\MethodDrawers\ButtonMethodDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\MethodDrawers\MethodDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\NativePropertyDrawers\NativePropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\NativePropertyDrawers\ShowNativePropertyNativePropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawConditions\HideIfPropertyDrawCondition.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawConditions\PropertyDrawCondition.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawConditions\ShowIfPropertyDrawCondition.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\DisableIfPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\DropdownPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\EnableIfPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\MinMaxSliderPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\ProgressBarPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\PropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\ReadOnlyPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\ReorderableListPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\ResizableTextAreaPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\ShowAssetPreviewPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyDrawers\SliderPropertyDrawer.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyGroupers\BoxGroupPropertyGrouper.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyGroupers\PropertyGrouper.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyMetas\InfoBoxPropertyMeta.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyMetas\OnValueChangedPropertyMeta.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyMetas\PropertyMeta.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyValidators\MaxValuePropertyValidator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyValidators\MinValuePropertyValidator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyValidators\PropertyValidator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyValidators\RequiredPropertyValidator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\PropertyValidators\ValidateInputPropertyValidator.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\EditorDrawUtility.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\IOUtility.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\PropertyUtility.cs" />
-     <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\ReflectionUtility.cs" />
-     <Compile Include="Assets\Scripts\Editor\TowerDataBaseEditor.cs" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\FieldDrawerDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\MethodDrawerDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyValidatorDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyDrawConditionDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyDrawerDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyMetaDatabaseTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\NativePropertyDrawerDbTemplate.txt" />
-     <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyGrouperDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\FieldDrawerDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\MethodDrawerDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyValidatorDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyDrawConditionDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyDrawerDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyMetaDatabaseTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\NativePropertyDrawerDbTemplate.txt" />
+     <None Include="Assets\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyGrouperDatabaseTemplate.txt" />
  <Reference Include="Cinemachine">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Runtime">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="com.unity.cinemachine.editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -432,29 +432,29 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Telepathy">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ </Reference>
  <Reference Include="Facepunch.Steamworks">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
- </Reference>
- <Reference Include="Telepathy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -813,13 +813,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{674FD414-4DFC-1686-8871-57E6FBF6E530}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{E412F7E0-AC4A-46E3-095B-EE34A849FA15}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{2A5D2D57-CF32-B0D8-A032-0348DFC33295}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
-    <ProjectReference Include="Mirror.csproj">
-      <Project>{6AAE52FD-5A87-3DA2-6006-BF6BD5F506B0}</Project>      <Name>Mirror</Name>    </ProjectReference>
+      <Project>{60869193-B32B-4730-45A9-59C0C8F40FF1}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.Weaver.csproj">
-      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
+      <Project>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
+    <ProjectReference Include="Mirror.csproj">
+      <Project>{F0A6B909-B91F-280D-1847-C6B5E19C214C}</Project>      <Name>Mirror</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

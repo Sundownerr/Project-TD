@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{AAFAA8A9-B0B9-D245-E577-5109A90B3829}</ProjectGuid>
+    <ProjectGuid>{AE40D3A3-B250-ED65-0E28-AF813E2E6DC8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Mirror.Tests</AssemblyName>
@@ -53,13 +53,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\SMirror\Tests\ExponentialMovingAverageTest.cs" />
-     <Compile Include="Assets\SMirror\Tests\FloatBytePackerTest.cs" />
-     <Compile Include="Assets\SMirror\Tests\MessagePackerTest.cs" />
-     <Compile Include="Assets\SMirror\Tests\NetworkWriterTest.cs" />
-     <Compile Include="Assets\SMirror\Tests\SyncListTest.cs" />
-     <Compile Include="Assets\SMirror\Tests\WeaverAssembler.cs" />
-     <Compile Include="Assets\SMirror\Tests\WeaverTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\ExponentialMovingAverageTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\FloatBytePackerTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\MessagePackerTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\NetworkWriterTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\SyncListTest.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\WeaverAssembler.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Tests\WeaverTest.cs" />
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -291,29 +291,29 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Telepathy">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ </Reference>
  <Reference Include="Facepunch.Steamworks">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
- </Reference>
- <Reference Include="Telepathy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -672,9 +672,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Mirror.csproj">
-      <Project>{6AAE52FD-5A87-3DA2-6006-BF6BD5F506B0}</Project>      <Name>Mirror</Name>    </ProjectReference>
+      <Project>{F0A6B909-B91F-280D-1847-C6B5E19C214C}</Project>      <Name>Mirror</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.Weaver.csproj">
-      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
+      <Project>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

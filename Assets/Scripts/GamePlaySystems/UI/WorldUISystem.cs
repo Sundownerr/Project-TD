@@ -57,7 +57,7 @@ namespace Game.Systems
 
             var damageNumber = damageNumbersPool.PopObject();
             var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
-            var damageText = StaticMethods.KiloFormat(e.Damage);
+            var damageText = StaticMethods.KiloFormat((int)e.Damage);
             var fontColor = defaultFontColor;
             var random = UnityEngine.Random.Range(-20, 20);
             var textPositionOffset = new Vector3(random, 90 + random, random);

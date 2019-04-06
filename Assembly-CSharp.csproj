@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{2A5D2D57-CF32-B0D8-A032-0348DFC33295}</ProjectGuid>
+    <ProjectGuid>{60869193-B32B-4730-45A9-59C0C8F40FF1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -133,6 +133,13 @@
      <Compile Include="Assets\ImportedAssets\SerializableDictionary\References\RequiredReferences.cs" />
      <Compile Include="Assets\ImportedAssets\SerializableDictionary\ReorderableList\ReorderableList.cs" />
      <Compile Include="Assets\ImportedAssets\SerializableDictionary\SerializableDictionaryBase.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkAnimator.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkLobbyManager.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkLobbyPlayer.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkProximityChecker.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkTransform.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkTransformBase.cs" />
+     <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkTransformChild.cs" />
      <Compile Include="Assets\Scripts\Attribute\ExpandableAttribute.cs" />
      <Compile Include="Assets\Scripts\EntityDataSystems\Data\Ability.cs" />
      <Compile Include="Assets\Scripts\EntityDataSystems\Data\Consumable.cs" />
@@ -293,13 +300,6 @@
      <Compile Include="Assets\Scripts\Transport.Steamworks-master\Steam.cs" />
      <Compile Include="Assets\Scripts\Transport.Steamworks-master\SteamworksNetworkManager.cs" />
      <Compile Include="Assets\Scripts\Transport.Steamworks-master\SteamworksTransport.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkAnimator.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkLobbyManager.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkLobbyPlayer.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkProximityChecker.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkTransform.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkTransformBase.cs" />
-     <Compile Include="Assets\SMirror\Components\NetworkTransformChild.cs" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />
@@ -309,7 +309,6 @@
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\SunShaftsComposite.shader" />
-     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\MultiLanguage.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionCurves.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ScreenSpaceAmbientObscurance.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_Antialiasing\NFAA.shader" />
@@ -341,15 +340,12 @@
      <None Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Prefabs\Readme_Dissolve_Respawn_.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\DepthOfField34.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBlur.shader" />
-     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\English.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ConvertDepth.shader" />
-     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\Spanish.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionCurvesSimple.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderYUV.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\CreaseApply.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\Japanese.txt" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ChromaticAberrationShader.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
@@ -411,28 +407,28 @@
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendForBloom.shader" />
  <Reference Include="Cinemachine">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Runtime">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="com.unity.cinemachine.editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -635,29 +631,29 @@
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
+ <Reference Include="Telepathy">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ </Reference>
  <Reference Include="Facepunch.Steamworks">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
- </Reference>
- <Reference Include="Telepathy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -1016,11 +1012,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{674FD414-4DFC-1686-8871-57E6FBF6E530}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
-    <ProjectReference Include="Mirror.csproj">
-      <Project>{6AAE52FD-5A87-3DA2-6006-BF6BD5F506B0}</Project>      <Name>Mirror</Name>    </ProjectReference>
+      <Project>{E412F7E0-AC4A-46E3-095B-EE34A849FA15}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.Weaver.csproj">
-      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
+      <Project>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
+    <ProjectReference Include="Mirror.csproj">
+      <Project>{F0A6B909-B91F-280D-1847-C6B5E19C214C}</Project>      <Name>Mirror</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

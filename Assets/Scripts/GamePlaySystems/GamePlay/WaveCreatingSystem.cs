@@ -49,7 +49,7 @@ namespace Game.Systems
             return generatedWaves;
         }
 
-        private static EnemyData CreateNewEnemyData(EnemyData choosedData, int waveNumber, List<Ability> abilities, List<Trait> traits)
+        private static EnemyData CreateNewEnemyData(EnemyData choosedData, int waveNumber, List<Ability> abilities, List<Trait> traits, ArmorType armor)
         {
             var newData = U.Instantiate(choosedData);
             newData.ID = new ID(choosedData.ID);
@@ -58,6 +58,7 @@ namespace Game.Systems
 
             newData.Traits = traits;
             newData.Abilities = newData.IsBossOrCommander() ? abilities : new List<Ability>();
+            newData.ArmorType = armor;
 
             return newData;
 
@@ -67,9 +68,7 @@ namespace Game.Systems
             {
                 newData.CreateNewAttributes();
 
-                SetArmor();
                 SetGoldAndExp();
-
 
                 newData.Get(Enums.Enemy.ArmorValue).Value += waveNumber;
                 newData.Get(Numeral.ResourceCost).Value += 1 + waveNumber;        // waveCount / 7;
@@ -129,12 +128,7 @@ namespace Game.Systems
                     newData.Get(Numeral.ResourceCost).Value = gold;
                 }
 
-                void SetArmor()
-                {
-                    var armorTypes = Enum.GetValues(typeof(ArmorType));
-                    var randomArmorId = StaticRandom.Instance.Next(0, armorTypes.Length);
-                    newData.ArmorType = (ArmorType)armorTypes.GetValue(randomArmorId);
-                }
+
 
                 #endregion
             }
@@ -147,8 +141,9 @@ namespace Game.Systems
             var wave = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetTraitsByID();
             var waveAbilities = GetAbilitiesByID();
+            var armor = (ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(waveIDs.ArmorID);
             wave.EnemyTypes = new List<EnemyData>();
-            
+
             for (int i = 0; i < waveIDs.IDs.Count; i++)
             {
                 var raceID = waveIDs.IDs[i][0];
@@ -156,7 +151,7 @@ namespace Game.Systems
                 var enemyFromDB = ReferenceHolder.Get.EnemyDataBase.Races[raceID].Enemies[enemyID];
 
                 wave.EnemyTypes.Add(
-                    CreateNewEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits));
+                    CreateNewEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
             }
 
             return wave;
@@ -206,6 +201,13 @@ namespace Game.Systems
             #endregion
         }
 
+        private static ArmorType GetRandomArmor()
+        {
+            var armorTypes = Enum.GetValues(typeof(ArmorType));
+            var randomArmorId = StaticRandom.Instance.Next(0, armorTypes.Length);
+            return (ArmorType)armorTypes.GetValue(randomArmorId);
+        }
+
         private static Wave CreateWave(Wave wave, int waveNumber)
         {
             var races = ReferenceHolder.Get.EnemyDataBase.Races;
@@ -214,6 +216,7 @@ namespace Game.Systems
             var fittingEnemies = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetRandomTraits();
             var waveAbilities = GetRandomAbilities();
+            var armor = GetRandomArmor();
 
             if (waveNumber % 8 == 0)
             {
@@ -231,6 +234,7 @@ namespace Game.Systems
             return GetFittingEnemies();
 
             #region Helper functions
+
 
             List<Ability> GetRandomAbilities()
             {
@@ -278,7 +282,7 @@ namespace Game.Systems
 
                 for (int i = 0; i < wave.EnemyTypes.Count; i++)
                     sortedEnemies.EnemyTypes.Add(
-                        CreateNewEnemyData(GetEnemyDataOfType(wave.EnemyTypes[i]), waveNumber, waveAbilities, waveTraits));
+                        CreateNewEnemyData(GetEnemyDataOfType(wave.EnemyTypes[i]), waveNumber, waveAbilities, waveTraits, armor));
 
                 return sortedEnemies;
 

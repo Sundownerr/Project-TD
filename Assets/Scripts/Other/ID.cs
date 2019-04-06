@@ -36,4 +36,5 @@ public class WaveEnemyID
     [SerializeField] public ListID IDs;
     [SerializeField] public ListID AbilityIDs;
     [SerializeField] public ListID TraitIDs;
+    [SerializeField] public int ArmorID;
 }

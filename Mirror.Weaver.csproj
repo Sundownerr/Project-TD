@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</ProjectGuid>
+    <ProjectGuid>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Mirror.Weaver</AssemblyName>
@@ -53,23 +53,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Editor\Editor\Weaver\CompilationFinishedHook.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Extensions.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Helpers.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\CommandProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\MessageClassProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\MonoBehaviourProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\NetworkBehaviourProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\RpcProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncEventProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncListProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncListStructProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncObjectProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncVarProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Processors\TargetRpcProcessor.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Program.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Resolvers.cs" />
-     <Compile Include="Assets\Editor\Editor\Weaver\Weaver.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\CompilationFinishedHook.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Extensions.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Helpers.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\CommandProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\MessageClassProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\MonoBehaviourProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\NetworkBehaviourProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\RpcProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\SyncEventProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\SyncListProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\SyncListStructProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\SyncObjectProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\SyncVarProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Processors\TargetRpcProcessor.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Program.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Resolvers.cs" />
+     <Compile Include="Assets\Editor\Mirror\Weaver\Weaver.cs" />
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -301,29 +301,29 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Telepathy">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ </Reference>
  <Reference Include="Facepunch.Steamworks">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
- </Reference>
- <Reference Include="Telepathy">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>C:/UnityProjects/ProjectTD-new/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

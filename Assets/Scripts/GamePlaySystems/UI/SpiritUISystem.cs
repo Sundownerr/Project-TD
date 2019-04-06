@@ -244,7 +244,6 @@ namespace Game.Systems
 
         private void UpdateValues()
         {
-            Debug.Log("update vakes");
             var spirit = choosedSpirit.Data;
 
             SpiritName.text = spirit.Name;
