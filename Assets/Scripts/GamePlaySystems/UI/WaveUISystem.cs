@@ -7,6 +7,7 @@ using Game.Enemy.Data;
 using System.Text;
 using UnityEngine.UI;
 using Game.Enums;
+using Lean.Localization;
 
 namespace Game.Systems
 {
@@ -18,6 +19,8 @@ namespace Game.Systems
         public event EventHandler WaveStarted = delegate { };
 
         private Animator animator;
+        private StringBuilder enemyTypes = new StringBuilder();
+        private StringBuilder traitsAndAbilities = new StringBuilder();
 
         protected override void Awake()
         {
@@ -33,7 +36,7 @@ namespace Game.Systems
             Owner.WaveSystem.WaveEnded += OnWaveEnded;
             Owner.WaveSystem.WaveStarted += OnWaveStarted;
             Owner.WaveSystem.WavesGenerated += OnWavesGenerated;
-                ActivateUI(true);
+            ActivateUI(true);
         }
 
         private void OnWavesGenerated(object _, EventArgs e) { ActivateUI(true); Debug.Log("generated"); }
@@ -67,29 +70,28 @@ namespace Game.Systems
 
         private void UpdateUI()
         {
-            var wave = Owner.WaveSystem.Waves.Peek();      
+            var wave = Owner.WaveSystem.Waves.Peek();
 
-            Race.text = wave.EnemyTypes[0].Race.ToString();
-            Armor.text = wave.EnemyTypes[0].ArmorType.ToString();
+            Race.text = wave.EnemyTypes[0].Race.GetLocalized();
+            Armor.text = wave.EnemyTypes[0].ArmorType.GetLocalized();
             EnemyTypes.text = CalculateTypes();
             Traits.text = GetTraitsAndAbilities();
-            WaveNumber.text = $"wave {Owner.WaveSystem.WaveNumber + 1}";
+            WaveNumber.text = $"{LeanLocalization.GetTranslationText(LocaleKeys.UIWave)} {Owner.WaveSystem.WaveNumber + 1}";
 
             #region  Helper functions
 
             string GetTraitsAndAbilities()
             {
-                var traitsAndAbilities = new StringBuilder();
-
                 wave.EnemyTypes[0].Traits.ForEach(trait => traitsAndAbilities.Append($"{trait.Name}     "));
                 wave.EnemyTypes.Find(enemy => enemy.IsBossOrCommander())?.Abilities.ForEach(ability => traitsAndAbilities.Append($"{ability.Name} "));
-               
-                return traitsAndAbilities.ToString();
+
+                var result = traitsAndAbilities.ToString();
+                traitsAndAbilities.Clear();
+                return result;
             }
 
             string CalculateTypes()
             {
-                var enemyTypes = new StringBuilder();
                 var smallCount = 0;
                 var normalCount = 0;
                 var commanterCount = 0;
@@ -106,12 +108,15 @@ namespace Game.Systems
                 }
 
                 enemyTypes
-                    .Append(smallCount > 0 ? $"{smallCount} small " : string.Empty)
-                    .Append(normalCount > 0 ? $"{normalCount} normal " : string.Empty)
-                    .Append(commanterCount > 0 ? $"{commanterCount} commander " : string.Empty)
-                    .Append(flyingCount > 0 ? $"{flyingCount} flying " : string.Empty)
-                    .Append(bossCount > 0 ? $"{bossCount} boss " : string.Empty);
-                return enemyTypes.ToString();
+                    .Append(smallCount > 0 ? $"{smallCount} {EnemyType.Small.GetLocalized()} " : string.Empty)
+                    .Append(normalCount > 0 ? $"{normalCount} {EnemyType.Normal.GetLocalized()} " : string.Empty)
+                    .Append(commanterCount > 0 ? $"{commanterCount} {EnemyType.Commander.GetLocalized()} " : string.Empty)
+                    .Append(flyingCount > 0 ? $"{flyingCount} {EnemyType.Flying.GetLocalized()} " : string.Empty)
+                    .Append(bossCount > 0 ? $"{bossCount} {EnemyType.Boss.GetLocalized()} " : string.Empty);
+
+                var result = enemyTypes.ToString();
+                enemyTypes.Clear();
+                return result;
             }
 
             #endregion

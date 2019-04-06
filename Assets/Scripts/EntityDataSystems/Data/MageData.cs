@@ -59,13 +59,11 @@ namespace Game
                 .Append(BuildDescription(enemyAttributes, Attribute.Negative));
 
             AdvancedDescription = descriptionBuilder.ToString();
-
         }
 
         private string BuildDescription(List<SpiritAttribute> list, Attribute type, Value valueType)
         {
             var isPositive = type == Attribute.Positive;
-
             var isBaseValue = valueType == Value.Base;
 
             list.FindAll(attribute => isPositive ?
@@ -78,7 +76,7 @@ namespace Game
                 bonusesBuilder
                 .Append(isPositive ? "<color=green>+ " : "<color=red>- ")
                 .Append($"{Math.Abs(isBaseValue ? notNullAttribute.Value : notNullAttribute.ValuePerLevel).ToString()} ")
-                .Append(LeanLocalization.GetTranslationText(notNullAttribute.Type.GetStringKey()))
+                .Append(notNullAttribute.Type.GetLocalized())
                 .AppendLine("</color>");
             });
 
@@ -91,7 +89,6 @@ namespace Game
         private string BuildDescription(List<NumeralAttribute> list, Attribute type, Value valueType)
         {
             var isPositive = type == Attribute.Positive;
-
             var isBaseValue = valueType == Value.Base;
 
             list.FindAll(attribute => isPositive ?
@@ -101,11 +98,10 @@ namespace Game
                                             attribute.Value < 0 : attribute.ValuePerLevel < 0)?
             .ForEach(notNullAttribute =>
             {
-
                 bonusesBuilder
                 .Append(isPositive ? "<color=green>+ " : "<color=red>- ")
                 .Append($"{Math.Abs(isBaseValue ? notNullAttribute.Value : notNullAttribute.ValuePerLevel).ToString()} ")
-                .Append(LeanLocalization.GetTranslationText(notNullAttribute.Type.GetStringKey()))
+                .Append(notNullAttribute.Type.GetLocalized())
                 .AppendLine("</color>");
             });
 
@@ -125,7 +121,7 @@ namespace Game
                     bonusesBuilder
                     .Append(isPositive ? "<color=green>- " : "<color=red>+ ")
                     .Append(Math.Abs(notNullAttribute.Value).ToString())
-                    .Append($" {LeanLocalization.GetTranslationText(notNullAttribute.Type.GetStringKey())} for enemies")
+                    .Append($" {notNullAttribute.Type.GetLocalized()} for enemies")
                     .AppendLine("</color>");
                 });
 

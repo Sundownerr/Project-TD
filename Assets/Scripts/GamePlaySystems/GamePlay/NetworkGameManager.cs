@@ -63,7 +63,8 @@ public class NetworkGameManager : NetworkBehaviour
                 {
                     IDs = waves[wave].EnemyTypes.GetIDs(),
                     AbilityIDs = new ListID(),
-                    TraitIDs = new ListID()
+                    TraitIDs = new ListID(),
+                    ArmorID = (int)waves[wave].EnemyTypes[0].ArmorType
                 });
 
                 for (int j = 0; j < waves[wave].EnemyTypes.Count; j++)

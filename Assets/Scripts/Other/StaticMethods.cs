@@ -12,6 +12,8 @@ using Game.Spirit;
 using Game.Cells;
 using Game.Enemy;
 using Game.Enums;
+using Game.Enemy.Data;
+using Lean.Localization;
 
 public static class StaticMethods
 {
@@ -29,23 +31,17 @@ public static class StaticMethods
 
     public static string KiloFormat(double num)
     {
-        if (num >= 1000000000)
-            return (num / 1000000000).ToString("#.0" + "B");
-
-        if (num >= 1000000)
-            return (num / 1000000).ToString("#" + "M");
-
-        if (num >= 100000)
-            return (num / 1000).ToString("#.0" + "K");
-
-        if (num >= 10000)
-            return (num / 1000).ToString("0.#" + "K");
-
-        if (num >= 1000)
-            return (num / 1000).ToString("0.#" + "K");
+        if (num >= 1000000000)return (num / 1000000000).ToString("#.0" + "B");
+        if (num >= 1000000) return (num / 1000000).ToString("#" + "M");
+        if (num >= 100000) return (num / 1000).ToString("#.0" + "K");
+        if (num >= 10000) return (num / 1000).ToString("0.#" + "K");
+        if (num >= 1000) return (num / 1000).ToString("0.#" + "K");
 
         return num.ToString("0.#");
     }
+
+    public static string GetLocalized<EnumType>(this EnumType type) where EnumType: struct, Enum =>
+        LeanLocalization.GetTranslationText(type.GetStringKey());
 
     public static Dictionary<EnumType, string> CreateStringKeyDictionary<EnumType>() where EnumType : Enum
     {
@@ -58,6 +54,9 @@ public static class StaticMethods
             typeof(EnumType) == typeof(Game.Enums.Enemy) ? "a" :
             typeof(EnumType) == typeof(ElementType) ? "element" :
             typeof(EnumType) == typeof(RarityType) ? "rarity" :
+            typeof(EnumType) == typeof(ArmorType) ? "e-armor" :
+            typeof(EnumType) == typeof(EnemyType) ? "e-type" :
+            typeof(EnumType) == typeof(RaceType) ? "e-race" :
             "error";
 
         for (int i = 0; i < numerals.Length; i++)

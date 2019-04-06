@@ -53,7 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CinemachinePostProcessingV2\Editor\CinemachinePostProcessingEditor.cs" />
      <Compile Include="Assets\Editor\Build.cs" />
      <Compile Include="Assets\Editor\CopySteamLibraries.cs" />
      <Compile Include="Assets\Editor\EnemyDataBaseEditor.cs" />
@@ -126,6 +125,7 @@
      <Compile Include="Assets\Editor\SerializedDictionary\PreferencesWindow.cs" />
      <Compile Include="Assets\Editor\SerializedDictionary\SupportWindow.cs" />
      <Compile Include="Assets\Editor\TowerDataBaseEditor.cs" />
+     <Compile Include="Assets\ImportedAssets\CinemachinePostProcessingV2\Editor\CinemachinePostProcessingEditor.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanDocumentation.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanLocalization_Editor.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Drawers\Array\ArrayButtonsDrawer.cs" />

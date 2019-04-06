@@ -53,11 +53,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CinemachinePostProcessingV2\CinemachinePostProcessing.cs" />
+     <Compile Include="Assets\ImportedAssets\CinemachinePostProcessingV2\CinemachinePostProcessing.cs" />
      <Compile Include="Assets\ImportedAssets\Creeps\fantasySpider\FSP_ContinuousRotation.cs" />
      <Compile Include="Assets\ImportedAssets\Creeps\LowPoly Fantasy Monsters Pack Ver1.0_Demo\Environment\Scripts\Move.cs" />
      <Compile Include="Assets\ImportedAssets\Creeps\LowPoly Fantasy Monsters Pack Ver1.0_Demo\Environment\Scripts\PointLight.cs" />
-     <Compile Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Scripts\SpawnEffect.cs" />
      <Compile Include="Assets\ImportedAssets\Grass And Flowers Pack 1\Example Scene\SimpleTextureDrawing.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Scripts\LeanCulture.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Scripts\LeanLanguageNameAttribute.cs" />
@@ -285,6 +284,7 @@
      <Compile Include="Assets\Scripts\Other\Iterfaces.cs" />
      <Compile Include="Assets\Scripts\Other\ListWrappers.cs" />
      <Compile Include="Assets\Scripts\Other\LobbyDataConsts.cs" />
+     <Compile Include="Assets\Scripts\Other\LocaleKeys.cs" />
      <Compile Include="Assets\Scripts\Other\NetworkRequests.cs" />
      <Compile Include="Assets\Scripts\Other\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Other\SerializationExtension.cs" />
@@ -337,7 +337,6 @@
      <None Include="Assets\ImportedAssets\Grass And Flowers Pack 1\Example Scene\Skyboxes\_skybox info.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\frag_ao.cginc" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
-     <None Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Prefabs\Readme_Dissolve_Respawn_.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\DepthOfField34.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBlur.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
