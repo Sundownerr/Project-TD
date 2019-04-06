@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using NaughtyAttributes;
 using System.Collections;
 using Game.Enums;
+using Game.Enemy.Data;
 
 namespace Game.Systems
 {
@@ -58,12 +59,7 @@ namespace Game.Systems
 
         private DescriptionUISystem descriptionUISystem;
 
-        public static readonly Dictionary<Numeral, string> NumeralStringKeys = StaticMethods.CreateStringKeyDictionary<Numeral>();
-        public static readonly Dictionary<Enums.Spirit, string> SpiritStringKeys = StaticMethods.CreateStringKeyDictionary<Enums.Spirit>();
-        public static readonly Dictionary<Enums.SpiritFlag, string> SpiritFlagStringKeys = StaticMethods.CreateStringKeyDictionary<Enums.SpiritFlag>();
-        public static readonly Dictionary<Enums.Enemy, string> EnemyStringKeys = StaticMethods.CreateStringKeyDictionary<Enums.Enemy>();
-        public static readonly Dictionary<RarityType, string> RarityStringKeys = StaticMethods.CreateStringKeyDictionary<RarityType>();
-        public static readonly Dictionary<ElementType, string> ElementStringKeys = StaticMethods.CreateStringKeyDictionary<ElementType>();
+       
 
         public static List<int> ExpToLevelUp { get; } = new List<int>(25)
         {

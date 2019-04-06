@@ -276,6 +276,7 @@
      <Compile Include="Assets\Scripts\Other\DamageToArmorSettings.cs" />
      <Compile Include="Assets\Scripts\Other\EnemySettings.cs" />
      <Compile Include="Assets\Scripts\Other\Enums.cs" />
+     <Compile Include="Assets\Scripts\Other\EnumStringKeys.cs" />
      <Compile Include="Assets\Scripts\Other\ExtendedMonoBehaviour.cs" />
      <Compile Include="Assets\Scripts\Other\ExtensionMethods.cs" />
      <Compile Include="Assets\Scripts\Other\FPClientExtension.cs" />

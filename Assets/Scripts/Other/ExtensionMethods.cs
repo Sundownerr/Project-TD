@@ -14,6 +14,8 @@ using Game.Enums;
 using RotaryHeart.Lib.SerializableDictionary;
 using Game.Wrappers;
 using System.Text.RegularExpressions;
+using Lean.Localization;
+using Game.Enemy.Data;
 
 public static class Ext
 {
@@ -63,6 +65,9 @@ public static class Ext
 
     public static string[] SplitCamelCase(this string source) => Regex.Split(source, @"(?<!^)(?=[A-Z])");
 
+    public static string GetLocalized<EnumType>(this EnumType type) where EnumType: struct, Enum =>
+        LeanLocalization.GetTranslationText(type.GetStringKey());
+
     public static string StringEnumToStringKey(this string source, string keyPrefix)
     {
         var splitted = source.SplitCamelCase();
@@ -73,15 +78,6 @@ public static class Ext
 
         return sb.ToString();
     }
-
-    public static string GetStringKey<EnumType>(this EnumType type) where EnumType : struct, Enum =>
-        type is Numeral numeral ? ReferenceHolder.NumeralStringKeys[numeral] :
-        type is Game.Enums.Spirit spirit ? ReferenceHolder.SpiritStringKeys[spirit] :
-        type is Game.Enums.SpiritFlag spiritFlag ? ReferenceHolder.SpiritFlagStringKeys[spiritFlag] :
-        type is Game.Enums.Enemy enemy ? ReferenceHolder.EnemyStringKeys[enemy] :
-        type is RarityType rarity ? ReferenceHolder.RarityStringKeys[rarity] :
-        type is ElementType element ? ReferenceHolder.ElementStringKeys[element] : "error";
-
 
     public static List<NumeralAttribute> CreateAttributeList_N()
     {
