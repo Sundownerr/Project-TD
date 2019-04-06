@@ -13,6 +13,8 @@ using RotaryHeart;
 using RotaryHeart.Lib.SerializableDictionary;
 using OneLine;
 using Game.Wrappers;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -118,8 +120,11 @@ namespace Game
         ITraitHandler GetTraitSystem(ITraitSystem owner);
     }
 
-    public interface IHaveDescription
+    public interface IHaveDescription : IPointerEnterHandler, IPointerExitHandler
     {
+        string Description {get; }
+        string Title {get; }
+        Image Image {get; }
         void GetDescription();
     }
 }

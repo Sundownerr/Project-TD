@@ -13,6 +13,7 @@ using UnityEngine;
 using Game.Enums;
 using RotaryHeart.Lib.SerializableDictionary;
 using Game.Wrappers;
+using System.Text.RegularExpressions;
 
 public static class Ext
 {
@@ -60,59 +61,81 @@ public static class Ext
         return -1;
     }
 
-    public static List<NumeralAttribute> CreateAttributeList(this List<NumeralAttribute> emptyList)
+    public static string[] SplitCamelCase(this string source) => Regex.Split(source, @"(?<!^)(?=[A-Z])");
+
+    public static string StringEnumToStringKey(this string source, string keyPrefix)
+    {
+        var splitted = source.SplitCamelCase();
+        var sb = new StringBuilder().Append(keyPrefix);
+
+        for (int i = 0; i < splitted.Length; i++)
+            sb.Append("-").Append(splitted[i].ToLower());
+
+        return sb.ToString();
+    }
+
+    public static string GetStringKey<EnumType>(this EnumType type) where EnumType : struct, Enum =>
+        type is Numeral numeral ? ReferenceHolder.NumeralStringKeys[numeral] :
+        type is Game.Enums.Spirit spirit ? ReferenceHolder.SpiritStringKeys[spirit] :
+        type is Game.Enums.SpiritFlag spiritFlag ? ReferenceHolder.SpiritFlagStringKeys[spiritFlag] :
+        type is Game.Enums.Enemy enemy ? ReferenceHolder.EnemyStringKeys[enemy] :
+        type is RarityType rarity ? ReferenceHolder.RarityStringKeys[rarity] :
+        type is ElementType element ? ReferenceHolder.ElementStringKeys[element] : "error";
+
+
+    public static List<NumeralAttribute> CreateAttributeList_N()
     {
         var enums = Enum.GetValues(typeof(Numeral));
-        emptyList = new List<NumeralAttribute>();
+        var emptyList = new List<NumeralAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
             emptyList.Add(new NumeralAttribute() { Type = (Numeral)enums.GetValue(i) });
         return emptyList;
     }
 
-    public static List<EnemyAttribute> CreateAttributeList(this List<EnemyAttribute> emptyList)
+    public static List<EnemyAttribute> CreateAttributeList_E()
     {
         var enums = Enum.GetValues(typeof(Enemy));
-        emptyList = new List<EnemyAttribute>();
+        var emptyList = new List<EnemyAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
             emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i) });
         return emptyList;
     }
 
-    public static List<SpiritAttribute> CreateAttributeList(this List<SpiritAttribute> emptyList)
+    public static List<SpiritAttribute> CreateAttributeList_S()
     {
         var enums = Enum.GetValues(typeof(Spirit));
-        emptyList = new List<SpiritAttribute>();
+        var emptyList = new List<SpiritAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
             emptyList.Add(new SpiritAttribute() { Type = (Spirit)enums.GetValue(i) });
         return emptyList;
     }
 
-    public static List<SpiritFlagAttribute> CreateAttributeList(this List<SpiritFlagAttribute> emptyList)
+    public static List<SpiritFlagAttribute> CreateAttributeList_SF()
     {
         var enums = Enum.GetValues(typeof(SpiritFlag));
-        emptyList = new List<SpiritFlagAttribute>();
+        var emptyList = new List<SpiritFlagAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
             emptyList.Add(new SpiritFlagAttribute() { Type = (SpiritFlag)enums.GetValue(i) });
         return emptyList;
     }
 
-    public static NumeralAttribute Get(this ISpiritAttributes attributeHandler, Numeral type) =>
+    public static EntityAttribute_A_L<Numeral, double> Get(this ISpiritAttributes attributeHandler, Numeral type) =>
         attributeHandler.NumeralAttributes.Find(x => x.Type == type);
 
-    public static NumeralAttribute Get(this IEnemyAttributes attributeHandler, Numeral type) =>
+    public static EntityAttribute_A_L<Numeral, double> Get(this IEnemyAttributes attributeHandler, Numeral type) =>
        attributeHandler.NumeralAttributes.Find(x => x.Type == type);
 
-    public static SpiritAttribute Get(this ISpiritAttributes attributeHandler, Spirit type) =>
+    public static EntityAttribute_A_L<Game.Enums.Spirit, double> Get(this ISpiritAttributes attributeHandler, Spirit type) =>
        attributeHandler.SpiritAttributes.Find(x => x.Type == type);
 
-    public static SpiritFlagAttribute Get(this ISpiritAttributes attributeHandler, SpiritFlag type) =>
+    public static EntityAttribute<Game.Enums.SpiritFlag, bool> Get(this ISpiritAttributes attributeHandler, SpiritFlag type) =>
         attributeHandler.FlagAttributes.Find(x => x.Type == type);
 
-    public static EnemyAttribute Get(this IEnemyAttributes attributeHandler, Enemy type) =>
+    public static EntityAttribute_A<Game.Enums.Enemy, double> Get(this IEnemyAttributes attributeHandler, Enemy type) =>
         attributeHandler.EnemyAttributes.Find(x => x.Type == type);
 
     public static List<NumeralAttribute> CopyFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)

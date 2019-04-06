@@ -54,6 +54,16 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CinemachinePostProcessingV2\Editor\CinemachinePostProcessingEditor.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkAnimatorEditor.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkBehaviourInspector.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkIdentityEditor.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkInformationPreview.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkManagerEditor.cs" />
+     <Compile Include="Assets\Editor\Editor\NetworkScenePostProcess.cs" />
+     <Compile Include="Assets\Editor\Editor\PreprocessorDefine.cs" />
+     <Compile Include="Assets\Editor\Editor\SceneDrawer.cs" />
+     <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanDocumentation.cs" />
+     <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanLocalization_Editor.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Drawers\Array\ArrayButtonsDrawer.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Drawers\Array\DynamicArrayDrawer.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\OneLine\Editor\Drawers\Array\FixedArrayDrawer.cs" />
@@ -159,14 +169,6 @@
      <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\PropertyUtility.cs" />
      <Compile Include="Assets\Scripts\Editor\NaughtyAttributes\Utility\ReflectionUtility.cs" />
      <Compile Include="Assets\Scripts\Editor\TowerDataBaseEditor.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkAnimatorEditor.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkBehaviourInspector.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkIdentityEditor.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkInformationPreview.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkManagerEditor.cs" />
-     <Compile Include="Assets\SMirror\Editor\NetworkScenePostProcess.cs" />
-     <Compile Include="Assets\SMirror\Editor\PreprocessorDefine.cs" />
-     <Compile Include="Assets\SMirror\Editor\SceneDrawer.cs" />
      <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\FieldDrawerDatabaseTemplate.txt" />
      <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\MethodDrawerDatabaseTemplate.txt" />
      <None Include="Assets\Scripts\Editor\NaughtyAttributes\CodeGeneration\Templates\PropertyValidatorDatabaseTemplate.txt" />
@@ -434,13 +436,13 @@
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
@@ -814,10 +816,10 @@
       <Project>{674FD414-4DFC-1686-8871-57E6FBF6E530}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{2A5D2D57-CF32-B0D8-A032-0348DFC33295}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
-    <ProjectReference Include="Mirror.Weaver.csproj">
-      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.csproj">
       <Project>{6AAE52FD-5A87-3DA2-6006-BF6BD5F506B0}</Project>      <Name>Mirror</Name>    </ProjectReference>
+    <ProjectReference Include="Mirror.Weaver.csproj">
+      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

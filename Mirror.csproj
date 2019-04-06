@@ -348,13 +348,13 @@
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>

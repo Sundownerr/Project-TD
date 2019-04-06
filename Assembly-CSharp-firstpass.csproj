@@ -285,13 +285,13 @@
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
@@ -661,10 +661,10 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Mirror.Weaver.csproj">
-      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.csproj">
       <Project>{6AAE52FD-5A87-3DA2-6006-BF6BD5F506B0}</Project>      <Name>Mirror</Name>    </ProjectReference>
+    <ProjectReference Include="Mirror.Weaver.csproj">
+      <Project>{3E502177-6DCD-E9A7-1238-792D5F55BEBC}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

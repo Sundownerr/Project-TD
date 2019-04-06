@@ -31,5 +31,4 @@ playerData.json
 *.zip
 *.png
 *.csproj
-
-
+*.asmdef

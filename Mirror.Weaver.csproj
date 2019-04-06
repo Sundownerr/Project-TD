@@ -53,23 +53,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\SMirror\Editor\Weaver\CompilationFinishedHook.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Extensions.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Helpers.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\CommandProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\MessageClassProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\MonoBehaviourProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\NetworkBehaviourProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\RpcProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\SyncEventProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\SyncListProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\SyncListStructProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\SyncObjectProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\SyncVarProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Processors\TargetRpcProcessor.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Program.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Resolvers.cs" />
-     <Compile Include="Assets\SMirror\Editor\Weaver\Weaver.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\CompilationFinishedHook.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Extensions.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Helpers.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\CommandProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\MessageClassProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\MonoBehaviourProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\NetworkBehaviourProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\RpcProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncEventProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncListProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncListStructProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncObjectProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\SyncVarProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Processors\TargetRpcProcessor.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Program.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Resolvers.cs" />
+     <Compile Include="Assets\Editor\Editor\Weaver\Weaver.cs" />
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -305,13 +305,13 @@
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Mdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Cecil.Pdb">
- <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTD-new/Assets/Plugins/Unity.Cecil/Unity.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTD-new/Assets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>

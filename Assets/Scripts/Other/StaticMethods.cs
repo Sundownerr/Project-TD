@@ -47,6 +47,27 @@ public static class StaticMethods
         return num.ToString("0.#");
     }
 
+    public static Dictionary<EnumType, string> CreateStringKeyDictionary<EnumType>() where EnumType : Enum
+    {
+        var numerals = Enum.GetValues(typeof(EnumType));
+        var dictionary = new Dictionary<EnumType, string>();
+        var keyPrefix = 
+            typeof(EnumType) == typeof(Numeral) ? "a" :
+            typeof(EnumType) == typeof(Game.Enums.Spirit) ? "a" :
+            typeof(EnumType) == typeof(Game.Enums.SpiritFlag) ? "a" :
+            typeof(EnumType) == typeof(Game.Enums.Enemy) ? "a" :
+            typeof(EnumType) == typeof(ElementType) ? "element" :
+            typeof(EnumType) == typeof(RarityType) ? "rarity" :
+            "error";
+
+        for (int i = 0; i < numerals.Length; i++)
+            dictionary.Add(
+                (EnumType)numerals.GetValue(i),
+                Enum.GetName(typeof(EnumType), i).StringEnumToStringKey(keyPrefix));
+
+        return dictionary;
+    }
+
     public static bool CheckLocalPlayer(NetworkPlayer player)
     {
         if (GameManager.Instance.GameState == GameState.SingleplayerInGame)
@@ -80,7 +101,7 @@ public static class StaticMethods
 
         newSpirit.SetSystem(owner);
         CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
-       
+
         return newSpirit;
     }
 
@@ -106,7 +127,7 @@ public static class StaticMethods
         var enemySystem = new EnemySystem(enemy, waypoints) { Data = data };
 
         enemySystem.SetSystem(owner);
-      
+
         return enemySystem;
     }
 }

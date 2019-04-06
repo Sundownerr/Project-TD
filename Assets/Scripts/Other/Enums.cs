@@ -47,7 +47,7 @@ namespace Game.Enums
         Iron = 3,
         Storm = 4,
         Nature = 5,
-        Fire = 6,
+        Fire = 6
     }
 
     [Serializable]
@@ -56,7 +56,7 @@ namespace Game.Enums
         Common = 0,
         Uncommon = 1,
         Rare = 2,
-        Unique = 3,
+        Unique = 3
     }
 
     [Serializable]
@@ -65,17 +65,17 @@ namespace Game.Enums
         Exp,
         Level,
         WaveLevel,
-        GoldCost,
-        ItemDropRatio,
-        ItemQuialityRatio,
-        BuffDuration,
-        DebuffDuration,
+        ResourceCost,
+        ItemDropRate,
+        ItemQualityRate,
+        BuffTime,
+        DebuffTime
     }
 
     [Serializable]
     public enum Spirit
     {
-        AttackSpeedModifier,
+        AttackSpeed,
         ElementLevel,
         SpiritLimit,
         MagicCrystalReq,
@@ -84,15 +84,15 @@ namespace Game.Enums
         Range,
         Mana,
         ManaRegen,
-        AttackSpeed,
+        AttackDelay,
         TriggerChance,
         CritChance,
         CritMultiplier,
         MulticritCount,
         SpellDamage,
         SpellCritChance,
-        GoldRatio,
-        ExpRatio,
+        ResourceRate,
+        ExpRate
     }
 
     [Serializable]
@@ -103,7 +103,7 @@ namespace Game.Enums
         DefaultMoveSpeed,
         MoveSpeed,
         Health,
-        MaxHealth,
+        MaxHealth
     }
 
     [Serializable]

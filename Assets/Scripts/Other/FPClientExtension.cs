@@ -5,6 +5,7 @@ using UnityEngine;
 using FPClient = Facepunch.Steamworks.Client;
 using Facepunch.Steamworks;
 using UnityEngine.UI;
+using TMPro;
 
 public struct LobbyCallbacks
 {
@@ -53,7 +54,7 @@ public static class LobbyExtension
     /// <summary>
     /// Send chat message as player
     /// </summary>
-    public static void SendChatMessage(InputField chatInputField)
+    public static void SendChatMessage(TMP_InputField chatInputField)
     {
         
         if (string.IsNullOrWhiteSpace(chatInputField.text))
@@ -88,7 +89,7 @@ public static class LobbyExtension
     public static string GetMemberData(ulong steamID, string key) => FPClient.Instance.Lobby.GetMemberData(steamID, key);
     public static void SetMemberData(string key, string value) => FPClient.Instance.Lobby.SetMemberData(key, value);
 
-    public static void UpdateData(Text UIText, string key)
+    public static void UpdateData(TextMeshProUGUI UIText, string key)
     {
         var value = GetData(key);
 
