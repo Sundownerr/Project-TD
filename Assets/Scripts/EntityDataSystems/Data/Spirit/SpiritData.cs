@@ -30,25 +30,25 @@ namespace Game.Spirit.Data
         }
 
         [SerializeField, ShowAssetPreview()]
-        private GameObject prefab;
+        GameObject prefab;
 
         [SerializeField, OneLineWithHeader, OneLine.HideLabel]
         public BaseData Base;
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<NumeralAttribute> numeralAttributes;
+        List<NumeralAttribute> numeralAttributes;
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<SpiritFlagAttribute> flagAttributes;
+        List<SpiritFlagAttribute> flagAttributes;
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<SpiritAttribute> spiritAttributes;
+        List<SpiritAttribute> spiritAttributes;
 
-        [SerializeField] private List<Ability> AbilityList;
-        [SerializeField] private List<Trait> TraitList;
+        [SerializeField] List<Ability> AbilityList;
+        [SerializeField] List<Trait> TraitList;
         [SerializeField] public List<SpiritData> Grades;
         [SerializeField] public List<float> DamageToRace;
-        [SerializeField, HideInInspector] private int numberInList;
+        [SerializeField, HideInInspector] int numberInList;
 
         public int GradeCount { get; set; } = -1;
         public Inventory Inventory { get; set; }
@@ -65,9 +65,9 @@ namespace Game.Spirit.Data
             Inventory = new Inventory(this.Get(Enums.Spirit.MaxInventorySlots).Value);
         }
 
-        private void Awake()
+        void Awake()
         {
-            
+
             if (numeralAttributes == null || numeralAttributes.Count == 0)
                 numeralAttributes = Ext.CreateAttributeList_N();
 
@@ -93,7 +93,7 @@ namespace Game.Spirit.Data
 #if UNITY_EDITOR
 
         [Button("Add to DataBase")]
-        private void AddToDataBase()
+        void AddToDataBase()
         {
             if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
                 if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)
@@ -110,10 +110,12 @@ namespace Game.Spirit.Data
                         EditorUtility.SetDirty(this);
                         DataControlSystem.Save(dataBase);
                     }
+                    else Debug.LogWarning($"{this} already in data base");
                 }
+                else Debug.LogError($"{typeof(SpiritDataBase)} not found");
         }
 
-        private void RemoveFromDataBase()
+        void RemoveFromDataBase()
         {
             if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
                 if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)

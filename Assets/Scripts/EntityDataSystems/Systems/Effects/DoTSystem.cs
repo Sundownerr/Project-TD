@@ -12,10 +12,10 @@ namespace Game.Systems.Effects
     {
         public IDamageDealer OwnerDamageDealer { get; set; }
 
-        private float tickTimer;
-        private new DoT effect;
-        private GameObject effectPrefab;
-        private ParticleSystem[] psList;
+        float tickTimer;
+        new DoT effect;
+        GameObject effectPrefab;
+        ParticleSystem[] psList;
 
         public DoTSystem(DoT effect) : base(effect)
         {

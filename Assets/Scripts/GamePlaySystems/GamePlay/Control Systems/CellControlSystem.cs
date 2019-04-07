@@ -14,9 +14,9 @@ namespace Game.Systems
         public List<Cell> Cells { get; set; } = new List<Cell>();
         public Cell ChoosedCell { get; set; }
 
-        private Color blue, red, green, choosedColor;
-        private Camera mainCam = Camera.main;
-        private RaycastHit hit;
+        Color blue, red, green, choosedColor;
+        Camera mainCam = Camera.main;
+        RaycastHit hit;
         public PlayerSystem Owner { get; set; }
 
         public CellControlSystem(PlayerSystem player)
@@ -77,11 +77,11 @@ namespace Game.Systems
             #endregion
         }
 
-        private void OnSpiritPlaced(object _, SpiritSystem spirit) => ChoosedCell = null;
-        private void OnRMBPressed(object _, EventArgs e) => ChoosedCell = null;
-        private void OnClickedOnGround(object _, EventArgs e) => ChoosedCell = null;
-        private void OnClickedOnSpirit(object _, GameObject spirit) => ChoosedCell = null;
-        private void OnClickedOnCell(object _, GameObject cellGO) => ChoosedCell = ChoosedCell ?? cellGO.GetComponent<Cell>();
+        void OnSpiritPlaced(object _, SpiritSystem spirit) => ChoosedCell = null;
+        void OnRMBPressed(object _, EventArgs e) => ChoosedCell = null;
+        void OnClickedOnGround(object _, EventArgs e) => ChoosedCell = null;
+        void OnClickedOnSpirit(object _, GameObject spirit) => ChoosedCell = null;
+        void OnClickedOnCell(object _, GameObject cellGO) => ChoosedCell = ChoosedCell ?? cellGO.GetComponent<Cell>();
 
 
         public void UpdateSystem()

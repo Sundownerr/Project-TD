@@ -22,7 +22,7 @@ namespace Game.Systems
             UpdateUI();
         }
 
-        private void OnResourcesChanged(object _, EventArgs e) => UpdateUI();
+        void OnResourcesChanged(object _, EventArgs e) => UpdateUI();
 
         public void UpdateUI()
         {
@@ -33,6 +33,6 @@ namespace Game.Systems
             SpiritLimit.text     = $"{resources.CurrentSpiritLimit}/{resources.MaxSpiritLimit}";
         }
 
-        private void GetSpirit() => Owner.SpiritCreatingSystem.CreateRandomSpirit();                 
+        void GetSpirit() => Owner.SpiritCreatingSystem.CreateRandomSpirit();                 
     }
 }

@@ -15,8 +15,8 @@ public class HealthSystem
     public event EventHandler<IHealthComponent> ZeroHealth = delegate { };
     public bool IsVulnerable { get; set; }
 
-    private IHealthComponent owner;
-    private double maxHealth, healthRegen, regenTimer;
+    IHealthComponent owner;
+    double maxHealth, healthRegen, regenTimer;
 
     public HealthSystem(IHealthComponent owner)
     {

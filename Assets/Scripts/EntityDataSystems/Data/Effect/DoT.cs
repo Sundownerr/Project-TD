@@ -6,13 +6,13 @@ using UnityEngine;
 
 namespace Game.Data.Effects
 {
-	[CreateAssetMenu(fileName = "DoT", menuName = "Data/Effect/DoT")]
-	
-	public class DoT : Effect
-	{
+    [CreateAssetMenu(fileName = "DoT", menuName = "Data/Effect/DoT")]
+
+    public class DoT : Effect
+    {
         public int DamagePerTick;
-		public GameObject EffectPrefab;
-	
-		public override EffectSystem EffectSystem { get => new DoTSystem(this); }
+        public GameObject EffectPrefab;
+
+        public override EffectSystem EffectSystem { get => new DoTSystem(this); }
     }
 }

@@ -16,7 +16,7 @@ public class DamageToArmorSettings : ScriptableObject
     [SerializeField]
     public List<DamageToArmor> DamageToArmorList;
 
-    private void Awake()
+    void Awake()
     {
         if (DamageToArmorList == null)
         {

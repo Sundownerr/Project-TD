@@ -25,17 +25,17 @@ namespace Game.Systems
         public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit = delegate { };
         public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit = delegate { };
         public event EventHandler<ItemUISystem> MoveItemToPlayer = delegate { };
-        private List<NumeralStatValueUI> numeralStatValues;
-        private List<SpiritStatValueUI> spiritStatValues;
+        List<NumeralStatValueUI> numeralStatValues;
+        List<SpiritStatValueUI> spiritStatValues;
 
-        private List<bool> isSlotEmpty = new List<bool>();
-        private ObjectPool appliedEffectsUIPool;
-        private List<SlotWithCooldown> appliedEffectsUI = new List<SlotWithCooldown>();
-        private SpiritSystem choosedSpirit;
-        private Animator baseAnimator, expandAnimator;
-        private Button expandButton;
-        private string isOpen = "isOpen", isExpanded = "isExpanded";
-        private Numeral[] hidedNumeralStats = new Numeral[]
+        List<bool> isSlotEmpty = new List<bool>();
+        ObjectPool appliedEffectsUIPool;
+        List<SlotWithCooldown> appliedEffectsUI = new List<SlotWithCooldown>();
+        SpiritSystem choosedSpirit;
+        Animator baseAnimator, expandAnimator;
+        Button expandButton;
+        string isOpen = "isOpen", isExpanded = "isExpanded";
+        Numeral[] hidedNumeralStats = new Numeral[]
         {
             Numeral.BuffTime,
             Numeral.DebuffTime,
@@ -43,7 +43,7 @@ namespace Game.Systems
             Numeral.ItemQualityRate
         };
 
-        private Enums.Spirit[] hidedSpiritStats = new Enums.Spirit[]
+        Enums.Spirit[] hidedSpiritStats = new Enums.Spirit[]
         {
             Enums.Spirit.AttackSpeed,
             Enums.Spirit.ResourceRate,
@@ -94,7 +94,7 @@ namespace Game.Systems
             UpgradeButton.onClick.AddListener(Upgrade);
         }
 
-        private void OnItemUICreated(object _, ItemUISystem itemUI)
+        void OnItemUICreated(object _, ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -102,7 +102,7 @@ namespace Game.Systems
             itemUI.System.StatsApplied += OnStatsApplied;
         }
 
-        private void ActivateUI(bool activate)
+        void ActivateUI(bool activate)
         {
             if (Owner.PlayerInputSystem.ChoosedSpirit == null)
                 return;
@@ -170,7 +170,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void OnEffectRemoved(object sender, Effect e)
+        void OnEffectRemoved(object sender, Effect e)
         {
             var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
 
@@ -181,7 +181,7 @@ namespace Game.Systems
             appliedEffectsUI.Remove(appliedEffectUI);
         }
 
-        private void OnEffectApplied(object sender, Effect e)
+        void OnEffectApplied(object sender, Effect e)
         {
             var poolObject = appliedEffectsUIPool.PopObject();
             var appliedEffectUI = poolObject.GetComponent<SlotWithCooldown>();
@@ -192,12 +192,12 @@ namespace Game.Systems
             appliedEffectUI.Description = e.Description;
         }
 
-        private void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
-        private void OnClickedOnCell(object _, GameObject spirit) => ActivateUI(false);
-        private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        private void OnStatsApplied(object _, EventArgs e) => UpdateValues();
+        void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
+        void OnClickedOnCell(object _, GameObject spirit) => ActivateUI(false);
+        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
+        void OnStatsApplied(object _, EventArgs e) => UpdateValues();
 
-        private void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
+        void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
         {
             for (int i = 0; i < isSlotEmpty.Count; i++)
                 if (isSlotEmpty[i])
@@ -221,19 +221,19 @@ namespace Game.Systems
             }
         }
 
-        private void Sell()
+        void Sell()
         {
             Selling?.Invoke(null, null);
             ActivateUI(false);
         }
 
-        private void Upgrade()
+        void Upgrade()
         {
             Upgrading?.Invoke(null, null);
             UpdateUI();
         }
 
-        private void HideExpandedStatValues(bool hide)
+        void HideExpandedStatValues(bool hide)
         {
             for (int i = 0; i < hidedNumeralStats.Length; i++)
                 numeralStatValues.Find(x => x.NumeralValue == hidedNumeralStats[i])?.gameObject.SetActive(!hide);
@@ -242,7 +242,7 @@ namespace Game.Systems
                 spiritStatValues.Find(x => x.SpiritValue == hidedSpiritStats[i])?.gameObject.SetActive(!hide);
         }
 
-        private void UpdateValues()
+        void UpdateValues()
         {
             var spirit = choosedSpirit.Data;
 
@@ -298,7 +298,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void UpdateItems()
+        void UpdateItems()
         {
             var spiritItems = choosedSpirit.Data.Inventory.Items;
             var maxSlots = choosedSpirit.Data.Get(Enums.Spirit.MaxInventorySlots).Value;
@@ -326,7 +326,7 @@ namespace Game.Systems
                     }
         }
 
-        private void UpdateAbilities()
+        void UpdateAbilities()
         {
             var spiritAbilities = choosedSpirit.Data.Abilities;
 
@@ -343,7 +343,7 @@ namespace Game.Systems
             }
         }
 
-        private void OnAbilityUsed(object sender, AbilitySystem e)
+        void OnAbilityUsed(object sender, AbilitySystem e)
         {
             var slot = AbilitySlots.Find(x => x.EntityID == e.ID);
             var delay = new WaitForSeconds(Time.deltaTime);
@@ -366,7 +366,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void UpdateTraits()
+        void UpdateTraits()
         {
             var spiritTraits = choosedSpirit.Data.Traits;
 
@@ -382,7 +382,7 @@ namespace Game.Systems
             }
         }
 
-        private void UpdateUI()
+        void UpdateUI()
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
 
@@ -414,7 +414,7 @@ namespace Game.Systems
                     }
         }
 
-        private void AddItemToSpirit(ItemUISystem itemUI, int slotNumber)
+        void AddItemToSpirit(ItemUISystem itemUI, int slotNumber)
         {
             AllItemsUIInSpirits.Add(itemUI);
             isSlotEmpty[slotNumber] = false;
@@ -428,7 +428,7 @@ namespace Game.Systems
             UpdateValues();
         }
 
-        private void RemoveItemFromSpirit(ItemUISystem itemUI)
+        void RemoveItemFromSpirit(ItemUISystem itemUI)
         {
             if (itemUI.DraggedFrom == DraggedFrom.SpiritInventory)
             {

@@ -10,7 +10,7 @@ namespace Game.Data
     {
         public int Range;
 
-        private void Awake()
+        void Awake()
         {
             Name = "AOE SHot";
             Description = $"Damage targets in {Range} range";

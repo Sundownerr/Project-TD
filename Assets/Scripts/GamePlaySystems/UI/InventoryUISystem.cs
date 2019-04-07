@@ -20,9 +20,9 @@ namespace Game.Systems
         public List<GameObject> Slots;
         public List<ItemUISystem> ItemsUI;
 
-        private List<bool> isSlotEmpty = new List<bool>();
+        List<bool> isSlotEmpty = new List<bool>();
 
-        private void Awake()
+        void Awake()
         {
             InventoryButton.onClick.AddListener(ShowButton);
 
@@ -45,7 +45,7 @@ namespace Game.Systems
             Owner.SpiritUISystem.MoveItemToPlayer += OnItemMovedToPlayer;
         }
 
-        private void OnItemUICreated(object _, ItemUISystem itemUI)
+        void OnItemUICreated(object _, ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -53,7 +53,7 @@ namespace Game.Systems
             ApplyConsumable += itemUI.System.OnConsumableApplied;
         }
 
-        private void OnItemMovedToPlayer(object _, ItemUISystem itemUI)
+        void OnItemMovedToPlayer(object _, ItemUISystem itemUI)
         {
             var freeSlotIndex = isSlotEmpty.IndexOf(true);
             if (freeSlotIndex == -1) return;
@@ -66,7 +66,7 @@ namespace Game.Systems
             AddItemToPlayer(itemUI, freeSlotIndex);
         }
 
-        private void OnItemCreated(object _, ItemSystem item)
+        void OnItemCreated(object _, ItemSystem item)
         {
             var freeSlotIndex = isSlotEmpty.IndexOf(true);
             if (freeSlotIndex == -1) return;
@@ -125,7 +125,7 @@ namespace Game.Systems
                     AddItemToPlayer(e.ItemUI, i);
         }
 
-        private void RemoveItemFromPlayer(ItemUISystem itemUI)
+        void RemoveItemFromPlayer(ItemUISystem itemUI)
         {
             if (itemUI.DraggedFrom == DraggedFrom.PlayerInventory)
             {
@@ -138,7 +138,7 @@ namespace Game.Systems
 
         }
 
-        private void AddItemToPlayer(ItemUISystem itemUI, int slotNumber)
+        void AddItemToPlayer(ItemUISystem itemUI, int slotNumber)
         {
             ItemsUI.Add(itemUI);
             itemUI.DraggedFrom = DraggedFrom.PlayerInventory;

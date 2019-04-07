@@ -67,6 +67,9 @@ public static class Ext
     public static string GetLocalized<EnumType>(this EnumType type) where EnumType: struct, Enum =>
         LeanLocalization.GetTranslationText(type.GetStringKey());
 
+    public static string GetLocalized(this string key) =>
+        LeanLocalization.GetTranslationText(key);
+
     public static string StringEnumToStringKey(this string source, string keyPrefix)
     {
         var splitted = source.SplitCamelCase();

@@ -17,7 +17,7 @@ public static class EnumStringKeys
     public static readonly Dictionary<RaceType, string> Race = CreateStringKeyDictionary<RaceType>();
     public static readonly Dictionary<ArmorType, string> Armor = CreateStringKeyDictionary<ArmorType>();
 
-    private static Dictionary<EnumType, string> CreateStringKeyDictionary<EnumType>() where EnumType : Enum
+    static Dictionary<EnumType, string> CreateStringKeyDictionary<EnumType>() where EnumType : Enum
     {
         var numerals = Enum.GetValues(typeof(EnumType));
         var dictionary = new Dictionary<EnumType, string>();

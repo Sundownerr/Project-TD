@@ -17,17 +17,17 @@ namespace Game.Spirit.System
         public event EventHandler PrepareToShoot = delegate { };
         public event EventHandler<BulletSystem> Shooting = delegate { };
 
-        private List<BulletSystem> bullets = new List<BulletSystem>();
-        private List<GameObject> bulletGOs = new List<GameObject>();
-        private List<float> removeTimers = new List<float>();
-        private SpiritSystem ownerSpirit;
-        private ObjectPool bulletPool;
-        private double attackDelay;
-        private int shotCount;
+        List<BulletSystem> bullets = new List<BulletSystem>();
+        List<GameObject> bulletGOs = new List<GameObject>();
+        List<float> removeTimers = new List<float>();
+        SpiritSystem ownerSpirit;
+        ObjectPool bulletPool;
+        double attackDelay;
+        int shotCount;
 
         public ShootSystem(SpiritSystem spirit) => ownerSpirit = spirit;
 
-        private void OnDestroy() => bulletPool.DestroyPool();
+        void OnDestroy() => bulletPool.DestroyPool();
 
         public void Set(GameObject bullet)
         {
@@ -158,6 +158,6 @@ namespace Game.Spirit.System
             }
         }
 
-        private void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(null, bullet);
+        void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(null, bullet);
     }
 }

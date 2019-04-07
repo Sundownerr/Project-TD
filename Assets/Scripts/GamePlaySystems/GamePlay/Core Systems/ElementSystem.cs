@@ -8,7 +8,7 @@ namespace Game.Systems
     {
         public event EventHandler<int> LearnedElement = delegate { };
 
-        private PlayerSystem owner;
+        PlayerSystem owner;
 
         public ElementSystem(PlayerSystem player) => owner = player;
 
@@ -17,7 +17,7 @@ namespace Game.Systems
             owner.ResourceSystem.ResourcesChanged += OnResourcesChanged;
         }
 
-        private void OnResourcesChanged(object sender, EventArgs e)
+        void OnResourcesChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < owner.ElementUISystem.Buttons.Length; i++)
             {
@@ -38,7 +38,7 @@ namespace Game.Systems
             }
         }
 
-        private (bool canLearn, int learnCost) CheckCanLearn(int elementLevel)
+        (bool canLearn, int learnCost) CheckCanLearn(int elementLevel)
         {
             var baseLearnCost = 20;
             var levelLimit = 15;

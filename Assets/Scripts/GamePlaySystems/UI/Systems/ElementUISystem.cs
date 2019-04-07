@@ -13,7 +13,7 @@ namespace Game.Systems
         public Button Astral, Darkness, Ice, Iron, Storm, Nature, Fire;
         public Button[] Buttons { get; private set; }
 
-        private TextMeshProUGUI astralLevel, darknessLevel, iceLevel, ironLevel, stormLevel, natureLevel, fireLevel;
+        TextMeshProUGUI astralLevel, darknessLevel, iceLevel, ironLevel, stormLevel, natureLevel, fireLevel;
 
         protected override void Awake()
         {
@@ -38,12 +38,12 @@ namespace Game.Systems
             Buttons = new Button[] { Astral, Darkness, Ice, Iron, Storm, Nature, Fire };
         }
 
-        private void Start()
+        void Start()
         {
             gameObject.SetActive(true);
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             Astral.onClick.RemoveAllListeners();
             Darkness.onClick.RemoveAllListeners();
@@ -65,7 +65,7 @@ namespace Game.Systems
             Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;
         }
 
-        private void ActivateUI(bool activate)
+        void ActivateUI(bool activate)
         {
             if (activate)
             {
@@ -79,13 +79,13 @@ namespace Game.Systems
                 Owner.ResourceUISystem.GetSpiritButton.gameObject.SetActive(false);
         }
 
-        private void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
-        private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        private void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
-        private void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
-        private void OnElementLearned(object _, int learnCost) => UpdateUI();
+        void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
+        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
+        void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
+        void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
+        void OnElementLearned(object _, int learnCost) => UpdateUI();
 
-        private void UpdateUI()
+        void UpdateUI()
         {
             astralLevel.text = Owner.Data.ElementLevels[(int)ElementType.Astral].ToString();
             darknessLevel.text = Owner.Data.ElementLevels[(int)ElementType.Darkness].ToString();

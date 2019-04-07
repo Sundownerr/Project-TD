@@ -18,9 +18,9 @@ namespace Game.Systems
         public event EventHandler<IVulnerable> EntityExit = delegate { };
         public event EventHandler Destroyed = delegate { };
 
-        private Renderer rend;
-        private Color transparent, notTransparent;
-        private bool isRangeShowed;
+        Renderer rend;
+        Color transparent, notTransparent;
+        bool isRangeShowed;
 
         protected override void Awake()
         {
@@ -33,12 +33,12 @@ namespace Game.Systems
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             Destroyed?.Invoke(null, null);
         }
 
-        private void OnTriggerEnter(Collider other)
+        void OnTriggerEnter(Collider other)
         {
             AddToList();
 
@@ -95,7 +95,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void OnTriggerExit(Collider other)
+        void OnTriggerExit(Collider other)
         {
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (other.gameObject == EntitySystems[i].Prefab)
@@ -106,7 +106,7 @@ namespace Game.Systems
                 }
         }
 
-        private void OnTriggerStay(Collider other)
+        void OnTriggerStay(Collider other)
         {
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (EntitySystems[i] == null || EntitySystems[i].Prefab == null)
@@ -117,7 +117,7 @@ namespace Game.Systems
                 }
         }
 
-        private void Show(bool show)
+        void Show(bool show)
         {
             isRangeShowed = show;
             rend.material.color = show ? notTransparent : transparent;

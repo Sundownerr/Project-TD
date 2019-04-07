@@ -10,7 +10,7 @@ namespace Game.Data
     {
         public int Count;
 
-        private void Awake()
+        void Awake()
         {
             Name = "Multishot";
             Description = $"Shoot {Count} additional targets";

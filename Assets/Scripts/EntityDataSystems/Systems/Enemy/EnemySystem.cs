@@ -32,7 +32,7 @@ namespace Game.Enemy
         public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
 
-        private Vector3[] waypoints;
+        Vector3[] waypoints;
 
         public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints)
         {

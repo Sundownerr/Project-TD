@@ -15,19 +15,19 @@ public class UIControlSystem : MonoBehaviour
     public Button IncreaseLevelButton, QuitButton;
 
 
-    private List<TextMeshProUGUI> textPrefabs = new List<TextMeshProUGUI>();
-    private List<PlayerData> playerDatas = new List<PlayerData>();
-    private List<string> playerNames = new List<string>();
-    private List<TMP_InputField> chatTexts = new List<TMP_InputField>();
+    List<TextMeshProUGUI> textPrefabs = new List<TextMeshProUGUI>();
+    List<PlayerData> playerDatas = new List<PlayerData>();
+    List<string> playerNames = new List<string>();
+    List<TMP_InputField> chatTexts = new List<TMP_InputField>();
 
-    private void Awake()
+    void Awake()
     {
         FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
         IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(null, null));
         QuitButton.onClick.AddListener(QuitGame);
     }
 
-    private void QuitGame()
+    void QuitGame()
     {
         var manager = NetworkManager.singleton as ExtendedNetworkManager;
 
@@ -44,7 +44,7 @@ public class UIControlSystem : MonoBehaviour
         manager.StopClient();
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         IncreaseLevelButtonClicked = null;
     }
@@ -64,13 +64,13 @@ public class UIControlSystem : MonoBehaviour
         AddNewLines();
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
             LobbyExtension.SendChatMessage(ChatInputField);
     }
 
-    private void ChatMessageReceived(ulong senderID, string message)
+    void ChatMessageReceived(ulong senderID, string message)
     {
         var prefab = Instantiate(ChatTextPrefab, ChatTextGroup.transform);
 

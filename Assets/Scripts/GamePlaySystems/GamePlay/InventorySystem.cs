@@ -25,7 +25,7 @@ namespace Game.Data
             Owner.InventoryUISystem.ApplyConsumable += OnConsumbleApplied;
         }
 
-        private void OnConsumbleApplied(object _, ConsumableEventArgs e)
+        void OnConsumbleApplied(object _, ConsumableEventArgs e)
         {
             if (e.Entity is SpiritSystem spirit)
             {
@@ -37,20 +37,20 @@ namespace Game.Data
                 e.ItemUI.System.Owner = player;
         }
 
-        private void OnItemAddedToSpirit(object _, SpiritItemEventArgs e)
+        void OnItemAddedToSpirit(object _, SpiritItemEventArgs e)
         {          
             e.ItemUI.System.Owner = e.Spirit;
             AddItem(e.Spirit.Data.Inventory, e.ItemUI.System);
             e.ItemUI.System.ApplyStats();           
         }
 
-        private void OnItemRemovedFromSpirit(object _, SpiritItemEventArgs e)
+        void OnItemRemovedFromSpirit(object _, SpiritItemEventArgs e)
         {          
             RemoveItem(e.Spirit.Data.Inventory, e.ItemUI.System);            
             e.ItemUI.System.RemoveStats();           
         }
 
-        private void OnItemAddedToPlayer(object _, ItemUISystem itemUI)
+        void OnItemAddedToPlayer(object _, ItemUISystem itemUI)
         {          
             itemUI.System.Owner = Owner;
             AddItem(Owner.Data.Inventory, itemUI.System);
@@ -61,7 +61,7 @@ namespace Game.Data
             RemoveItem(Owner.Data.Inventory, itemUI.System);
         }
 
-        private void AddItem(Inventory inventory, ItemSystem item)
+        void AddItem(Inventory inventory, ItemSystem item)
         {
             if (inventory.Items.Count < inventory.MaxSlotCount)
             {
@@ -72,7 +72,7 @@ namespace Game.Data
             }
         }
 
-        private void RemoveItem(Inventory inventory, ItemSystem item)
+        void RemoveItem(Inventory inventory, ItemSystem item)
         {
             inventory.Items.Remove(item);
 

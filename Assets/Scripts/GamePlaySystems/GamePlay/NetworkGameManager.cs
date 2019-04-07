@@ -31,7 +31,7 @@ public class NetworkGameManager : NetworkBehaviour
     public PlayerData[] PlayerDatas;
     public string[] PlayerNames;
     public List<WaveEnemyID> WaveEnenmyIDs;
-    private int waveAmount;
+    int waveAmount;
 
     public void Set()
     {

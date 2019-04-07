@@ -20,7 +20,7 @@ namespace Game.Enemy
     [Serializable]
     public class EnemyData : Entity, IEnemyAttributes, IAbilityComponent, ITraitComponent, IPrefabComponent
     {
-        [SerializeField, ShowAssetPreview()] private GameObject prefab;
+        [SerializeField, ShowAssetPreview()] GameObject prefab;
         [SerializeField] public int WaveLevel;
         [SerializeField] public RaceType Race;
         [SerializeField] public EnemyType Type;
@@ -33,10 +33,10 @@ namespace Game.Enemy
         public List<NumeralAttribute> AppliedAttributes { get; set; }
         public ArmorType ArmorType { get; set; }
 
-        public List<NumeralAttribute> NumeralAttributes { get ; private set ; }
-        public List<EnemyAttribute> EnemyAttributes { get ; private set; }
+        public List<NumeralAttribute> NumeralAttributes { get; private set; }
+        public List<EnemyAttribute> EnemyAttributes { get; private set; }
 
-        private void Awake()
+        void Awake()
         {
             ID.Add((int)Race);
             ID.Add(numberInList);
@@ -68,10 +68,12 @@ namespace Game.Enemy
                     EditorUtility.SetDirty(this);
                     DataControlSystem.Save(dataBase);
                 }
+                else Debug.LogWarning($"{this} already in data base");
             }
+            else Debug.LogError($"{typeof(EnemyDataBase)} not found");
         }
 
-        private void RemoveFromDataBase()
+        void RemoveFromDataBase()
         {
             if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
             {
@@ -80,7 +82,7 @@ namespace Game.Enemy
             }
         }
 
-        private void SetName()
+        void SetName()
         {
             var tempName = new StringBuilder();
 

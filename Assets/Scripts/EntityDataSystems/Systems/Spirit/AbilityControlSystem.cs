@@ -8,9 +8,9 @@ namespace Game.Systems
 {
     public class AbilityControlSystem
     {
-        private IAbilitiySystem owner;
-        private List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
-        private bool isAllEffectsEnded, isInContinueState;
+        IAbilitiySystem owner;
+        List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
+        bool isAllEffectsEnded, isInContinueState;
 
         public AbilityControlSystem(IAbilitiySystem owner)
         {

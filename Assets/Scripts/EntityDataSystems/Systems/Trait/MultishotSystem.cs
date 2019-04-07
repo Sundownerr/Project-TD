@@ -11,7 +11,7 @@ namespace Game.Systems
     {
         public ITraitSystem Owner { get; set; }
 
-        private Multishot trait;
+        Multishot trait;
 
         public MultishotSystem(Multishot trait, ITraitSystem owner) 
         {

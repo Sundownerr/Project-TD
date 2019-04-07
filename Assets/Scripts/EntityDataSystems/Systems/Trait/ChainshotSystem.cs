@@ -10,7 +10,7 @@ namespace Game.Systems
     {
         public ITraitSystem Owner { get; set; }
 
-        private Chainshot trait;
+        Chainshot trait;
 
         public ChainshotSystem(Chainshot trait, ITraitSystem owner)
         {

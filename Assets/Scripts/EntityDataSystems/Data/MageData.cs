@@ -8,27 +8,32 @@ using UnityEngine;
 using Game.Systems;
 using Lean.Localization;
 using Game.Enums;
+using NaughtyAttributes;
+using Game.Data;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Game
 {
     [Serializable, CreateAssetMenu(fileName = "New Mage", menuName = "Data/Mage")]
     public class MageData : Entity
     {
-        private enum Attribute { Positive, Negative }
-
-        private enum Value { Base, PerLevel }
-
-        [SerializeField, OneLine, OneLine.HideLabel]
-        private List<NumeralAttribute> numeralAttributes;
+        enum Attribute { Positive, Negative }
+        enum Value { Base, PerLevel }
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<SpiritAttribute> spiritAttributes;
+        List<NumeralAttribute> numeralAttributes;
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<SpiritFlagAttribute> spiritFlagAttributes;
+        List<SpiritAttribute> spiritAttributes;
 
         [SerializeField, OneLine, OneLine.HideLabel]
-        private List<EnemyAttribute> enemyAttributes;
+        List<SpiritFlagAttribute> spiritFlagAttributes;
+
+        [SerializeField, OneLine, OneLine.HideLabel]
+        List<EnemyAttribute> enemyAttributes;
 
         [NaughtyAttributes.ResizableTextArea]
         public string AdvancedDescription;
@@ -38,14 +43,20 @@ namespace Game
         public List<SpiritFlagAttribute> SpiritFlagAttributes { get => spiritFlagAttributes; set => spiritFlagAttributes = value; }
         public List<EnemyAttribute> EnemyAttributes { get => enemyAttributes; set => enemyAttributes = value; }
 
-        private StringBuilder bonusesBuilder;
+        StringBuilder bonusesBuilder;
+        [SerializeField, HideInInspector] private int numberInList;
 
-        private void Awake()
+        void Awake()
         {
-            var descriptionBuilder = new StringBuilder().AppendLine("Bonuses:");
+            ID.ForEach(x => Debug.Log($"mage id: {x}"));
+        }
+
+        public void GenerateDescription()
+        {
             bonusesBuilder = new StringBuilder();
 
-            descriptionBuilder
+            AdvancedDescription = new StringBuilder()
+                .AppendLine("Bonuses:")
                 .Append(BuildDescription(spiritAttributes, Attribute.Positive, Value.Base))
                 .Append(BuildDescription(spiritAttributes, Attribute.Positive, Value.PerLevel))
                 .Append(BuildDescription(numeralAttributes, Attribute.Positive, Value.Base))
@@ -56,12 +67,33 @@ namespace Game
                 .Append(BuildDescription(spiritAttributes, Attribute.Negative, Value.PerLevel))
                 .Append(BuildDescription(numeralAttributes, Attribute.Negative, Value.Base))
                 .Append(BuildDescription(numeralAttributes, Attribute.Negative, Value.PerLevel))
-                .Append(BuildDescription(enemyAttributes, Attribute.Negative));
-
-            AdvancedDescription = descriptionBuilder.ToString();
+                .Append(BuildDescription(enemyAttributes, Attribute.Negative))
+                .ToString();
         }
 
-        private string BuildDescription(List<SpiritAttribute> list, Attribute type, Value valueType)
+#if UNITY_EDITOR
+        [Button("Add to DataBase")]
+        void AddToDataBase()
+        {
+            if (DataControlSystem.Load<MageDataBase>() is MageDataBase dataBase)
+            {
+                if (!dataBase.Data.Contains(this))
+                {
+                    numberInList = dataBase.Data.Count;
+
+                    ID = new ID() { numberInList };
+
+                    dataBase.Data.Add(this);
+                    EditorUtility.SetDirty(this);
+                    DataControlSystem.Save(dataBase);
+                }
+                else Debug.LogWarning($"{this} already in data base");
+            }
+            else Debug.LogError($"{typeof(MageDataBase)} not found");
+        }
+#endif 
+
+        string BuildDescription(List<SpiritAttribute> list, Attribute type, Value valueType)
         {
             var isPositive = type == Attribute.Positive;
             var isBaseValue = valueType == Value.Base;
@@ -86,7 +118,7 @@ namespace Game
             return result;
         }
 
-        private string BuildDescription(List<NumeralAttribute> list, Attribute type, Value valueType)
+        string BuildDescription(List<NumeralAttribute> list, Attribute type, Value valueType)
         {
             var isPositive = type == Attribute.Positive;
             var isBaseValue = valueType == Value.Base;
@@ -111,7 +143,7 @@ namespace Game
             return result;
         }
 
-        private string BuildDescription(List<EnemyAttribute> list, Attribute type)
+        string BuildDescription(List<EnemyAttribute> list, Attribute type)
         {
             var isPositive = type == Attribute.Positive;
 

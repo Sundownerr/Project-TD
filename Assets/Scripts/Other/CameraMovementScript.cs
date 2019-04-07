@@ -2,11 +2,11 @@
 
 public class CameraMovementScript : ExtendedMonoBehaviour
 {
-    private Rigidbody camRigidBody;
-    private float speed, boundary, rotationX;
-    private Vector3 velocity = Vector3.zero;
+    Rigidbody camRigidBody;
+    float speed, boundary, rotationX;
+    Vector3 velocity = Vector3.zero;
 
-    private void Start()
+    void Start()
     {
         camRigidBody = GetComponent<Rigidbody>();
 
@@ -15,7 +15,7 @@ public class CameraMovementScript : ExtendedMonoBehaviour
         rotationX = 54f;
     }
 
-    private void Update()
+    void Update()
     {
         //if (Input.GetAxis("Mouse ScrollWheel") > 0)
         //    if (rotationX > 33)

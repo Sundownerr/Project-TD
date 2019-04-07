@@ -11,8 +11,8 @@ namespace Game.Systems
 {
     public class SlowAuraSystem : AuraSystem
     {
-        private new SlowAura effect;
-        private Dictionary<SpiritSystem, int> removedAttackSpeedMods;
+        new SlowAura effect;
+        Dictionary<SpiritSystem, int> removedAttackSpeedMods;
 
         public SlowAuraSystem(SlowAura effect) : base(effect)
         {
@@ -21,7 +21,7 @@ namespace Game.Systems
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
 
-        private void OnSpiritEnteredRange(object _, IVulnerable e)
+        void OnSpiritEnteredRange(object _, IVulnerable e)
         {
             var spirit = e as SpiritSystem;
 
@@ -39,9 +39,9 @@ namespace Game.Systems
 
         }
 
-        private void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanApplyEffects);
+        void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanApplyEffects);
 
-        private void RemoveEffect(ICanApplyEffects entity)
+        void RemoveEffect(ICanApplyEffects entity)
         {
             var spirit = entity as SpiritSystem;
 
@@ -67,7 +67,7 @@ namespace Game.Systems
             range.SetShow(true);
         }
 
-        private void OnRangeDestroyed(object _, System.EventArgs e) => End();
+        void OnRangeDestroyed(object _, System.EventArgs e) => End();
 
         public override void Continue()
         {

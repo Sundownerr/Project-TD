@@ -21,13 +21,13 @@ namespace Game.Systems
         public GameObject Rarity, ParentGO;
         public bool IsChoosedNewSpirit;
 
-        private List<GameObject> spiritButtonGOs = new List<GameObject>();
-        private List<SpiritButtonSystem> spiritButtons = new List<SpiritButtonSystem>();
-        private Transform rarityTransform;
-        private Vector2 newSpiritButtonPos = new Vector2(0, 1);
-        private Animator animator;
+        List<GameObject> spiritButtonGOs = new List<GameObject>();
+        List<SpiritButtonSystem> spiritButtons = new List<SpiritButtonSystem>();
+        Transform rarityTransform;
+        Vector2 newSpiritButtonPos = new Vector2(0, 1);
+        Animator animator;
 
-        private void Start()
+        void Start()
         {
             ParentGO = transform.parent.gameObject;
         }
@@ -70,7 +70,7 @@ namespace Game.Systems
             Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;
         }
 
-        private void ActivateUI(bool activate)
+        void ActivateUI(bool activate)
         {
             if (activate)
             {
@@ -90,20 +90,20 @@ namespace Game.Systems
             }
         }
 
-        private void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
-        private void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        private void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
-        private void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
+        void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
+        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
+        void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
+        void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
 
-        private void UpdateUI(object _, EventArgs e)
+        void UpdateUI(object _, EventArgs e)
         {
             UpdateAvailableElement();
             UpdateRarity();
         }
 
-        private void UpdateAvailableElement() => ElementButtons.ForEach(button => button.gameObject.SetActive(true));
+        void UpdateAvailableElement() => ElementButtons.ForEach(button => button.gameObject.SetActive(true));
 
-        private void ShowRarity(ElementType element)
+        void ShowRarity(ElementType element)
         {
             ChoosedElement = element;
             Rarity.gameObject.SetActive(true);
@@ -113,7 +113,7 @@ namespace Game.Systems
             UpdateRarity();
         }
 
-        private void UpdateRarity()
+        void UpdateRarity()
         {
             for (int i = 0; i < spiritButtons.Count; i++)
                 spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Base.Element == ChoosedElement);
@@ -199,7 +199,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             if (ElementButtons != null)
                 ElementButtons.ForEach(button => button.onClick.RemoveAllListeners());

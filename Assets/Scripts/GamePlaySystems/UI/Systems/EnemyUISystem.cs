@@ -13,10 +13,10 @@ namespace Game.Systems
         public PlayerSystem Owner { get; set; }
         public GameObject EnemyUI;
 
-        private EnemySystem enemy;
-        private TextMeshProUGUI hpText;
-        private Image hpBar;
-        private float maxHealth;
+        EnemySystem enemy;
+        TextMeshProUGUI hpText;
+        Image hpBar;
+        float maxHealth;
 
       
         public void SetSystem(PlayerSystem player)
@@ -28,7 +28,7 @@ namespace Game.Systems
             EnemyUI.SetActive(false);
         }
 
-        private void OnClickedOnEnemy(object _, GameObject e)
+        void OnClickedOnEnemy(object _, GameObject e)
         {
             for (int i = 0; i < Owner.Enemies.Count; i++)
                 if(Owner.Enemies[i].Prefab == e)
@@ -39,7 +39,7 @@ namespace Game.Systems
             EnemyUI.SetActive(true);           
         }
 
-        private void LateUpdate()
+        void LateUpdate()
         {
             if (enemy != null && enemy.Prefab != null)
             {

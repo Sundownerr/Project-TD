@@ -16,11 +16,11 @@ namespace Game.Systems
         public GameObject DamageNumber;
         public GameObject LevelUpText;
 
-        private ObjectPool damageNumbersPool, levelUpTextPool;
-        private List<TextMeshProUGUI> damageNumbers = new List<TextMeshProUGUI>(), levelUpTexts = new List<TextMeshProUGUI>();
-        private WaitForSeconds levelUpTextFadeDelay = new WaitForSeconds(0.7f);
-        private Color defaultFontColor = new Color(1, 1, 1, 1);
-        private Color critFontColor = new Color(2f, 0.5f, 0.3f, 1);
+        ObjectPool damageNumbersPool, levelUpTextPool;
+        List<TextMeshProUGUI> damageNumbers = new List<TextMeshProUGUI>(), levelUpTexts = new List<TextMeshProUGUI>();
+        WaitForSeconds levelUpTextFadeDelay = new WaitForSeconds(0.7f);
+        Color defaultFontColor = new Color(1, 1, 1, 1);
+        Color critFontColor = new Color(2f, 0.5f, 0.3f, 1);
 
         protected override void Awake()
         {
@@ -38,7 +38,7 @@ namespace Game.Systems
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             for (int i = 0; i < damageNumbers.Count; i++)
                 if (damageNumbers[i].fontSize > 11)
@@ -50,7 +50,7 @@ namespace Game.Systems
                 }
         }
 
-        private void OnDamageDealt(object _, DamageEventArgs e)
+        void OnDamageDealt(object _, DamageEventArgs e)
         {
             if (e.Target == null || e.Target.Prefab == null)
                 return;
@@ -83,9 +83,9 @@ namespace Game.Systems
             damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
         }
 
-        private void OnSpiritPlaced(object _, SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
+        void OnSpiritPlaced(object _, SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
 
-        private void OnSpiritLevelUp(object _, SpiritSystem spirit)
+        void OnSpiritLevelUp(object _, SpiritSystem spirit)
         {
             var text = levelUpTextPool.PopObject();
             var random = UnityEngine.Random.Range(-20, 20);

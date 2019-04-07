@@ -18,9 +18,9 @@ namespace Game.Systems
         public Ability Ability { get; private set; }
         public IHealthComponent Target { get; private set; }
 
-        private int effectCount;
-        private float cooldownTimer, nextEffectTimer;
-        private bool used;
+        int effectCount;
+        float cooldownTimer, nextEffectTimer;
+        bool used;
 
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
@@ -94,7 +94,7 @@ namespace Game.Systems
             SetSystem(owner);
         }
 
-        private void SetSystem(IAbilitiySystem owner)
+        void SetSystem(IAbilitiySystem owner)
         {
             Owner = owner;
             ID = new ID(owner.ID);

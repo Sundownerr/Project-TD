@@ -19,8 +19,8 @@ namespace Game.Systems
         public event EventHandler<double> ConsumedSpiritVessels = delegate { };
         public event EventHandler StatsApplied = delegate { };
 
-        private Item defaultData;
-        private bool isStatsApplied;
+        Item defaultData;
+        bool isStatsApplied;
 
         public ItemSystem(Item data, IEntitySystem owner)
         {
@@ -51,7 +51,7 @@ namespace Game.Systems
             }
         }
 
-        private void AddValues(IEntitySystem entity)
+        void AddValues(IEntitySystem entity)
         {
             if (entity is SpiritSystem spirit)
             {
@@ -89,7 +89,7 @@ namespace Game.Systems
                 }
         }
 
-        private void IncreaseStatsPerLevel()
+        void IncreaseStatsPerLevel()
         {
             if (Owner is SpiritSystem spirit)
                 for (int i = 0; i < Data.NumeralAttributes.Count; i++)
@@ -108,7 +108,7 @@ namespace Game.Systems
                     attribute.ValuePerLevel;
         }
 
-        private double GetValue(NumeralAttribute attribute, IEntitySystem entity) =>
+        double GetValue(NumeralAttribute attribute, IEntitySystem entity) =>
             attribute.IncreasePerLevel == Increase.ByPercent && entity is SpiritSystem spirit ?
                 spirit.Data.Get(attribute.Type).Value.GetPercent(attribute.Value) :
                 attribute.Value;

@@ -27,11 +27,11 @@ namespace Game.Systems
         public event EventHandler<EnemyCreationRequest> EnemyCreationRequested = delegate { };
         public event EventHandler WavesGenerated = delegate { };
 
-        private List<List<EnemySystem>> wavesEnemySystem  = new List<List<EnemySystem>>();
-        private List<int> currentEnemyCount = new List<int>();
-        private WaitForSeconds spawnDelay = new WaitForSeconds(0.2f);
-        private int spawned;
-        private Coroutine spawnCoroutine;
+        List<List<EnemySystem>> wavesEnemySystem  = new List<List<EnemySystem>>();
+        List<int> currentEnemyCount = new List<int>();
+        WaitForSeconds spawnDelay = new WaitForSeconds(0.2f);
+        int spawned;
+        Coroutine spawnCoroutine;
 
         public WaveSystem(PlayerSystem player) => Owner = player;
         
@@ -116,7 +116,7 @@ namespace Game.Systems
             #endregion
         }
 
-        private void SetNextWave()
+        void SetNextWave()
         {
             Waves.Dequeue();
             WaveNumber++;

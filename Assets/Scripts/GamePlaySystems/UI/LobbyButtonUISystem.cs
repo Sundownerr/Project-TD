@@ -13,7 +13,7 @@ public class LobbyButtonUISystem : MonoBehaviour
     public LobbyList.Lobby Lobby { get; set; }
     public TextMeshProUGUI Label { get; set; }
 
-    private void Awake()
+    void Awake()
     {
         Label = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 

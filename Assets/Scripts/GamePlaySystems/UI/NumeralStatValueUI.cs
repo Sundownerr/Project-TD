@@ -14,11 +14,11 @@ namespace Game.Systems
     public class NumeralStatValueUI : DescriptionBlock
     {
         public Numeral NumeralValue;
-        private TextMeshProUGUI value;
+        TextMeshProUGUI value;
 
         public TextMeshProUGUI Value { get; set; }
 
-        private void Awake()
+        void Awake()
         {
             Value = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             

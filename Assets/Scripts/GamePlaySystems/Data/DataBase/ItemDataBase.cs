@@ -12,7 +12,7 @@ namespace Game.Data
     {
         public Item[] Items;
 
-        private void Awake()
+        void Awake()
         {
             if (Items == null)
                 Items = new Item[1];
@@ -20,9 +20,9 @@ namespace Game.Data
                 UpdateItemId();
         }
 
-        private void OnValidate() => UpdateItemId();
+        void OnValidate() => UpdateItemId();
 
-        private void UpdateItemId()
+        void UpdateItemId()
         {
             for (int i = 0; i < Items.Length; i++)
                 if (Items[i].ID.Count == 0)              

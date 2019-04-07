@@ -6,16 +6,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MageSelectionUISystem : MonoBehaviour
+public class MageSelectionUISystem : MonoBehaviour, IWindow
 {
-    public event EventHandler<MageData> MageSelected = delegate { };
+    public event EventHandler Activated;
+    public event EventHandler<MageData> MageSelected;
     public Button SelectMageButton, CancelButton;
-    public TextMeshProUGUI MageName, MageBaseDescription, MageAdvancedDescription;
+    public TextMeshProUGUI MageBaseDescription, MageAdvancedDescription;
+    public Image MageImage;
 
-    private List<MageUI> mageUIs;
-    private MageData selectedMage;
+    List<MageUI> mageUIs;
+    MageData selectedMage;
 
-    private void Awake()
+    void Awake()
     {
         mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
         mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
@@ -25,7 +27,12 @@ public class MageSelectionUISystem : MonoBehaviour
         SelectMageButton.interactable = false;
     }
 
-    private void OnMageSelected(object sender, MageData e)
+    void OnEnable()
+    {
+        Activated?.Invoke(null, null);
+    }
+
+    void OnMageSelected(object sender, MageData e)
     {
         selectedMage = e;
         SelectMageButton.interactable = true;
@@ -33,13 +40,15 @@ public class MageSelectionUISystem : MonoBehaviour
 
         void UpdateMageInfo()
         {
-            MageName.text = e.Name;
+            MageImage.sprite = e.Image;
+            MageImage.color += new Color(0, 0, 0, 1);
+            MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = e.Name;
             MageBaseDescription.text = e.Description;
             MageAdvancedDescription.text = e.AdvancedDescription;
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         MageSelected = null;
         SelectMageButton.onClick.RemoveAllListeners();

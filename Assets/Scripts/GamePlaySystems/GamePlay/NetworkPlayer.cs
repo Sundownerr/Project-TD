@@ -22,10 +22,10 @@ public class NetworkPlayer : NetworkBehaviour
     public event EventHandler<SpiritSystem> SpiritCreatingRequestDone = delegate { };
     public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
     public event EventHandler WavesReceived = delegate { };
-    private float delay = 0.07f;
+    float delay = 0.07f;
 
 
-    private PlayerSystem localPlayer;
+    PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
     {
         get => localPlayer;
@@ -39,7 +39,7 @@ public class NetworkPlayer : NetworkBehaviour
         }
     }
 
-    private List<WaveEnemyID> waveEnenmyIDs;
+    List<WaveEnemyID> waveEnenmyIDs;
     public List<WaveEnemyID> WaveEnenmyIDs
     {
         get => waveEnenmyIDs;
@@ -81,7 +81,7 @@ public class NetworkPlayer : NetworkBehaviour
     #region Getting waves from server
 
     [Command]
-    private void CmdGetWaves()
+    void CmdGetWaves()
     {
         var sendData = (NetworkManager.singleton as ExtendedNetworkManager).NetworkGameManager.WaveEnenmyIDs.Serializer();
 
@@ -92,7 +92,7 @@ public class NetworkPlayer : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void TargetGetWaves(NetworkConnection conn, byte[] byteData)
+    void TargetGetWaves(NetworkConnection conn, byte[] byteData)
     {
         var receivedData = byteData.Deserializer<List<WaveEnemyID>>();
         WaitAndDo(delay, () =>
@@ -105,7 +105,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     #region Spirit creating request
 
-    private void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
+    void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
     {
         var sendData = e.Serializer();
 
@@ -115,10 +115,10 @@ public class NetworkPlayer : NetworkBehaviour
         });
     }
 
-    [Command] private void CmdCreateSpirit(byte[] byteRequest) => RpcCreateSpirit(byteRequest);
+    [Command] void CmdCreateSpirit(byte[] byteRequest) => RpcCreateSpirit(byteRequest);
 
     [ClientRpc]
-    private void RpcCreateSpirit(byte[] byteRequest)
+    void RpcCreateSpirit(byte[] byteRequest)
     {
         var request = byteRequest.Deserializer<SpiritCreationRequest>();
 
@@ -140,7 +140,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     #region EnemyCreatingRequest
 
-    private void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
+    void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
         var sendData = e.Serializer();
         WaitAndDo(delay, () => { CmdCreateEnemy(sendData, e.Position.ToVector3()); });
@@ -185,10 +185,10 @@ public class NetworkPlayer : NetworkBehaviour
 
     #region Save-load methods
 
-    private void OnDestroy() => SaveData();
-    private void OnApplicationQuit() => SaveData();
+    void OnDestroy() => SaveData();
+    void OnApplicationQuit() => SaveData();
 
-    private void LoadData()
+    void LoadData()
     {
         if (!isLocalPlayer) return;
 
@@ -199,7 +199,7 @@ public class NetworkPlayer : NetworkBehaviour
         CmdSendData(gameObject, data, userName);
     }
 
-    private void SaveData()
+    void SaveData()
     {
         if (!isLocalPlayer) return;
 
@@ -218,7 +218,7 @@ public class NetworkPlayer : NetworkBehaviour
     }
 
     [Command]
-    private void CmdSendData(GameObject player, PlayerData data, string name)
+    void CmdSendData(GameObject player, PlayerData data, string name)
     {
         var manager = NetworkManager.singleton as ExtendedNetworkManager;
 

@@ -11,7 +11,7 @@ namespace Game.Systems
     {
         public List<SpiritSystem> Spirits { get; private set; } = new List<SpiritSystem>();
 
-        private PlayerSystem Owner;
+        PlayerSystem Owner;
 
         public SpiritControlSystem(PlayerSystem player) => Owner = player;
 
@@ -28,10 +28,10 @@ namespace Game.Systems
                 Spirits[i].UpdateSystem();
         }
 
-        private void OnSpiritCreated(object _, SpiritSystem spirit) => AddSpirit(spirit);
-        private void OnSpiritRemoved(object _, SpiritSystem spirit) => RemoveSpirit(spirit);
+        void OnSpiritCreated(object _, SpiritSystem spirit) => AddSpirit(spirit);
+        void OnSpiritRemoved(object _, SpiritSystem spirit) => RemoveSpirit(spirit);
 
-        private void AddSpirit(SpiritSystem spirit)
+        void AddSpirit(SpiritSystem spirit)
         {
             Spirits.Add(spirit);
 
@@ -41,7 +41,7 @@ namespace Game.Systems
             spirit.IsOn = true;
         }
 
-        private void RemoveSpirit(SpiritSystem spirit)
+        void RemoveSpirit(SpiritSystem spirit)
         {
             if (spirit.UsedCell != null)
                 spirit.UsedCell.GetComponent<Cell>().IsBusy = false;

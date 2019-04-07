@@ -13,7 +13,7 @@ namespace Game.Systems
     public class ReferenceHolder : MonoBehaviour
     {
         public event EventHandler<PlayerData> PlayerDataSet = delegate { };
-        private static ReferenceHolder get;
+        static ReferenceHolder get;
         public static ReferenceHolder Get
         {
             get => get;
@@ -57,7 +57,7 @@ namespace Game.Systems
         public PlayerSystem Player;
         public GameObject NetworkEnemy;
 
-        private DescriptionUISystem descriptionUISystem;
+        DescriptionUISystem descriptionUISystem;
 
        
 
@@ -90,7 +90,7 @@ namespace Game.Systems
             649
         };
 
-        private NetworkPlayer networkPlayer;
+        NetworkPlayer networkPlayer;
         public NetworkPlayer NetworkPlayer
         {
             get => networkPlayer;
@@ -104,14 +104,14 @@ namespace Game.Systems
             }
         }
 
-        private void Awake()
+        void Awake()
         {
             DontDestroyOnLoad(this);
             Get = this;
             GC.Collect();
         }
 
-        private void Start()
+        void Start()
         {
             GameManager.Instance.StateChanged += OnGameStateChanged;
             GameLoop.Instance.PlayerCreated += OnPlayerCreated;
@@ -120,7 +120,7 @@ namespace Game.Systems
         }
 
         
-        private void OnPlayerCreated(object _, PlayerSystem e)
+        void OnPlayerCreated(object _, PlayerSystem e)
         {
             Player = e;
 
@@ -128,7 +128,7 @@ namespace Game.Systems
                 NetworkPlayer.LocalPlayer = e;
         }
 
-        private void OnGameStateChanged(object _, GameState e)
+        void OnGameStateChanged(object _, GameState e)
         {
             if (e == GameState.SingleplayerInGame)
             {
@@ -139,7 +139,7 @@ namespace Game.Systems
             Player = null;
         }
 
-        private void GetReferences()
+        void GetReferences()
         {
             if (descriptionUISystem == null)
                 descriptionUISystem = DescriptionUISystem;

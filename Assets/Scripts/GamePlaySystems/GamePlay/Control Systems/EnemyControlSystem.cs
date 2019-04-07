@@ -16,7 +16,7 @@ namespace Game.Systems
         public List<EnemySystem> Enemies { get; private set; } = new List<EnemySystem>();
         public event EventHandler<EnemySystem> EnemyDied = delegate { };
 
-        private PlayerSystem Owner;
+        PlayerSystem Owner;
 
         public EnemyControlSystem(PlayerSystem player) => Owner = player;
         
@@ -31,11 +31,11 @@ namespace Game.Systems
                 Enemies[i].UpdateSystem();
         }
 
-        private void OnEnemySpawned(object _, EnemySystem e) => AddEnemy(e);
-        private void OnEnemyDied(object _, IHealthComponent e) => DestroyEnemy(e as EnemySystem);
-        private void OnLastWaypointReached(object _, EnemySystem e) => DestroyEnemy(e);
+        void OnEnemySpawned(object _, EnemySystem e) => AddEnemy(e);
+        void OnEnemyDied(object _, IHealthComponent e) => DestroyEnemy(e as EnemySystem);
+        void OnLastWaypointReached(object _, EnemySystem e) => DestroyEnemy(e);
 
-        private void AddEnemy(EnemySystem enemy)
+        void AddEnemy(EnemySystem enemy)
         {
             Enemies.Add(enemy);
           
@@ -44,7 +44,7 @@ namespace Game.Systems
             enemy.Died += OnEnemyDied;
         }
 
-        private void DestroyEnemy(EnemySystem enemy)
+        void DestroyEnemy(EnemySystem enemy)
         {
             EnemyDied?.Invoke(null, enemy);
 

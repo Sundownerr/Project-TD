@@ -10,7 +10,7 @@ namespace Game.Data
     {
         public int BounceCount, DecreaseDamagePerBounce;
 
-        private void Awake()
+        void Awake()
         {
             Name = "Chainshot";
             Description = $"Bounce between {BounceCount} targets";

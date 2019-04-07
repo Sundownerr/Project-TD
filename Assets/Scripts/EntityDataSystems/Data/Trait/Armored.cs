@@ -12,7 +12,7 @@ namespace Game.Data
     {
         public int AdditionalArmor;
 
-        private void Awake()
+        void Awake()
         {
             Name = "Armored";
             Description = $"Add {AdditionalArmor} armor";

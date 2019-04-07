@@ -6,10 +6,11 @@ using Facepunch.Steamworks;
 using FPClient = Facepunch.Steamworks.Client;
 using Transport.Steamworks;
 using Game;
+using System;
 
 public class GameData : MonoBehaviour
 {
-    private static GameData instance;
+    static GameData instance;
     public static GameData Instance
     {
         get => instance;
@@ -20,21 +21,23 @@ public class GameData : MonoBehaviour
     }
 
     public PlayerData PlayerData { get; private set; }
-    public MageData ChoosedMage { get; set; }
+    public MageData ChoosedMage { get; private set; }
 
-    private void Awake()
+    void Awake()
     {
         DontDestroyOnLoad(gameObject);
         Instance = this;
         LoadData();       
     }
 
-    private void Start()
+    void Start()
     {
         GameManager.Instance.StateChanged += OnGameStateChanged;
+        GameManager.Instance.Menu.MageSelected += OnMageSelected;
     }
 
-    private void OnGameStateChanged(object _, GameState e)
+    void OnMageSelected(object _, MageData e) => ChoosedMage = e;
+    void OnGameStateChanged(object _, GameState e)
     {
         if(e == GameState.InLobby)
         {
@@ -42,7 +45,7 @@ public class GameData : MonoBehaviour
         }
     }
 
-    private void LoadData()
+    void LoadData()
     {
         PlayerData data;
         

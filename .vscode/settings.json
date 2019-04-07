@@ -55,7 +55,6 @@
         "**/Prefabs/":true,
         "**/Localizations/":true,
         "**/Scenes/":true,
-        "**/DataBase/":true,
         "**/Sprites":true,
         "**/Textures":true,
         "**/Packages":true,

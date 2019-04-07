@@ -8,7 +8,7 @@ public class ObjectPool
     public Transform Parent { get; set; }
     public uint PoolLenght { get; set; } = 1;
 
-    private List<GameObject> poolList = new List<GameObject>();
+    List<GameObject> poolList = new List<GameObject>();
 
     public ObjectPool(GameObject poolObject, Transform parent, uint poolLength)
     {
@@ -49,7 +49,7 @@ public class ObjectPool
 
    
 
-    private void CreateObject(Transform parent)
+    void CreateObject(Transform parent)
     {
         poolList.Add(Object.Instantiate(PoolObject, parent));
         poolList[poolList.Count - 1].SetActive(false);

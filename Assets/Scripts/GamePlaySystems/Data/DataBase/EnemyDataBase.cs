@@ -16,7 +16,7 @@ namespace Game.Data
 
 #if UNITY_EDITOR
 
-        private void Awake()
+        void Awake()
         {
             if (Races == null)
             {

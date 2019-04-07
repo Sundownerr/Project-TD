@@ -17,7 +17,7 @@ namespace Game.Cells
             base.Awake();
         }
 
-        private void Start()
+        void Start()
         {
             Owner.CellControlSystem.Cells.Add(this);
             Renderer = GetComponent<Renderer>();

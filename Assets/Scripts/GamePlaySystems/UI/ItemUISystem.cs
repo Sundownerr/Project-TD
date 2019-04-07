@@ -28,14 +28,14 @@ namespace Game.Systems
         public int SlotNumber { get; set; }
         public ItemSystem System { get; set; }
         public DraggedFrom DraggedFrom { get; set; }
-        private Vector3 startPos;
-        private RectTransform rectTransform;
-        private Transform parent;
-        private GameObject overlappedSlot;
-        private List<GameObject> inventorySlots;
-        private List<SlotWithCooldown> spiritSlots;
+        Vector3 startPos;
+        RectTransform rectTransform;
+        Transform parent;
+        GameObject overlappedSlot;
+        List<GameObject> inventorySlots;
+        List<SlotWithCooldown> spiritSlots;
 
-        private void Awake()
+        void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             Description = System.Data.Description;

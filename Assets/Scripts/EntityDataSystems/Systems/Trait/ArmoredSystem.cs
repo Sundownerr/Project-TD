@@ -12,7 +12,7 @@ namespace Game.Systems
     {
         public ITraitSystem Owner { get; set; }
 
-        private Armored trait;
+        Armored trait;
 
         public ArmoredSystem(Armored trait, ITraitSystem owner) 
         {

@@ -17,13 +17,13 @@ namespace Game.Systems
 
         // 0 - Item dropped
         // 1 - Item not dropped
-        private double[] itemDropProbabilities = new double[] { 40, 50 };
+        double[] itemDropProbabilities = new double[] { 40, 50 };
 
         // 0 - Common
         // 1 - Uncommon
         // 2 - Rare
         // 3 - Unique
-        private double[] itemRarityProbabilities = new double[] { 50, 20, 10, 5 };
+        double[] itemRarityProbabilities = new double[] { 50, 20, 10, 5 };
 
         public ItemDropSystem(PlayerSystem player) => Owner = player;
         
@@ -32,7 +32,7 @@ namespace Game.Systems
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;
         }
 
-        private void OnEnemyDied(object _, EnemySystem enemy)
+        void OnEnemyDied(object _, EnemySystem enemy)
         {
             var isItemDropped = itemDropProbabilities.RollDice() == 0;
 

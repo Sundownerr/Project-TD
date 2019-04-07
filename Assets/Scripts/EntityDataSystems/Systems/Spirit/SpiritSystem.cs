@@ -40,7 +40,7 @@ namespace Game.Spirit
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
-        private SpiritDataSystem dataSystem;
+        SpiritDataSystem dataSystem;
 
         public SpiritSystem(GameObject ownerPrefab)
         {
@@ -153,7 +153,7 @@ namespace Game.Spirit
             }
         }
 
-        private void OnEntityEnteredRange(object _, IVulnerable e)
+        void OnEntityEnteredRange(object _, IVulnerable e)
         {
             if (e is EnemySystem enemy)
                 if (enemy.Data.Type == EnemyType.Flying && !Data.Get(Enums.SpiritFlag.CanAttackFlying).Value)
@@ -162,7 +162,7 @@ namespace Game.Spirit
                     Targets.Add(e as IHealthComponent);
         }
 
-        private void OnEntityExitRange(object _, IVulnerable e) => Targets.Remove(e as IHealthComponent);
+        void OnEntityExitRange(object _, IVulnerable e) => Targets.Remove(e as IHealthComponent);
 
         public void Upgrade(SpiritSystem previousSpirit, SpiritData newData) => dataSystem.Upgrade(previousSpirit, newData);
 
@@ -183,7 +183,7 @@ namespace Game.Spirit
         public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

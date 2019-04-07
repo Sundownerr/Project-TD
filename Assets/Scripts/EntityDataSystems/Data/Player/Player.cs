@@ -28,7 +28,7 @@ namespace Game.Data
 
         public PlayerSystem System { get; set; }
  
-        private void Awake()
+        void Awake()
         {
             var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
             ElementLevels = new List<int>();

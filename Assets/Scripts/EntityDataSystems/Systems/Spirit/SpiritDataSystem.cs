@@ -17,8 +17,8 @@ namespace Game.Spirit.System
         public event EventHandler StatsChanged = delegate { };
         public event EventHandler<SpiritSystem> LeveledUp = delegate { };
 
-        private SpiritSystem ownerSpirit;
-        private List<Consumable> appliedConsumables = new List<Consumable>();
+        SpiritSystem ownerSpirit;
+        List<Consumable> appliedConsumables = new List<Consumable>();
 
         public SpiritDataSystem(SpiritSystem spirit) => ownerSpirit = spirit;
 
@@ -50,7 +50,7 @@ namespace Game.Spirit.System
             StatsChanged?.Invoke(null, null);
         }
 
-        private void IncreaseStatsPerLevel()
+        void IncreaseStatsPerLevel()
         {
             for (int i = 0; i < CurrentData.NumeralAttributes.Count; i++)
             {

@@ -19,10 +19,10 @@ namespace Game.Spirit
         public ID ID { get; set; }
         public IPrefabComponent Owner { get ; set ; }
 
-        private ParticleSystem.EmissionModule emissionModule;
-        private ParticleSystem[] particleSystems;
-        private int remainingBounceCount;
-        private float lifetime, speed;
+        ParticleSystem.EmissionModule emissionModule;
+        ParticleSystem[] particleSystems;
+        int remainingBounceCount;
+        float lifetime, speed;
 
         public BulletSystem(GameObject prefab)
         {

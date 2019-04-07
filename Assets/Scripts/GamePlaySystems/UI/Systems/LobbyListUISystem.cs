@@ -1,26 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using Facepunch.Steamworks;
 using System.Text;
-using System.Net;
-using Transport.Steamworks;
 using Mirror;
 using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
+using System;
+using Game;
 
-public class LobbyListUISystem : MonoBehaviour
+public class LobbyListUISystem : MonoBehaviour, IWindow
 {
-
-    public GameObject LobbyGO, LobbyButtonPrefab, LobbyInfoTextPrefab, NetworkManagerPrefab, LobbyListGroup, LobbyInfoGroup, LobbyCreationWindow;
+    public event EventHandler Activated;
+    public GameObject LobbyButtonPrefab, LobbyInfoTextPrefab, NetworkManagerPrefab, LobbyListGroup, LobbyInfoGroup;
+    public LobbyUISystem LobbyUI;
+    public LobbyCreationWindowUISystem LobbyCreationWindow;
     public Button RefreshButton, CreateLobbyButton, JoinLobbyButton;
 
-    private LobbyList.Lobby selectedLobby;
-    private ObjectPool lobbyButtonsPool, lobbyInfoTextPool;
+    LobbyList.Lobby selectedLobby;
+    ObjectPool lobbyButtonsPool, lobbyInfoTextPool;
 
-    private void Start()
+    void Start()
     {
         if(NetworkManager.singleton == null)
         {
@@ -32,7 +31,7 @@ public class LobbyListUISystem : MonoBehaviour
         lobbyInfoTextPool = new ObjectPool(LobbyInfoTextPrefab, LobbyInfoGroup.transform, 10);
 
         RefreshButton.onClick.AddListener(UpdateLobbyList);
-        CreateLobbyButton.onClick.AddListener(() => LobbyCreationWindow.SetActive(true));
+        CreateLobbyButton.onClick.AddListener(() => LobbyCreationWindow.gameObject.SetActive(true));
         JoinLobbyButton.onClick.AddListener(JoinLobby);
 
         FPClient.Instance.LobbyList.OnLobbiesUpdated = LobbiesUpdated;      
@@ -40,13 +39,13 @@ public class LobbyListUISystem : MonoBehaviour
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyJoined;
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
-        GameManager.Instance.GameState = GameState.BrowsingLobbies;
+        Activated?.Invoke(null, null);
         //FPClient.Instance.LobbyList.Refresh();
     }
 
-    private void LobbyJoined(bool isSuccesful)
+    void LobbyJoined(bool isSuccesful)
     {
         if (isSuccesful)
         {
@@ -54,18 +53,17 @@ public class LobbyListUISystem : MonoBehaviour
             lobbyButtonsPool.DeactivateAll();
 
             selectedLobby = null;
-            LobbyGO.SetActive(true);
-            gameObject.SetActive(false);
+            LobbyUI.gameObject.SetActive(true);        
         }
     }
 
-    private void JoinLobby()
+    void JoinLobby()
     {
         if (selectedLobby != null)
             FPClient.Instance.Lobby.Join(selectedLobby.LobbyID);
     }
 
-    private void LobbiesUpdated()
+    void LobbiesUpdated()
     {
         var lobbies = FPClient.Instance.LobbyList.Lobbies;
         var sb = new StringBuilder();
@@ -86,24 +84,22 @@ public class LobbyListUISystem : MonoBehaviour
         }
     }
 
-    private void OnLobbyButtonClicked(object _, LobbyList.Lobby lobby)
+    void OnLobbyButtonClicked(object _, LobbyList.Lobby lobby)
     {
-        if (lobby == null)
-            return;
+        if (lobby == null) return;
 
         selectedLobby = lobby;
-
         lobbyInfoTextPool.DeactivateAll();
 
         foreach (var pair in lobby.GetAllData())       
             lobbyInfoTextPool.PopObject().GetComponent<TextMeshProUGUI>().text = $"{pair.Key} {pair.Value}";        
     }
 
-    private void UpdateLobbyList()
+    void UpdateLobbyList()
     {
         var lobbyFilter = new LobbyList.Filter
         {
-            DistanceFilter = LobbyList.Filter.Distance.Worldwide,     
+            DistanceFilter = LobbyList.Filter.Distance.Worldwide
         };
 
         FPClient.Instance.LobbyList.Refresh(lobbyFilter);

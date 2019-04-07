@@ -25,7 +25,7 @@ namespace Game.Systems
             SpiritCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         }
 
-        private void OnClick()
+        void OnClick()
         {
             var goldCost            = SpiritData.Get(Numeral.ResourceCost).Value;
             var spiritLimit          = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;

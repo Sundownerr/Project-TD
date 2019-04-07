@@ -16,7 +16,7 @@ namespace Game
         public ID ID { get; private set; }
         public MageData Mage { get; private set; }
 
-        private enum From
+        enum From
         {
             StartingAttribute,
             PerLevelAttribute
@@ -36,11 +36,11 @@ namespace Game
             ownerPlayer.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
         }
 
-        private void OnSpiritPlaced(object _, SpiritSystem e) { ModifyAttributes(e.Data, From.StartingAttribute); e.LeveledUp += OnSpiritLeveledUp; }
-        private void OnSpiritLeveledUp(object _, SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
-        private void OnEnemyCreated(object _, EnemySystem e) => ModifyAttributes(e.Data, From.StartingAttribute);
+        void OnSpiritPlaced(object _, SpiritSystem e) { ModifyAttributes(e.Data, From.StartingAttribute); e.LeveledUp += OnSpiritLeveledUp; }
+        void OnSpiritLeveledUp(object _, SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+        void OnEnemyCreated(object _, EnemySystem e) => ModifyAttributes(e.Data, From.StartingAttribute);
 
-        private void ModifyAttributes(EnemyData enemy, From getFrom)
+        void ModifyAttributes(EnemyData enemy, From getFrom)
         {
             ModifyNumeralAttributes(enemy, getFrom);
 
@@ -48,7 +48,7 @@ namespace Game
                 enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
         }
 
-        private void ModifyAttributes(SpiritData spirit, From getFrom)
+        void ModifyAttributes(SpiritData spirit, From getFrom)
         {
             ModifyNumeralAttributes(spirit, getFrom);
 
@@ -62,7 +62,7 @@ namespace Game
                 spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
         }
 
-        private void ModifyNumeralAttributes<EntityData>(EntityData data, From getFrom)
+        void ModifyNumeralAttributes<EntityData>(EntityData data, From getFrom)
         {
             var entityAttribute = new EntityAttribute_A_L<Numeral, double>();
 
@@ -78,7 +78,7 @@ namespace Game
             });
         }
 
-        private void ModifyEntityAttribute<EnumType>(EntityAttribute_A_L<EnumType, double> entityAttribute, EntityAttribute_A_L<EnumType, double> mageAttribute, From getFrom)
+        void ModifyEntityAttribute<EnumType>(EntityAttribute_A_L<EnumType, double> entityAttribute, EntityAttribute_A_L<EnumType, double> mageAttribute, From getFrom)
         {
             var value = getFrom == From.StartingAttribute ?
                 mageAttribute.Value :

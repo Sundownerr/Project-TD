@@ -16,7 +16,7 @@ namespace Game.Systems
         public Enums.Spirit SpiritValue;
         public TextMeshProUGUI Value { get; set; }
 
-        private void Awake()
+        void Awake()
         {
             Value = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             GetComponent<LeanLocalizedText>().PhraseName = SpiritValue.GetStringKey();

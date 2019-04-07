@@ -7,8 +7,8 @@ namespace Game.Data.Effects
 
     public class StunSystem : EffectSystem
     {
-        private GameObject effectPrefab;
-        private new Stun effect;
+        GameObject effectPrefab;
+        new Stun effect;
 
         public StunSystem(Stun effect) : base(effect)
         {

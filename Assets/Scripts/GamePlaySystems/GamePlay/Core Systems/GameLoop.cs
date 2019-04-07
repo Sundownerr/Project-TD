@@ -8,7 +8,7 @@ public class GameLoop : MonoBehaviour
 {
     public event EventHandler<PlayerSystem> PlayerCreated = delegate { };
 
-    private static GameLoop instance;
+    static GameLoop instance;
     public static GameLoop Instance
     {
         get => instance;
@@ -19,21 +19,21 @@ public class GameLoop : MonoBehaviour
         }
     }
 
-    private PlayerSystem player;
+    PlayerSystem player;
 
-    private void Awake()
+    void Awake()
     {
         DontDestroyOnLoad(this);
         Instance = this;
     }
 
-    private void Start()
+    void Start()
     {
         ReferenceHolder.Get.PlayerDataSet += OnPlayerDataSet;
         GameManager.Instance.StateChanged += OnGameStateChanged;
     }
 
-    private void OnGameStateChanged(object sender, GameState e)
+    void OnGameStateChanged(object sender, GameState e)
     {
         var inGame = e == GameState.MultiplayerInGame || e == GameState.SingleplayerInGame;
 
@@ -41,13 +41,13 @@ public class GameLoop : MonoBehaviour
             player = null;
     }
 
-    private void OnPlayerDataSet(object _, Game.Systems.PlayerData e)
+    void OnPlayerDataSet(object _, Game.Systems.PlayerData e)
     {
         player = new PlayerSystem(e.Map, e.Mage);
         PlayerCreated?.Invoke(null, player);
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         player?.UpdateSystem();
     }

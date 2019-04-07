@@ -6,16 +6,18 @@ using UnityEngine.UI;
 using Facepunch.Steamworks;
 using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
+using Game;
 
-public class LobbyCreationWindowUISystem : MonoBehaviour
+public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
 {
+    public event EventHandler Activated;
     public TextMeshProUGUI MaxPlayersText;
     public Slider PlayersSlider;
     public TMP_Dropdown ModeDropdown, VisibilityDropdown, DifficultyDropdown, MapDropdown, WavesDropdown;
     public TMP_InputField LobbyName;
-    public Button CloseButton, CreateButton;
+    public Button CreateButton;
 
-    private void Start()
+    void Start()
     {
         var dropdownEvent = new TMP_Dropdown.DropdownEvent();
         var sliderEvent = new Slider.SliderEvent();      
@@ -25,7 +27,6 @@ public class LobbyCreationWindowUISystem : MonoBehaviour
         sliderEvent.AddListener((value) => MaxPlayersText.text = value.ToString());
         PlayersSlider.onValueChanged = sliderEvent;
 
-        CloseButton.onClick.AddListener(CloseWindow);
         CreateButton.onClick.AddListener(CreateLobby);
 
         ModeChanged(0);
@@ -59,21 +60,18 @@ public class LobbyCreationWindowUISystem : MonoBehaviour
         #endregion
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
-        GameManager.Instance.GameState = GameState.CreatingLobby;
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyCreated;
+        Activated?.Invoke(null, null);
     }
 
-    private void CloseWindow()
+    void OnDisable()
     {
-       
-        FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;
-
-        gameObject.SetActive(false);
+        FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;      
     }
 
-    private void LobbyCreated(bool isSuccesful)
+    void LobbyCreated(bool isSuccesful)
     {
         if (isSuccesful)
         {
@@ -89,7 +87,6 @@ public class LobbyCreationWindowUISystem : MonoBehaviour
             LobbyExtension.SetData(LobbyData.Map, MapDropdown.options[MapDropdown.value].text);
             LobbyExtension.SetData(LobbyData.Waves, WavesDropdown.options[WavesDropdown.value].text);
             LobbyExtension.SetMemberData(LobbyData.Ready, LobbyData.No);
-            CloseWindow();
         }
     }
 }

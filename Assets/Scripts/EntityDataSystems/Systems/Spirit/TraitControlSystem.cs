@@ -12,7 +12,7 @@ namespace Game.Systems
     {
         public bool IsHaveChainTargets { get; set; }
 
-        private ITraitSystem owner;
+        ITraitSystem owner;
 
         public TraitControlSystem(ITraitSystem owner)
         {

@@ -7,7 +7,6 @@ namespace Game.Data
 {
 	public class SpiritAbilityDataBase : ScriptableObject
 	{
-
-
+		public List<Ability> Data;
 	}
 }

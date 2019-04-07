@@ -14,12 +14,12 @@ public class MainMenuScript : ExtendedMonoBehaviour
         NewGameButton.onClick.AddListener(NewGameClick);
     }
 	
-    private void QuitClick()
+    void QuitClick()
     {
         Application.Quit();
     }
 
-    private void NewGameClick()
+    void NewGameClick()
     {
         SceneManager.LoadScene("Game");
     }

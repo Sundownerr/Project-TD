@@ -11,7 +11,7 @@ namespace Game.Systems
     {
         public ITraitSystem Owner { get; set; }
 
-        private AOEShot trait;
+        AOEShot trait;
 
         public AOEShotSystem(AOEShot trait, ITraitSystem owner)
         {

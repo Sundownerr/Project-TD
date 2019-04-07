@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using Game.Enums;
+using OneLine;
 
 namespace Game.Spirit.Data.Stats
 {
@@ -38,7 +39,7 @@ namespace Game.Spirit.Data.Stats
     [Serializable]
     public class Rarity
     {
-        [SerializeField]
+        [SerializeField, OneLine.HideLabel]
         public List<SpiritData> Spirits;
 
         [SerializeField]

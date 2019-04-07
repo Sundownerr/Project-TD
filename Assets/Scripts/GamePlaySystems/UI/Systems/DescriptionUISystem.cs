@@ -11,10 +11,10 @@ namespace Game.Systems
         public PlayerSystem Owner { get; set; }
         public GameObject DescriptionBlock;
 
-        private TextMeshProUGUI descriptionText;
-        private RectTransform descriptionRect;
+        TextMeshProUGUI descriptionText;
+        RectTransform descriptionRect;
 
-        private void Awake()
+        void Awake()
         {           
             descriptionText = DescriptionBlock.GetComponentInChildren<TextMeshProUGUI>();
             descriptionRect = DescriptionBlock.GetComponent<RectTransform>();

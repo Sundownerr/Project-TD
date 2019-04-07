@@ -52,7 +52,7 @@ namespace Game.Systems
         public NetworkPlayer NetworkPlayer;
         public int ItemsCount { get; set; }
         public int WaveAmount { get; set; }
-        private bool isSet;
+        bool isSet;
 
         public PlayerMap Map
         {
@@ -63,7 +63,7 @@ namespace Game.Systems
                 map.Owner = this;
             }
         }
-        private PlayerMap map;
+        PlayerMap map;
 
         public PlayerSystem(PlayerMap map, MageData mage)
         {
@@ -106,7 +106,7 @@ namespace Game.Systems
             SetSystem();
         }
 
-        private void SetSystem()
+        void SetSystem()
         {
             PlayerInputSystem.SetSystem(this);
             SpiritUISystem.SetSystem(this);
@@ -146,7 +146,7 @@ namespace Game.Systems
             }
         }
 
-        private IEnumerator SetCameraPos()
+        IEnumerator SetCameraPos()
         {
             var cameraObject = Camera.main.transform.parent;
             var cameraPos = new Vector3(Map.transform.position.x, cameraObject.position.y, cameraObject.position.z);

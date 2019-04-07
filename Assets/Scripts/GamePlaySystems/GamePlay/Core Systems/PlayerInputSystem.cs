@@ -29,14 +29,14 @@ namespace Game.Systems
         public event EventHandler ClikedOnGround = delegate { };
         public event EventHandler RMBPresed = delegate { };
 
-        private EnemySystem choosedEnemy;
-        private GameObject selection;
-        private PointerEventData pointerEventData;
+        EnemySystem choosedEnemy;
+        GameObject selection;
+        PointerEventData pointerEventData;
 
-        private RaycastHit hit;
-        private Ray WorldRay;
-        private bool isHitUI, isHitWorldUI;
-        private int terrainLayer, enemyLayer, spiritLayer, cellLayer, uiLayer, layerMask;
+        RaycastHit hit;
+        Ray WorldRay;
+        bool isHitUI, isHitWorldUI;
+        int terrainLayer, enemyLayer, spiritLayer, cellLayer, uiLayer, layerMask;
 
         protected override void Awake()
         {
@@ -63,7 +63,7 @@ namespace Game.Systems
             selection.SetActive(false);
         }
 
-        private void Update()
+        void Update()
         {
             pointerEventData.position = Input.mousePosition;
 
@@ -140,7 +140,7 @@ namespace Game.Systems
         }
 
 
-        private void ActivateSelection(IPrefabComponent entity)
+        void ActivateSelection(IPrefabComponent entity)
         {
             if (selection == null)
                 selection = Instantiate(Selection);
@@ -149,7 +149,7 @@ namespace Game.Systems
             selection.transform.SetParent(entity.Prefab.transform);
         }
 
-        private void SetSelection(bool activate)
+        void SetSelection(bool activate)
         {
             if (selection != null)
                 selection.SetActive(activate);
@@ -163,9 +163,9 @@ namespace Game.Systems
             PlacingSpirit?.Invoke(null, null);
         }
 
-        private void OnSelling(object _, EventArgs e) => SpiritSold?.Invoke(null, ChoosedSpirit);
+        void OnSelling(object _, EventArgs e) => SpiritSold?.Invoke(null, ChoosedSpirit);
 
-        private bool CheckGradeListOk(out List<SpiritData> grades)
+        bool CheckGradeListOk(out List<SpiritData> grades)
         {
             var allSpirits = ReferenceHolder.Get.SpiritDataBase.Spirits.
                 Elements[(int)ChoosedSpirit.Data.Base.Element].
@@ -187,7 +187,7 @@ namespace Game.Systems
             return false;
         }
 
-        private void OnUpgrading(object _, EventArgs e)
+        void OnUpgrading(object _, EventArgs e)
         {
             if (CheckGradeListOk(out List<SpiritData> grades))
             {

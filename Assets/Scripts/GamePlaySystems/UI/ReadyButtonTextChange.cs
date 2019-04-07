@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ReadyButtonTextChange : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Text ReadyButtonText;
+    Text ReadyButtonText;
 
     void Start ()
     {

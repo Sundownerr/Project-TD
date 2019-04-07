@@ -13,14 +13,14 @@ namespace Game.Systems
 {
     public class WaveUISystem : ExtendedMonoBehaviour
     {
-        public PlayerSystem Owner { get; set; }
+        public PlayerSystem Owner { get; private set; }
         public Button StartWaveButton;
         public TextMeshProUGUI EnemyTypes, Race, Armor, Traits, WaveNumber;
         public event EventHandler WaveStarted = delegate { };
 
-        private Animator animator;
-        private StringBuilder enemyTypes = new StringBuilder();
-        private StringBuilder traitsAndAbilities = new StringBuilder();
+        Animator animator;
+        StringBuilder enemyTypes = new StringBuilder();
+        StringBuilder traitsAndAbilities = new StringBuilder();
 
         protected override void Awake()
         {
@@ -39,11 +39,11 @@ namespace Game.Systems
             ActivateUI(true);
         }
 
-        private void OnWavesGenerated(object _, EventArgs e) { ActivateUI(true); Debug.Log("generated"); }
-        private void OnWaveStarted(object _, EventArgs e) => ActivateUI(false);
-        private void OnWaveEnded(object _, EventArgs e) => ActivateUI(true);
+        void OnWavesGenerated(object _, EventArgs e) { ActivateUI(true); Debug.Log("generated"); }
+        void OnWaveStarted(object _, EventArgs e) => ActivateUI(false);
+        void OnWaveEnded(object _, EventArgs e) => ActivateUI(true);
 
-        private void StartWave()
+        void StartWave()
         {
             if (Owner.WaveSystem.WaveNumber <= Owner.WaveAmount)
             {
@@ -53,7 +53,7 @@ namespace Game.Systems
             }
         }
 
-        private void ActivateUI(bool activate)
+        void ActivateUI(bool activate)
         {
             if (activate)
             {
@@ -68,7 +68,7 @@ namespace Game.Systems
             }
         }
 
-        private void UpdateUI()
+        void UpdateUI()
         {
             var wave = Owner.WaveSystem.Waves.Peek();
 
