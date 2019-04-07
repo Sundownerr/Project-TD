@@ -119,11 +119,6 @@
      <Compile Include="Assets\Editor\NaughtyAttributes\Utility\IOUtility.cs" />
      <Compile Include="Assets\Editor\NaughtyAttributes\Utility\PropertyUtility.cs" />
      <Compile Include="Assets\Editor\NaughtyAttributes\Utility\ReflectionUtility.cs" />
-     <Compile Include="Assets\Editor\SerializedDictionary\Constants.cs" />
-     <Compile Include="Assets\Editor\SerializedDictionary\Definer.cs" />
-     <Compile Include="Assets\Editor\SerializedDictionary\DictionaryPropertyDrawer.cs" />
-     <Compile Include="Assets\Editor\SerializedDictionary\PreferencesWindow.cs" />
-     <Compile Include="Assets\Editor\SerializedDictionary\SupportWindow.cs" />
      <Compile Include="Assets\Editor\TowerDataBaseEditor.cs" />
      <Compile Include="Assets\ImportedAssets\CinemachinePostProcessingV2\Editor\CinemachinePostProcessingEditor.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Editor\LeanDocumentation.cs" />

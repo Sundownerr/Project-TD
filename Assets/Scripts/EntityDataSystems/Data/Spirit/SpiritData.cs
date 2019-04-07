@@ -9,7 +9,6 @@ using Game.Enemy.Data;
 using OneLine;
 using Game.Enums;
 using Game.Wrappers;
-using RotaryHeart.Lib.SerializableDictionary;
 
 #if UNITY_EDITOR
 using UnityEditor;

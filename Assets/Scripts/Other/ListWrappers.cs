@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using Game.Spirit.Data.Stats;
 using Game.Enums;
-using RotaryHeart.Lib.SerializableDictionary;
 
 namespace Game.Wrappers
 {

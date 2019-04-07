@@ -57,6 +57,7 @@
      <Compile Include="Assets\ImportedAssets\Creeps\fantasySpider\FSP_ContinuousRotation.cs" />
      <Compile Include="Assets\ImportedAssets\Creeps\LowPoly Fantasy Monsters Pack Ver1.0_Demo\Environment\Scripts\Move.cs" />
      <Compile Include="Assets\ImportedAssets\Creeps\LowPoly Fantasy Monsters Pack Ver1.0_Demo\Environment\Scripts\PointLight.cs" />
+     <Compile Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Scripts\SpawnEffect.cs" />
      <Compile Include="Assets\ImportedAssets\Grass And Flowers Pack 1\Example Scene\SimpleTextureDrawing.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Scripts\LeanCulture.cs" />
      <Compile Include="Assets\ImportedAssets\Lean\Localization\Scripts\LeanLanguageNameAttribute.cs" />
@@ -127,11 +128,6 @@
      <Compile Include="Assets\ImportedAssets\OneLine\RectEx\MiscellaniousExtensions.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\RectEx\MoveToExtensions.cs" />
      <Compile Include="Assets\ImportedAssets\OneLine\RectEx\RowExtensions.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\DrawKeyAsPropertyAttribute.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\IDAttribute.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\References\RequiredReferences.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\ReorderableList\ReorderableList.cs" />
-     <Compile Include="Assets\ImportedAssets\SerializableDictionary\SerializableDictionaryBase.cs" />
      <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkAnimator.cs" />
      <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkLobbyManager.cs" />
      <Compile Include="Assets\ImportedAssets\SMirror\Components\NetworkLobbyPlayer.cs" />
@@ -310,6 +306,7 @@
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\SunShaftsComposite.shader" />
+     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\MultiLanguage.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionCurves.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ScreenSpaceAmbientObscurance.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_Antialiasing\NFAA.shader" />
@@ -338,14 +335,18 @@
      <None Include="Assets\ImportedAssets\Grass And Flowers Pack 1\Example Scene\Skyboxes\_skybox info.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\frag_ao.cginc" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
+     <None Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Prefabs\Readme_Dissolve_Respawn_.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\DepthOfField34.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\MobileBlur.shader" />
+     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\English.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\SSAOShader.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ConvertDepth.shader" />
+     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\Spanish.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionCurvesSimple.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderYUV.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\CreaseApply.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\ImportedAssets\Lean\Localization\Examples\Texts\Japanese.txt" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ChromaticAberrationShader.shader" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
