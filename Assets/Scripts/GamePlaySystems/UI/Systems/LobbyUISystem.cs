@@ -10,7 +10,7 @@ using System;
 using Game;
 using DG.Tweening;
 
-public class LobbyUISystem : MonoBehaviour, IUIWindow
+public class LobbyUISystem : UIWindow
 {
 
     public TMP_InputField ChatInputField;
@@ -22,11 +22,9 @@ public class LobbyUISystem : MonoBehaviour, IUIWindow
     ObjectPool chatTextsPool;
     WaitForSeconds delay;
 
-    float defaultY;
-    
     void Start()
     {
-        defaultY = transform.GetChild(0).localPosition.y;
+        defaultYs[0] = transform.GetChild(0).localPosition.y;
 
         delay = new WaitForSeconds(0.5f);
         ReadyButton.onClick.AddListener(SetReady);
@@ -42,8 +40,9 @@ public class LobbyUISystem : MonoBehaviour, IUIWindow
             LobbyExtension.SendChatMessage(ChatInputField);
     }
 
-    public void Open()
+    public override void Open()
     {
+        base.Open();
         LobbyExtension.SetCallbacks(
            new LobbyCallbacks(
                LobbyStateChanged,
@@ -72,14 +71,13 @@ public class LobbyUISystem : MonoBehaviour, IUIWindow
             LobbyMemberDataUpdated(playerIDs[i]);
         }
 
-        GameManager.Instance.GameState = GameState.InLobby; 
-        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
+        GameManager.Instance.GameState = GameState.InLobby;
     }
 
-    public void Close()
+    public override void Close(Move moveTo)
     {
+        base.Close(moveTo);
         LeaveLobby();
-        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 
     void ChatMessageReceived(ulong senderID, string message) => CreateChatMessage(message);
@@ -108,7 +106,10 @@ public class LobbyUISystem : MonoBehaviour, IUIWindow
         {
             LobbyExtension.ClearLobbyCallbacks();
             if (!FPClient.Instance.Lobby.IsOwner)
+            {
+                GameManager.Instance.GameState = GameState.LoadingGame;
                 networkManager.StartClient();
+            }
         }
     }
 
@@ -137,6 +138,7 @@ public class LobbyUISystem : MonoBehaviour, IUIWindow
             if (FPClient.Instance.Lobby.IsOwner)
             {
                 networkManager.StartHost();
+                GameManager.Instance.GameState = GameState.LoadingGame;
                 LobbyExtension.SetData(LobbyData.GameStarted, LobbyData.Yes);
             }
         }

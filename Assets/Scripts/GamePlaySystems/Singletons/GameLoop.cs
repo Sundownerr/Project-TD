@@ -35,7 +35,7 @@ public class GameLoop : MonoBehaviour
 
     void OnGameStateChanged(object sender, GameState e)
     {
-        var inGame = e == GameState.MultiplayerInGame || e == GameState.SingleplayerInGame;
+        var inGame = e == GameState.InGameMultiplayer || e == GameState.InGameSingleplayer;
 
         if (!inGame)
             player = null;

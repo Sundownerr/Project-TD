@@ -46,10 +46,17 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.StateChanged += OnGameStateChanged;
         BackButtonUI.Instance.Clicked += OnBackButtonClicked;
+        Menu = GameManager.Instance.Menu;
     }
 
     void OnBackButtonClicked(object _, EventArgs e) => state.Update();
-    void OnGameStateChanged(object _, GameState e) => state.ChangeState(GetState()); 
+    void OnGameStateChanged(object _, GameState e)
+    {
+        var newState = GetState();
+
+        if (newState != null)        
+            state.ChangeState(newState);    
+    }
 
     IState GetState()
     {
@@ -58,6 +65,8 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance.GameState == GameState.InLobby) return new InLobby(this);
         if (GameManager.Instance.GameState == GameState.SelectingMage) return new InMageSelection(this);
         if (GameManager.Instance.GameState == GameState.CreatingLobby) return new InLobbyCreation(this);
+        if (GameManager.Instance.GameState == GameState.InGameMultiplayer) return new InGame(this);
+        if (GameManager.Instance.GameState == GameState.InGameSingleplayer) return new InGame(this);
         return null;
     }
 
@@ -67,12 +76,12 @@ public class UIManager : MonoBehaviour
 
         public void Enter()
         {
-            var isLobbyListOpened = 
-                GameManager.Instance.PreviousGameState == GameState.InLobby || 
-                GameManager.Instance.PreviousGameState == GameState.MainMenu || 
+            var isLobbyListOpened =
+                GameManager.Instance.PreviousGameState == GameState.InLobby ||
+                GameManager.Instance.PreviousGameState == GameState.MainMenu ||
                 GameManager.Instance.PreviousGameState == GameState.CreatingLobby;
 
-            if (isLobbyListOpened) o.Menu.LobbyList.Close();
+            if (isLobbyListOpened) o.Menu.LobbyList.Close(UIWindow.Move.Up);
 
             o.menu.Open();
             GameManager.Instance.GameState = GameState.MainMenu;
@@ -90,7 +99,7 @@ public class UIManager : MonoBehaviour
 #endif
             }
         }
-        public void Exit() { }
+        public void Exit() { o.menu.Close(UIWindow.Move.Up); }
     }
 
     class InMageSelection : IState
@@ -99,6 +108,7 @@ public class UIManager : MonoBehaviour
 
         public void Enter()
         {
+            o.mageSelection.Open();
             GameManager.Instance.GameState = GameState.SelectingMage;
         }
         public void Execute()
@@ -107,7 +117,7 @@ public class UIManager : MonoBehaviour
             else
             if (GameManager.Instance.PreviousGameState == GameState.InLobby) o.state.ChangeState(new InLobby(o));
         }
-        public void Exit() { o.mageSelection.Close(); }
+        public void Exit() { if(o.mageSelection != null) o.mageSelection.Close(UIWindow.Move.Up); }
     }
 
     class InBrowsingLobbies : IState
@@ -120,7 +130,7 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.GameState = GameState.BrowsingLobbies;
         }
         public void Execute() { o.state.ChangeState(new InMainMenu(o)); }
-        public void Exit() { }
+        public void Exit() { o.lobbyList.Close(UIWindow.Move.Down); }
     }
 
     class InLobby : IState
@@ -130,11 +140,10 @@ public class UIManager : MonoBehaviour
         public void Enter()
         {
             o.lobby.Open();
-            o.lobbyCreationWindow.Close();
             GameManager.Instance.GameState = GameState.InLobby;
         }
         public void Execute() { o.state.ChangeState(new InBrowsingLobbies(o)); }
-        public void Exit() { o.lobby.Close(); }
+        public void Exit() { o.lobby.Close(UIWindow.Move.Up); }
     }
 
     class InLobbyCreation : IState
@@ -144,10 +153,31 @@ public class UIManager : MonoBehaviour
         public void Enter()
         {
             o.lobbyCreationWindow.Open();
-            o.lobbyList.Close();
+
             GameManager.Instance.GameState = GameState.CreatingLobby;
         }
         public void Execute() { o.state.ChangeState(new InBrowsingLobbies(o)); }
-        public void Exit() { o.lobbyCreationWindow.Close(); }
+        public void Exit()
+        {
+            if (GameManager.Instance.PreviousGameState == GameState.BrowsingLobbies)
+                o.lobbyCreationWindow.Close(UIWindow.Move.Up);
+            else
+                o.lobbyCreationWindow.Close(UIWindow.Move.Down);
+        }
+    }
+
+     class InGame : IState
+    {
+        public InGame(UIManager o) => this.o = o; readonly UIManager o;
+
+        public void Enter()
+        {
+           
+        }
+        public void Execute() { }
+        public void Exit()
+        {
+           
+        }
     }
 }

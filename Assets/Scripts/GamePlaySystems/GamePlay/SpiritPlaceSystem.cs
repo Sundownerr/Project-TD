@@ -40,7 +40,7 @@ namespace Game.Systems
                 var newMagicCrystalCost = spiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
-                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                    if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                     {
                         var position = new Coordinates3D(
                             (int)Owner.CellControlSystem.ChoosedCell.transform.position.x,

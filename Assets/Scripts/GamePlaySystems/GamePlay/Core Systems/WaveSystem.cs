@@ -41,7 +41,7 @@ namespace Game.Systems
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
-            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+            if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
             {
                 Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
@@ -144,7 +144,7 @@ namespace Game.Systems
                     Vector3[] waypoints;
                     GetSpawnAndWayPoints();
 
-                    if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+                    if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                         CreateEnemyRequest();
                     else
                         CreateEnemy();
@@ -195,7 +195,7 @@ namespace Game.Systems
                     #endregion
                 }
 
-                if (GameManager.Instance.GameState == GameState.SingleplayerInGame)
+                if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
                     if (WaveNumber <= Owner.WaveAmount)
                         SetNextWave();
             }

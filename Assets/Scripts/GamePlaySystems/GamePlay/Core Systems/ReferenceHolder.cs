@@ -124,13 +124,13 @@ namespace Game.Systems
         {
             Player = e;
 
-            if (GameManager.Instance.GameState == GameState.MultiplayerInGame)
+            if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                 NetworkPlayer.LocalPlayer = e;
         }
 
         void OnGameStateChanged(object _, GameState e)
         {
-            if (e == GameState.SingleplayerInGame)
+            if (e == GameState.InGameSingleplayer)
             {
                 GetReferences();
                 return;
@@ -153,7 +153,7 @@ namespace Game.Systems
             DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
             PlayerData playerData;
-            playerData.Map = GameManager.Instance.GameState == GameState.MultiplayerInGame ?
+            playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
                 GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
             playerData.Mage = GameData.Instance.ChoosedMage;

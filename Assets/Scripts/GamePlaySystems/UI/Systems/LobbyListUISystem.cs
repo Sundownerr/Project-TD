@@ -9,7 +9,7 @@ using System;
 using Game;
 using DG.Tweening;
 
-public class LobbyListUISystem : MonoBehaviour, IUIWindow
+public class LobbyListUISystem : UIWindow
 {
 
     public GameObject LobbyButtonPrefab, LobbyInfoTextPrefab, NetworkManagerPrefab, LobbyListGroup, LobbyInfoGroup;
@@ -20,15 +20,11 @@ public class LobbyListUISystem : MonoBehaviour, IUIWindow
     LobbyList.Lobby selectedLobby;
     ObjectPool lobbyButtonsPool, lobbyInfoTextPool;
 
-    float defaultY1;
-    float defaultY2;
-    float defaultY3;
-
     void Start()
     {
-        defaultY1 = transform.GetChild(0).GetChild(0).localPosition.y;
-        defaultY2 = transform.GetChild(1).GetChild(0).localPosition.y;
-        defaultY3 = transform.GetChild(2).GetChild(0).localPosition.y;
+        defaultYs[0] = transform.GetChild(0).localPosition.y;
+        defaultYs[1] = transform.GetChild(1).localPosition.y;
+       
         lobbyButtonsPool = new ObjectPool(LobbyButtonPrefab, LobbyListGroup.transform, 20);
         lobbyInfoTextPool = new ObjectPool(LobbyInfoTextPrefab, LobbyInfoGroup.transform, 10);
 
@@ -37,9 +33,8 @@ public class LobbyListUISystem : MonoBehaviour, IUIWindow
         JoinLobbyButton.onClick.AddListener(JoinLobby);
     }
 
-    public void Open()
+    public override void Open()
     {
-
         if (NetworkManager.singleton == null)
         {
             var prefab = Instantiate(NetworkManagerPrefab);
@@ -51,16 +46,14 @@ public class LobbyListUISystem : MonoBehaviour, IUIWindow
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyJoined;
 
         GameManager.Instance.GameState = GameState.BrowsingLobbies;
-        transform.GetChild(0).GetChild(0).DOLocalMoveY(0, 0.5f);
-        transform.GetChild(1).GetChild(0).DOLocalMoveY(100, 0.5f);
-        transform.GetChild(2).GetChild(0).DOLocalMoveY(-200, 0.5f);
+        transform.GetChild(0).DOLocalMoveY(0, 0.5f).SetEase(Ease.InOutQuint);
+        transform.GetChild(1).DOLocalMoveY(0, 0.5f).SetEase(Ease.InOutQuint);
     }
 
-    public void Close()
+    public override void Close(Move moveTo)
     {
-        transform.GetChild(0).GetChild(0).DOLocalMoveY(defaultY1, 0.5f);
-        transform.GetChild(1).GetChild(0).DOLocalMoveY(defaultY2, 0.5f);
-        transform.GetChild(2).GetChild(0).DOLocalMoveY(defaultY3, 0.5f);
+        transform.GetChild(0).DOLocalMoveY(moveTo == Move.Up ? defaultYs[0] : -defaultYs[0], 0.5f).SetEase(Ease.InOutQuint);
+        transform.GetChild(1).DOLocalMoveY(moveTo == Move.Up ? defaultYs[0] : -defaultYs[0], 0.5f).SetEase(Ease.InOutQuint);
     }
 
     void LobbyJoined(bool isSuccesful)
@@ -72,6 +65,7 @@ public class LobbyListUISystem : MonoBehaviour, IUIWindow
 
             selectedLobby = null;
             LobbyUI.gameObject.SetActive(true);
+            GameManager.Instance.GameState = GameState.InLobby;
         }
     }
 

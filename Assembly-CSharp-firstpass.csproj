@@ -281,9 +281,6 @@
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
- <Reference Include="DOTween">
- <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Demigiant/DOTween/DOTween.dll</HintPath>
- </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
  </Reference>
@@ -307,6 +304,9 @@
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
  <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/Demigiant/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

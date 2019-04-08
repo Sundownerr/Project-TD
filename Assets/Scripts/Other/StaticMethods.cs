@@ -42,10 +42,10 @@ public static class StaticMethods
 
     public static bool CheckLocalPlayer(NetworkPlayer player)
     {
-        if (GameManager.Instance.GameState == GameState.SingleplayerInGame)
+        if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
             return true;
 
-        return GameManager.Instance.GameState == GameState.MultiplayerInGame && player.isLocalPlayer;
+        return GameManager.Instance.GameState == GameState.InGameMultiplayer && player.isLocalPlayer;
     }
 
     public static void CreatePlaceEffect(ElementType element, Vector3 position)

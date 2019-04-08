@@ -9,7 +9,7 @@ using TMPro;
 using Game;
 using DG.Tweening;
 
-public class LobbyCreationWindowUISystem : MonoBehaviour, IUIWindow
+public class LobbyCreationWindowUISystem : UIWindow
 {
 
     public TextMeshProUGUI MaxPlayersText;
@@ -19,11 +19,10 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IUIWindow
     public Button CreateButton;
     public LobbyUISystem LobbyUI;
 
-    float defaultY;
-
     void Start()
     {
-        defaultY = transform.GetChild(0).localPosition.y;
+        defaultYs[0] = transform.GetChild(0).localPosition.y;
+
         var dropdownEvent = new TMP_Dropdown.DropdownEvent();
         var sliderEvent = new Slider.SliderEvent();
 
@@ -65,17 +64,17 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IUIWindow
         #endregion
     }
 
-    public void Open()
+    public override void Open()
     {
+        base.Open();
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyCreated;
         GameManager.Instance.GameState = GameState.CreatingLobby;
-        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
     }
 
-    public void Close()
+    public override void Close(Move moveTo)
     {
+        base.Close(moveTo);
         FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;
-        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 
     void LobbyCreated(bool isSuccesful)

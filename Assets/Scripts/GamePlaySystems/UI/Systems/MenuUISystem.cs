@@ -6,7 +6,7 @@ using System;
 using Game;
 using DG.Tweening;
 
-public class MenuUISystem : MonoBehaviour, IUIWindow
+public class MenuUISystem : UIWindow
 {
     public event EventHandler ClickedOnMultiplayer;
     public event EventHandler ClickedOnSingleplayer;
@@ -17,12 +17,11 @@ public class MenuUISystem : MonoBehaviour, IUIWindow
     public MageSelectionUISystem MageSelection;
     public Button SingleplayerButton, MultiplayerButton;
 
-    float defaultY;
-
     void Awake()
     {
        
-        defaultY = transform.GetChild(0).localPosition.y;
+        defaultYs[0] = transform.GetChild(0).localPosition.y;
+
         if (GameManager.Instance == null)
             Instantiate(GameStateManagerPrefab);
     }
@@ -47,19 +46,16 @@ public class MenuUISystem : MonoBehaviour, IUIWindow
     void OnMageSelected(object sender, MageData e)
     {
         MageSelected?.Invoke(null, e);
-        SceneManager.LoadSceneAsync("SingleplayerMap");
     }
 
     void StartSingleplayer()
     {
         MageSelection.Open();
-        Close();
     }
 
     void StartMultiplayer()
     {
-        LobbyList.Open();
-        Close();
+        LobbyList.Open();    
     }
 
     void OnDestroy()
@@ -67,14 +63,9 @@ public class MenuUISystem : MonoBehaviour, IUIWindow
         MageSelection.MageSelected -= OnMageSelected;
     }
 
-    public void Open()
+    public override void Open()
     {
-        GameManager.Instance.GameState = GameState.MainMenu; 
-        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
-    }
-
-    public void Close()
-    {
-        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
+        base.Open();
+        GameManager.Instance.GameState = GameState.MainMenu;      
     }
 }

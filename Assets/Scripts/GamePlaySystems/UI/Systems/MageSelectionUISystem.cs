@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
-public class MageSelectionUISystem : MonoBehaviour, IUIWindow
+public class MageSelectionUISystem : UIWindow
 {
     public event EventHandler<MageData> MageSelected;
 
@@ -17,12 +17,10 @@ public class MageSelectionUISystem : MonoBehaviour, IUIWindow
 
     List<MageUI> mageUIs;
     MageData selectedMage;
-    float defaultY;
-
+   
     void Awake()
     {
-    
-        defaultY = transform.GetChild(0).position.y;
+        defaultYs[0] = transform.GetChild(0).position.y;
         mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
         mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
@@ -48,18 +46,13 @@ public class MageSelectionUISystem : MonoBehaviour, IUIWindow
 
     void OnDestroy()
     {
-        MageSelected = null;
-        SelectMageButton.onClick.RemoveAllListeners();
+         MageSelected = null;
+         SelectMageButton.onClick.RemoveAllListeners();
     }
 
-    public void Open()
+    public override void Open()
     {
+        base.Open();
         GameManager.Instance.GameState = GameState.SelectingMage; 
-        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
-    }
-
-    public void Close()
-    {
-       transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 }

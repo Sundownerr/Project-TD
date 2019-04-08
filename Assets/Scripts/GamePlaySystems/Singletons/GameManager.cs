@@ -11,8 +11,10 @@ using UnityEngine.SceneManagement;
 public enum GameState
 {
     MainMenu,
-    SingleplayerInGame,
-    MultiplayerInGame,
+    LoadingGame,
+    UnloadingGame,
+    InGameSingleplayer,
+    InGameMultiplayer,
     BrowsingLobbies,
     CreatingLobby,
     InLobby,
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour
 {
     public bool UseLocalTransport;
     public event EventHandler<GameState> StateChanged;
-    public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab, GameLoopPrefab, BackButtonPrefab, UIManagerPrefab;
+    public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab, GameLoopPrefab, BackButtonPrefab, UIManagerPrefab, FadeManagerPrefab;
     public MenuUISystem Menu { get; set; }
 
     static GameManager instance;
@@ -69,13 +71,13 @@ public class GameManager : MonoBehaviour
         {
             if (scene.name == "SingleplayerMap")
             {
-                GameState = GameState.SingleplayerInGame;
+                GameState = GameState.InGameSingleplayer;
                 return;
             }
 
             if (scene.name == "MultiplayerMap1")
             {
-                GameState = GameState.MultiplayerInGame;
+                GameState = GameState.InGameMultiplayer;
             }
         };
 
@@ -89,6 +91,7 @@ public class GameManager : MonoBehaviour
                 if (GameLoop.Instance == null) Instantiate(GameLoopPrefab);
                 if (UIManager.Instance == null) Instantiate(UIManagerPrefab);
                 if (BackButtonUI.Instance == null) Instantiate(BackButtonPrefab);
+                if (FadeManager.Instance == null) Instantiate(FadeManagerPrefab);
                 managersInstanced = true;
             }
         };
@@ -97,13 +100,19 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Steam.Instance.ConnectionLost += OnLostConnectionToSteam;
-        UIManager.Instance.Menu = Menu;
+        Menu.MageSelected += OnMageSelected;
+    }
+
+    private void OnMageSelected(object sender, MageData e)
+    {
+        SceneManager.LoadSceneAsync("SingleplayerMap");
+        GameState = GameState.LoadingGame;
     }
 
     void OnLostConnectionToSteam(object _, EventArgs e)
     {
         var isUsingSteam =
-            GameState == GameState.MultiplayerInGame ||
+            GameState == GameState.InGameMultiplayer ||
             GameState == GameState.InLobby ||
             GameState == GameState.BrowsingLobbies ||
             GameState == GameState.CreatingLobby;
