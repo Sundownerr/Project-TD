@@ -2,24 +2,27 @@
 using UnityEngine.UI;
 using Transport.Steamworks;
 using UnityEngine.SceneManagement;
-using Game.Systems;
-using System.Collections;
 using System;
 using Game;
+using DG.Tweening;
 
-public class MenuUISystem : MonoBehaviour, IWindow
+public class MenuUISystem : MonoBehaviour, IUIWindow
 {
     public event EventHandler ClickedOnMultiplayer;
     public event EventHandler ClickedOnSingleplayer;
-    public event EventHandler Activated;
     public event EventHandler<MageData> MageSelected;
+
     public LobbyListUISystem LobbyList;
     public GameObject GameStateManagerPrefab;
     public MageSelectionUISystem MageSelection;
-    public Button SingleplayerButton, MultiplayerButton, TestButton, QuitButton;
+    public Button SingleplayerButton, MultiplayerButton;
+
+    float defaultY;
 
     void Awake()
     {
+       
+        defaultY = transform.GetChild(0).localPosition.y;
         if (GameManager.Instance == null)
             Instantiate(GameStateManagerPrefab);
     }
@@ -28,14 +31,14 @@ public class MenuUISystem : MonoBehaviour, IWindow
     {
         SingleplayerButton.onClick.AddListener(StartSingleplayer);
         MultiplayerButton.onClick.AddListener(StartMultiplayer);
-        QuitButton.onClick.AddListener(() => Application.Quit());
 
         Steam.Instance.Connected += OnSteamConnected;
         Steam.Instance.ConnectionLost += OnSteamConnectionLost;
         MageSelection.MageSelected += OnMageSelected;
-        
+
         GameManager.Instance.Menu = this;
-        Activated?.Invoke(null, null);
+
+        Open();
     }
 
     void OnSteamConnectionLost(object _, EventArgs e) => MultiplayerButton.interactable = false;
@@ -49,16 +52,29 @@ public class MenuUISystem : MonoBehaviour, IWindow
 
     void StartSingleplayer()
     {
-        MageSelection.gameObject.SetActive(true);
+        MageSelection.Open();
+        Close();
     }
 
     void StartMultiplayer()
     {
-        LobbyList.gameObject.SetActive(true);
+        LobbyList.Open();
+        Close();
     }
 
     void OnDestroy()
     {
         MageSelection.MageSelected -= OnMageSelected;
+    }
+
+    public void Open()
+    {
+        GameManager.Instance.GameState = GameState.MainMenu; 
+        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
+    }
+
+    public void Close()
+    {
+        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 }

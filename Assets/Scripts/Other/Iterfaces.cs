@@ -103,11 +103,6 @@ namespace Game
     public interface IDamageDealer : IEntitySystem
     { }
 
-    public interface IWindow
-    {
-       
-    }
-
     public interface ITraitHandler
     {
         [SerializeField] ITraitSystem Owner { get; }

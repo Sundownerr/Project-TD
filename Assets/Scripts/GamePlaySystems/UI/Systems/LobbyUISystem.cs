@@ -8,10 +8,11 @@ using Mirror;
 using TMPro;
 using System;
 using Game;
+using DG.Tweening;
 
-public class LobbyUISystem : MonoBehaviour, IWindow
+public class LobbyUISystem : MonoBehaviour, IUIWindow
 {
-    public event EventHandler Activated;
+
     public TMP_InputField ChatInputField;
     public GameObject PlayerTextPrefab, ChatTextPrefab, PlayerTextGroup, ChatTextGroup, LobbyList;
     public Button ReadyButton, StartServerButton;
@@ -21,13 +22,18 @@ public class LobbyUISystem : MonoBehaviour, IWindow
     ObjectPool chatTextsPool;
     WaitForSeconds delay;
 
+    float defaultY;
+    
     void Start()
     {
+        defaultY = transform.GetChild(0).localPosition.y;
+
         delay = new WaitForSeconds(0.5f);
         ReadyButton.onClick.AddListener(SetReady);
         StartServerButton.onClick.AddListener(StartLobbyServer);
 
         chatTextsPool = new ObjectPool(ChatTextPrefab, ChatTextGroup.transform, 5);
+        playerTexts = new Dictionary<ulong, TextMeshProUGUI>();
     }
 
     void Update()
@@ -36,10 +42,8 @@ public class LobbyUISystem : MonoBehaviour, IWindow
             LobbyExtension.SendChatMessage(ChatInputField);
     }
 
-    void OnEnable()
+    public void Open()
     {
-        playerTexts = playerTexts ?? new Dictionary<ulong, TextMeshProUGUI>();
-
         LobbyExtension.SetCallbacks(
            new LobbyCallbacks(
                LobbyStateChanged,
@@ -68,12 +72,14 @@ public class LobbyUISystem : MonoBehaviour, IWindow
             LobbyMemberDataUpdated(playerIDs[i]);
         }
 
-        Activated?.Invoke(null, null);
+        GameManager.Instance.GameState = GameState.InLobby; 
+        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
     }
 
-    void OnDisable()
+    public void Close()
     {
         LeaveLobby();
+        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 
     void ChatMessageReceived(ulong senderID, string message) => CreateChatMessage(message);

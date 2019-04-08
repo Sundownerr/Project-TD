@@ -198,7 +198,6 @@
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Control Systems\EnemyControlSystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Control Systems\SpiritControlSystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Core Systems\ElementSystem.cs" />
-     <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Core Systems\GameLoop.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Core Systems\ItemDropSystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Core Systems\PlayerInputSystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\Core Systems\ReferenceHolder.cs" />
@@ -215,7 +214,9 @@
      <Compile Include="Assets\Scripts\GamePlaySystems\GamePlay\WaveCreatingSystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\Singletons\ExtendedNetworkManager.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\Singletons\GameData.cs" />
+     <Compile Include="Assets\Scripts\GamePlaySystems\Singletons\GameLoop.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\Singletons\GameManager.cs" />
+     <Compile Include="Assets\Scripts\GamePlaySystems\Singletons\UIManager.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\BackButtonUI.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\DescriptionBlock.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\InventoryUISystem.cs" />
@@ -242,6 +243,7 @@
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\WaveUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\WorldUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\UIControlSystem.cs" />
+     <Compile Include="Assets\Scripts\GamePlaySystems\UI\UIWindow.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\DrawConditionAttributes\DrawConditionAttribute.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\DrawConditionAttributes\HideIfAttribute.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\DrawConditionAttributes\ShowIfAttribute.cs" />
@@ -271,6 +273,9 @@
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\ValidatorAttributes\ValidateInputAttribute.cs" />
      <Compile Include="Assets\Scripts\NaughtyAttributes\Scripts\Core\ValidatorAttributes\ValidatorAttribute.cs" />
      <Compile Include="Assets\Scripts\Other\CameraMovementScript.cs" />
+     <Compile Include="Assets\Scripts\Other\Consts\LobbyDataConsts.cs" />
+     <Compile Include="Assets\Scripts\Other\Consts\LocaleKeys.cs" />
+     <Compile Include="Assets\Scripts\Other\Consts\StringConsts.cs" />
      <Compile Include="Assets\Scripts\Other\DamageToArmorSettings.cs" />
      <Compile Include="Assets\Scripts\Other\EnemySettings.cs" />
      <Compile Include="Assets\Scripts\Other\Enums.cs" />
@@ -282,8 +287,6 @@
      <Compile Include="Assets\Scripts\Other\ID.cs" />
      <Compile Include="Assets\Scripts\Other\Iterfaces.cs" />
      <Compile Include="Assets\Scripts\Other\ListWrappers.cs" />
-     <Compile Include="Assets\Scripts\Other\LobbyDataConsts.cs" />
-     <Compile Include="Assets\Scripts\Other\LocaleKeys.cs" />
      <Compile Include="Assets\Scripts\Other\NetworkRequests.cs" />
      <Compile Include="Assets\Scripts\Other\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Other\SerializationExtension.cs" />
@@ -359,6 +362,7 @@
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionSelective.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\Bokeh34.shader" />
      <None Include="Assets\ImportedAssets\EffectExamples\Misc Effects\Shaders\Respawn.shader" />
+     <None Include="Assets\Demigiant\DOTween\readme.txt" />
      <None Include="Assets\ImportedAssets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\CameraMotionBlurDX11.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\SeparableBlurPlus.shader" />
@@ -633,6 +637,9 @@
  </Reference>
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Demigiant/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
@@ -1020,6 +1027,8 @@
       <Project>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.csproj">
       <Project>{F0A6B909-B91F-280D-1847-C6B5E19C214C}</Project>      <Name>Mirror</Name>    </ProjectReference>
+    <ProjectReference Include="DOTween.Modules.csproj">
+      <Project>{2864BC55-9481-808D-592C-ACEEECFEFDE0}</Project>      <Name>DOTween.Modules</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

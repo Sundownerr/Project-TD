@@ -427,6 +427,12 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="DOTween">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Demigiant/DOTween/DOTween.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTweenEditor">
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Demigiant/DOTween/Editor/DOTweenEditor.dll</HintPath>
+ </Reference>
  <Reference Include="Telepathy">
  <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/SMirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
  </Reference>
@@ -815,6 +821,8 @@
       <Project>{DE214CDC-FB0E-FB29-2A14-9F242677CC16}</Project>      <Name>Mirror.Weaver</Name>    </ProjectReference>
     <ProjectReference Include="Mirror.csproj">
       <Project>{F0A6B909-B91F-280D-1847-C6B5E19C214C}</Project>      <Name>Mirror</Name>    </ProjectReference>
+    <ProjectReference Include="DOTween.Modules.csproj">
+      <Project>{2864BC55-9481-808D-592C-ACEEECFEFDE0}</Project>      <Name>DOTween.Modules</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

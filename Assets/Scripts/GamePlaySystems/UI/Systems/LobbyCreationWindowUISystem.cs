@@ -7,20 +7,25 @@ using Facepunch.Steamworks;
 using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
 using Game;
+using DG.Tweening;
 
-public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
+public class LobbyCreationWindowUISystem : MonoBehaviour, IUIWindow
 {
-    public event EventHandler Activated;
+
     public TextMeshProUGUI MaxPlayersText;
     public Slider PlayersSlider;
     public TMP_Dropdown ModeDropdown, VisibilityDropdown, DifficultyDropdown, MapDropdown, WavesDropdown;
     public TMP_InputField LobbyName;
     public Button CreateButton;
+    public LobbyUISystem LobbyUI;
+
+    float defaultY;
 
     void Start()
     {
+        defaultY = transform.GetChild(0).localPosition.y;
         var dropdownEvent = new TMP_Dropdown.DropdownEvent();
-        var sliderEvent = new Slider.SliderEvent();      
+        var sliderEvent = new Slider.SliderEvent();
 
         dropdownEvent.AddListener(ModeChanged);
         ModeDropdown.onValueChanged = dropdownEvent;
@@ -44,7 +49,7 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
                 return;
             }
 
-            if(optionNumber == 1)
+            if (optionNumber == 1)
             {
                 PlayersSlider.minValue = 2;
                 PlayersSlider.maxValue = 8;
@@ -60,15 +65,17 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
         #endregion
     }
 
-    void OnEnable()
+    public void Open()
     {
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyCreated;
-        Activated?.Invoke(null, null);
+        GameManager.Instance.GameState = GameState.CreatingLobby;
+        transform.GetChild(0).DOLocalMoveY(0, 0.5f);
     }
 
-    void OnDisable()
+    public void Close()
     {
-        FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;      
+        FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;
+        transform.GetChild(0).DOLocalMoveY(defaultY, 0.5f);
     }
 
     void LobbyCreated(bool isSuccesful)
@@ -79,7 +86,7 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
 
             FPClient.Instance.Lobby.Name = lobbyName;
 
-            LobbyExtension.SetData(LobbyData.Joinable, LobbyData.Yes);            
+            LobbyExtension.SetData(LobbyData.Joinable, LobbyData.Yes);
             LobbyExtension.SetData(LobbyData.GameStarted, LobbyData.No);
             LobbyExtension.SetData(LobbyData.GameStarting, LobbyData.No);
             LobbyExtension.SetData(LobbyData.Mode, ModeDropdown.options[ModeDropdown.value].text);
@@ -87,6 +94,7 @@ public class LobbyCreationWindowUISystem : MonoBehaviour, IWindow
             LobbyExtension.SetData(LobbyData.Map, MapDropdown.options[MapDropdown.value].text);
             LobbyExtension.SetData(LobbyData.Waves, WavesDropdown.options[WavesDropdown.value].text);
             LobbyExtension.SetMemberData(LobbyData.Ready, LobbyData.No);
+            GameManager.Instance.GameState = GameState.InLobby;
         }
     }
 }
