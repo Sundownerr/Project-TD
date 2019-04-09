@@ -19,12 +19,12 @@ public class LobbyCreationWindowUISystem : UIWindow
     public Button CreateButton;
     public LobbyUISystem LobbyUI;
 
+    TMP_Dropdown.DropdownEvent dropdownEvent = new TMP_Dropdown.DropdownEvent();
+    Slider.SliderEvent sliderEvent = new Slider.SliderEvent();
+
     void Start()
     {
         defaultYs = new float[] { transform.GetChild(0).localPosition.y };
-
-        var dropdownEvent = new TMP_Dropdown.DropdownEvent();
-        var sliderEvent = new Slider.SliderEvent();
 
         dropdownEvent.AddListener(ModeChanged);
         ModeDropdown.onValueChanged = dropdownEvent;
@@ -33,9 +33,33 @@ public class LobbyCreationWindowUISystem : UIWindow
 
         CreateButton.onClick.AddListener(CreateLobby);
 
+        LocalizeDropdownItems();
         ModeChanged(0);
 
         #region Helper functions
+
+        void LocalizeDropdownItems()
+        {
+            VisibilityDropdown.AddOptions(new List<string>()
+            {
+                LocaleKeys.VisibilityPublic.GetLocalized(),
+                LocaleKeys.VisibilityFriendsOnly.GetLocalized()
+            });
+
+            ModeDropdown.AddOptions(new List<string>()
+            {
+                LocaleKeys.ModePvp.GetLocalized(),
+                LocaleKeys.ModeCoop.GetLocalized()
+            });
+
+            DifficultyDropdown.AddOptions(new List<string>()
+            {
+                LocaleKeys.DifficultyEasy.GetLocalized(),
+                LocaleKeys.DifficultyNormal.GetLocalized(),
+                LocaleKeys.DifficultyHard.GetLocalized(),
+                LocaleKeys.DifficultyExtreme.GetLocalized()
+            });
+        }
 
         void ModeChanged(int optionNumber)
         {
@@ -75,6 +99,12 @@ public class LobbyCreationWindowUISystem : UIWindow
     {
         base.Close(moveTo, timeToComplete);
         FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;
+    }
+
+    void OnDestroy()
+    {
+        dropdownEvent.RemoveAllListeners();
+        sliderEvent.RemoveAllListeners();
     }
 
     void LobbyCreated(bool isSuccesful)

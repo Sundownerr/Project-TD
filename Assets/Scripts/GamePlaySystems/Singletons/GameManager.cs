@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour
     {
         Steam.Instance.ConnectionLost += OnLostConnectionToSteam;
         UIManager.Instance.ReturnToMenu += OnReturnToMenu;
-        
     }
 
     void OnReturnToMenu(object _, EventArgs e)
