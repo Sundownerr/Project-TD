@@ -10,18 +10,18 @@ public class UIWindow : MonoBehaviour
 
     protected float[] defaultYs;
 
-    public virtual void Open()
+    public virtual void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
         for (int i = 0; i < defaultYs.Length; i++)
-            transform.GetChild(i).DOLocalMoveY(0, NumberConsts.UITransitionAnimationSpeed).SetEase(Ease.InOutQuint);
+            transform.GetChild(i).DOLocalMoveY(0, NumberConsts.UIAnimSpeed).SetEase(Ease.InOutQuint);
     }
 
-    public virtual void Close(Move moveTo)
+    public virtual void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
     {
         for (int i = 0; i < defaultYs.Length; i++)
             transform.GetChild(i).DOLocalMoveY(
                 moveTo == Move.Up ? defaultYs[i] : -defaultYs[i], 
-                NumberConsts.UITransitionAnimationSpeed)
+                NumberConsts.UIAnimSpeed)
                 .SetEase(Ease.InOutQuint);
     }
 }

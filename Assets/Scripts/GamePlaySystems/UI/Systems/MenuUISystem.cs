@@ -17,7 +17,6 @@ public class MenuUISystem : UIWindow
 
     void Awake()
     {
-       
         defaultYs = new float[] { transform.GetChild(0).localPosition.y };
 
         if (GameManager.Instance == null)
@@ -34,7 +33,6 @@ public class MenuUISystem : UIWindow
         MageSelection.MageSelected += OnMageSelected;
 
         GameManager.Instance.Menu = this;
-
         Open();
     }
 
@@ -49,12 +47,11 @@ public class MenuUISystem : UIWindow
     void StartSingleplayer()
     {
         MageSelection.Open();
-       
     }
 
     void StartMultiplayer()
     {
-        LobbyList.Open();    
+        LobbyList.Open();
     }
 
     void OnDestroy()
@@ -62,9 +59,9 @@ public class MenuUISystem : UIWindow
         MageSelection.MageSelected -= OnMageSelected;
     }
 
-    public override void Open()
+    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-        base.Open();
-        GameManager.Instance.GameState = GameState.MainMenu;      
+        base.Open(timeToComplete);
+        GameManager.Instance.GameState = GameState.MainMenu;
     }
 }

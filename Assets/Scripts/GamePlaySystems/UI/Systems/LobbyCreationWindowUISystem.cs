@@ -64,16 +64,16 @@ public class LobbyCreationWindowUISystem : UIWindow
         #endregion
     }
 
-    public override void Open()
+    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-        base.Open();
+        base.Open(timeToComplete);
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyCreated;
         GameManager.Instance.GameState = GameState.CreatingLobby;
     }
 
-    public override void Close(Move moveTo)
+    public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-        base.Close(moveTo);
+        base.Close(moveTo, timeToComplete);
         FPClient.Instance.Lobby.OnLobbyCreated -= LobbyCreated;
     }
 

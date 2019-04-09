@@ -40,9 +40,9 @@ public class LobbyUISystem : UIWindow
             LobbyExtension.SendChatMessage(ChatInputField);
     }
 
-    public override void Open()
+    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-        base.Open();
+        
         LobbyExtension.SetCallbacks(
            new LobbyCallbacks(
                LobbyStateChanged,
@@ -71,9 +71,10 @@ public class LobbyUISystem : UIWindow
         }
 
         GameManager.Instance.GameState = GameState.InLobby;
+        base.Open(timeToComplete);
     }
 
-    public override void Close(Move moveTo)
+    public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
     {
         base.Close(moveTo);
         LeaveLobby();

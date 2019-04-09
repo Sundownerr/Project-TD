@@ -29,23 +29,23 @@ public class DialogWindowManager : UIWindow
         Instance = this;
 
         defaultYs = new float[] { transform.GetChild(0).localPosition.y };
-        
+
         windowRect = transform.GetChild(0).GetComponent<RectTransform>();
         windowText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         buttonYes = transform.GetChild(0).GetChild(1).GetComponent<Button>();
         buttonNo = transform.GetChild(0).GetChild(2).GetComponent<Button>();
     }
 
-    public void Show(string text, UnityAction yesAction, UnityAction noAction)
+    public void Show(string text, UnityAction yesAction, UnityAction noAction = null)
     {
         buttonYes.onClick.RemoveAllListeners();
         buttonNo.onClick.RemoveAllListeners();
 
-        buttonYes.onClick.AddListener(() => { Close(UIWindow.Move.Up); });
-        buttonNo.onClick.AddListener(() => { Close(UIWindow.Move.Up); });
+        buttonYes.onClick.AddListener(() => { Close(UIWindow.Move.Up, 0.05f); });
+        buttonNo.onClick.AddListener(() => { Close(UIWindow.Move.Up, 0.05f); });
 
         buttonYes.onClick.AddListener(yesAction);
-        buttonNo.onClick.AddListener(noAction);
+        if (noAction != null) buttonNo.onClick.AddListener(noAction);
 
         var wordsCount = text.Split(' ').Length;
         var width = Mathf.Clamp(text.Length * 11, 300, 500);
@@ -54,6 +54,6 @@ public class DialogWindowManager : UIWindow
 
         windowRect.sizeDelta = new Vector2(width, height);
 
-        Open();
+        Open(0.05f);
     }
 }

@@ -32,7 +32,7 @@ public class LobbyListUISystem : UIWindow
         JoinLobbyButton.onClick.AddListener(JoinLobby);
     }
 
-    public override void Open()
+    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
         if (NetworkManager.singleton == null)
         {
@@ -45,7 +45,7 @@ public class LobbyListUISystem : UIWindow
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyJoined;
 
         GameManager.Instance.GameState = GameState.BrowsingLobbies;
-        base.Open();
+        base.Open(timeToComplete);
     }
 
   

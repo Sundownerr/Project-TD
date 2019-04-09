@@ -17,18 +17,18 @@ public class MageSelectionUISystem : UIWindow
 
     List<MageUI> mageUIs;
     MageData selectedMage;
-   
+
     void Awake()
     {
         defaultYs = new float[] { transform.GetChild(0).localPosition.y };
         mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
-        mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
+        mageUIs.ForEach(mageUI =>  mageUI.Selected += OnMageSelected);
 
         SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(null, selectedMage));
         SelectMageButton.interactable = false;
     }
 
-    void OnMageSelected(object sender, MageData e)
+    void OnMageSelected(object _, MageData e)
     {
         selectedMage = e;
         SelectMageButton.interactable = true;
@@ -46,13 +46,16 @@ public class MageSelectionUISystem : UIWindow
 
     void OnDestroy()
     {
-         MageSelected = null;
-         SelectMageButton.onClick.RemoveAllListeners();
+        MageSelected = null;
+        SelectMageButton.onClick.RemoveAllListeners();
     }
 
-    public override void Open()
+    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-        base.Open();
-        GameManager.Instance.GameState = GameState.SelectingMage; 
+
+        mageUIs.ForEach(mageUI => mageUI.MageData.GenerateDescription());
+       
+        GameManager.Instance.GameState = GameState.SelectingMage;
+        base.Open(timeToComplete);
     }
 }

@@ -26,7 +26,19 @@ public class GameManager : MonoBehaviour
     public bool UseLocalTransport;
     public event EventHandler<GameState> StateChanged;
     public GameObject[] Managers;
-    public MenuUISystem Menu { get; set; }
+
+    MenuUISystem menu;
+    public MenuUISystem Menu
+    {
+        get => menu;
+        set
+        {
+            menu = value;
+
+            if (UIManager.Instance != null)
+                UIManager.Instance.Menu = value;
+        }
+    }
 
     static GameManager instance;
     public static GameManager Instance
@@ -58,6 +70,7 @@ public class GameManager : MonoBehaviour
 
     bool managersInstanced;
 
+
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -67,41 +80,64 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Cursor.lockState = CursorLockMode.Confined;
 
-        SceneManager.sceneLoaded += (scene, loadMode) =>
-        {
-            if (scene.name == "SingleplayerMap")
-            {
-                GameState = GameState.InGameSingleplayer;
-                return;
-            }
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        Lean.Localization.LeanLocalization.OnLocalizationChanged += OnLocalizationChanged;
+    }
 
-            if (scene.name == "MultiplayerMap1")
-            {
-                GameState = GameState.InGameMultiplayer;
-            }
-        };
-
-        Lean.Localization.LeanLocalization.OnLocalizationChanged += () =>
+    void OnLocalizationChanged()
+    {
+        if (!managersInstanced)
         {
-            if (!managersInstanced)
-            {
-                for (int i = 0; i < Managers.Length; i++)                
-                    Instantiate(Managers[i]);
-                managersInstanced = true;
-            }
-        };
+            for (int i = 0; i < Managers.Length; i++)
+                Instantiate(Managers[i]);
+            managersInstanced = true;
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == StringConsts.SingleplayerMap)
+        {
+            GameState = GameState.InGameSingleplayer;
+            return;
+        }
+
+        if (scene.name == StringConsts.MultiplayerMap1)
+        {
+            GameState = GameState.InGameMultiplayer;
+            return;
+        }
+
+        if (scene.name == StringConsts.MainMenu)
+        {
+            RefreshReferences();
+            GameState = GameState.MainMenu;
+        }
+
+        void RefreshReferences()
+        {
+            Menu = GameObject.FindGameObjectWithTag(StringConsts.MenuUITag).GetComponent<MenuUISystem>();
+            Menu.MageSelected += OnMageSelected;
+        }
     }
 
     void Start()
     {
         Steam.Instance.ConnectionLost += OnLostConnectionToSteam;
-        Menu.MageSelected += OnMageSelected;
+        UIManager.Instance.ReturnToMenu += OnReturnToMenu;
+        
     }
 
-    private void OnMageSelected(object _, MageData e)
+    void OnReturnToMenu(object _, EventArgs e)
     {
-        SceneManager.LoadSceneAsync("SingleplayerMap");
+        GameState = GameState.UnloadingGame;
+        SceneManager.LoadSceneAsync(StringConsts.MainMenu);
+    }
+
+    void OnMageSelected(object _, MageData e)
+    {
         GameState = GameState.LoadingGame;
+        SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);  
     }
 
     void OnLostConnectionToSteam(object _, EventArgs e)
@@ -122,6 +158,6 @@ public class GameManager : MonoBehaviour
         Destroy(NetworkManager.singleton.gameObject);
 
         NetworkManager.Shutdown();
-        SceneManager.LoadSceneAsync("MainMenu");
+        SceneManager.LoadSceneAsync(StringConsts.MainMenu);
     }
 }

@@ -79,7 +79,6 @@ public class UIManager : MonoBehaviour
         {
             var isLobbyListOpened =
                 GameManager.Instance.PreviousGameState == GameState.InLobby ||
-                GameManager.Instance.PreviousGameState == GameState.MainMenu ||
                 GameManager.Instance.PreviousGameState == GameState.CreatingLobby;
 
             if (isLobbyListOpened) o.Menu.LobbyList.Close(UIWindow.Move.Up);
@@ -171,14 +170,8 @@ public class UIManager : MonoBehaviour
     {
         public InGame(UIManager o) => this.o = o; readonly UIManager o;
 
-        public void Enter()
-        {
-
-        }
-        public void Execute() { o.ReturnToMenu?.Invoke(null, null); }
-        public void Exit()
-        {
-
-        }
+        public void Enter() { }
+        public void Execute() { DialogWindowManager.Instance.Show("Back to menu?", () => { o.ReturnToMenu?.Invoke(null, null); }); }
+        public void Exit() { }
     }
 }
