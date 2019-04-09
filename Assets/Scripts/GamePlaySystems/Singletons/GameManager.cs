@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 {
     public bool UseLocalTransport;
     public event EventHandler<GameState> StateChanged;
-    public GameObject GameDataPrefab, SteamInstancePrefab, ReferenceHolderPrefab, GameLoopPrefab, BackButtonPrefab, UIManagerPrefab, FadeManagerPrefab;
+    public GameObject[] Managers;
     public MenuUISystem Menu { get; set; }
 
     static GameManager instance;
@@ -85,13 +85,8 @@ public class GameManager : MonoBehaviour
         {
             if (!managersInstanced)
             {
-                if (GameData.Instance == null) Instantiate(GameDataPrefab);
-                if (Steam.Instance == null) Instantiate(SteamInstancePrefab);
-                if (ReferenceHolder.Get == null) Instantiate(ReferenceHolderPrefab);
-                if (GameLoop.Instance == null) Instantiate(GameLoopPrefab);
-                if (UIManager.Instance == null) Instantiate(UIManagerPrefab);
-                if (BackButtonUI.Instance == null) Instantiate(BackButtonPrefab);
-                if (FadeManager.Instance == null) Instantiate(FadeManagerPrefab);
+                for (int i = 0; i < Managers.Length; i++)                
+                    Instantiate(Managers[i]);
                 managersInstanced = true;
             }
         };
@@ -103,7 +98,7 @@ public class GameManager : MonoBehaviour
         Menu.MageSelected += OnMageSelected;
     }
 
-    private void OnMageSelected(object sender, MageData e)
+    private void OnMageSelected(object _, MageData e)
     {
         SceneManager.LoadSceneAsync("SingleplayerMap");
         GameState = GameState.LoadingGame;

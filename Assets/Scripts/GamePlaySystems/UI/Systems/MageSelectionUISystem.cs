@@ -20,7 +20,7 @@ public class MageSelectionUISystem : UIWindow
    
     void Awake()
     {
-        defaultYs[0] = transform.GetChild(0).position.y;
+        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
         mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
         mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 

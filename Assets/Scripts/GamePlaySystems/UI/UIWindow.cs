@@ -8,15 +8,20 @@ public class UIWindow : MonoBehaviour
 {
     public enum Move { Down, Up }
 
-    protected float[] defaultYs = new float[10];
+    protected float[] defaultYs;
 
     public virtual void Open()
     {
-        transform.GetChild(0).DOLocalMoveY(0,  NumberConsts.UITransitionAnimationSpeed).SetEase(Ease.InOutQuint);
+        for (int i = 0; i < defaultYs.Length; i++)
+            transform.GetChild(i).DOLocalMoveY(0, NumberConsts.UITransitionAnimationSpeed).SetEase(Ease.InOutQuint);
     }
 
     public virtual void Close(Move moveTo)
     {
-        transform.GetChild(0).DOLocalMoveY(moveTo == Move.Up ? defaultYs[0] : -defaultYs[0],  NumberConsts.UITransitionAnimationSpeed).SetEase(Ease.InOutQuint);
+        for (int i = 0; i < defaultYs.Length; i++)
+            transform.GetChild(i).DOLocalMoveY(
+                moveTo == Move.Up ? defaultYs[i] : -defaultYs[i], 
+                NumberConsts.UITransitionAnimationSpeed)
+                .SetEase(Ease.InOutQuint);
     }
 }

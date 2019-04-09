@@ -42,7 +42,7 @@ public class FadeManager : MonoBehaviour
         var isFadeIn = 
             e == GameState.LoadingGame ||
             e == GameState.UnloadingGame || 
-            e == GameState.MainMenu;
+            GameManager.Instance.PreviousGameState == GameState.UnloadingGame;
 
         if(isFadeOut)
             image.DOFade(0, 1);

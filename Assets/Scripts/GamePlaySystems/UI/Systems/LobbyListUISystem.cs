@@ -22,8 +22,7 @@ public class LobbyListUISystem : UIWindow
 
     void Start()
     {
-        defaultYs[0] = transform.GetChild(0).localPosition.y;
-        defaultYs[1] = transform.GetChild(1).localPosition.y;
+        defaultYs = new float[] {transform.GetChild(0).localPosition.y, transform.GetChild(1).localPosition.y};
        
         lobbyButtonsPool = new ObjectPool(LobbyButtonPrefab, LobbyListGroup.transform, 20);
         lobbyInfoTextPool = new ObjectPool(LobbyInfoTextPrefab, LobbyInfoGroup.transform, 10);
@@ -46,16 +45,10 @@ public class LobbyListUISystem : UIWindow
         FPClient.Instance.Lobby.OnLobbyCreated += LobbyJoined;
 
         GameManager.Instance.GameState = GameState.BrowsingLobbies;
-        transform.GetChild(0).DOLocalMoveY(0, 0.5f).SetEase(Ease.InOutQuint);
-        transform.GetChild(1).DOLocalMoveY(0, 0.5f).SetEase(Ease.InOutQuint);
+        base.Open();
     }
 
-    public override void Close(Move moveTo)
-    {
-        transform.GetChild(0).DOLocalMoveY(moveTo == Move.Up ? defaultYs[0] : -defaultYs[0], 0.5f).SetEase(Ease.InOutQuint);
-        transform.GetChild(1).DOLocalMoveY(moveTo == Move.Up ? defaultYs[0] : -defaultYs[0], 0.5f).SetEase(Ease.InOutQuint);
-    }
-
+  
     void LobbyJoined(bool isSuccesful)
     {
         if (isSuccesful)

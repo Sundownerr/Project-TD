@@ -24,7 +24,7 @@ public class LobbyUISystem : UIWindow
 
     void Start()
     {
-        defaultYs[0] = transform.GetChild(0).localPosition.y;
+        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
 
         delay = new WaitForSeconds(0.5f);
         ReadyButton.onClick.AddListener(SetReady);
@@ -58,7 +58,6 @@ public class LobbyUISystem : UIWindow
             LobbyExtension.SetData(LobbyData.GameStarted, LobbyData.No);
             LobbyExtension.SetData(LobbyData.GameStarting, LobbyData.No);
             StartServerButton.gameObject.SetActive(true);
-
         }
 
         LobbyName.text = FPClient.Instance.Lobby.Name;

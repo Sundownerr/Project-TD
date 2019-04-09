@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public event EventHandler ReturnToMenu;
     static UIManager instance;
     public static UIManager Instance
     {
@@ -54,8 +55,8 @@ public class UIManager : MonoBehaviour
     {
         var newState = GetState();
 
-        if (newState != null)        
-            state.ChangeState(newState);    
+        if (newState != null)
+            state.ChangeState(newState);
     }
 
     IState GetState()
@@ -117,7 +118,7 @@ public class UIManager : MonoBehaviour
             else
             if (GameManager.Instance.PreviousGameState == GameState.InLobby) o.state.ChangeState(new InLobby(o));
         }
-        public void Exit() { if(o.mageSelection != null) o.mageSelection.Close(UIWindow.Move.Up); }
+        public void Exit() { if (o.mageSelection != null) o.mageSelection.Close(UIWindow.Move.Up); }
     }
 
     class InBrowsingLobbies : IState
@@ -143,7 +144,7 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.GameState = GameState.InLobby;
         }
         public void Execute() { o.state.ChangeState(new InBrowsingLobbies(o)); }
-        public void Exit() { o.lobby.Close(UIWindow.Move.Up); }
+        public void Exit() { if (o.lobby != null) o.lobby.Close(UIWindow.Move.Up); }
     }
 
     class InLobbyCreation : IState
@@ -166,18 +167,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
-     class InGame : IState
+    class InGame : IState
     {
         public InGame(UIManager o) => this.o = o; readonly UIManager o;
 
         public void Enter()
         {
-           
+
         }
-        public void Execute() { }
+        public void Execute() { o.ReturnToMenu?.Invoke(null, null); }
         public void Exit()
         {
-           
+
         }
     }
 }

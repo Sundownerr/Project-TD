@@ -21,7 +21,7 @@ public class LobbyCreationWindowUISystem : UIWindow
 
     void Start()
     {
-        defaultYs[0] = transform.GetChild(0).localPosition.y;
+        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
 
         var dropdownEvent = new TMP_Dropdown.DropdownEvent();
         var sliderEvent = new Slider.SliderEvent();

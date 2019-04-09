@@ -8,8 +8,6 @@ using DG.Tweening;
 
 public class MenuUISystem : UIWindow
 {
-    public event EventHandler ClickedOnMultiplayer;
-    public event EventHandler ClickedOnSingleplayer;
     public event EventHandler<MageData> MageSelected;
 
     public LobbyListUISystem LobbyList;
@@ -20,7 +18,7 @@ public class MenuUISystem : UIWindow
     void Awake()
     {
        
-        defaultYs[0] = transform.GetChild(0).localPosition.y;
+        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
 
         if (GameManager.Instance == null)
             Instantiate(GameStateManagerPrefab);
@@ -43,7 +41,7 @@ public class MenuUISystem : UIWindow
     void OnSteamConnectionLost(object _, EventArgs e) => MultiplayerButton.interactable = false;
     void OnSteamConnected(object _, EventArgs e) => MultiplayerButton.interactable = true;
 
-    void OnMageSelected(object sender, MageData e)
+    void OnMageSelected(object _, MageData e)
     {
         MageSelected?.Invoke(null, e);
     }
@@ -51,6 +49,7 @@ public class MenuUISystem : UIWindow
     void StartSingleplayer()
     {
         MageSelection.Open();
+       
     }
 
     void StartMultiplayer()
