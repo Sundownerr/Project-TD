@@ -6,6 +6,7 @@ using FPClient = Facepunch.Steamworks.Client;
 using Facepunch.Steamworks;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
 
 public struct LobbyCallbacks
 {
@@ -14,8 +15,7 @@ public struct LobbyCallbacks
     public Action DataUpdated;
     public Action<ulong, string> ChatStringReceived;
 
-    /// <param name="stateChanged">
-    /// Called when the state of the Lobby is somehow shifted. Usually when someone joins
+    /// <param name="stateChanged"> Called when the state of the Lobby is somehow shifted. Usually when someone joins
     /// or leaves the lobby. The first ulong is the SteamID of the user that initiated
     /// the change. The second ulong is the person that was affected</param>
     /// <param name="chatStringReceived">Callback when chat string received</param>
@@ -33,14 +33,14 @@ public struct LobbyCallbacks
     }
 }
 
-public static class LobbyExtension
-{  
+public static class LobbyExt
+{
     public static void SetCallbacks(LobbyCallbacks lobbyCallbacks)
     {
         FPClient.Instance.Lobby.OnLobbyStateChanged = lobbyCallbacks.StateChanged;
         FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = lobbyCallbacks.MemberDataUpdated;
         FPClient.Instance.Lobby.OnLobbyDataUpdated = lobbyCallbacks.DataUpdated;
-        FPClient.Instance.Lobby.OnChatStringRecieved = lobbyCallbacks.ChatStringReceived;       
+        FPClient.Instance.Lobby.OnChatStringRecieved = lobbyCallbacks.ChatStringReceived;
     }
 
     public static void ClearLobbyCallbacks()
@@ -56,7 +56,7 @@ public static class LobbyExtension
     /// </summary>
     public static void SendChatMessage(TMP_InputField chatInputField)
     {
-        
+
         if (string.IsNullOrWhiteSpace(chatInputField.text))
         {
             chatInputField.DeactivateInputField();
@@ -88,6 +88,54 @@ public static class LobbyExtension
 
     public static string GetMemberData(ulong steamID, string key) => FPClient.Instance.Lobby.GetMemberData(steamID, key);
     public static void SetMemberData(string key, string value) => FPClient.Instance.Lobby.SetMemberData(key, value);
+
+    public static void StartLobbyServer()
+    {
+        if (FPClient.Instance.Lobby.IsOwner)
+        {
+            LobbyExt.SetData(LobbyData.GameStarting, LobbyData.Yes);
+            GameManager.Instance.StartCoroutine(StartTimer());
+        }
+
+        IEnumerator StartTimer()
+        {
+            var networkManager = NetworkManager.singleton as ExtendedNetworkManager;
+            var timeUntilStart = 4d;
+
+            LobbyExt.SendChatMessage($"Starting in 5 ...");
+
+            while (timeUntilStart > 0)
+            {
+                LobbyExt.SendChatMessage($"{timeUntilStart} ...");
+                yield return new WaitForSeconds(0.5f);
+                timeUntilStart -= 1;
+            }
+
+            if (FPClient.Instance.Lobby.IsOwner)
+            {
+                networkManager.StartHost();
+                GameManager.Instance.GameState = GameState.LoadingGame;
+                LobbyExt.SetData(LobbyData.GameStarted, LobbyData.Yes);
+            }
+        }
+    }
+
+    public static void SetLobbyDefaultData()
+    {
+        FPClient.Instance.Lobby.Name = $"{FPClient.Instance.Username}'s lobby";
+
+        LobbyExt.SetData(LobbyData.Joinable, LobbyData.Yes);
+        LobbyExt.SetData(LobbyData.GameStarted, LobbyData.No);
+        LobbyExt.SetData(LobbyData.GameStarting, LobbyData.No);
+        LobbyExt.SetData(LobbyData.Mode, string.Empty);
+        LobbyExt.SetData(LobbyData.Difficulty, string.Empty);
+        LobbyExt.SetData(LobbyData.Map, string.Empty);
+        LobbyExt.SetData(LobbyData.Waves, string.Empty);
+        LobbyExt.SetMemberData(LobbyData.Ready, LobbyData.No);
+
+        GameManager.Instance.GameState = GameState.InLobby;
+    }
+
 
     public static void UpdateData(TextMeshProUGUI UIText, string key)
     {

@@ -41,7 +41,7 @@ public class GameData : MonoBehaviour
     {
         if(e == GameState.InLobby)
         {
-            LobbyExtension.SetMemberData(LobbyData.Level, PlayerData.Level.ToString());
+            LobbyExt.SetMemberData(LobbyData.Level, PlayerData.Level.ToString());
         }
     }
 

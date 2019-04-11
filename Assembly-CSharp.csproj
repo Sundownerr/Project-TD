@@ -235,7 +235,7 @@
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\DescriptionUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\ElementUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\EnemyUISystem.cs" />
-     <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\LobbyCreationWindowUISystem.cs" />
+     <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\LobbyDataChanger.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\LobbyListUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\LobbyUISystem.cs" />
      <Compile Include="Assets\Scripts\GamePlaySystems\UI\Systems\MageSelectionUISystem.cs" />

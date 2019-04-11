@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Transport.Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Lean.Localization;
 
 public enum GameState
 {
@@ -79,6 +80,8 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 70;
         QualitySettings.vSyncCount = 0;
         Cursor.lockState = CursorLockMode.Confined;
+
+        GetComponent<LeanLocalizationLoader>().LoadFromSource();
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         Lean.Localization.LeanLocalization.OnLocalizationChanged += OnLocalizationChanged;

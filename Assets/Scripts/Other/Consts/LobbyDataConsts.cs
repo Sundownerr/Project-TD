@@ -14,6 +14,8 @@ public static class LobbyData
     public const string Level = "_7";
     public const string HeroID = "_11";
     public const string Map = "_8";
+    public const string MaxPlayers = "_12";
+    public const string Visibility = "_13";
     public const string Waves = "_9";
     public const string GameStarting = "_10";
 }

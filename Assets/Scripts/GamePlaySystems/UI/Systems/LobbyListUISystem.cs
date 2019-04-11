@@ -14,7 +14,6 @@ public class LobbyListUISystem : UIWindow
 
     public GameObject LobbyButtonPrefab, LobbyInfoTextPrefab, NetworkManagerPrefab, LobbyListGroup, LobbyInfoGroup;
     public LobbyUISystem LobbyUI;
-    public LobbyCreationWindowUISystem LobbyCreationWindow;
     public Button RefreshButton, CreateLobbyButton, JoinLobbyButton;
 
     LobbyList.Lobby selectedLobby;
@@ -22,13 +21,13 @@ public class LobbyListUISystem : UIWindow
 
     void Start()
     {
-        defaultYs = new float[] {transform.GetChild(0).localPosition.y, transform.GetChild(1).localPosition.y};
-       
+        defaultYs = new float[] { transform.GetChild(0).localPosition.y, transform.GetChild(1).localPosition.y };
+
         lobbyButtonsPool = new ObjectPool(LobbyButtonPrefab, LobbyListGroup.transform, 20);
         lobbyInfoTextPool = new ObjectPool(LobbyInfoTextPrefab, LobbyInfoGroup.transform, 10);
 
         RefreshButton.onClick.AddListener(UpdateLobbyList);
-        CreateLobbyButton.onClick.AddListener(() => LobbyCreationWindow.Open());
+        CreateLobbyButton.onClick.AddListener(() => FPClient.Instance.Lobby.Create(Lobby.Type.Public, 2));
         JoinLobbyButton.onClick.AddListener(JoinLobby);
     }
 
@@ -41,14 +40,21 @@ public class LobbyListUISystem : UIWindow
         }
 
         FPClient.Instance.LobbyList.OnLobbiesUpdated = LobbiesUpdated;
-        FPClient.Instance.Lobby.OnLobbyJoined += LobbyJoined;
-        FPClient.Instance.Lobby.OnLobbyCreated += LobbyJoined;
+        FPClient.Instance.Lobby.OnLobbyJoined = LobbyJoined;
+        FPClient.Instance.Lobby.OnLobbyCreated = LobbyCreated;
 
-        GameManager.Instance.GameState = GameState.BrowsingLobbies;
         base.Open(timeToComplete);
     }
 
-  
+    void LobbyCreated(bool isSuccesful)
+    {
+        if (isSuccesful)
+        {
+            LobbyExt.SetLobbyDefaultData();
+            GameManager.Instance.GameState = GameState.InLobby;
+        }
+    }
+
     void LobbyJoined(bool isSuccesful)
     {
         if (isSuccesful)
@@ -57,16 +63,11 @@ public class LobbyListUISystem : UIWindow
             lobbyButtonsPool.DeactivateAll();
 
             selectedLobby = null;
-            LobbyUI.gameObject.SetActive(true);
             GameManager.Instance.GameState = GameState.InLobby;
         }
     }
 
-    void JoinLobby()
-    {
-        if (selectedLobby != null)
-            FPClient.Instance.Lobby.Join(selectedLobby.LobbyID);
-    }
+    void JoinLobby() { if (selectedLobby != null) FPClient.Instance.Lobby.Join(selectedLobby.LobbyID); }
 
     void LobbiesUpdated()
     {

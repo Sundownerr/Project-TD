@@ -67,7 +67,7 @@ public class UIControlSystem : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
-            LobbyExtension.SendChatMessage(ChatInputField);
+            LobbyExt.SendChatMessage(ChatInputField);
     }
 
     void ChatMessageReceived(ulong senderID, string message)

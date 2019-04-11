@@ -10,8 +10,8 @@ public static class LocaleKeys
     public const string VisibilityFriendsOnly = "lobby-visibility-friends-only";
     public const string ModePvp = "lobby-mode-pvp";
     public const string ModeCoop = "lobby-mode-coop";
-    public const string DifficultyEasy = "difficulty-easy";
-    public const string DifficultyNormal = "difficulty-normal";
-    public const string DifficultyHard = "difficulty-hard";
-    public const string DifficultyExtreme = "difficulty-extreme";
+    public const string DifficultyEasy = "dif-easy";
+    public const string DifficultyNormal = "dif-normal";
+    public const string DifficultyHard = "dif-hard";
+    public const string DifficultyExtreme = "dif-extreme";
 }

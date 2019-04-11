@@ -25,7 +25,6 @@ public class UIManager : MonoBehaviour
             menu = value;
             lobbyList = menu.LobbyList;
             lobby = lobbyList.LobbyUI;
-            lobbyCreationWindow = lobbyList.LobbyCreationWindow;
             mageSelection = menu.MageSelection;
             state.ChangeState(new InMainMenu(this));
         }
@@ -35,7 +34,6 @@ public class UIManager : MonoBehaviour
     protected LobbyListUISystem lobbyList;
     protected LobbyUISystem lobby;
     protected MageSelectionUISystem mageSelection;
-    protected LobbyCreationWindowUISystem lobbyCreationWindow;
 
     void Awake()
     {
@@ -65,7 +63,6 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance.GameState == GameState.BrowsingLobbies) return new InBrowsingLobbies(this);
         if (GameManager.Instance.GameState == GameState.InLobby) return new InLobby(this);
         if (GameManager.Instance.GameState == GameState.SelectingMage) return new InMageSelection(this);
-        if (GameManager.Instance.GameState == GameState.CreatingLobby) return new InLobbyCreation(this);
         if (GameManager.Instance.GameState == GameState.InGameMultiplayer) return new InGame(this);
         if (GameManager.Instance.GameState == GameState.InGameSingleplayer) return new InGame(this);
         return null;
@@ -144,26 +141,6 @@ public class UIManager : MonoBehaviour
         }
         public void Execute() { o.state.ChangeState(new InBrowsingLobbies(o)); }
         public void Exit() { if (o.lobby != null) o.lobby.Close(UIWindow.Move.Up); }
-    }
-
-    class InLobbyCreation : IState
-    {
-        public InLobbyCreation(UIManager o) => this.o = o; readonly UIManager o;
-
-        public void Enter()
-        {
-            o.lobbyCreationWindow.Open();
-
-            GameManager.Instance.GameState = GameState.CreatingLobby;
-        }
-        public void Execute() { o.state.ChangeState(new InBrowsingLobbies(o)); }
-        public void Exit()
-        {
-            if (GameManager.Instance.PreviousGameState == GameState.BrowsingLobbies)
-                o.lobbyCreationWindow.Close(UIWindow.Move.Up);
-            else
-                o.lobbyCreationWindow.Close(UIWindow.Move.Down);
-        }
     }
 
     class InGame : IState

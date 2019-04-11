@@ -33,7 +33,7 @@ public class MenuUISystem : UIWindow
         MageSelection.MageSelected += OnMageSelected;
 
         GameManager.Instance.Menu = this;
-        Open();
+        GameManager.Instance.GameState = GameState.MainMenu;
     }
 
     void OnSteamConnectionLost(object _, EventArgs e) => MultiplayerButton.interactable = false;
@@ -46,22 +46,16 @@ public class MenuUISystem : UIWindow
 
     void StartSingleplayer()
     {
-        MageSelection.Open();
+        GameManager.Instance.GameState = GameState.SelectingMage;
     }
 
     void StartMultiplayer()
     {
-        LobbyList.Open();
+        GameManager.Instance.GameState = GameState.BrowsingLobbies;
     }
 
     void OnDestroy()
     {
         MageSelection.MageSelected -= OnMageSelected;
-    }
-
-    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
-    {
-        base.Open(timeToComplete);
-        GameManager.Instance.GameState = GameState.MainMenu;
     }
 }
