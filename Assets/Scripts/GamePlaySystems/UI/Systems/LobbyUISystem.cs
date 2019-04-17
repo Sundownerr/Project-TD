@@ -34,6 +34,13 @@ namespace Game.Systems
             chatTextsPool = new ObjectPool(ChatTextPrefab, ChatTextGroup.transform, 5);
 
             StartServerButton.onClick.AddListener(LobbyExt.StartLobbyServer);
+            UIManager.Instance.MageSelected += OnMageSelected;
+        }
+
+        void OnMageSelected(object sender, MageData e)
+        {
+            LobbyExt.SetMemberData(LobbyData.MageID, e.ID.Serializer().ToString());
+            isChangingMage = false;
         }
 
         void Update()
@@ -53,6 +60,8 @@ namespace Game.Systems
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
         {
+            if (isChangingMage) return;
+
             LobbyExt.SetCallbacks(
                 new LobbyCallbacks(
                     LobbyStateChanged,
@@ -60,8 +69,6 @@ namespace Game.Systems
                     LobbyDataUpdated,
                     ChatMessageReceived
                 ));
-
-            Debug.Log(FPClient.Instance.Lobby.Name);
 
             lobbyDataChanger = new LobbyDataChanger(this);
             LobbyName.text = FPClient.Instance.Lobby.Name;
@@ -96,7 +103,8 @@ namespace Game.Systems
 
         public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-            Debug.Log("close lobby");
+            if (isChangingMage) return;
+
             base.Close(moveTo);
 
             foreach (var playerText in playerTexts.Values) Destroy(playerText.gameObject);
@@ -208,7 +216,8 @@ namespace Game.Systems
                 .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
                 .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
                     $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>");
+                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
+                .SetAvatar(steamID);
 
             if (steamID == FPClient.Instance.SteamId)
             {

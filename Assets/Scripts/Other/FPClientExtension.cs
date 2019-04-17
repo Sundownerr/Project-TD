@@ -7,6 +7,7 @@ using Facepunch.Steamworks;
 using UnityEngine.UI;
 using TMPro;
 using Mirror;
+using Game.Systems;
 
 public struct LobbyCallbacks
 {
@@ -129,9 +130,11 @@ public static class LobbyExt
         LobbyExt.SetData(LobbyData.GameStarting, LobbyData.No);
         LobbyExt.SetData(LobbyData.Mode, string.Empty);
         LobbyExt.SetData(LobbyData.Difficulty, string.Empty);
-        LobbyExt.SetData(LobbyData.Map, string.Empty);
+        LobbyExt.SetData(LobbyData.Map, StringConsts.MultiplayerMap1);
         LobbyExt.SetData(LobbyData.Waves, string.Empty);
+        LobbyExt.SetMemberData(LobbyData.MageID, GameData.Instance.ChoosedMage.ID.Serializer().ToString());
         LobbyExt.SetMemberData(LobbyData.Ready, LobbyData.No);
+        
     }
 
 

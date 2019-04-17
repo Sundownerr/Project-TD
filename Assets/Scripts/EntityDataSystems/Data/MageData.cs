@@ -48,7 +48,7 @@ namespace Game
 
         void Awake()
         {
-            ID.ForEach(x => Debug.Log($"mage id: {x}"));
+            Debug.Log($"mage id: {ID.ToString()}");
         }
 
         public void GenerateDescription()
