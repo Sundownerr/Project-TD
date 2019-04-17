@@ -15,9 +15,9 @@ namespace Game.Systems
         public IEntitySystem Owner { get ; set ; }
         public ID ID { get ; set ; }
 
-        public event EventHandler<double> ConsumedMagicCrystals = delegate { };
-        public event EventHandler<double> ConsumedSpiritVessels = delegate { };
-        public event EventHandler StatsApplied = delegate { };
+        public event EventHandler<double> ConsumedMagicCrystals;
+        public event EventHandler<double> ConsumedSpiritVessels;
+        public event EventHandler StatsApplied;
 
         Item defaultData;
         bool isStatsApplied;

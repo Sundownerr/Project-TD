@@ -6,7 +6,7 @@ namespace Game.Systems
 {
     public class ElementSystem
     {
-        public event EventHandler<int> LearnedElement = delegate { };
+        public event EventHandler<int> LearnedElement;
 
         PlayerSystem owner;
 

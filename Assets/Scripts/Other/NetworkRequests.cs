@@ -65,7 +65,7 @@ public class EnemyCreationRequest
 {
     [SerializeField] public Coordinates3D Position;
     [SerializeField] public ID ID;
-    [SerializeField] public int Race, WaveNumber;
+    [SerializeField] public int Race, WaveNumber, PositionInWave;
     [SerializeField] public ListID AbilityIDs;
     [SerializeField] public ListID TraitIDs;
     [SerializeField] public ListCoordinates3D Waypoints;

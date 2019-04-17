@@ -10,7 +10,7 @@ using TMPro;
 
 public class MageUI : MonoBehaviour
 {
-    public event EventHandler<MageData> Selected = delegate { };
+    public event EventHandler<MageData> Selected;
     public MageData MageData;
 
     Button button;

@@ -12,7 +12,7 @@ namespace Game.Systems
 {
     public class ReferenceHolder : MonoBehaviour
     {
-        public event EventHandler<PlayerSystemData> PlayerDataSet = delegate { };
+        public event EventHandler<PlayerSystemData> PlayerDataSet;
         static ReferenceHolder get;
         public static ReferenceHolder Get
         {

@@ -9,7 +9,7 @@ namespace Game.Systems
 {
     public class AbilitySystem : IEntitySystem
     {
-        public event EventHandler<AbilitySystem> Used = delegate { };
+        public event EventHandler<AbilitySystem> Used;
         public ID ID { get; private set; }
         public IEntitySystem Owner { get; private set; }
         public bool IsStacked { get; private set; }

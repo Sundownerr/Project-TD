@@ -14,9 +14,9 @@ namespace Game.Systems
         public List<GameObject> Entities { get; set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
-        public event EventHandler<IVulnerable> EntityEntered = delegate { };
-        public event EventHandler<IVulnerable> EntityExit = delegate { };
-        public event EventHandler Destroyed = delegate { };
+        public event EventHandler<IVulnerable> EntityEntered;
+        public event EventHandler<IVulnerable> EntityExit;
+        public event EventHandler Destroyed;
 
         Renderer rend;
         Color transparent, notTransparent;

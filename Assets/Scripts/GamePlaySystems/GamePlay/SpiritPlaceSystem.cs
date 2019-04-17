@@ -12,9 +12,9 @@ namespace Game.Systems
 {
     public class SpiritPlaceSystem
     {
-        public event EventHandler<SpiritSystem> SpiritCreated = delegate { };
-        public event EventHandler<SpiritSystem> SpiritPlaced = delegate { };
-        public event EventHandler<SpiritCreationRequest> SpiritCreationRequested = delegate { };
+        public event EventHandler<SpiritSystem> SpiritCreated;
+        public event EventHandler<SpiritSystem> SpiritPlaced;
+        public event EventHandler<SpiritCreationRequest> SpiritCreationRequested;
 
         public PlayerSystem Owner { get; set; }
 

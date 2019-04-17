@@ -12,7 +12,7 @@ using UnityEngine;
 public class HealthSystem
 {
 
-    public event EventHandler<IHealthComponent> ZeroHealth = delegate { };
+    public event EventHandler<IHealthComponent> ZeroHealth;
     public bool IsVulnerable { get; set; }
 
     IHealthComponent owner;

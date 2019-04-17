@@ -20,10 +20,10 @@ namespace Game.Systems
     public class ItemUISystem : DescriptionBlock, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler
     {
         public PlayerSystem Owner { get; set; }
-        public event EventHandler<ItemDragEventArgs> BeingDragged = delegate { };
-        public event EventHandler<ItemDragEventArgs> DragEnd = delegate { };
-        public event EventHandler<ItemUISystem> DoubleClickedInPlayerInventory = delegate { };
-        public event EventHandler<ItemUISystem> DoubleClickedInSpiritInventory = delegate { };
+        public event EventHandler<ItemDragEventArgs> BeingDragged;
+        public event EventHandler<ItemDragEventArgs> DragEnd;
+        public event EventHandler<ItemUISystem> DoubleClickedInPlayerInventory;
+        public event EventHandler<ItemUISystem> DoubleClickedInSpiritInventory;
 
         public int SlotNumber { get; set; }
         public ItemSystem System { get; set; }

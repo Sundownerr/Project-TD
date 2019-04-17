@@ -34,6 +34,7 @@ namespace Game
 
             ownerPlayer.WaveSystem.EnemyCreated += OnEnemyCreated;
             ownerPlayer.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
+          
         }
 
         void OnSpiritPlaced(object _, SpiritSystem e) { ModifyAttributes(e.Data, From.StartingAttribute); e.LeveledUp += OnSpiritLeveledUp; }
@@ -41,9 +42,9 @@ namespace Game
         void OnEnemyCreated(object _, EnemySystem e) => ModifyAttributes(e.Data, From.StartingAttribute);
 
         void ModifyAttributes(EnemyData enemy, From getFrom)
-        {
+        {            
             ModifyNumeralAttributes(enemy, getFrom);
-
+            
             Mage.EnemyAttributes.ForEach(mageAttribute =>
                 enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
         }

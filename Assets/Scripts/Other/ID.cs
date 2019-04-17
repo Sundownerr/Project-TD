@@ -22,6 +22,13 @@ public class ID : List<int>
         return true;
     }
 
+    public override string ToString()
+    {
+        var stringID = string.Empty;
+        this.ForEach(number => stringID += number.ToString());
+        return stringID;
+    }
+
     public ID() {}
     public ID(ID other) => this.AddRange(other);
     

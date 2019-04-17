@@ -13,9 +13,9 @@ namespace Game.Spirit.System
     {
         public int ShotCount { get => shotCount; set => shotCount = value > 0 ? value : 0; }
         public bool isHaveChainTargets;
-        public event EventHandler<BulletSystem> BulletHit = delegate { };
-        public event EventHandler PrepareToShoot = delegate { };
-        public event EventHandler<BulletSystem> Shooting = delegate { };
+        public event EventHandler<BulletSystem> BulletHit;
+        public event EventHandler PrepareToShoot;
+        public event EventHandler<BulletSystem> Shooting;
 
         List<BulletSystem> bullets = new List<BulletSystem>();
         List<GameObject> bulletGOs = new List<GameObject>();

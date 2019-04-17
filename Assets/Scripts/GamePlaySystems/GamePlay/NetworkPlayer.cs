@@ -19,9 +19,9 @@ public class NetworkPlayer : NetworkBehaviour
     public GameObject LocalMap;
     public GameObject UICanvasPrefab;
     public UIControlSystem UiControlSystem { get; private set; }
-    public event EventHandler<SpiritSystem> SpiritCreatingRequestDone = delegate { };
-    public event EventHandler<EnemySystem> EnemyCreatingRequestDone = delegate { };
-    public event EventHandler WavesReceived = delegate { };
+    public event EventHandler<SpiritSystem> SpiritCreatingRequestDone;
+    public event EventHandler<EnemySystem> EnemyCreatingRequestDone;
+    public event EventHandler WavesReceived;
     float delay = 0.07f;
 
 
@@ -162,7 +162,7 @@ public class NetworkPlayer : NetworkBehaviour
 
         WaitAndDo(delay, () =>
         {
-            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber + 1].EnemyTypes.Find(x => x.ID.Compare(request.ID));
+            var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber + 1].EnemyTypes[request.PositionInWave];
             var spawnPos = request.Position.ToVector3();
             var waypoints = request.Waypoints.ToVector3Array();
 

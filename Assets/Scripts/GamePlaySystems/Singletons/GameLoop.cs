@@ -6,7 +6,7 @@ using System;
 
 public class GameLoop : MonoBehaviour
 {
-    public event EventHandler<PlayerSystem> PlayerCreated = delegate { };
+    public event EventHandler<PlayerSystem> PlayerCreated;
 
     static GameLoop instance;
     public static GameLoop Instance

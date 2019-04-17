@@ -10,7 +10,7 @@ namespace Game.Systems
 {
     public class SpiritCreatingSystem
     {
-        public event EventHandler AddedNewAvailableSpirit = delegate { };
+        public event EventHandler AddedNewAvailableSpirit;
 
         public PlayerSystem Owner { get; set; }
 

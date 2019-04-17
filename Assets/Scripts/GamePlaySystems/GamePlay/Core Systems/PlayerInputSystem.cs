@@ -19,15 +19,15 @@ namespace Game.Systems
         public GameObject Selection;
         public EventSystem EventSystem;
 
-        public event EventHandler MouseOnSpirit = delegate { };
-        public event EventHandler PlacingSpirit = delegate { };
-        public event EventHandler<SpiritSystem> SpiritSold = delegate { };
-        public event EventHandler<SpiritSystem> SpiritUpgraded = delegate { };
-        public event EventHandler<GameObject> ClickedOnCell = delegate { };
-        public event EventHandler<GameObject> ClickedOnSpirit = delegate { };
-        public event EventHandler<GameObject> ClickedOnEnemy = delegate { };
-        public event EventHandler ClikedOnGround = delegate { };
-        public event EventHandler RMBPresed = delegate { };
+        public event EventHandler MouseOnSpirit;
+        public event EventHandler PlacingSpirit;
+        public event EventHandler<SpiritSystem> SpiritSold;
+        public event EventHandler<SpiritSystem> SpiritUpgraded;
+        public event EventHandler<GameObject> ClickedOnCell;
+        public event EventHandler<GameObject> ClickedOnSpirit;
+        public event EventHandler<GameObject> ClickedOnEnemy;
+        public event EventHandler ClikedOnGround;
+        public event EventHandler RMBPresed;
 
         EnemySystem choosedEnemy;
         GameObject selection;

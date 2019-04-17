@@ -14,8 +14,8 @@ namespace Game.Systems
         public ElementType Element => SpiritData.Base.Element;
         public SpiritData SpiritData { get; set; }
         public TextMeshProUGUI SpiritCountText { get; set; }
-        public event EventHandler<SpiritData> PlaceNewSpirit = delegate { };
-        public event EventHandler<SpiritButtonSystem> AllThisSpiritsPlaced = delegate { };
+        public event EventHandler<SpiritData> PlaceNewSpirit;
+        public event EventHandler<SpiritButtonSystem> AllThisSpiritsPlaced;
 
         protected override void Awake()
         {

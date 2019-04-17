@@ -14,7 +14,7 @@ namespace Game.Systems
     public class EnemyControlSystem
     {
         public List<EnemySystem> Enemies { get; private set; } = new List<EnemySystem>();
-        public event EventHandler<EnemySystem> EnemyDied = delegate { };
+        public event EventHandler<EnemySystem> EnemyDied;
 
         PlayerSystem Owner;
 

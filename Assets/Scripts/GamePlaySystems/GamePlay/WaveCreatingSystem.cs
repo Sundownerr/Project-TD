@@ -53,12 +53,15 @@ namespace Game.Systems
         {
             var newData = U.Instantiate(choosedData);
             newData.ID = new ID(choosedData.ID);
-
+           
             CalculateStats();
+
 
             newData.Traits = traits;
             newData.Abilities = newData.IsBossOrCommander() ? abilities : new List<Ability>();
             newData.ArmorType = armor;
+
+            
 
             return newData;
 
@@ -138,6 +141,7 @@ namespace Game.Systems
 
         static Wave CreateWave(WaveEnemyID waveIDs, int waveNumber)
         {
+
             var wave = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetTraitsByID();
             var waveAbilities = GetAbilitiesByID();
@@ -148,7 +152,7 @@ namespace Game.Systems
             {
                 var raceID = waveIDs.IDs[i][0];
                 var enemyID = waveIDs.IDs[i][1];
-                var enemyFromDB = ReferenceHolder.Get.EnemyDataBase.Races[raceID].Enemies[enemyID];
+                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDataBase.Races[raceID].Enemies[enemyID]);
 
                 wave.EnemyTypes.Add(
                     CreateNewEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));

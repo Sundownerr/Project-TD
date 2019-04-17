@@ -10,7 +10,7 @@ namespace Game.Systems
 {
     public class ResourceSystem
     {
-        public event EventHandler ResourcesChanged = delegate { };
+        public event EventHandler ResourcesChanged;
 
         PlayerSystem Owner;
 

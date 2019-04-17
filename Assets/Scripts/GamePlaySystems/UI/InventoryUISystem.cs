@@ -11,10 +11,10 @@ namespace Game.Systems
     public class InventoryUISystem : MonoBehaviour
     {
         public PlayerSystem Owner { get; set; }
-        public event EventHandler<ItemUISystem> MoveItemToSpirit = delegate { };
-        public event EventHandler<ItemUISystem> ItemAddedToPlayer = delegate { };
-        public event EventHandler<ItemUISystem> ItemRemovedFromPlayer = delegate { };
-        public event EventHandler<ConsumableEventArgs> ApplyConsumable = delegate { };
+        public event EventHandler<ItemUISystem> MoveItemToSpirit;
+        public event EventHandler<ItemUISystem> ItemAddedToPlayer;
+        public event EventHandler<ItemUISystem> ItemRemovedFromPlayer;
+        public event EventHandler<ConsumableEventArgs> ApplyConsumable;
         public Button InventoryButton;
         public GameObject BGPanel;
         public List<GameObject> Slots;

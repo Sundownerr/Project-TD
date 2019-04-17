@@ -10,7 +10,7 @@ using TMPro;
 public class UIControlSystem : MonoBehaviour
 {
     public TMP_InputField ChatInputField;
-    public event EventHandler IncreaseLevelButtonClicked = delegate { };
+    public event EventHandler IncreaseLevelButtonClicked;
     public GameObject TextPrefab, ChatTextPrefab, ChatTextGroup;
     public Button IncreaseLevelButton, QuitButton;
 

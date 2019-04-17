@@ -12,10 +12,9 @@ namespace Game.Enemy
 {
     public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanApplyEffects
     {
-        public event EventHandler<EnemySystem> LastWaypointReached = delegate { };
-        public event EventHandler<Effect> EffectApplied = delegate { };
-        public event EventHandler<Effect> EffectRemoved = delegate { };
-        public event EventHandler<IHealthComponent> Died = delegate { };
+        public event EventHandler<EnemySystem> LastWaypointReached;
+        public event EventHandler<Effect> EffectApplied, EffectRemoved;
+        public event EventHandler<IHealthComponent> Died;
 
         public EnemyData Data { get; set; }
         public int WaypointIndex { get; set; }

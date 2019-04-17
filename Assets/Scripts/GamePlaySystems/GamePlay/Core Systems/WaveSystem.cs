@@ -14,45 +14,41 @@ namespace Game.Systems
 
     public class WaveSystem
     {
+        public event EventHandler WaveEnded, WaveStarted, AllWaveEnemiesKilled;
+        public event EventHandler<EnemySystem> EnemyCreated;
+        public event EventHandler<EnemyCreationRequest> EnemyCreationRequested;
         public int WaveNumber { get; set; }
         public PlayerSystem Owner { get; private set; }
-        public Queue<Wave> Waves { get; private set; }  = new Queue<Wave>();
+        public Queue<Wave> Waves { get; private set; } = new Queue<Wave>();
         public List<Wave> ListWaves { get; private set; }
         public Vector3[] GroundWaypoints { get; private set; }
         public Vector3[] FlyingWaypoints { get; private set; }
-        public event EventHandler WaveEnded = delegate { };
-        public event EventHandler WaveStarted = delegate { };
-        public event EventHandler AllWaveEnemiesKilled = delegate { };
-        public event EventHandler<EnemySystem> EnemyCreated = delegate { };
-        public event EventHandler<EnemyCreationRequest> EnemyCreationRequested = delegate { };
-        public event EventHandler WavesGenerated = delegate { };
 
-        List<List<EnemySystem>> wavesEnemySystem  = new List<List<EnemySystem>>();
+        List<List<EnemySystem>> wavesEnemySystem = new List<List<EnemySystem>>();
         List<int> currentEnemyCount = new List<int>();
         WaitForSeconds spawnDelay = new WaitForSeconds(0.2f);
         int spawned;
         Coroutine spawnCoroutine;
 
         public WaveSystem(PlayerSystem player) => Owner = player;
-        
+
         public void SetSystem()
         {
             SetWaypoints();
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
-            if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
+            if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
+                Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
+            else
             {
                 Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
             }
-            else
-                Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
 
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
-            
-            //   WavesGenerated?.Invoke(null, null);
+
 
             #region  Helper functions
 
@@ -61,13 +57,13 @@ namespace Game.Systems
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
                 EnemyCreated?.Invoke(_, e);
 
-                if (spawned == Waves.Peek().EnemyTypes.Count - 1)
+                if (spawned == Waves.Peek().EnemyTypes.Count)
                     if (WaveNumber <= Owner.WaveAmount)
                     {
-                        if(spawnCoroutine != null)
+                        if (spawnCoroutine != null)
                             ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
                         SetNextWave();
-                    }     
+                    }
             }
 
             void SetWaypoints()
@@ -172,6 +168,7 @@ namespace Game.Systems
                             Race = (int)enemy.Race,
                             WaveNumber = WaveNumber,
                             Position = position,
+                            PositionInWave = spawned,
                             AbilityIDs = enemy.Abilities.GetIDs(),
                             TraitIDs = enemy.Traits.GetIDs(),
                             Waypoints = new ListCoordinates3D(waypoints)

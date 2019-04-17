@@ -16,7 +16,7 @@ namespace Game.Systems
         public PlayerSystem Owner { get; private set; }
         public Button StartWaveButton;
         public TextMeshProUGUI EnemyTypes, Race, Armor, Traits, WaveNumber;
-        public event EventHandler WaveStarted = delegate { };
+        public event EventHandler WaveStarted;
 
         Animator animator;
         StringBuilder enemyTypes = new StringBuilder();
@@ -35,11 +35,10 @@ namespace Game.Systems
             Owner = player;
             Owner.WaveSystem.WaveEnded += OnWaveEnded;
             Owner.WaveSystem.WaveStarted += OnWaveStarted;
-            Owner.WaveSystem.WavesGenerated += OnWavesGenerated;
+
             ActivateUI(true);
         }
 
-        void OnWavesGenerated(object _, EventArgs e) { ActivateUI(true); Debug.Log("generated"); }
         void OnWaveStarted(object _, EventArgs e) => ActivateUI(false);
         void OnWaveEnded(object _, EventArgs e) => ActivateUI(true);
 

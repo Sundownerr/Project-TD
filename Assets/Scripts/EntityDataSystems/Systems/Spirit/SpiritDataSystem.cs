@@ -14,8 +14,8 @@ namespace Game.Spirit.System
     {
         public SpiritData CurrentData { get; set; }
         public SpiritData BaseData { get; set; }
-        public event EventHandler StatsChanged = delegate { };
-        public event EventHandler<SpiritSystem> LeveledUp = delegate { };
+        public event EventHandler StatsChanged;
+        public event EventHandler<SpiritSystem> LeveledUp;
 
         SpiritSystem ownerSpirit;
         List<Consumable> appliedConsumables = new List<Consumable>();

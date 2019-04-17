@@ -87,7 +87,7 @@ public static class Ext
         var emptyList = new List<NumeralAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
-            emptyList.Add(new NumeralAttribute() { Type = (Numeral)enums.GetValue(i) });
+            emptyList.Add(new NumeralAttribute() { Type = (Numeral)enums.GetValue(i), Value = 0, ValuePerLevel = 0, AppliedValue = 0 });
         return emptyList;
     }
 
@@ -97,7 +97,7 @@ public static class Ext
         var emptyList = new List<EnemyAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
-            emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i) });
+            emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i), Value = 0, AppliedValue = 0});
         return emptyList;
     }
 
@@ -107,7 +107,7 @@ public static class Ext
         var emptyList = new List<SpiritAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
-            emptyList.Add(new SpiritAttribute() { Type = (Spirit)enums.GetValue(i) });
+            emptyList.Add(new SpiritAttribute() { Type = (Spirit)enums.GetValue(i), Value = 0, ValuePerLevel = 0, AppliedValue = 0 });
         return emptyList;
     }
 

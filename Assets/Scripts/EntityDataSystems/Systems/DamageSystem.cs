@@ -9,7 +9,7 @@ namespace Game.Systems
 {
     public static class DamageSystem
     {
-        public static event EventHandler<DamageEventArgs> DamageDealt = delegate { };
+        public static event EventHandler<DamageEventArgs> DamageDealt;
 
         public static void DealDamage(this IDamageDealer damageDealer, IHealthComponent target, double damage)
         {

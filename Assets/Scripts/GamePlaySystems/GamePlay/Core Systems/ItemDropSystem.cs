@@ -10,8 +10,8 @@ namespace Game.Systems
 {
     public class ItemDropSystem
     {
-        public event EventHandler<ItemSystem> ItemCreated = delegate { };
-        public event EventHandler<ItemUISystem> ItemUICreated = delegate { };
+        public event EventHandler<ItemSystem> ItemCreated;
+        public event EventHandler<ItemUISystem> ItemUICreated;
 
         public PlayerSystem Owner { get; set; }
 

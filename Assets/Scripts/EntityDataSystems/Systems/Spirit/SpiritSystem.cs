@@ -14,11 +14,11 @@ namespace Game.Spirit
 {
     public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanApplyEffects, IDisposable
     {
-        public event EventHandler<Effect> EffectApplied = delegate { };
-        public event EventHandler<Effect> EffectRemoved = delegate { };
-        public event EventHandler<IHealthComponent> Died = delegate { };
-        public event EventHandler<SpiritSystem> LeveledUp = delegate { };
-        public event EventHandler StatsChanged = delegate { };
+        public event EventHandler<Effect> EffectApplied;
+        public event EventHandler<Effect> EffectRemoved;
+        public event EventHandler<IHealthComponent> Died;
+        public event EventHandler<SpiritSystem> LeveledUp;
+        public event EventHandler StatsChanged;
 
         public Transform RangeTransform { get; private set; }
         public Transform MovingPart { get; private set; }

@@ -29,8 +29,6 @@ namespace Game.Enemy
         public GameObject Prefab { get => prefab; set => prefab = value; }
         public List<Trait> Traits { get; set; }
         public List<Ability> Abilities { get; set; }
-        public List<NumeralAttribute> BaseAttributes { get; set; }
-        public List<NumeralAttribute> AppliedAttributes { get; set; }
         public ArmorType ArmorType { get; set; }
 
         public List<NumeralAttribute> NumeralAttributes { get; private set; }

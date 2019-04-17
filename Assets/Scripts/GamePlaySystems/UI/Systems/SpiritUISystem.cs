@@ -20,11 +20,11 @@ namespace Game.Systems
         public List<SlotWithCooldown> ItemSlots, AbilitySlots, TraitSlots;
 
         public List<ItemUISystem> AllItemsUIInSpirits = new List<ItemUISystem>();
-        public event EventHandler Selling = delegate { };
-        public event EventHandler Upgrading = delegate { };
-        public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit = delegate { };
-        public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit = delegate { };
-        public event EventHandler<ItemUISystem> MoveItemToPlayer = delegate { };
+        public event EventHandler Selling;
+        public event EventHandler Upgrading;
+        public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit;
+        public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit;
+        public event EventHandler<ItemUISystem> MoveItemToPlayer;
         List<NumeralStatValueUI> numeralStatValues;
         List<SpiritStatValueUI> spiritStatValues;
 
