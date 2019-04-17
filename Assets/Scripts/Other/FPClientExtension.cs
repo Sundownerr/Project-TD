@@ -132,8 +132,6 @@ public static class LobbyExt
         LobbyExt.SetData(LobbyData.Map, string.Empty);
         LobbyExt.SetData(LobbyData.Waves, string.Empty);
         LobbyExt.SetMemberData(LobbyData.Ready, LobbyData.No);
-
-        GameManager.Instance.GameState = GameState.InLobby;
     }
 
 
@@ -149,4 +147,57 @@ public static class LobbyExt
 
         UIText.text = value;
     }
+
+    public static LobbyPlayerUI SetName(this LobbyPlayerUI player, string name)
+    {
+        player.PlayerNameText.text = name;
+        return player;
+    }
+
+    public static LobbyPlayerUI SetLevel(this LobbyPlayerUI player, string level)
+    {
+        player.LevelText.text = level;
+        return player;
+    }
+
+    public static LobbyPlayerUI SetReady(this LobbyPlayerUI player, string ready)
+    {
+        player.ReadyText.text = ready;
+        return player;
+    }
+
+    public static LobbyPlayerUI SetMage(this LobbyPlayerUI player, string mageName)
+    {
+        player.MageNameText.text = mageName;
+        return player;
+    }
+
+    public static LobbyPlayerUI SetAvatar(this LobbyPlayerUI player, ulong steamID)
+    {
+        FPClient.Instance.Friends.GetAvatar(Friends.AvatarSize.Medium, steamID, LoadAvatar);
+
+        void LoadAvatar(Facepunch.Steamworks.Image image)
+        {
+            if (image == null)
+                return;
+
+            var texture = new Texture2D(image.Width, image.Height);
+
+            for (int x = 0; x < image.Width; x++)
+                for (int y = 0; y < image.Height; y++)
+                {
+                    var pixel = image.GetPixel(x, y);
+
+                    texture.SetPixel(
+                        x, 
+                        image.Height - y,
+                        new UnityEngine.Color(pixel.r / 255.0f, pixel.g / 255.0f, pixel.b / 255.0f, pixel.a / 255.0f));
+                }
+
+            texture.Apply();
+            player.Avatar.texture = texture;
+        }
+        return player;
+    }
 }
+

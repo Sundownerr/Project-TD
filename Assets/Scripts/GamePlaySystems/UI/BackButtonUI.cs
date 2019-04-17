@@ -6,32 +6,38 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class BackButtonUI : MonoBehaviour
+namespace Game.Systems
 {
-    public GameObject ThisWindow, PreviousWindow;
-    public string PreviousSceneName;
 
-    public event EventHandler Clicked;
 
-    static BackButtonUI instance;
-    public static BackButtonUI Instance
+    public class BackButtonUI : MonoBehaviour
     {
-        get => instance;
-        private set
+        public GameObject ThisWindow, PreviousWindow;
+        public string PreviousSceneName;
+
+        public event EventHandler Clicked;
+
+        static BackButtonUI instance;
+        public static BackButtonUI Instance
         {
-            if (instance == null) instance = value;
+            get => instance;
+            private set
+            {
+                if (instance == null) instance = value;
+            }
         }
-    }
 
-    static TextMeshProUGUI buttonText;
+        static TextMeshProUGUI buttonText;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(this);
-        Instance = this;
-        buttonText = GetComponentInChildren<TextMeshProUGUI>();
-        buttonText.text = "Back";
+        void Awake()
+        {
+            DontDestroyOnLoad(this);
+            Instance = this;
+            buttonText = GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.text = "Back";
 
-        GetComponentInChildren<Button>().onClick.AddListener(() => { Clicked?.Invoke(null, null); });
+            GetComponentInChildren<Button>().onClick.AddListener(() => { Clicked?.Invoke(null, null); });
+            UIManager.Instance.BackButton = this;
+        }
     }
 }

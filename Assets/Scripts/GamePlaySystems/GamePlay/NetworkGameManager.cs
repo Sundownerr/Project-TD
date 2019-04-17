@@ -46,10 +46,9 @@ public class NetworkGameManager : NetworkBehaviour
         //waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves) ?? "100");
 
         waveAmount = 100;
-       
-            AddMapComponentsOnServer();
-            GenerateWaves();
-        
+
+        AddMapComponentsOnServer();
+        GenerateWaves();
 
         #region Helper functions
 

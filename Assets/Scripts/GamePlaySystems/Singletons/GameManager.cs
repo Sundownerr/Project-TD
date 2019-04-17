@@ -24,8 +24,8 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    public bool UseLocalTransport;
     public event EventHandler<GameState> StateChanged;
+    public event EventHandler SteamLostConnection, SteamConnected;
     public GameObject[] Managers;
 
     MenuUISystem menu;
@@ -71,9 +71,10 @@ public class GameManager : MonoBehaviour
 
     bool managersInstanced;
 
-
     void Awake()
     {
+        if (GameManager.Instance != null) { Destroy(gameObject); return; }
+
         DontDestroyOnLoad(gameObject);
         Instance = this;
 
@@ -86,6 +87,23 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         Lean.Localization.LeanLocalization.OnLocalizationChanged += OnLocalizationChanged;
     }
+
+    void Start()
+    {
+        Steam.Instance.ConnectionLost += OnSteamLostConnection;
+        Steam.Instance.Connected += OnSteamConnected;
+        UIManager.Instance.ReturnToMenu += OnReturnToMenu;
+        UIManager.Instance.GameStarted += OnGameStarted;
+
+    }
+
+    void OnGameStarted(object sender, EventArgs e)
+    {
+        GameState = GameState.LoadingGame;
+        SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);
+    }
+
+    void OnSteamConnected(object sender, EventArgs e) => SteamConnected?.Invoke(null, null);
 
     void OnLocalizationChanged()
     {
@@ -120,14 +138,8 @@ public class GameManager : MonoBehaviour
         void RefreshReferences()
         {
             Menu = GameObject.FindGameObjectWithTag(StringConsts.MenuUITag).GetComponent<MenuUISystem>();
-            Menu.MageSelected += OnMageSelected;
-        }
-    }
 
-    void Start()
-    {
-        Steam.Instance.ConnectionLost += OnLostConnectionToSteam;
-        UIManager.Instance.ReturnToMenu += OnReturnToMenu;
+        }
     }
 
     void OnReturnToMenu(object _, EventArgs e)
@@ -136,19 +148,15 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadSceneAsync(StringConsts.MainMenu);
     }
 
-    void OnMageSelected(object _, MageData e)
-    {
-        GameState = GameState.LoadingGame;
-        SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);  
-    }
-
-    void OnLostConnectionToSteam(object _, EventArgs e)
+    void OnSteamLostConnection(object _, EventArgs e)
     {
         var isUsingSteam =
             GameState == GameState.InGameMultiplayer ||
             GameState == GameState.InLobby ||
             GameState == GameState.BrowsingLobbies ||
             GameState == GameState.CreatingLobby;
+
+        SteamLostConnection?.Invoke(null, null);
 
         if (isUsingSteam)
             GoToMainMenu();

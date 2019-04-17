@@ -12,7 +12,7 @@ namespace Game.Systems
 {
     public class ReferenceHolder : MonoBehaviour
     {
-        public event EventHandler<PlayerData> PlayerDataSet = delegate { };
+        public event EventHandler<PlayerSystemData> PlayerDataSet = delegate { };
         static ReferenceHolder get;
         public static ReferenceHolder Get
         {
@@ -152,7 +152,7 @@ namespace Game.Systems
 
             DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
-            PlayerData playerData;
+            PlayerSystemData playerData;
             playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
                 GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class NumberConsts 
 {
-    public const float UIAnimSpeed = 0.5f;
+    public const float UIAnimSpeed = 0.3f;
 }

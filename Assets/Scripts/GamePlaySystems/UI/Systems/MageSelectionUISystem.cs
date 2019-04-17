@@ -22,26 +22,29 @@ public class MageSelectionUISystem : UIWindow
     {
         defaultYs = new float[] { transform.GetChild(0).localPosition.y };
         mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
-        mageUIs.ForEach(mageUI =>  mageUI.Selected += OnMageSelected);
+        mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
         SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(null, selectedMage));
-        SelectMageButton.interactable = false;
+    }
+
+    void Start()
+    {
+        UpdateMageInfo(mageUIs[0].MageData);
     }
 
     void OnMageSelected(object _, MageData e)
     {
-        selectedMage = e;
-        SelectMageButton.interactable = true;
-        UpdateMageInfo();
+        UpdateMageInfo(e);
+    }
 
-        void UpdateMageInfo()
-        {
-            MageImage.sprite = e.Image;
-            MageImage.color += new Color(0, 0, 0, 1);
-            MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = e.Name;
-            MageBaseDescription.text = e.Description;
-            MageAdvancedDescription.text = e.AdvancedDescription;
-        }
+    void UpdateMageInfo(MageData mage)
+    {
+        selectedMage = mage;
+        MageImage.sprite = mage.Image;
+        MageImage.color += new Color(0, 0, 0, 1);
+        MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mage.Name;
+        MageBaseDescription.text = mage.Description;
+        MageAdvancedDescription.text = mage.AdvancedDescription;
     }
 
     void OnDestroy()
@@ -52,10 +55,7 @@ public class MageSelectionUISystem : UIWindow
 
     public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
     {
-
         mageUIs.ForEach(mageUI => mageUI.MageData.GenerateDescription());
-       
-        GameManager.Instance.GameState = GameState.SelectingMage;
         base.Open(timeToComplete);
     }
 }

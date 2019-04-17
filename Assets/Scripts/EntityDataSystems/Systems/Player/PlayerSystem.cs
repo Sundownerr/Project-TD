@@ -12,7 +12,7 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
-    public struct PlayerData
+    public struct PlayerSystemData
     {
         public PlayerMap Map;
         public MageData Mage;

@@ -32,4 +32,6 @@ playerData.json
 *.png
 *.csproj
 *.asmdef
-Assets/Demigiant/DOTween/DOTween.XML
+*.XML
+*.jslib
+*.pubxml

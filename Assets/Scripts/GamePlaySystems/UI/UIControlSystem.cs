@@ -22,7 +22,8 @@ public class UIControlSystem : MonoBehaviour
 
     void Awake()
     {
-        FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
+        if (FPClient.Instance != null)
+            FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
         IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(null, null));
         QuitButton.onClick.AddListener(QuitGame);
     }

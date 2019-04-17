@@ -41,7 +41,7 @@ public class GameLoop : MonoBehaviour
             player = null;
     }
 
-    void OnPlayerDataSet(object _, Game.Systems.PlayerData e)
+    void OnPlayerDataSet(object _, PlayerSystemData e)
     {
         player = new PlayerSystem(e.Map, e.Mage);
         PlayerCreated?.Invoke(null, player);

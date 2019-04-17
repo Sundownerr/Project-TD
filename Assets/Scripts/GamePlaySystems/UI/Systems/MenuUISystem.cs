@@ -6,56 +6,44 @@ using System;
 using Game;
 using DG.Tweening;
 
-public class MenuUISystem : UIWindow
+namespace Game.Systems
 {
-    public event EventHandler<MageData> MageSelected;
-
-    public LobbyListUISystem LobbyList;
-    public GameObject GameStateManagerPrefab;
-    public MageSelectionUISystem MageSelection;
-    public Button SingleplayerButton, MultiplayerButton;
-
-    void Awake()
+    public class MenuUISystem : UIWindow
     {
-        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
+        public event EventHandler Active, StartSingleplayer, StartMultiplayer;
 
-        if (GameManager.Instance == null)
-            Instantiate(GameStateManagerPrefab);
-    }
+        public LobbyListUISystem LobbyList;
+        public MageSelectionUISystem MageSelection;
+        public Button SingleplayerButton, MultiplayerButton;
 
-    void Start()
-    {
-        SingleplayerButton.onClick.AddListener(StartSingleplayer);
-        MultiplayerButton.onClick.AddListener(StartMultiplayer);
+        void Awake()
+        {
+            defaultYs = new float[] { transform.GetChild(0).localPosition.y };
+        }
 
-        Steam.Instance.Connected += OnSteamConnected;
-        Steam.Instance.ConnectionLost += OnSteamConnectionLost;
-        MageSelection.MageSelected += OnMageSelected;
+        void Start()
+        {
+            SingleplayerButton.onClick.AddListener(() => StartSingleplayer?.Invoke(null, null));
+            MultiplayerButton.onClick.AddListener(() => StartMultiplayer?.Invoke(null, null));
 
-        GameManager.Instance.Menu = this;
-        GameManager.Instance.GameState = GameState.MainMenu;
-    }
+            GameManager.Instance.SteamConnected += OnSteamConnected;
+            GameManager.Instance.SteamLostConnection += OnSteamLostConnection;
+            GameManager.Instance.Menu = this;  
+        }
 
-    void OnSteamConnectionLost(object _, EventArgs e) => MultiplayerButton.interactable = false;
-    void OnSteamConnected(object _, EventArgs e) => MultiplayerButton.interactable = true;
+        public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
+        {
+            Active?.Invoke(null, null);
+            base.Open();
+        }
 
-    void OnMageSelected(object _, MageData e)
-    {
-        MageSelected?.Invoke(null, e);
-    }
+        void OnSteamLostConnection(object _, EventArgs e) => MultiplayerButton.interactable = false;
+        void OnSteamConnected(object _, EventArgs e) => MultiplayerButton.interactable = true;
 
-    void StartSingleplayer()
-    {
-        GameManager.Instance.GameState = GameState.SelectingMage;
-    }
-
-    void StartMultiplayer()
-    {
-        GameManager.Instance.GameState = GameState.BrowsingLobbies;
-    }
-
-    void OnDestroy()
-    {
-        MageSelection.MageSelected -= OnMageSelected;
+        void OnDestroy()
+        {
+            SingleplayerButton.onClick.RemoveAllListeners();
+            MultiplayerButton.onClick.RemoveAllListeners();
+        }
     }
 }

@@ -9,121 +9,124 @@ using TMPro;
 using Game;
 using DG.Tweening;
 
-public class LobbyDataChanger
+namespace Game.Systems
 {
-    TextMeshProUGUI maxPlayersText;
-    Slider playersSlider;
-    TMP_Dropdown modeDropdown, visibilityDropdown, difficultyDropdown, mapDropdown, wavesDropdown;
-    TMP_InputField LobbyName;
-
-    public LobbyDataChanger(LobbyUISystem lobbyUISystem)
+    public class LobbyDataChanger
     {
-        maxPlayersText = lobbyUISystem.MaxPlayersText;
-        playersSlider = lobbyUISystem.PlayersSlider;
-        modeDropdown = lobbyUISystem.ModeDropdown;
-        difficultyDropdown = lobbyUISystem.DifficultyDropdown;
-        mapDropdown = lobbyUISystem.MapDropdown;
-        wavesDropdown = lobbyUISystem.WavesDropdown;
-        visibilityDropdown = lobbyUISystem.VisibilityDropdown;
+        TextMeshProUGUI maxPlayersText;
+        Slider playersSlider;
+        TMP_Dropdown modeDropdown, visibilityDropdown, difficultyDropdown, mapDropdown, wavesDropdown;
+        TMP_InputField LobbyName;
 
-        if (FPClient.Instance.Lobby.IsOwner)
+        public LobbyDataChanger(LobbyUISystem lobbyUISystem)
         {
-            ActivateDropdowns(true);
-            modeDropdown.onValueChanged.AddListener(ModeChanged);
-            visibilityDropdown.onValueChanged.AddListener(VisibilityChanged);
-            difficultyDropdown.onValueChanged.AddListener(DifficultyChanged);
-            mapDropdown.onValueChanged.AddListener(MapChanged);
-            wavesDropdown.onValueChanged.AddListener(WavesChanged);
+            maxPlayersText = lobbyUISystem.MaxPlayersText;
+            playersSlider = lobbyUISystem.PlayersSlider;
+            modeDropdown = lobbyUISystem.ModeDropdown;
+            difficultyDropdown = lobbyUISystem.DifficultyDropdown;
+            mapDropdown = lobbyUISystem.MapDropdown;
+            wavesDropdown = lobbyUISystem.WavesDropdown;
+            visibilityDropdown = lobbyUISystem.VisibilityDropdown;
 
-            playersSlider.onValueChanged.AddListener((maxPlayers) =>
+            if (FPClient.Instance.Lobby.IsOwner)
             {
-                maxPlayersText.text = maxPlayers.ToString();
-                FPClient.Instance.Lobby.MaxMembers = (int)maxPlayers;
-                LobbyExt.SetData(LobbyData.MaxPlayers, ((int)maxPlayers).ToString());
-            });
+                ActivateDropdowns(true);
+                modeDropdown.onValueChanged.AddListener(ModeChanged);
+                visibilityDropdown.onValueChanged.AddListener(VisibilityChanged);
+                difficultyDropdown.onValueChanged.AddListener(DifficultyChanged);
+                mapDropdown.onValueChanged.AddListener(MapChanged);
+                wavesDropdown.onValueChanged.AddListener(WavesChanged);
 
-            playersSlider.minValue = 2;
-            playersSlider.maxValue = 2;
-            playersSlider.value = playersSlider.value > 2 ? 2 : playersSlider.value;
-        }
-        else        
-            ActivateDropdowns(false);
+                playersSlider.onValueChanged.AddListener((maxPlayers) =>
+                {
+                    maxPlayersText.text = maxPlayers.ToString();
+                    FPClient.Instance.Lobby.MaxMembers = (int)maxPlayers;
+                    LobbyExt.SetData(LobbyData.MaxPlayers, ((int)maxPlayers).ToString());
+                });
 
-        LocalizeDropdownItems();
+                playersSlider.minValue = 2;
+                playersSlider.maxValue = 2;
+                playersSlider.value = playersSlider.value > 2 ? 2 : playersSlider.value;
+            }
+            else
+                ActivateDropdowns(false);
 
-        #region Helper functions
+            LocalizeDropdownItems();
 
-        void ModeChanged(int option)
-        {
-            playersSlider.maxValue = option == 0 ? 2 : 8;
-            playersSlider.value = playersSlider.value > playersSlider.maxValue ? playersSlider.maxValue : playersSlider.value;
+            #region Helper functions
 
-            LobbyExt.SetData(LobbyData.Mode, option.ToString());
-        }
+            void ModeChanged(int option)
+            {
+                playersSlider.maxValue = option == 0 ? 2 : 8;
+                playersSlider.value = playersSlider.value > playersSlider.maxValue ? playersSlider.maxValue : playersSlider.value;
 
-        void VisibilityChanged(int option)
-        {
-            FPClient.Instance.Lobby.LobbyType = option == 0 ? Lobby.Type.Public : Lobby.Type.FriendsOnly;
-            LobbyExt.SetData(LobbyData.Visibility, option.ToString());
-        }
+                LobbyExt.SetData(LobbyData.Mode, option.ToString());
+            }
 
-        void DifficultyChanged(int option)
-        {
-            LobbyExt.SetData(LobbyData.Difficulty, option.ToString());
-        }
+            void VisibilityChanged(int option)
+            {
+                FPClient.Instance.Lobby.LobbyType = option == 0 ? Lobby.Type.Public : Lobby.Type.FriendsOnly;
+                LobbyExt.SetData(LobbyData.Visibility, option.ToString());
+            }
 
-        void MapChanged(int option)
-        {
-            LobbyExt.SetData(LobbyData.Map, option.ToString());
-        }
+            void DifficultyChanged(int option)
+            {
+                LobbyExt.SetData(LobbyData.Difficulty, option.ToString());
+            }
 
-        void WavesChanged(int option)
-        {
-            LobbyExt.SetData(LobbyData.Waves, option.ToString());
-        }
+            void MapChanged(int option)
+            {
+                LobbyExt.SetData(LobbyData.Map, option.ToString());
+            }
 
-        void ActivateDropdowns(bool activate)
-        {
-            modeDropdown.interactable = activate;
-            visibilityDropdown.interactable = activate;
-            difficultyDropdown.interactable = activate;
-            mapDropdown.interactable = activate;
-            wavesDropdown.interactable = activate;
-        }
+            void WavesChanged(int option)
+            {
+                LobbyExt.SetData(LobbyData.Waves, option.ToString());
+            }
 
-        void LocalizeDropdownItems()
-        {
-            visibilityDropdown.AddOptions(new List<string>()
+            void ActivateDropdowns(bool activate)
+            {
+                modeDropdown.interactable = activate;
+                visibilityDropdown.interactable = activate;
+                difficultyDropdown.interactable = activate;
+                mapDropdown.interactable = activate;
+                wavesDropdown.interactable = activate;
+            }
+
+            void LocalizeDropdownItems()
+            {
+                visibilityDropdown.AddOptions(new List<string>()
             {
                 LocaleKeys.VisibilityPublic.GetLocalized(),
                 LocaleKeys.VisibilityFriendsOnly.GetLocalized()
             });
 
-            modeDropdown.AddOptions(new List<string>()
+                modeDropdown.AddOptions(new List<string>()
             {
                 LocaleKeys.ModePvp.GetLocalized(),
                 LocaleKeys.ModeCoop.GetLocalized()
             });
 
-            difficultyDropdown.AddOptions(new List<string>()
+                difficultyDropdown.AddOptions(new List<string>()
             {
                 LocaleKeys.DifficultyEasy.GetLocalized(),
                 LocaleKeys.DifficultyNormal.GetLocalized(),
                 LocaleKeys.DifficultyHard.GetLocalized(),
                 LocaleKeys.DifficultyExtreme.GetLocalized()
             });
+            }
+
+            #endregion
         }
 
-        #endregion
-    }
-
-    public void Destroy()
-    {
-        visibilityDropdown.onValueChanged.RemoveAllListeners();
-        difficultyDropdown.onValueChanged.RemoveAllListeners();
-        mapDropdown.onValueChanged.RemoveAllListeners();
-        wavesDropdown.onValueChanged.RemoveAllListeners();
-        modeDropdown.onValueChanged.RemoveAllListeners();
-        playersSlider.onValueChanged.RemoveAllListeners();
+        public void Destroy()
+        {
+            visibilityDropdown.onValueChanged.RemoveAllListeners();
+            difficultyDropdown.onValueChanged.RemoveAllListeners();
+            mapDropdown.onValueChanged.RemoveAllListeners();
+            wavesDropdown.onValueChanged.RemoveAllListeners();
+            modeDropdown.onValueChanged.RemoveAllListeners();
+            playersSlider.onValueChanged.RemoveAllListeners();
+        }
     }
 }
