@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
         get => menu;
         set
         {
+            if (menu != null) return;
+
             menu = value;
 
             if (UIManager.Instance != null)

@@ -52,6 +52,7 @@ namespace Game.Systems
         {
             if (isSuccesful)
             {
+                
                 LobbyExt.SetLobbyDefaultData();
                 CreatedLobby?.Invoke(null, null);
             }

@@ -35,3 +35,4 @@ playerData.json
 *.XML
 *.jslib
 *.pubxml
+.vscode/launch.json

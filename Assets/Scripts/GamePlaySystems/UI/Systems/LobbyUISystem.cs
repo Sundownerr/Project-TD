@@ -38,7 +38,8 @@ namespace Game.Systems
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Return)) LobbyExt.SendChatMessage(ChatInputField);
+            if (Input.GetKeyDown(KeyCode.Return))
+                LobbyExt.SendChatMessage(ChatInputField);
         }
 
         void OnDestroy()
@@ -52,18 +53,18 @@ namespace Game.Systems
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-           
+            LobbyExt.SetCallbacks(
+                new LobbyCallbacks(
+                    LobbyStateChanged,
+                    LobbyMemberDataUpdated,
+                    LobbyDataUpdated,
+                    ChatMessageReceived
+                ));
+
+            Debug.Log(FPClient.Instance.Lobby.Name);
 
             lobbyDataChanger = new LobbyDataChanger(this);
             LobbyName.text = FPClient.Instance.Lobby.Name;
-
-            LobbyExt.SetCallbacks(
-                new LobbyCallbacks(
-                   LobbyStateChanged,
-                   LobbyMemberDataUpdated,
-                   LobbyDataUpdated,
-                   ChatMessageReceived
-                ));
 
             UpdatePlayers();
             UpdateLobbyData();
@@ -95,8 +96,7 @@ namespace Game.Systems
 
         public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-         
-
+            Debug.Log("close lobby");
             base.Close(moveTo);
 
             foreach (var playerText in playerTexts.Values) Destroy(playerText.gameObject);
@@ -208,8 +208,7 @@ namespace Game.Systems
                 .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
                 .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
                     $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
-                .SetAvatar(steamID);
+                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>");
 
             if (steamID == FPClient.Instance.SteamId)
             {
@@ -224,7 +223,7 @@ namespace Game.Systems
         void OnChangeMageClicked(object sender, EventArgs e)
         {
             isChangingMage = true;
-            ChangeMageClicked?.Invoke(null, null);        
+            ChangeMageClicked?.Invoke(null, null);
         }
 
         void OnReadyClicked(object sender, EventArgs e)

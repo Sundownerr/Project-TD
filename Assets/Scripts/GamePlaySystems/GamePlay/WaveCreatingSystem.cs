@@ -56,12 +56,9 @@ namespace Game.Systems
            
             CalculateStats();
 
-
             newData.Traits = traits;
             newData.Abilities = newData.IsBossOrCommander() ? abilities : new List<Ability>();
             newData.ArmorType = armor;
-
-            
 
             return newData;
 
