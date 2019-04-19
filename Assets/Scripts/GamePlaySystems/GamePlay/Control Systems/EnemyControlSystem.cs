@@ -13,13 +13,15 @@ namespace Game.Systems
 {
     public class EnemyControlSystem
     {
-        public List<EnemySystem> Enemies { get; private set; } = new List<EnemySystem>();
+        public List<EnemySystem> OwnedEnemies { get; private set; } = new List<EnemySystem>();
+        public List<EnemySystem> NotOwnedEnemies { get; private set; } = new List<EnemySystem>();
+        public List<EnemySystem> AllEnemies { get; private set; } = new List<EnemySystem>();
         public event EventHandler<EnemySystem> EnemyDied;
 
         PlayerSystem Owner;
 
         public EnemyControlSystem(PlayerSystem player) => Owner = player;
-        
+
         public void SetSystem()
         {
             Owner.WaveSystem.EnemyCreated += OnEnemySpawned;
@@ -27,8 +29,8 @@ namespace Game.Systems
 
         public void UpdateSystem()
         {
-            for (int i = 0; i < Enemies.Count; i++)
-                Enemies[i].UpdateSystem();
+            for (int i = 0; i < AllEnemies.Count; i++)
+                AllEnemies[i].UpdateSystem();
         }
 
         void OnEnemySpawned(object _, EnemySystem e) => AddEnemy(e);
@@ -37,8 +39,13 @@ namespace Game.Systems
 
         void AddEnemy(EnemySystem enemy)
         {
-            Enemies.Add(enemy);
-          
+            AllEnemies.Add(enemy);
+           
+            if (enemy.IsOwnedByLocalPlayer)
+                OwnedEnemies.Add(enemy);
+            else
+                NotOwnedEnemies.Add(enemy);
+
             enemy.IsOn = true;
             enemy.LastWaypointReached += OnLastWaypointReached;
             enemy.Died += OnEnemyDied;
@@ -48,9 +55,14 @@ namespace Game.Systems
         {
             EnemyDied?.Invoke(null, enemy);
 
+            AllEnemies.Remove(enemy);
+
             if (enemy != null)
             {
-                Enemies.Remove(enemy);
+                if (enemy.IsOwnedByLocalPlayer)
+                    OwnedEnemies.Remove(enemy);
+                else
+                    NotOwnedEnemies.Remove(enemy);
 
                 U.Destroy(enemy.Prefab);
             }

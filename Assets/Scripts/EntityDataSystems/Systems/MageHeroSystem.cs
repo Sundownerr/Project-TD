@@ -34,17 +34,30 @@ namespace Game
 
             ownerPlayer.WaveSystem.EnemyCreated += OnEnemyCreated;
             ownerPlayer.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
-          
+
         }
 
-        void OnSpiritPlaced(object _, SpiritSystem e) { ModifyAttributes(e.Data, From.StartingAttribute); e.LeveledUp += OnSpiritLeveledUp; }
+        void OnSpiritPlaced(object _, SpiritSystem e)
+        {
+            if (e.IsOwnedByLocalPlayer)
+            {
+                ModifyAttributes(e.Data, From.StartingAttribute);
+                e.LeveledUp += OnSpiritLeveledUp;
+            }
+        }
+
+        void OnEnemyCreated(object _, EnemySystem e)
+        {
+            if (e.IsOwnedByLocalPlayer)
+                ModifyAttributes(e.Data, From.StartingAttribute);
+        }
+
         void OnSpiritLeveledUp(object _, SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
-        void OnEnemyCreated(object _, EnemySystem e) => ModifyAttributes(e.Data, From.StartingAttribute);
 
         void ModifyAttributes(EnemyData enemy, From getFrom)
-        {            
+        {
             ModifyNumeralAttributes(enemy, getFrom);
-            
+
             Mage.EnemyAttributes.ForEach(mageAttribute =>
                 enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
         }

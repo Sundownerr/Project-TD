@@ -51,10 +51,10 @@ namespace Game.Systems
                         {
                             if (enemyIndexInChain - 1 >= 0)
                             {
-                                for (int j = 0; j < player.Enemies.Count; j++)
-                                    if (player.Enemies[j].Prefab == enemies[enemyIndexInChain - 1].transform.gameObject)
+                                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
+                                    if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain - 1].transform.gameObject)
                                     {
-                                        bullet.Target = player.Enemies[j];
+                                        bullet.Target = player.EnemyControlSystem.AllEnemies[j];
                                         break;
                                     }
                                 break;
@@ -62,10 +62,10 @@ namespace Game.Systems
 
                             if (enemyIndexInChain + 1 < enemyCount)
                             {
-                                for (int j = 0; j < player.Enemies.Count; j++)
-                                    if (player.Enemies[j].Prefab == enemies[enemyIndexInChain + 1].transform.gameObject)
+                                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
+                                    if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain + 1].transform.gameObject)
                                     {
-                                        bullet.Target = player.Enemies[j];
+                                        bullet.Target = player.EnemyControlSystem.AllEnemies[j];
                                         break;
                                     }
                                 break;

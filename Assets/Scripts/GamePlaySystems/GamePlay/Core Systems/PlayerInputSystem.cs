@@ -125,14 +125,14 @@ namespace Game.Systems
 
             void GetChoosedSpirit()
             {
-                ChoosedSpirit = Owner.Spirits.Find(spirit => spirit.Prefab == hit.transform.gameObject);
+                ChoosedSpirit = Owner.SpiritControlSystem.AllSpirits.Find(spirit => spirit.Prefab == hit.transform.gameObject);
                 Owner.SpiritUISystem.ActivateUpgradeButton(CheckGradeListOk(out _));
                 ActivateSelection(ChoosedSpirit);
             }
 
             void GetChoosedEnemy()
             {
-                choosedEnemy = Owner.Enemies.Find(enemy => enemy.Prefab == hit.transform.gameObject);
+                choosedEnemy = Owner.EnemyControlSystem.AllEnemies.Find(enemy => enemy.Prefab == hit.transform.gameObject);
                 ActivateSelection(choosedEnemy);
             }
 
@@ -196,7 +196,7 @@ namespace Game.Systems
                     ChoosedSpirit.Prefab.transform.position,
                     Quaternion.identity,
                     ReferenceHolder.Get.SpiritParent);
-                var upgradedSpirit = new SpiritSystem(upgradedSpiritPrefab);
+                var upgradedSpirit = new SpiritSystem(upgradedSpiritPrefab, true);
 
                 upgradedSpirit.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);
                 upgradedSpirit.SetSystem(Owner);

@@ -43,8 +43,8 @@ namespace Game.Systems
         public WorldUISystem WorldUISystem { get; private set; }
         public MageHeroSystem MageHeroSystem { get; private set; }
         public DescriptionUISystem DescriptionUISystem { get; private set; }
-        public List<SpiritSystem> Spirits { get => SpiritControlSystem.Spirits; }
-        public List<EnemySystem> Enemies { get => EnemyControlSystem.Enemies; }
+        public List<SpiritSystem> OwnedSpirits { get => SpiritControlSystem.OwnedSpirits; }
+        public List<EnemySystem> OwnedEnemies { get => EnemyControlSystem.OwnedEnemies; }
         public List<SpiritData> AvailableSpirits;
         public Player Data { get; private set; }
         public Canvas UICanvas { get; private set; }

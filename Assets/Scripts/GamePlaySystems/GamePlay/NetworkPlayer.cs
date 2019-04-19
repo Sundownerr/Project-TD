@@ -19,11 +19,8 @@ public class NetworkPlayer : NetworkBehaviour
     public GameObject LocalMap;
     public GameObject UICanvasPrefab;
     public UIControlSystem UiControlSystem { get; private set; }
-    public event EventHandler<SpiritSystem> SpiritCreatingRequestDone;
-    public event EventHandler<EnemySystem> EnemyCreatingRequestDone;
-    public event EventHandler WavesReceived;
+    
     float delay = 0.07f;
-
 
     PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
@@ -34,8 +31,8 @@ public class NetworkPlayer : NetworkBehaviour
             if (!isLocalPlayer) return;
 
             localPlayer = value;
-            localPlayer.SpiritPlaceSystem.SpiritCreationRequested += OnSpiritCreatingRequest;
-            localPlayer.WaveSystem.EnemyCreationRequested += OnEnemyCreatingRequest;
+            ReferenceHolder.Get.Player.SpiritPlaceSystem.SpiritCreationRequested += OnSpiritCreatingRequest;
+            ReferenceHolder.Get.Player.WaveSystem.EnemyCreationRequested += OnEnemyCreatingRequest;
         }
     }
 
@@ -65,7 +62,6 @@ public class NetworkPlayer : NetworkBehaviour
         CmdGetWaves();
         base.OnStartLocalPlayer();
     }
-
 
     public void WaitAndDo(float delay, Action function)
     {
@@ -129,10 +125,10 @@ public class NetworkPlayer : NetworkBehaviour
             var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits.Find(x => x.ID.Compare(request.ID));
 
             var newSpirit = choosedCell != null ?
-                StaticMethods.CreateSpirit(spirit, choosedCell.GetComponent<Cell>(), LocalPlayer) :
-                StaticMethods.CreateSpirit(spirit, pos, ReferenceHolder.Get.Player);
+                StaticMethods.CreateSpirit(spirit, choosedCell.GetComponent<Cell>(), true) :
+                StaticMethods.CreateSpirit(spirit, pos, false);
 
-            SpiritCreatingRequestDone?.Invoke(null, newSpirit);
+            ReferenceHolder.Get.Player.SpiritPlaceSystem.NetworkCreateSpirit(newSpirit);
         });
     }
 
@@ -143,20 +139,17 @@ public class NetworkPlayer : NetworkBehaviour
     void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
     {
         var sendData = e.Serializer();
-        WaitAndDo(delay, () => { CmdCreateEnemy(sendData, e.Position.ToVector3()); });
+        WaitAndDo(delay, () => CmdCreateEnemy(sendData));
     }
 
     [Command]
-    public void CmdCreateEnemy(byte[] byteRequest, Vector3 spawnPosition)
+    public void CmdCreateEnemy(byte[] byteRequest)
     {
-        var networkEnemy = Instantiate(ReferenceHolder.Get.NetworkEnemy, spawnPosition, Quaternion.identity);
-        NetworkServer.SpawnWithClientAuthority(networkEnemy, connectionToClient);
-
-        RpcCreateEnemy(byteRequest, networkEnemy);
+        RpcCreateEnemy(byteRequest);
     }
 
     [ClientRpc]
-    public void RpcCreateEnemy(byte[] byteRequest, GameObject newEnemy)
+    public void RpcCreateEnemy(byte[] byteRequest)
     {
         var request = byteRequest.Deserializer<EnemyCreationRequest>();
 
@@ -168,16 +161,9 @@ public class NetworkPlayer : NetworkBehaviour
 
             if (enemyFromDB == null)
                 Debug.LogError("enemyfromdb is null");
-            else
-            {
-                Instantiate(enemyFromDB.Prefab, newEnemy.transform.position, newEnemy.transform.rotation, newEnemy.transform).layer = 0;
-
-                if (isLocalPlayer)
-                {
-                    var newEnemySystem = StaticMethods.CreateEnemy(enemyFromDB, spawnPos, LocalPlayer, waypoints, newEnemy);
-                    EnemyCreatingRequestDone?.Invoke(null, newEnemySystem);
-                }
-            }
+            else         
+                ReferenceHolder.Get.Player.WaveSystem.NetworkSpawnEnemy(
+                    StaticMethods.CreateEnemy(enemyFromDB, spawnPos, waypoints, isLocalPlayer), isLocalPlayer);        
         });
     }
 
@@ -194,7 +180,6 @@ public class NetworkPlayer : NetworkBehaviour
 
         var data = GameData.Instance.PlayerData;
         var userName = FPClient.Instance.Username;
-
 
         CmdSendData(gameObject, data, userName);
     }

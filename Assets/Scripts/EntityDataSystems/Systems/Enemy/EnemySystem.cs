@@ -30,10 +30,11 @@ namespace Game.Enemy
         public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
+        public bool IsOwnedByLocalPlayer { get; private set; }
 
         Vector3[] waypoints;
 
-        public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints)
+        public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints, bool isOwnedByPlayer = true)
         {
             AbilityControlSystem = new AbilityControlSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
@@ -41,6 +42,7 @@ namespace Game.Enemy
             this.waypoints = waypoints;
             Prefab = ownerPrefab;
             Prefab.layer = 12;
+            IsOwnedByLocalPlayer = isOwnedByPlayer;
         }
 
         public void SetSystem(PlayerSystem player)
@@ -53,7 +55,7 @@ namespace Game.Enemy
 
 
             Owner = player;
-            ID = new ID() { player.EnemyControlSystem.Enemies.Count };
+            ID = new ID() { player.EnemyControlSystem.AllEnemies.Count };
 
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
 
@@ -85,6 +87,7 @@ namespace Game.Enemy
 
         public void UpdateSystem()
         {
+            
             HealthSystem?.UpdateSystem();
             AbilityControlSystem.UpdateSystem();
 

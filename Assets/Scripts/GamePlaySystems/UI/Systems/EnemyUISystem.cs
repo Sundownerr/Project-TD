@@ -30,10 +30,10 @@ namespace Game.Systems
 
         void OnClickedOnEnemy(object _, GameObject e)
         {
-            for (int i = 0; i < Owner.Enemies.Count; i++)
-                if(Owner.Enemies[i].Prefab == e)
+            for (int i = 0; i < Owner.EnemyControlSystem.AllEnemies.Count; i++)
+                if(Owner.EnemyControlSystem.AllEnemies[i].Prefab == e)
                 {
-                    enemy = Owner.Enemies[i];
+                    enemy = Owner.EnemyControlSystem.AllEnemies[i];
                     break;
                 }    
             EnemyUI.SetActive(true);           

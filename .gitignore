@@ -33,6 +33,5 @@ playerData.json
 *.csproj
 *.asmdef
 *.XML
-*.jslib
 *.pubxml
-.vscode/launch.json
+*.jslib

@@ -32,6 +32,22 @@ namespace Game.Systems
 
         public WaveSystem(PlayerSystem player) => Owner = player;
 
+        public void NetworkSpawnEnemy(EnemySystem e, bool isEnenmyOwned)
+        {
+            if (isEnenmyOwned)
+                wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
+
+            EnemyCreated?.Invoke(null, e);
+
+            if (spawned == Waves.Peek().EnemyTypes.Count)
+                if (WaveNumber <= Owner.WaveAmount)
+                {
+                    if (spawnCoroutine != null)
+                        ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
+                    SetNextWave();
+                }
+        }
+
         public void SetSystem()
         {
             SetWaypoints();
@@ -40,31 +56,13 @@ namespace Game.Systems
 
             if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
-            else
-            {
-                Owner.NetworkPlayer.EnemyCreatingRequestDone += NetworkEnemyCreated;
+            else       
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
-            }
-
+            
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
 
-
             #region  Helper functions
-
-            void NetworkEnemyCreated(object _, EnemySystem e)
-            {
-                wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
-                EnemyCreated?.Invoke(_, e);
-
-                if (spawned == Waves.Peek().EnemyTypes.Count)
-                    if (WaveNumber <= Owner.WaveAmount)
-                    {
-                        if (spawnCoroutine != null)
-                            ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
-                        SetNextWave();
-                    }
-            }
 
             void SetWaypoints()
             {
@@ -116,6 +114,7 @@ namespace Game.Systems
         {
             Waves.Dequeue();
             WaveNumber++;
+
             WaveEnded?.Invoke(null, null);
         }
 
@@ -152,7 +151,7 @@ namespace Game.Systems
 
                     void CreateEnemy()
                     {
-                        var newEnemy = StaticMethods.CreateEnemy(Waves.Peek().EnemyTypes[spawned], spawnPosition, Owner, waypoints);
+                        var newEnemy = StaticMethods.CreateEnemy(Waves.Peek().EnemyTypes[spawned], spawnPosition, waypoints);
                         wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
                         EnemyCreated?.Invoke(null, newEnemy);
                     }

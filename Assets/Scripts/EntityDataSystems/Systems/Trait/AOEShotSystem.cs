@@ -38,9 +38,9 @@ namespace Game.Systems
                 enemyLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                for (int j = 0; j < player.Enemies.Count; j++)
-                    if (colliders[i].transform.gameObject == player.Enemies[j].Prefab)
-                        spirit.DealDamage(player.Enemies[i], spirit.Data.Get(Enums.Spirit.Damage).Sum);
+                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
+                    if (colliders[i].transform.gameObject == player.EnemyControlSystem.AllEnemies[j].Prefab)
+                        spirit.DealDamage(player.EnemyControlSystem.AllEnemies[i], spirit.Data.Get(Enums.Spirit.Damage).Sum);
         }
 
         public void Set()

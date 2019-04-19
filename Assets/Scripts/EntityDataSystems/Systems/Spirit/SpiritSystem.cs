@@ -40,9 +40,11 @@ namespace Game.Spirit
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
+        public bool IsOwnedByLocalPlayer { get; private set; } = true;
+
         SpiritDataSystem dataSystem;
 
-        public SpiritSystem(GameObject ownerPrefab)
+        public SpiritSystem(GameObject ownerPrefab, bool isOwnedByPlayer = true)
         {
             Prefab = ownerPrefab;
             MovingPart = ownerPrefab.transform.GetChild(0);
@@ -55,6 +57,7 @@ namespace Game.Spirit
             AbilityControlSystem = new AbilityControlSystem(this);
             AppliedEffectSystem = new AppliedEffectSystem();
             Prefab.layer = 14;
+            IsOwnedByLocalPlayer = isOwnedByPlayer;
         }
 
         public void SetSystem(PlayerSystem player)
@@ -66,7 +69,7 @@ namespace Game.Spirit
             }
 
             Owner = player;
-            ID = new ID() { player.SpiritControlSystem.Spirits.Count };
+            ID = new ID() { player.SpiritControlSystem.AllSpirits.Count };
 
             if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
             {
@@ -205,10 +208,10 @@ namespace Game.Spirit
 
         ~SpiritSystem()
         {
-          // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-          Dispose(false);
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
         }
-    
+
         public void Dispose()
         {
             Dispose(true);

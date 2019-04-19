@@ -9,7 +9,9 @@ namespace Game.Systems
 {
     public class SpiritControlSystem
     {
-        public List<SpiritSystem> Spirits { get; private set; } = new List<SpiritSystem>();
+        public List<SpiritSystem> OwnedSpirits { get; private set; } = new List<SpiritSystem>();
+        public List<SpiritSystem> NotOwnedSpirits { get; private set; } = new List<SpiritSystem>();
+        public List<SpiritSystem> AllSpirits { get; private set; } = new List<SpiritSystem>();
 
         PlayerSystem Owner;
 
@@ -24,8 +26,8 @@ namespace Game.Systems
 
         public void UpdateSystem()
         {
-            for (int i = 0; i < Spirits.Count; i++)
-                Spirits[i].UpdateSystem();
+            for (int i = 0; i < AllSpirits.Count; i++)
+                AllSpirits[i].UpdateSystem();
         }
 
         void OnSpiritCreated(object _, SpiritSystem spirit) => AddSpirit(spirit);
@@ -33,9 +35,14 @@ namespace Game.Systems
 
         void AddSpirit(SpiritSystem spirit)
         {
-            Spirits.Add(spirit);
+            AllSpirits.Add(spirit);
 
-            if(spirit.UsedCell != null)
+            if (spirit.IsOwnedByLocalPlayer)
+                OwnedSpirits.Add(spirit);
+            else
+                NotOwnedSpirits.Add(spirit);
+
+            if (spirit.UsedCell != null)
                 spirit.UsedCell.GetComponent<Cell>().IsBusy = true;
 
             spirit.IsOn = true;
@@ -47,8 +54,14 @@ namespace Game.Systems
                 spirit.UsedCell.GetComponent<Cell>().IsBusy = false;
 
             spirit.Dispose();
-            Spirits.Remove(spirit);
+
+            AllSpirits.Remove(spirit);
+            
+            if (spirit.IsOwnedByLocalPlayer)
+                OwnedSpirits.Remove(spirit);
+            else
+                NotOwnedSpirits.Remove(spirit);
         }
     }
 }
-		
+

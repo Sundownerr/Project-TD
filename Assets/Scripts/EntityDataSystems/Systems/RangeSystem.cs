@@ -65,13 +65,13 @@ namespace Game.Systems
                     var owner = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
 
                     if (typeof(T) == typeof(EnemySystem))
-                        for (int i = 0; i < owner.Enemies.Count; i++)
-                            if (CheckFound(owner.Enemies[i]))
+                        for (int i = 0; i < owner.EnemyControlSystem.AllEnemies.Count; i++)
+                            if (CheckFound(owner.EnemyControlSystem.AllEnemies[i]))
                                 return;
 
                     if (typeof(T) == typeof(SpiritSystem))
-                        for (int i = 0; i < owner.Spirits.Count; i++)
-                            if (CheckFound(owner.Spirits[i]))
+                        for (int i = 0; i < owner.SpiritControlSystem.AllSpirits.Count; i++)
+                            if (CheckFound(owner.SpiritControlSystem.AllSpirits[i]))
                                 return;
                 }
 

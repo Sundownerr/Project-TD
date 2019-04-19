@@ -57,7 +57,7 @@ public static class StaticMethods
         U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, PlayerSystem owner)
+    public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, bool isOwnedByPlayer)
     {
         var newSpiritPrefab = U.Instantiate(
             data.Prefab,
@@ -65,40 +65,40 @@ public static class StaticMethods
             Quaternion.identity,
             ReferenceHolder.Get.SpiritParent);
 
-        var newSpirit = new SpiritSystem(newSpiritPrefab)
+        var newSpirit = new SpiritSystem(newSpiritPrefab, isOwnedByPlayer)
         {
             Data = data,
             UsedCell = cell.gameObject
         };
 
-        newSpirit.SetSystem(owner);
+        newSpirit.SetSystem(ReferenceHolder.Get.Player);
         CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
 
         return newSpirit;
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData data, Vector3 position, PlayerSystem owner)
+    public static SpiritSystem CreateSpirit(SpiritData data, Vector3 position, bool isOwnedByPlayer = true)
     {
         var newSpiritPrefab = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.SpiritParent);
-        var newSpirit = new SpiritSystem(newSpiritPrefab)
+        var newSpirit = new SpiritSystem(newSpiritPrefab, isOwnedByPlayer)
         {
             Data = data,
             UsedCell = null
         };
 
-        newSpirit.SetSystem(owner);
+        newSpirit.SetSystem(ReferenceHolder.Get.Player);
         CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
         return newSpirit;
     }
 
 
-    public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, PlayerSystem owner, Vector3[] waypoints, GameObject prefab = null)
+    public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, Vector3[] waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
     {
 
         var enemy = prefab ?? U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
-        var enemySystem = new EnemySystem(enemy, waypoints) { Data = data };
+        var enemySystem = new EnemySystem(enemy, waypoints, isOwnedByPlayer) { Data = data };
 
-        enemySystem.SetSystem(owner);
+        enemySystem.SetSystem(ReferenceHolder.Get.Player);
 
         return enemySystem;
     }

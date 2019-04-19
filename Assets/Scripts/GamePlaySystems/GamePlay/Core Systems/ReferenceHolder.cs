@@ -59,8 +59,6 @@ namespace Game.Systems
 
         DescriptionUISystem descriptionUISystem;
 
-       
-
         public static List<int> ExpToLevelUp { get; } = new List<int>(25)
         {
             12,
@@ -115,17 +113,16 @@ namespace Game.Systems
         {
             GameManager.Instance.StateChanged += OnGameStateChanged;
             GameLoop.Instance.PlayerCreated += OnPlayerCreated;
-
-       
         }
 
-        
+
         void OnPlayerCreated(object _, PlayerSystem e)
         {
             Player = e;
 
             if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                 NetworkPlayer.LocalPlayer = e;
+
         }
 
         void OnGameStateChanged(object _, GameState e)
@@ -153,11 +150,13 @@ namespace Game.Systems
             DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
             PlayerSystemData playerData;
+            
             playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
                 GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
+                
             playerData.Mage = GameData.Instance.ChoosedMage;
-
+        
             PlayerDataSet?.Invoke(null, playerData);
         }
     }

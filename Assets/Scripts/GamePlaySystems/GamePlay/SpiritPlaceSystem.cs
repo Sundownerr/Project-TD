@@ -23,12 +23,11 @@ namespace Game.Systems
             Owner = player;
         }
 
-        public void SetSystem()
+        public void SetSystem() { }
+
+        public void NetworkCreateSpirit(SpiritSystem spirit)
         {
-            if (Owner.NetworkPlayer != null)
-            {
-                Owner.NetworkPlayer.SpiritCreatingRequestDone += (_, e) => SpiritPlaced?.Invoke(_, e);
-            }
+            SpiritPlaced?.Invoke(null, spirit);
         }
 
         public void OnPlacingNewSpirit(object _, SpiritData spiritData)
@@ -51,9 +50,9 @@ namespace Game.Systems
                     }
                     else
                     {
-                        var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, Owner);
+                        var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, true);
                         SpiritPlaced?.Invoke(null, newSpirit);
-                    }               
+                    }
             }
         }
     }

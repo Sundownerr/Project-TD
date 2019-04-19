@@ -28,60 +28,53 @@ namespace Game.Systems
             wavesDropdown = lobbyUISystem.WavesDropdown;
             visibilityDropdown = lobbyUISystem.VisibilityDropdown;
 
-            if (FPClient.Instance.Lobby.IsOwner)
+            LocalizeDropdownItems();
+
+            if (!FPClient.Instance.Lobby.IsOwner)
+                ActivateDropdowns(false);
+            else
             {
                 ActivateDropdowns(true);
-                modeDropdown.onValueChanged.AddListener(ModeChanged);
-                visibilityDropdown.onValueChanged.AddListener(VisibilityChanged);
-                difficultyDropdown.onValueChanged.AddListener(DifficultyChanged);
-                mapDropdown.onValueChanged.AddListener(MapChanged);
-                wavesDropdown.onValueChanged.AddListener(WavesChanged);
 
-                playersSlider.onValueChanged.AddListener((maxPlayers) =>
+                modeDropdown.onValueChanged.AddListener((option) =>
                 {
-                    maxPlayersText.text = maxPlayers.ToString();
-                    FPClient.Instance.Lobby.MaxMembers = (int)maxPlayers;
-                    LobbyExt.SetData(LobbyData.MaxPlayers, ((int)maxPlayers).ToString());
+                    playersSlider.maxValue = option == 0 ? 2 : 8;
+                    playersSlider.value = playersSlider.value > playersSlider.maxValue ? playersSlider.maxValue : playersSlider.value;
+
+                    LobbyExt.SetData(LobbyData.Mode, option.ToString());
+                });
+
+                visibilityDropdown.onValueChanged.AddListener((option) =>
+                {
+                    FPClient.Instance.Lobby.LobbyType = option == 0 ? Lobby.Type.Public : Lobby.Type.FriendsOnly;
+                    LobbyExt.SetData(LobbyData.Visibility, option.ToString());
+                });
+
+                difficultyDropdown.onValueChanged.AddListener((option) =>
+                {
+                    LobbyExt.SetData(LobbyData.Difficulty, option.ToString());
+                });
+
+                mapDropdown.onValueChanged.AddListener((option) =>
+                {
+                    LobbyExt.SetData(LobbyData.Map, mapDropdown.options[option].text);
+                });
+
+                wavesDropdown.onValueChanged.AddListener((option) =>
+                {
+                    LobbyExt.SetData(LobbyData.Waves, option.ToString());
+                });
+
+                playersSlider.onValueChanged.AddListener((sliderValue) =>
+                {
+                    maxPlayersText.text = sliderValue.ToString();
+                    FPClient.Instance.Lobby.MaxMembers = (int)sliderValue;
+                    LobbyExt.SetData(LobbyData.MaxPlayers, ((int)sliderValue).ToString());
                 });
 
                 playersSlider.minValue = 2;
                 playersSlider.maxValue = 2;
                 playersSlider.value = playersSlider.value > 2 ? 2 : playersSlider.value;
-            }
-            else
-                ActivateDropdowns(false);
-
-            LocalizeDropdownItems();
-
-            #region Helper functions
-
-            void ModeChanged(int option)
-            {
-                playersSlider.maxValue = option == 0 ? 2 : 8;
-                playersSlider.value = playersSlider.value > playersSlider.maxValue ? playersSlider.maxValue : playersSlider.value;
-
-                LobbyExt.SetData(LobbyData.Mode, option.ToString());
-            }
-
-            void VisibilityChanged(int option)
-            {
-                FPClient.Instance.Lobby.LobbyType = option == 0 ? Lobby.Type.Public : Lobby.Type.FriendsOnly;
-                LobbyExt.SetData(LobbyData.Visibility, option.ToString());
-            }
-
-            void DifficultyChanged(int option)
-            {
-                LobbyExt.SetData(LobbyData.Difficulty, option.ToString());
-            }
-
-            void MapChanged(int option)
-            {
-                LobbyExt.SetData(LobbyData.Map, option.ToString());
-            }
-
-            void WavesChanged(int option)
-            {
-                LobbyExt.SetData(LobbyData.Waves, option.ToString());
             }
 
             void ActivateDropdowns(bool activate)
@@ -96,27 +89,25 @@ namespace Game.Systems
             void LocalizeDropdownItems()
             {
                 visibilityDropdown.AddOptions(new List<string>()
-            {
-                LocaleKeys.VisibilityPublic.GetLocalized(),
-                LocaleKeys.VisibilityFriendsOnly.GetLocalized()
-            });
+                {
+                    LocaleKeys.VisibilityPublic.GetLocalized(),
+                    LocaleKeys.VisibilityFriendsOnly.GetLocalized()
+                });
 
                 modeDropdown.AddOptions(new List<string>()
-            {
-                LocaleKeys.ModePvp.GetLocalized(),
-                LocaleKeys.ModeCoop.GetLocalized()
-            });
+                {
+                    LocaleKeys.ModePvp.GetLocalized(),
+                    LocaleKeys.ModeCoop.GetLocalized()
+                });
 
                 difficultyDropdown.AddOptions(new List<string>()
-            {
-                LocaleKeys.DifficultyEasy.GetLocalized(),
-                LocaleKeys.DifficultyNormal.GetLocalized(),
-                LocaleKeys.DifficultyHard.GetLocalized(),
-                LocaleKeys.DifficultyExtreme.GetLocalized()
-            });
+                {
+                    LocaleKeys.DifficultyEasy.GetLocalized(),
+                    LocaleKeys.DifficultyNormal.GetLocalized(),
+                    LocaleKeys.DifficultyHard.GetLocalized(),
+                    LocaleKeys.DifficultyExtreme.GetLocalized()
+                });
             }
-
-            #endregion
         }
 
         public void Destroy()

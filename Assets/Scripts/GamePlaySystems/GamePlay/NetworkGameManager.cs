@@ -81,7 +81,7 @@ public class NetworkGameManager : NetworkBehaviour
 
             for (int i = 0; i < localMaps.Length; i++)
             {
-                NetworkServer.Spawn(localMaps[i]);
+               
 
                 var mapPrefab = Instantiate(MapComponentPrefab, localMaps[i].transform.position, Quaternion.identity);
 
