@@ -12,7 +12,7 @@ using Game.Enums;
 
 namespace Game.Spirit
 {
-    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanApplyEffects, IDisposable
+    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanReceiveEffects, IDisposable
     {
         public event EventHandler<Effect> EffectApplied;
         public event EventHandler<Effect> EffectRemoved;

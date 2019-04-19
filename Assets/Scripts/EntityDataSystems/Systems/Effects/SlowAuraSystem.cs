@@ -39,9 +39,9 @@ namespace Game.Systems
 
         }
 
-        void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanApplyEffects);
+        void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanReceiveEffects);
 
-        void RemoveEffect(ICanApplyEffects entity)
+        void RemoveEffect(ICanReceiveEffects entity)
         {
             var spirit = entity as SpiritSystem;
 
@@ -78,7 +78,7 @@ namespace Game.Systems
 
         public override void End()
         {
-            range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as ICanApplyEffects));
+            range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as ICanReceiveEffects));
             removedAttackSpeedMods.Clear();
 
             range.EntityEntered -= OnSpiritEnteredRange;

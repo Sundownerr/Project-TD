@@ -16,9 +16,9 @@ namespace Game.Systems
         protected bool isSet, isEnded, isMaxStackCount;
         protected float effectTimer;
         protected Effect effect;
-        protected ICanApplyEffects target;
+        protected ICanReceiveEffects target;
 
-        public ICanApplyEffects Target { get => target; private set => target = value; }
+        public ICanReceiveEffects Target { get => target; private set => target = value; }
 
         public EffectSystem(Effect effect)
         {
@@ -96,7 +96,7 @@ namespace Game.Systems
             IsSet = false;
         }
 
-        public virtual void SetTarget(ICanApplyEffects newTarget)
+        public virtual void SetTarget(ICanReceiveEffects newTarget)
         {
             Target = Target ?? newTarget;
         }

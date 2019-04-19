@@ -54,7 +54,7 @@ namespace Game
         [SerializeField] bool IsOn { get; set; }
     }
 
-    public interface ICanApplyEffects : IPrefabComponent, IVulnerable
+    public interface ICanReceiveEffects : IPrefabComponent, IVulnerable
     {
         AppliedEffectSystem AppliedEffectSystem { get; }
         void AddEffect(Effect Effect);

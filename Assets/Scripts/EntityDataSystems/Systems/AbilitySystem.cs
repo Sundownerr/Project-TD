@@ -20,46 +20,55 @@ namespace Game.Systems
 
         int effectCount;
         float cooldownTimer, nextEffectTimer;
-        bool used;
+        bool isUsed;
+        WaitForSeconds cooldownDelay;
+        List<WaitForSeconds> nextEffectDelays = new List<WaitForSeconds>();
+        List<Coroutine> nextEffectCoroutines = new List<Coroutine>();
 
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
             Ability = ability;
+            cooldownDelay = new WaitForSeconds(Ability.Cooldown);
 
-            for (int i = 0; i < Ability.Effects.Count; i++)
-                EffectSystems.Add(Ability.Effects[i].EffectSystem);
+            Ability.Effects.ForEach(effect =>
+            {
+                EffectSystems.Add(effect.EffectSystem);
+                nextEffectDelays.Add(new WaitForSeconds(effect.NextInterval));
+            });
 
             SetSystem(owner);
+        }
+
+        void SetSystem(IAbilitiySystem owner)
+        {
+            Owner = owner;
+            ID = new ID(owner.ID);
+            ID.Add(owner.AbilitySystems.IndexOf(this));
+
+            EffectSystems.ForEach(effect =>
+            {
+                effect.SetSystem(this);
+
+                if (effect is IDamageDealerChild child)
+                    child.OwnerDamageDealer = this.GetOwnerOfType<IDamageDealer>();
+            });
+
+            Ability.Effects[Ability.Effects.Count - 1].NextInterval = 0.01f;
         }
 
         public void Init()
         {
             if (!IsStacked)
-                if (cooldownTimer < Ability.Cooldown)
+                if (!isUsed)
                 {
-                    if (!used)
-                    {
-                        used = true;
-                        Used?.Invoke(null, this);
-                    }
-                    cooldownTimer += Time.deltaTime;
+                    isUsed = true;
+                    Used?.Invoke(null, this);
+                    GameLoop.Instance.StartCoroutine(Cooldown());
+                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
                 }
-                else
-                {
-                    used = false;
-                    cooldownTimer = 0;
-                    IsNeedStack = CheckNeedStack();
-                    CooldownReset();
-                }
-
-            nextEffectTimer = nextEffectTimer > Ability.Effects[effectCount].NextInterval ? 0 : nextEffectTimer + Time.deltaTime;
 
             for (int i = 0; i <= effectCount; i++)
                 EffectSystems[i].Init();
-
-            if (!(effectCount >= Ability.Effects.Count - 1))
-                if (nextEffectTimer > Ability.Effects[effectCount].NextInterval)
-                    effectCount++;
 
             #region  Helper functions
 
@@ -77,6 +86,29 @@ namespace Game.Systems
                 return false;
             }
 
+            IEnumerator Cooldown()
+            {
+                yield return cooldownDelay;
+
+                isUsed = false;
+                IsNeedStack = CheckNeedStack();
+                nextEffectCoroutines.ForEach(coroutine => GameLoop.Instance.StopCoroutine(coroutine));
+                nextEffectCoroutines.Clear();
+                CooldownReset();
+            }
+
+            IEnumerator NextEffectDelay()
+            {
+                yield return nextEffectDelays[effectCount];
+
+                if (!(effectCount >= Ability.Effects.Count - 1))
+                {
+                    effectCount++;
+                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
+                    yield return nextEffectCoroutines[nextEffectCoroutines.Count - 1];
+                }
+            }
+
             #endregion
         }
 
@@ -85,7 +117,7 @@ namespace Game.Systems
             Target = target;
 
             for (int i = 0; i < EffectSystems.Count; i++)
-                EffectSystems[i].SetTarget(target as ICanApplyEffects);
+                EffectSystems[i].SetTarget(target as ICanReceiveEffects);
         }
 
         public void StackReset(IAbilitiySystem owner)
@@ -94,22 +126,6 @@ namespace Game.Systems
             SetSystem(owner);
         }
 
-        void SetSystem(IAbilitiySystem owner)
-        {
-            Owner = owner;
-            ID = new ID(owner.ID);
-            ID.Add(owner.AbilitySystems.IndexOf(this));
-
-            for (int i = 0; i < EffectSystems.Count; i++)
-            {
-                EffectSystems[i].SetSystem(this);
-
-                if (EffectSystems[i] is IDamageDealerChild child)
-                    child.OwnerDamageDealer = this.GetOwnerOfType<IDamageDealer>();
-            }
-
-            Ability.Effects[Ability.Effects.Count - 1].NextInterval = 0.01f;
-        }
 
         public void CooldownReset()
         {

@@ -347,37 +347,37 @@
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="DOTween">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/Demigiant/DOTween/DOTween.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/Demigiant/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="DOTweenEditor">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/Demigiant/DOTween/Editor/DOTweenEditor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/ImportedAssets/Demigiant/DOTween/Editor/DOTweenEditor.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil.Mdb">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Mdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil.Pdb">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Pdb.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil.Rocks">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Rocks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.Rocks.dll</HintPath>
  </Reference>
  <Reference Include="Telepathy">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Mirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Mirror/Runtime/Transport/Telepathy/Telepathy.dll</HintPath>
  </Reference>
  <Reference Include="Facepunch.Steamworks">
- <HintPath>E:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>E:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>E:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>E:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/UnityProjects/ProjectTDnew/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/2018.3.11f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

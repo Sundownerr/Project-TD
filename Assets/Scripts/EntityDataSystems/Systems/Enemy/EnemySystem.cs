@@ -10,7 +10,7 @@ using System;
 
 namespace Game.Enemy
 {
-    public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanApplyEffects
+    public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanReceiveEffects
     {
         public event EventHandler<EnemySystem> LastWaypointReached;
         public event EventHandler<Effect> EffectApplied, EffectRemoved;
