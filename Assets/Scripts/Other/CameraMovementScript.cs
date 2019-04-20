@@ -3,7 +3,8 @@
 public class CameraMovementScript : ExtendedMonoBehaviour
 {
     Rigidbody camRigidBody;
-    float speed, boundary, rotationX;
+    float speed, boundary;
+    //float rotationX;
     Vector3 velocity = Vector3.zero;
 
     void Start()
@@ -12,7 +13,7 @@ public class CameraMovementScript : ExtendedMonoBehaviour
 
         speed = 90f;
         boundary = 10f;
-        rotationX = 54f;
+       // rotationX = 54f;
     }
 
     void Update()

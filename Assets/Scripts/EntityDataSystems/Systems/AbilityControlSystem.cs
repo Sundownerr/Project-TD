@@ -98,6 +98,7 @@ namespace Game.Systems
                 if (abilitySystem.Target != null && condition)
                 {
                     isAllEffectsEnded = false;
+                    abilitySystem.SetTarget(abilitySystem.Target);
                     abilitySystem.Init();
                 }
                 else

@@ -22,7 +22,9 @@ namespace Game.Spirit.System
         List<float> removeTimers = new List<float>();
         SpiritSystem ownerSpirit;
         ObjectPool bulletPool;
-        double attackDelay;
+        WaitForSeconds delayBetweenAttacks;
+        bool canShoot = true;
+        double previousAttackCooldown;
         int shotCount;
 
         public ShootSystem(SpiritSystem spirit) => ownerSpirit = spirit;
@@ -31,28 +33,27 @@ namespace Game.Spirit.System
 
         public void Set(GameObject bullet)
         {
-            attackDelay = ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value
-                .GetPercent(ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value);
-
             bulletPool = new ObjectPool(bullet, ownerSpirit.Prefab.transform, 2);
-           
         }
 
         public void UpdateSystem()
         {
-            var modifiedAttackSpeed =
-                ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value.GetPercent(
-                    ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value);
+            if (canShoot)
+            {
+                var attackCooldown = CalculateAttackCooldown();
 
-            var attackCooldown = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Value < 100 ?
-                    ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value + (ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value - modifiedAttackSpeed) :
-                    ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value - (modifiedAttackSpeed - ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Value);
+                if (previousAttackCooldown != attackCooldown)
+                {
+                    previousAttackCooldown = attackCooldown;
+                    delayBetweenAttacks = new WaitForSeconds((float)attackCooldown);
+                }
 
-            attackDelay = attackDelay > attackCooldown ? 0 : attackDelay + Time.deltaTime * 0.5f;
-            MoveBullet();
-
-            if (attackDelay > attackCooldown)
+                canShoot = false;
                 ShotBullet();
+                GameLoop.Instance.StartCoroutine(AttackCooldown());
+            }
+
+            MoveBullet();
 
             for (int i = 0; i < removeTimers.Count; i++)
                 if (removeTimers[i] > 0)
@@ -64,6 +65,24 @@ namespace Game.Spirit.System
                 }
 
             #region Helper functions
+
+            IEnumerator AttackCooldown()
+            {
+                yield return delayBetweenAttacks;
+                canShoot = true;
+            }
+
+            double CalculateAttackCooldown()
+            {
+                var attackDelay = ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Sum;
+                var attackSpeed = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Sum;
+
+                var modifiedAttackDelay = attackDelay.GetPercent(attackSpeed);
+
+                return attackSpeed < 100 ?
+                    attackDelay + (attackDelay - modifiedAttackDelay) :
+                    attackDelay - (modifiedAttackDelay - attackDelay);
+            }
 
             void ShotBullet()
             {
@@ -122,39 +141,34 @@ namespace Game.Spirit.System
 
         public void MoveBullet()
         {
-
             for (int i = 0; i < bullets.Count; i++)
             {
-                if (!bullets[i].IsTargetReached)
-                {
-                    var bullet = bullets[i];
-                    if (bullet.Prefab.activeSelf)
-                        if (!bullet.IsTargetReached)
-                            if (bullet.Target == null || bullet.Target.Prefab == null)
-                                SetTargetReached(bullet);
-                            else
-                            {
-                                var bulletGO = bullet.Prefab;
-                                var offset = new Vector3(0, 40, 0);
-                                var distance = bulletGO.transform.position.GetDistanceTo(bullet.Target.Prefab.transform.position + offset);
+                var bullet = bullets[i];
 
-                                if (distance < 30)
-                                {
-                                    HitTarget(bullet);
-                                    return;
-                                }
-                                else
-                                {
-                                    var randVec = new Vector3(
-                                        UnityEngine.Random.Range(-10, 10),
-                                        UnityEngine.Random.Range(-10, 10),
-                                        UnityEngine.Random.Range(-10, 10));
+                if (!bullet.IsTargetReached)                
+                    if (bullet.Target == null || bullet.Target.Prefab == null)
+                        SetTargetReached(bullet);
+                    else
+                    {
+                        var offset = new Vector3(0, 40, 0);
+                        var distance = bullet.Prefab.transform.position.GetDistanceTo(bullet.Target.Prefab.transform.position + offset);
 
-                                    bulletGO.transform.LookAt(bullet.Target.Prefab.transform.position + offset);
-                                    bulletGO.transform.Translate(Vector3.forward * bullet.Speed + randVec, Space.Self);
-                                }
-                            }
-                }
+                        if (distance < 30)
+                        {
+                            HitTarget(bullet);
+                            return;
+                        }
+                        else
+                        {
+                            var randVec = new Vector3(
+                                UnityEngine.Random.Range(-10, 10),
+                                UnityEngine.Random.Range(-10, 10),
+                                UnityEngine.Random.Range(-10, 10));
+
+                            bullet.Prefab.transform.LookAt(bullet.Target.Prefab.transform.position + offset);
+                            bullet.Prefab.transform.Translate(Vector3.forward * bullet.Speed * (Mathf.Lerp(1f, distance, Time.deltaTime / 12)) + randVec, Space.Self);
+                        }
+                    }
             }
         }
 

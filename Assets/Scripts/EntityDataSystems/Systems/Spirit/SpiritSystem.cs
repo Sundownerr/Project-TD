@@ -16,7 +16,6 @@ namespace Game.Spirit
     {
         public event EventHandler<Effect> EffectApplied;
         public event EventHandler<Effect> EffectRemoved;
-        public event EventHandler<IHealthComponent> Died;
         public event EventHandler<SpiritSystem> LeveledUp;
         public event EventHandler StatsChanged;
 
@@ -196,7 +195,6 @@ namespace Game.Spirit
                 {
                     EffectApplied = null;
                     EffectRemoved = null;
-                    Died = null;
                     LeveledUp = null;
                     StatsChanged = null;
                     U.Destroy(Data);

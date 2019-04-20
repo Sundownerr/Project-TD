@@ -12,22 +12,30 @@ namespace Game.Systems.Effects
     {
         public IDamageDealer OwnerDamageDealer { get; set; }
 
-        float tickTimer;
         new DoT effect;
         GameObject effectPrefab;
         ParticleSystem[] psList;
+        WaitForSeconds damageInterval = new WaitForSeconds(0.5f);
+        Coroutine effectCoroutine;
+
 
         public DoTSystem(DoT effect) : base(effect)
         {
             this.effect = effect;
-           
         }
 
         public override void Apply()
         {
             base.Apply();
 
-            if (isMaxStackCount || target == null || target.Prefab == null)
+            if (target.Prefab == null)
+            {
+                target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                End();
+                return;
+            }
+
+            if (isMaxStackCount || target == null)
                 End();
             else
             {
@@ -41,6 +49,7 @@ namespace Game.Systems.Effects
                 Show(true);
 
                 target.AddEffect(effect);
+                effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
             }
 
             #region Helper functions
@@ -57,30 +66,34 @@ namespace Game.Systems.Effects
                     else
                         psList[i].Stop();
                 }
-            } 
+            }
+
+            IEnumerator DealDamageOverTime()
+            {
+                var tickTimer = 0f;
+
+                while (tickTimer < effect.Duration)
+                {
+                    tickTimer += 0.5f;
+
+                    if (target is EnemySystem enemy)
+                        this.DealDamage(enemy, effect.DamagePerTick);
+
+                    yield return damageInterval;
+                }
+
+                End();
+            }
 
             #endregion
         }
 
-        public override void Continue()
-        {
-            base.Continue();
-
-            tickTimer += Time.deltaTime * 0.5f;
-            if (tickTimer >= 1)
-                if (target is EnemySystem enemy)
-                {
-                    tickTimer = 0;
-                    this.DealDamage(enemy, effect.DamagePerTick);
-                }
-                else
-                    End();
-        }
-
         public override void End()
         {
+            if (effectCoroutine != null)
+                GameLoop.Instance.StopCoroutine(effectCoroutine);
+
             Object.Destroy(effectPrefab);
-            tickTimer = 0;
             base.End();
         }
     }

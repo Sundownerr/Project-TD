@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Data;
 using UnityEngine;
+using System;
 
 namespace Game.Systems
 {
@@ -14,9 +15,9 @@ namespace Game.Systems
         public ID ID { get; set; }
 
         protected bool isSet, isEnded, isMaxStackCount;
-        protected float effectTimer;
         protected Effect effect;
         protected ICanReceiveEffects target;
+        protected WaitForSeconds durationDelay;
 
         public ICanReceiveEffects Target { get => target; private set => target = value; }
 
@@ -26,6 +27,8 @@ namespace Game.Systems
 
             if (!effect.IsStackable)
                 effect.MaxStackCount = 1;
+
+            durationDelay = new WaitForSeconds(effect.Duration);
         }
 
         public void SetSystem(AbilitySystem ownerAbility)
@@ -46,12 +49,11 @@ namespace Game.Systems
 
         public virtual void Apply()
         {
-            if (effect.IsStackable)
-                if (Target.CountOf(effect) >= effect.MaxStackCount)
-                {
-                    IsMaxStackCount = true;
-                    return;
-                }
+            if (Target.CountOf(effect) > effect.MaxStackCount)
+            {
+                IsMaxStackCount = true;
+                return;
+            }
 
             IsSet = true;
             IsEnded = false;
@@ -60,22 +62,15 @@ namespace Game.Systems
         public virtual void Continue()
         {
             if (!IsEnded)
-            {
                 if (Target == null)
                     End();
-
-                effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
-
-                if (effectTimer == -1)
-                    End();
-            }
         }
 
         public virtual void End()
         {
             if (!IsMaxStackCount)
                 Target?.RemoveEffect(effect);
-
+ 
             IsEnded = true;
         }
 

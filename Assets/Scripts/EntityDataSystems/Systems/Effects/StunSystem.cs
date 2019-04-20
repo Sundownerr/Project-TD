@@ -8,18 +8,29 @@ namespace Game.Data.Effects
     public class StunSystem : EffectSystem
     {
         GameObject effectPrefab;
+        Coroutine effectCoroutine;
+
         new Stun effect;
+        WaitForSeconds stunDuration;
 
         public StunSystem(Stun effect) : base(effect)
         {
             this.effect = effect;
+            stunDuration = new WaitForSeconds(effect.Duration);
         }
 
         public override void Apply()
         {
             base.Apply();
 
-            if (isMaxStackCount || target == null || target.Prefab == null)
+            if (target.Prefab == null)
+            {
+                target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                End();
+                return;
+            }
+
+            if (isMaxStackCount || target == null)
                 End();
             else
             {
@@ -30,17 +41,22 @@ namespace Game.Data.Effects
                     target.Prefab.transform);
 
                 target.AddEffect(effect);
+                effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
             }
-        }
 
-        public override void Continue()
-        {
-            base.Continue();
-            target.IsOn = false;
+            IEnumerator Stun()
+            {
+                target.IsOn = false;
+                yield return stunDuration;
+                End();
+            }
         }
 
         public override void End()
         {
+            if (effectCoroutine != null)
+                GameLoop.Instance.StopCoroutine(effectCoroutine);
+
             if (target != null)
                 target.IsOn = true;
 

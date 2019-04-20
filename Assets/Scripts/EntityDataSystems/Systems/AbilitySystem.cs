@@ -19,7 +19,6 @@ namespace Game.Systems
         public IHealthComponent Target { get; private set; }
 
         int effectCount;
-        float cooldownTimer, nextEffectTimer;
         bool isUsed;
         WaitForSeconds cooldownDelay;
         List<WaitForSeconds> nextEffectDelays = new List<WaitForSeconds>();
@@ -45,11 +44,11 @@ namespace Game.Systems
             ID = new ID(owner.ID);
             ID.Add(owner.AbilitySystems.IndexOf(this));
 
-            EffectSystems.ForEach(effect =>
+            EffectSystems.ForEach(effectSystem =>
             {
-                effect.SetSystem(this);
+                effectSystem.SetSystem(this);
 
-                if (effect is IDamageDealerChild child)
+                if (effectSystem is IDamageDealerChild child)
                     child.OwnerDamageDealer = this.GetOwnerOfType<IDamageDealer>();
             });
 
@@ -72,6 +71,48 @@ namespace Game.Systems
 
             #region  Helper functions
 
+            IEnumerator Cooldown()
+            {
+                yield return cooldownDelay;
+                CooldownReset();
+            }
+
+            IEnumerator NextEffectDelay()
+            {
+                yield return nextEffectDelays[effectCount];
+
+                if (effectCount < Ability.Effects.Count - 1)
+                {
+                    effectCount++;
+                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
+                }
+            }
+
+            #endregion
+        }
+
+        public void SetTarget(IHealthComponent target)
+        {
+            Target = target;
+            EffectSystems.ForEach(effectSystem => effectSystem.SetTarget(target as ICanReceiveEffects));
+        }
+
+        public void StackReset(IAbilitiySystem owner)
+        {
+            IsStacked = true;
+            SetSystem(owner);
+        }
+
+        public void CooldownReset()
+        {
+            effectCount = 0;
+            isUsed = false;
+
+            IsNeedStack = CheckNeedStack();
+            EffectSystems.ForEach(effectSystem => effectSystem.ApplyRestart());
+            nextEffectCoroutines.ForEach(coroutine => GameLoop.Instance.StopCoroutine(coroutine));
+            nextEffectCoroutines.Clear();
+
             bool CheckNeedStack()
             {
                 for (int i = 0; i < EffectSystems.Count; i++)
@@ -85,61 +126,12 @@ namespace Game.Systems
                         return true;
                 return false;
             }
-
-            IEnumerator Cooldown()
-            {
-                yield return cooldownDelay;
-
-                isUsed = false;
-                IsNeedStack = CheckNeedStack();
-                nextEffectCoroutines.ForEach(coroutine => GameLoop.Instance.StopCoroutine(coroutine));
-                nextEffectCoroutines.Clear();
-                CooldownReset();
-            }
-
-            IEnumerator NextEffectDelay()
-            {
-                yield return nextEffectDelays[effectCount];
-
-                if (!(effectCount >= Ability.Effects.Count - 1))
-                {
-                    effectCount++;
-                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
-                    yield return nextEffectCoroutines[nextEffectCoroutines.Count - 1];
-                }
-            }
-
-            #endregion
-        }
-
-        public void SetTarget(IHealthComponent target)
-        {
-            Target = target;
-
-            for (int i = 0; i < EffectSystems.Count; i++)
-                EffectSystems[i].SetTarget(target as ICanReceiveEffects);
-        }
-
-        public void StackReset(IAbilitiySystem owner)
-        {
-            IsStacked = true;
-            SetSystem(owner);
-        }
-
-
-        public void CooldownReset()
-        {
-            effectCount = 0;
-            nextEffectTimer = 0;
-
-            for (int i = 0; i < EffectSystems.Count; i++)
-                EffectSystems[i].ApplyRestart();
         }
 
         public bool CheckAllEffectsEnded()
         {
-            for (int i = 0; i < EffectSystems.Count; i++)
-                if (!EffectSystems[i].IsEnded)
+            foreach (var effectSystem in EffectSystems)
+                if (!effectSystem.IsEnded)
                     return false;
             return true;
         }

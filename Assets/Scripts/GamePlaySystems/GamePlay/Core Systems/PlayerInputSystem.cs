@@ -19,7 +19,6 @@ namespace Game.Systems
         public GameObject Selection;
         public EventSystem EventSystem;
 
-        public event EventHandler MouseOnSpirit;
         public event EventHandler PlacingSpirit;
         public event EventHandler<SpiritSystem> SpiritSold;
         public event EventHandler<SpiritSystem> SpiritUpgraded;

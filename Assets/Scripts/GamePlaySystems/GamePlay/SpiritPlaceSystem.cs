@@ -12,7 +12,6 @@ namespace Game.Systems
 {
     public class SpiritPlaceSystem
     {
-        public event EventHandler<SpiritSystem> SpiritCreated;
         public event EventHandler<SpiritSystem> SpiritPlaced;
         public event EventHandler<SpiritCreationRequest> SpiritCreationRequested;
 
