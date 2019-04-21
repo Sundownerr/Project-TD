@@ -21,8 +21,6 @@ namespace Game.Systems
 
         public override void Apply()
         {
-            if (!IsEnded) return;
-
             var owner = Owner.GetOwnerOfType<IEntitySystem>();
             range = StaticMethods.CreateRange(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
 

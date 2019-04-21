@@ -27,8 +27,7 @@ namespace Game.Systems.Effects
         public override void Apply()
         {
             if (!IsEnded) return;
-            base.Apply();
-
+            if (IsMaxStackReached) return;
 
             if (Target.Prefab == null)
             {
@@ -49,6 +48,8 @@ namespace Game.Systems.Effects
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);
+
+                base.Apply();
 
                 effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
             }

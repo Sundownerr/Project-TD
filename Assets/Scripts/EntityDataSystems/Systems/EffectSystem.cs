@@ -30,39 +30,23 @@ namespace Game.Systems
 
         public virtual void Apply()
         {
-            if (!IsEnded) return;
-            if (IsMaxStackReached) return;
-
-            Debug.Log($"started {effect} ");
-
             Target.AddEffect(effect);
             IsEnded = false;
         }
 
         public virtual void End()
         {
-            Debug.Log($"ended {effect} ");
-
             Target?.RemoveEffect(effect);
             IsEnded = true;
         }
 
         public virtual void ApplyRestart()
         {
-            if (effect.MaxStackCount > 1)
-                RestartState();
+            if (effect.MaxStackCount > 1) End();
             else
-            if (IsEnded)
-                RestartState();
+            if (IsEnded) End();
         }
-
-        public virtual void RestartState()
-        {
-            Debug.Log($"restart  {effect}");
-
-            End();
-        }
-
+    
         public virtual void SetTarget(ICanReceiveEffects newTarget)
         {
             if (Target == null || Target.Prefab == null)

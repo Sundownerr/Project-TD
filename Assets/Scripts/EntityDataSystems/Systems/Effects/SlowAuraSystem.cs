@@ -24,19 +24,16 @@ namespace Game.Systems
         void OnSpiritEnteredRange(object _, IVulnerable e)
         {
             var spirit = e as SpiritSystem;
+            var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
+            var removedAttackSpeedMod = (int)spiritAttackSpeed.Sum.GetPercent(effect.SlowPercent);
 
-            var removedAttackSpeedMod =
-                    (int)spirit.Data.Get(Enums.Spirit.AttackSpeed).Value.GetPercent(effect.SlowPercent);
-
-            if (spirit.CountOf(effect) <= 0)          
-                spirit.Data.Get(Enums.Spirit.AttackSpeed).Value -= removedAttackSpeedMod;       
+            if (spirit.CountOf(effect) <= 0)
+                spiritAttackSpeed.AppliedValue -= removedAttackSpeedMod;
             else
-                removedAttackSpeedMod =
-                    (int)(spirit.Data.Get(Enums.Spirit.AttackSpeed).Value + effect.SlowPercent).GetPercent(effect.SlowPercent);
+                removedAttackSpeedMod = (int)(spiritAttackSpeed.Sum - effect.SlowPercent).GetPercent(effect.SlowPercent);
 
             spirit.AddEffect(effect);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
-
         }
 
         void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanReceiveEffects);
@@ -44,10 +41,10 @@ namespace Game.Systems
         void RemoveEffect(ICanReceiveEffects entity)
         {
             var spirit = entity as SpiritSystem;
+            var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
 
             if (spirit.CountOf(effect) <= 1)
-                if (removedAttackSpeedMods.TryGetValue(spirit, out int attackSpeedMod))
-                    spirit.Data.Get(Enums.Spirit.AttackSpeed).Value += attackSpeedMod;
+                spiritAttackSpeed.AppliedValue += removedAttackSpeedMods[spirit];
 
             removedAttackSpeedMods.Remove(spirit);
             spirit.RemoveEffect(effect);
@@ -55,6 +52,8 @@ namespace Game.Systems
 
         public override void Apply()
         {
+            if (!IsEnded) return;
+
             base.Apply();
 
             range.EntityEntered += OnSpiritEnteredRange;

@@ -22,7 +22,7 @@ namespace Game.Data.Effects
         public override void Apply()
         {
             if (!IsEnded) return;
-            base.Apply();
+            if (IsMaxStackReached) return;
 
             if (Target.Prefab == null)
             {
@@ -41,7 +41,8 @@ namespace Game.Data.Effects
                     Quaternion.identity,
                     Target.Prefab.transform);
 
-                Target.AddEffect(effect);
+                base.Apply();
+                
                 effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
             }
 
