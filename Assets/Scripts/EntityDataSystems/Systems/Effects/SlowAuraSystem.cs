@@ -69,13 +69,6 @@ namespace Game.Systems
 
         void OnRangeDestroyed(object _, System.EventArgs e) => End();
 
-        public override void Continue()
-        {
-            base.Continue();
-            if (Owner == null)
-                End();
-        }
-
         public override void End()
         {
             range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as ICanReceiveEffects));

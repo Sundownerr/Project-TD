@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Game.Enums;
 using Game.Wrappers;
+using OneLine;
 
 namespace Game.Data
 {
@@ -15,8 +16,8 @@ namespace Game.Data
         public RarityType Rarity;
         public int Weigth;
         public int WaveLevel;
-        public List<NumeralAttribute> NumeralAttributes;
-        public List<SpiritAttribute> SpiritAttributes;
+        [OneLine, OneLine.HideLabel] public List<NumeralAttribute> NumeralAttributes;
+        [OneLine, OneLine.HideLabel] public List<SpiritAttribute> SpiritAttributes;
 
         // public NumeralAttribute Get(Numeral type) =>
         //     Attributes.Find(attribute => attribute.Type == type);

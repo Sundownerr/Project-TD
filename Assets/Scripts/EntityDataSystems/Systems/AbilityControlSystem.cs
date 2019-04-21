@@ -3,6 +3,7 @@ using Game.Enemy;
 using Game.Data;
 using Game.Systems;
 using UnityEngine;
+using Game.Spirit;
 
 namespace Game.Systems
 {
@@ -10,17 +11,27 @@ namespace Game.Systems
     {
         IAbilitiySystem owner;
         List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
-        bool isAllEffectsEnded, isInContinueState;
+        bool isAllEffectsEnded, isInContinueState, isOwnedByPlayer;
 
-        public AbilityControlSystem(IAbilitiySystem owner)
+        public AbilityControlSystem(IAbilitiySystem owner, bool isOwnedByPlayer)
         {
             this.owner = owner;
+            this.isOwnedByPlayer = isOwnedByPlayer;
         }
 
         public void Set() { }
 
+        public void UseAbility(int abilityIndex)
+        {
+            if (isOwnedByPlayer) return;
+
+            owner.AbilitySystems[abilityIndex].Init();
+        }
+
         public void UpdateSystem()
         {
+            if (!isOwnedByPlayer) return;
+
             var abilitySystems = owner.AbilitySystems;
 
             if (owner is EnemySystem)
@@ -59,8 +70,7 @@ namespace Game.Systems
 
             void CheckContinueEffects(AbilitySystem abilitySystem)
             {
-                if (!abilitySystem.CheckAllEffectsEnded())
-                    isAllEffectsEnded = false;
+                isAllEffectsEnded = abilitySystem.CheckAllEffectsEnded();
             }
 
             void CreateStack(int index)
@@ -108,8 +118,11 @@ namespace Game.Systems
                             abilitySystem.SetTarget(owner.Targets[0]);
                         else
                         {
-                            abilitySystem.CooldownReset();
-                            abilitySystem.SetTarget(null);
+                            if (!abilitySystem.IsCooldowned)
+                            {
+                                abilitySystem.CooldownReset();
+                                abilitySystem.SetTarget(null);
+                            }
                         }
                     else
                     {

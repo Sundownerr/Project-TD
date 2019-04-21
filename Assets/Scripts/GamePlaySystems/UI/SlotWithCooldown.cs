@@ -12,4 +12,9 @@ public class SlotWithCooldown : DescriptionBlock
     public Image CooldownImage;
 
     public ID EntityID { get; set; }
+
+    void Awake()
+    {
+        CooldownImage = Instantiate(CooldownPrefab, transform.position, Quaternion.identity, transform).GetComponent<Image>();
+    }
 }

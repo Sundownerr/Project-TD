@@ -48,7 +48,7 @@ namespace Game.Spirit.Data
         [SerializeField] List<Trait> TraitList;
         [SerializeField] public List<SpiritData> Grades;
         [SerializeField] public List<float> DamageToRace;
-        [SerializeField, HideInInspector] int numberInList;
+        [SerializeField, HideInInspector] public int NumberInList;
 
         public int GradeCount { get; set; } = -1;
         public Inventory Inventory { get; set; }
@@ -79,7 +79,7 @@ namespace Game.Spirit.Data
 
             ID.Add((int)Base.Element);
             ID.Add((int)Base.Rarity);
-            ID.Add(numberInList);
+            ID.Add(NumberInList);
 
             if (DamageToRace == null || DamageToRace.Count == 0)
             {
@@ -102,9 +102,9 @@ namespace Game.Spirit.Data
 
                     if (!thisElementAndRarityList.Contains(this))
                     {
-                        numberInList = thisElementAndRarityList.Count;
+                        NumberInList = thisElementAndRarityList.Count;
 
-                        ID = new ID() { (int)Base.Element, (int)Base.Rarity, numberInList };
+                        ID = new ID() { (int)Base.Element, (int)Base.Rarity, NumberInList };
 
                         thisElementAndRarityList.Add(this);
                         EditorUtility.SetDirty(this);
@@ -120,7 +120,7 @@ namespace Game.Spirit.Data
             if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
                 if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)
                 {
-                    dataBase.Spirits.Elements[(int)Base.Element].Rarities[(int)Base.Rarity].Spirits.RemoveAt(numberInList);
+                    dataBase.Spirits.Elements[(int)Base.Element].Rarities[(int)Base.Rarity].Spirits.RemoveAt(NumberInList);
                     DataControlSystem.Save(dataBase);
                 }
         }

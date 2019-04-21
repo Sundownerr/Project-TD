@@ -39,6 +39,8 @@ namespace Game.Systems
 
         void OnMageSelected(object sender, MageData e)
         {
+            if (GameManager.Instance.GameState != GameState.InLobby) return;
+
             LobbyExt.SetMemberData(LobbyData.MageID, e.ID.Serializer().ToString());
             isChangingMage = false;
         }

@@ -38,7 +38,7 @@ namespace Game.Systems
         void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
-            Description = System.Data.Description;
+            
         }
 
         public void SetSystem(IEntitySystem owner)
@@ -46,6 +46,7 @@ namespace Game.Systems
             Owner = owner as PlayerSystem;
             spiritSlots = Owner.SpiritUISystem.ItemSlots;
             inventorySlots = Owner.InventoryUISystem.Slots;
+            Description = System.Data.Description;
         }
 
         public void OnBeginDrag(PointerEventData eventData)

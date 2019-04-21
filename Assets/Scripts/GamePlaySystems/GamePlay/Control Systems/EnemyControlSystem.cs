@@ -65,6 +65,7 @@ namespace Game.Systems
                     NotOwnedEnemies.Remove(enemy);
 
                 U.Destroy(enemy.Prefab);
+                enemy = null;
             }
         }
     }

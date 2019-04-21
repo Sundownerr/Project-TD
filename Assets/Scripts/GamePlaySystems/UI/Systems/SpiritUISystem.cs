@@ -29,9 +29,10 @@ namespace Game.Systems
         List<SpiritStatValueUI> spiritStatValues;
 
         List<bool> isSlotEmpty = new List<bool>();
-        ObjectPool appliedEffectsUIPool;
         List<SlotWithCooldown> appliedEffectsUI = new List<SlotWithCooldown>();
+        ObjectPool appliedEffectsUIPool;
         SpiritSystem choosedSpirit;
+        WaitForSeconds deltaTimeDelay;
         Animator baseAnimator, expandAnimator;
         Button expandButton;
         string isOpen = "isOpen", isExpanded = "isExpanded";
@@ -61,7 +62,7 @@ namespace Game.Systems
             expandButton.onClick.AddListener(ExpandStats);
             numeralStatValues = new List<NumeralStatValueUI>(GetComponentsInChildren<NumeralStatValueUI>(true));
             spiritStatValues = new List<SpiritStatValueUI>(GetComponentsInChildren<SpiritStatValueUI>(true));
-
+            deltaTimeDelay = new WaitForSeconds(Time.deltaTime);
             appliedEffectsUIPool = new ObjectPool(SlotWithCooldownPrefab, BuffGroup.transform, 7);
 
             #region Helper functions
@@ -113,7 +114,6 @@ namespace Game.Systems
             {
                 baseAnimator.SetBool(isOpen, true);
                 choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
-
 
                 if (choosedSpirit.Owner == Owner)
                 {
@@ -199,17 +199,17 @@ namespace Game.Systems
 
         void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
         {
-            for (int i = 0; i < isSlotEmpty.Count; i++)
-                if (isSlotEmpty[i])
-                {
-                    itemUI.transform.position = ItemSlots[i].transform.position;
-                    itemUI.transform.SetParent(ItemSlots[i].transform.parent);
+            var emptySlot = isSlotEmpty.IndexOf(true);
 
-                    AddItemToSpirit(itemUI, i);
-                    return;
-                }
+            if (emptySlot < 0)
+                MoveItemToPlayer?.Invoke(null, itemUI);
+            else
+            {
+                itemUI.transform.position = ItemSlots[emptySlot].transform.position;
+                itemUI.transform.SetParent(ItemSlots[emptySlot].transform.parent);
 
-            MoveItemToPlayer?.Invoke(null, itemUI);
+                AddItemToSpirit(itemUI, emptySlot);
+            }
         }
 
         public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
@@ -300,30 +300,35 @@ namespace Game.Systems
 
         void UpdateItems()
         {
-            var spiritItems = choosedSpirit.Data.Inventory.Items;
+            var choosedSpiritItems = choosedSpirit.Data.Inventory.Items;
             var maxSlots = choosedSpirit.Data.Get(Enums.Spirit.MaxInventorySlots).Value;
 
             isSlotEmpty.Clear();
-            for (int i = 0; i < ItemSlots.Count; i++)
+            AllItemsUIInSpirits.ForEach(item => item.gameObject.SetActive(false));
+
+            UpdateSlotsAmount();
+
+            choosedSpiritItems.ForEach(itemInInventory =>
             {
-                var isInSlotLimit = i < maxSlots;
+                var itemFromDroppedItems = AllItemsUIInSpirits.Find(droppedItem => itemInInventory.ID.Compare(droppedItem.System.ID));
 
-                ItemSlots[i].gameObject.SetActive(isInSlotLimit);
-                isSlotEmpty.Add(isInSlotLimit);
+                if (itemFromDroppedItems != null)
+                {
+                    itemFromDroppedItems.gameObject.SetActive(true);
+                    isSlotEmpty[itemFromDroppedItems.SlotNumber] = false;
+                }
+            });
+
+            void UpdateSlotsAmount()
+            {
+                for (int i = 0; i < ItemSlots.Count; i++)
+                {
+                    var isInSlotLimit = i < maxSlots;
+
+                    ItemSlots[i].gameObject.SetActive(isInSlotLimit);
+                    isSlotEmpty.Add(isInSlotLimit);
+                }
             }
-
-            for (int i = 0; i < AllItemsUIInSpirits.Count; i++)
-                AllItemsUIInSpirits[i].gameObject.SetActive(false);
-
-
-            for (int i = 0; i < spiritItems.Count; i++)
-                for (int j = 0; j < AllItemsUIInSpirits.Count; j++)
-                    if (spiritItems[i].ID.Compare(AllItemsUIInSpirits[j].System.ID))
-                    {
-                        AllItemsUIInSpirits[j].gameObject.SetActive(true);
-                        isSlotEmpty[AllItemsUIInSpirits[j].SlotNumber] = false;
-                        break;
-                    }
         }
 
         void UpdateAbilities()
@@ -346,7 +351,8 @@ namespace Game.Systems
         void OnAbilityUsed(object sender, AbilitySystem e)
         {
             var slot = AbilitySlots.Find(x => x.EntityID == e.ID);
-            var delay = new WaitForSeconds(Time.deltaTime);
+
+            Debug.Log("abi used");
 
             slot.CooldownImage.fillAmount = 1f;
 
@@ -359,7 +365,7 @@ namespace Game.Systems
                 while (slot.CooldownImage.fillAmount > 0)
                 {
                     slot.CooldownImage.fillAmount -= 1 / e.Ability.Cooldown * Time.deltaTime * 2;
-                    yield return delay;
+                    yield return deltaTimeDelay;
                 }
             }
 

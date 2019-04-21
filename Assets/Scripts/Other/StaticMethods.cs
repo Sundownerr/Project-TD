@@ -31,7 +31,7 @@ public static class StaticMethods
 
     public static string KiloFormat(double num)
     {
-        if (num >= 1000000000)return (num / 1000000000).ToString("#.0" + "B");
+        if (num >= 1000000000) return (num / 1000000000).ToString("#.0" + "B");
         if (num >= 1000000) return (num / 1000000).ToString("#" + "M");
         if (num >= 100000) return (num / 1000).ToString("#.0" + "K");
         if (num >= 10000) return (num / 1000).ToString("0.#" + "K");
@@ -57,7 +57,7 @@ public static class StaticMethods
         U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
     }
 
-    public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, bool isOwnedByPlayer)
+    public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, bool isOwnedByPlayer = true)
     {
         var newSpiritPrefab = U.Instantiate(
             data.Prefab,
@@ -73,7 +73,6 @@ public static class StaticMethods
 
         newSpirit.SetSystem(ReferenceHolder.Get.Player);
         CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
-
         return newSpirit;
     }
 

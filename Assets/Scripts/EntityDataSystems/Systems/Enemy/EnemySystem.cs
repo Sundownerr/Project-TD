@@ -36,7 +36,7 @@ namespace Game.Enemy
 
         public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints, bool isOwnedByPlayer = true)
         {
-            AbilityControlSystem = new AbilityControlSystem(this);
+            AbilityControlSystem = new AbilityControlSystem(this, isOwnedByPlayer);
             TraitControlSystem = new TraitControlSystem(this);
             AppliedEffectSystem = new AppliedEffectSystem();
             this.waypoints = waypoints;

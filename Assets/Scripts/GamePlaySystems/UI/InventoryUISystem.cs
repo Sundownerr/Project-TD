@@ -82,8 +82,7 @@ namespace Game.Systems
 
         }
 
-        public void OnItemBeingDragged(object _, ItemDragEventArgs e) =>
-            RemoveItemFromPlayer(e.ItemUI);
+        public void OnItemBeingDragged(object _, ItemDragEventArgs e) => RemoveItemFromPlayer(e.ItemUI);
 
         public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
         {

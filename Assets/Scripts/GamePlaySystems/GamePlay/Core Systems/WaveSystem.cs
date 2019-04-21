@@ -56,9 +56,9 @@ namespace Game.Systems
 
             if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
-            else       
+            else
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
-            
+
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
 

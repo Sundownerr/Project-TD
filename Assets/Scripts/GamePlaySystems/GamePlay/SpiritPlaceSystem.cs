@@ -40,12 +40,22 @@ namespace Game.Systems
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                     {
-                        var position = new Coordinates3D(
-                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.x,
-                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.y,
-                            (int)Owner.CellControlSystem.ChoosedCell.transform.position.z);
+                        var choosedCell = Owner.CellControlSystem.ChoosedCell;
 
-                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest(spiritData.ID, (int)spiritData.Base.Rarity, (int)spiritData.Base.Element, position));
+                        var position = new Coordinates3D(
+                            (int)choosedCell.transform.position.x,
+                            (int)choosedCell.transform.position.y,
+                            (int)choosedCell.transform.position.z);
+
+                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest()
+                        {
+                            ID = spiritData.ID,
+                            Rarity = (int)spiritData.Base.Rarity,
+                            Element = (int)spiritData.Base.Element,
+                            DataBaseIndex = spiritData.ID[spiritData.ID.Count - 1],
+                            Position = position,
+                            CellIndex = Owner.CellControlSystem.Cells.IndexOf(choosedCell)
+                        });
                     }
                     else
                     {

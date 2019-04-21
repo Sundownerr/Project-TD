@@ -8,27 +8,17 @@ namespace Game.Systems
 {
     public class EffectSystem : IEntitySystem
     {
-        public bool IsSet { get => isSet; set => isSet = value; }
-        public bool IsEnded { get => isEnded; set => isEnded = value; }
-        public bool IsMaxStackCount { get => isMaxStackCount; set => isMaxStackCount = value; }
+        public bool IsEnded { get; protected set; } = true;
+        public bool IsMaxStackReached => Target.CountOf(effect) > effect.MaxStackCount;
+        public ICanReceiveEffects Target { get; protected set; }
         public IEntitySystem Owner { get; set; }
         public ID ID { get; set; }
 
-        protected bool isSet, isEnded, isMaxStackCount;
         protected Effect effect;
-        protected ICanReceiveEffects target;
-        protected WaitForSeconds durationDelay;
-
-        public ICanReceiveEffects Target { get => target; private set => target = value; }
 
         public EffectSystem(Effect effect)
         {
             this.effect = effect;
-
-            if (!effect.IsStackable)
-                effect.MaxStackCount = 1;
-
-            durationDelay = new WaitForSeconds(effect.Duration);
         }
 
         public void SetSystem(AbilitySystem ownerAbility)
@@ -38,45 +28,28 @@ namespace Game.Systems
             ID.Add(ownerAbility.EffectSystems.IndexOf(this));
         }
 
-
-        public virtual void Init()
-        {
-            if (!IsSet)
-                Apply();
-
-            Continue();
-        }
-
         public virtual void Apply()
         {
-            if (Target.CountOf(effect) > effect.MaxStackCount)
-            {
-                IsMaxStackCount = true;
-                return;
-            }
+            if (!IsEnded) return;
+            if (IsMaxStackReached) return;
 
-            IsSet = true;
+            Debug.Log($"started {effect} ");
+
+            Target.AddEffect(effect);
             IsEnded = false;
-        }
-
-        public virtual void Continue()
-        {
-            if (!IsEnded)
-                if (Target == null)
-                    End();
         }
 
         public virtual void End()
         {
-            if (!IsMaxStackCount)
-                Target?.RemoveEffect(effect);
- 
+            Debug.Log($"ended {effect} ");
+
+            Target?.RemoveEffect(effect);
             IsEnded = true;
         }
 
         public virtual void ApplyRestart()
         {
-            if (effect.IsStackable)
+            if (effect.MaxStackCount > 1)
                 RestartState();
             else
             if (IsEnded)
@@ -85,15 +58,15 @@ namespace Game.Systems
 
         public virtual void RestartState()
         {
+            Debug.Log($"restart  {effect}");
+
             End();
-            IsMaxStackCount = false;
-            IsEnded = false;
-            IsSet = false;
         }
 
         public virtual void SetTarget(ICanReceiveEffects newTarget)
         {
-            Target = Target ?? newTarget;
+            if (Target == null || Target.Prefab == null)
+                Target = newTarget;
         }
     }
 }

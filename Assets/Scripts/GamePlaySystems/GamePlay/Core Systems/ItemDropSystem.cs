@@ -26,7 +26,7 @@ namespace Game.Systems
         double[] itemRarityProbabilities = new double[] { 50, 20, 10, 5 };
 
         public ItemDropSystem(PlayerSystem player) => Owner = player;
-        
+
         public void SetSystem()
         {
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;
@@ -76,13 +76,11 @@ namespace Game.Systems
                 slotTransform.parent);
 
             var itemUI = itemUIGO.GetComponent<ItemUISystem>();
-
+            itemUI.System = new ItemSystem(item, owner);
             itemUI.SetSystem(owner);
             itemUIGO.GetComponent<Image>().sprite = item.Image;
             itemUI.DraggedFrom = owner is PlayerSystem ? DraggedFrom.PlayerInventory : DraggedFrom.SpiritInventory;
             itemUI.SlotNumber = slotNumber;
-
-            itemUI.System = new ItemSystem(item, owner);
 
             ItemUICreated?.Invoke(null, itemUI);
             return itemUI;

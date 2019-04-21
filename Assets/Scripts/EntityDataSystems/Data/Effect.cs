@@ -13,12 +13,10 @@ namespace Game.Data
     public abstract class Effect : Entity
     {
         public float Duration, NextInterval;
-        public bool IsStackable;
 
-        [ShowIf("IsStackable")]
         [MinValue(1), MaxValue(1000)]
         public int MaxStackCount;
 
-        public abstract EffectSystem EffectSystem {get; } 
+        public abstract EffectSystem EffectSystem { get; }
     }
 }

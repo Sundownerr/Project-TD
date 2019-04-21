@@ -21,32 +21,33 @@ namespace Game.Data.Effects
 
         public override void Apply()
         {
+            if (!IsEnded) return;
             base.Apply();
 
-            if (target.Prefab == null)
+            if (Target.Prefab == null)
             {
-                target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
                 End();
                 return;
             }
 
-            if (isMaxStackCount || target == null)
+            if (Target == null)
                 End();
             else
             {
                 effectPrefab = Object.Instantiate(
                     effect.EffectPrefab,
-                    target.Prefab.transform.position,
+                    Target.Prefab.transform.position,
                     Quaternion.identity,
-                    target.Prefab.transform);
+                    Target.Prefab.transform);
 
-                target.AddEffect(effect);
+                Target.AddEffect(effect);
                 effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
             }
 
             IEnumerator Stun()
             {
-                target.IsOn = false;
+                Target.IsOn = false;
                 yield return stunDuration;
                 End();
             }
@@ -57,8 +58,8 @@ namespace Game.Data.Effects
             if (effectCoroutine != null)
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
-            if (target != null)
-                target.IsOn = true;
+            if (Target != null)
+                Target.IsOn = true;
 
             Object.Destroy(effectPrefab);
 

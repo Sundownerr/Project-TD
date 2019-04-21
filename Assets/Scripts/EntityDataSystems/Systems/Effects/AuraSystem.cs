@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Spirit;
 using UnityEngine;
 using Game.Enums;
+using System;
 
 namespace Game.Systems
 {
@@ -20,22 +21,17 @@ namespace Game.Systems
 
         public override void Apply()
         {
-            isSet = true;
-            isEnded = false;
+            if (!IsEnded) return;
+
             var owner = Owner.GetOwnerOfType<IEntitySystem>();
-
             range = StaticMethods.CreateRange(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
-        }
 
-        public override void Continue()
-        {
-            if (Owner == null)
-                End();
+            IsEnded = false;
         }
 
         public override void End()
         {
-            Object.Destroy(rangePrefab);
+            UnityEngine.Object.Destroy(rangePrefab);
         }
     }
 }

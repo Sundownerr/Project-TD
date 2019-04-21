@@ -53,14 +53,15 @@ namespace Game.Systems
             if (spirit.UsedCell != null)
                 spirit.UsedCell.GetComponent<Cell>().IsBusy = false;
 
-            spirit.Dispose();
-
             AllSpirits.Remove(spirit);
-            
+
             if (spirit.IsOwnedByLocalPlayer)
                 OwnedSpirits.Remove(spirit);
             else
                 NotOwnedSpirits.Remove(spirit);
+
+            spirit.Dispose();
+            spirit = null;
         }
     }
 }

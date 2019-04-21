@@ -14,15 +14,15 @@ namespace Game.Systems
         public IEntitySystem Owner { get; private set; }
         public bool IsStacked { get; private set; }
         public bool IsNeedStack { get; set; }
+        public bool IsCooldowned { get; private set; } = true;
         public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
         public Ability Ability { get; private set; }
         public IHealthComponent Target { get; private set; }
 
         int effectCount;
-        bool isUsed;
         WaitForSeconds cooldownDelay;
         List<WaitForSeconds> nextEffectDelays = new List<WaitForSeconds>();
-        List<Coroutine> nextEffectCoroutines = new List<Coroutine>();
+        List<Coroutine> effectCoroutines = new List<Coroutine>();
 
         public AbilitySystem(Ability ability, IAbilitiySystem owner)
         {
@@ -58,33 +58,34 @@ namespace Game.Systems
         public void Init()
         {
             if (!IsStacked)
-                if (!isUsed)
+                if (IsCooldowned)
                 {
-                    isUsed = true;
+                    IsCooldowned = false;
                     Used?.Invoke(null, this);
                     GameLoop.Instance.StartCoroutine(Cooldown());
-                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
+                    effectCoroutines.Add(GameLoop.Instance.StartCoroutine(InitEffect()));
                 }
-
-            for (int i = 0; i <= effectCount; i++)
-                EffectSystems[i].Init();
 
             #region  Helper functions
 
             IEnumerator Cooldown()
             {
                 yield return cooldownDelay;
+
                 CooldownReset();
             }
 
-            IEnumerator NextEffectDelay()
+            IEnumerator InitEffect()
             {
+                for (int i = 0; i <= effectCount; i++)
+                    EffectSystems[i].Apply();
+
                 yield return nextEffectDelays[effectCount];
 
                 if (effectCount < Ability.Effects.Count - 1)
                 {
                     effectCount++;
-                    nextEffectCoroutines.Add(GameLoop.Instance.StartCoroutine(NextEffectDelay()));
+                    effectCoroutines.Add(GameLoop.Instance.StartCoroutine(InitEffect()));
                 }
             }
 
@@ -106,17 +107,19 @@ namespace Game.Systems
         public void CooldownReset()
         {
             effectCount = 0;
-            isUsed = false;
+            IsCooldowned = true;
 
             IsNeedStack = CheckNeedStack();
             EffectSystems.ForEach(effectSystem => effectSystem.ApplyRestart());
-            nextEffectCoroutines.ForEach(coroutine => GameLoop.Instance.StopCoroutine(coroutine));
-            nextEffectCoroutines.Clear();
+            effectCoroutines.ForEach(coroutine => GameLoop.Instance.StopCoroutine(coroutine));
+            effectCoroutines.Clear();
+
+            #region helper functions
 
             bool CheckNeedStack()
             {
                 for (int i = 0; i < EffectSystems.Count; i++)
-                    if (Ability.Effects[i].IsStackable)
+                    if (Ability.Effects[i].MaxStackCount > 1)
                     {
                         if (!EffectSystems[i].IsEnded)
                             return true;
@@ -126,6 +129,8 @@ namespace Game.Systems
                         return true;
                 return false;
             }
+
+            #endregion
         }
 
         public bool CheckAllEffectsEnded()

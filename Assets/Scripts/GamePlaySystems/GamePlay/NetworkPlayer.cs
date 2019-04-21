@@ -121,11 +121,11 @@ public class NetworkPlayer : NetworkBehaviour
         WaitAndDo(delay, () =>
         {
             var pos = request.Position.ToVector3();
-            var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells.Find(x => x.transform.position == pos);
-            var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits.Find(x => x.ID.Compare(request.ID));
+            var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells[request.CellIndex];
+            var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits[request.DataBaseIndex];
 
             var newSpirit = choosedCell != null ?
-                StaticMethods.CreateSpirit(spirit, choosedCell.GetComponent<Cell>(), true) :
+                StaticMethods.CreateSpirit(spirit, choosedCell) :
                 StaticMethods.CreateSpirit(spirit, pos, false);
 
             ReferenceHolder.Get.Player.SpiritPlaceSystem.NetworkCreateSpirit(newSpirit);

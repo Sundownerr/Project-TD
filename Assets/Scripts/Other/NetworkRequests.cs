@@ -49,15 +49,7 @@ public class SpiritCreationRequest
 {
     [SerializeField] public Coordinates3D Position;
     [SerializeField] public ID ID;
-    [SerializeField] public int Rarity, Element;
-
-    public SpiritCreationRequest(ID id, int rarity, int element, Coordinates3D position)
-    {
-        ID = id;
-        Rarity = rarity;
-        Element = element;
-        Position = new Coordinates3D(position.X, position.Y, position.Z);
-    }
+    [SerializeField] public int Rarity, Element, CellIndex, DataBaseIndex;
 }
 
 [Serializable]

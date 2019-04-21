@@ -53,7 +53,7 @@ namespace Game.Spirit
             dataSystem = new SpiritDataSystem(this);
             TraitControlSystem = new TraitControlSystem(this);
             ShootSystem = new ShootSystem(this);
-            AbilityControlSystem = new AbilityControlSystem(this);
+            AbilityControlSystem = new AbilityControlSystem(this, isOwnedByPlayer);
             AppliedEffectSystem = new AppliedEffectSystem();
             Prefab.layer = 14;
             IsOwnedByLocalPlayer = isOwnedByPlayer;

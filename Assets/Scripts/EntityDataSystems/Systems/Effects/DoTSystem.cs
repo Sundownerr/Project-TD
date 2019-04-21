@@ -26,29 +26,30 @@ namespace Game.Systems.Effects
 
         public override void Apply()
         {
+            if (!IsEnded) return;
             base.Apply();
 
-            if (target.Prefab == null)
+
+            if (Target.Prefab == null)
             {
-                target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
                 End();
                 return;
             }
 
-            if (isMaxStackCount || target == null)
+            if (Target == null)
                 End();
             else
             {
                 effectPrefab = Object.Instantiate(
                     effect.EffectPrefab,
-                    target.Prefab.transform.position + Vector3.up * 20,
+                    Target.Prefab.transform.position + Vector3.up * 20,
                     Quaternion.identity,
-                    target.Prefab.transform);
+                    Target.Prefab.transform);
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);
 
-                target.AddEffect(effect);
                 effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
             }
 
@@ -76,7 +77,7 @@ namespace Game.Systems.Effects
                 {
                     tickTimer += 0.5f;
 
-                    if (target is EnemySystem enemy)
+                    if (Target is EnemySystem enemy)
                         this.DealDamage(enemy, effect.DamagePerTick);
 
                     yield return damageInterval;
