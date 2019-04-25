@@ -91,8 +91,17 @@ namespace Game.Systems
             Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;
             Owner.ItemDropSystem.ItemUICreated += OnItemUICreated;
 
-            SellButton.onClick.AddListener(Sell);
-            UpgradeButton.onClick.AddListener(Upgrade);
+            SellButton.onClick.AddListener(() =>
+            {
+                Selling?.Invoke(null, null);
+                ActivateUI(false);
+            });
+
+            UpgradeButton.onClick.AddListener(() =>
+            {
+                Upgrading?.Invoke(null, null);
+                UpdateUI();
+            });
         }
 
         void OnItemUICreated(object _, ItemUISystem itemUI)
@@ -142,12 +151,9 @@ namespace Game.Systems
 
             void SubscribeToSpiritEvents()
             {
-                if (choosedSpirit == null)
-                    return;
+                if (choosedSpirit == null) return;
 
-                for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
-                    choosedSpirit.AbilitySystems[i].Used += OnAbilityUsed;
-
+                choosedSpirit.AbilitySystems.ForEach(ability => ability.Used += OnAbilityUsed);
                 choosedSpirit.EffectApplied += OnEffectApplied;
                 choosedSpirit.EffectRemoved += OnEffectRemoved;
                 choosedSpirit.StatsChanged += OnStatsApplied;
@@ -155,41 +161,36 @@ namespace Game.Systems
 
             void UnsubscribeFromSpiritEvents()
             {
-                if (choosedSpirit == null)
-                    return;
+                if (choosedSpirit == null) return;
 
-                for (int i = 0; i < choosedSpirit.AbilitySystems.Count; i++)
-                    choosedSpirit.AbilitySystems[i].Used -= OnAbilityUsed;
-
+                choosedSpirit.AbilitySystems.ForEach(ability => ability.Used -= OnAbilityUsed);
                 choosedSpirit.EffectApplied -= OnEffectApplied;
                 choosedSpirit.EffectRemoved -= OnEffectRemoved;
                 choosedSpirit.StatsChanged -= OnStatsApplied;
-
             }
 
             #endregion
         }
 
-        void OnEffectRemoved(object sender, Effect e)
+        void OnEffectRemoved(object sender, EffectSystem e)
         {
             var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
-
-            if (appliedEffectUI == null)
-                return;
+            
+            if (appliedEffectUI == null) return;
 
             appliedEffectUI.gameObject.SetActive(false);
             appliedEffectsUI.Remove(appliedEffectUI);
         }
 
-        void OnEffectApplied(object sender, Effect e)
+        void OnEffectApplied(object sender, EffectSystem e)
         {
             var poolObject = appliedEffectsUIPool.PopObject();
             var appliedEffectUI = poolObject.GetComponent<SlotWithCooldown>();
 
-            poolObject.GetComponent<Image>().sprite = e.Image;
+            poolObject.GetComponent<Image>().sprite = e.Effect.Image;
             appliedEffectsUI.Add(appliedEffectUI);
             appliedEffectUI.EntityID = e.ID;
-            appliedEffectUI.Description = e.Description;
+            appliedEffectUI.Description = e.Effect.Description;
         }
 
         void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
@@ -219,18 +220,6 @@ namespace Game.Systems
                 RemoveItemFromSpirit(itemUI);
                 MoveItemToPlayer?.Invoke(null, itemUI);
             }
-        }
-
-        void Sell()
-        {
-            Selling?.Invoke(null, null);
-            ActivateUI(false);
-        }
-
-        void Upgrade()
-        {
-            Upgrading?.Invoke(null, null);
-            UpdateUI();
         }
 
         void HideExpandedStatValues(bool hide)
@@ -335,8 +324,7 @@ namespace Game.Systems
         {
             var spiritAbilities = choosedSpirit.Data.Abilities;
 
-            for (int i = 0; i < AbilitySlots.Count; i++)
-                AbilitySlots[i].gameObject.SetActive(false);
+            AbilitySlots.ForEach(abilitySlot => abilitySlot.gameObject.SetActive(false));
 
             for (int i = 0; i < spiritAbilities.Count; i++)
             {
@@ -350,10 +338,7 @@ namespace Game.Systems
 
         void OnAbilityUsed(object sender, AbilitySystem e)
         {
-            var slot = AbilitySlots.Find(x => x.EntityID == e.ID);
-
-            Debug.Log("abi used");
-
+            var slot = AbilitySlots.Find(x => x.EntityID.Compare(e.ID));
             slot.CooldownImage.fillAmount = 1f;
 
             StartCoroutine(Cooldown());
@@ -376,8 +361,7 @@ namespace Game.Systems
         {
             var spiritTraits = choosedSpirit.Data.Traits;
 
-            for (int i = 0; i < TraitSlots.Count; i++)
-                TraitSlots[i].gameObject.SetActive(false);
+            TraitSlots.ForEach(traitSlot => traitSlot.gameObject.SetActive(false));
 
             for (int i = 0; i < spiritTraits.Count; i++)
             {
@@ -398,13 +382,13 @@ namespace Game.Systems
             UpdateTraits();
         }
 
-        public void OnItemBeingDragged(object _, ItemDragEventArgs e)
+        void OnItemBeingDragged(object _, ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
             RemoveItemFromSpirit(e.ItemUI);
         }
 
-        public void OnItemDragEnd(object _, ItemDragEventArgs e)
+        void OnItemDragEnd(object _, ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
 

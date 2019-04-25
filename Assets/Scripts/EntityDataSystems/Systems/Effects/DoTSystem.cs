@@ -12,23 +12,23 @@ namespace Game.Systems.Effects
     {
         public IDamageDealer OwnerDamageDealer { get; set; }
 
-        new DoT effect;
+        DoT effect;
         GameObject effectPrefab;
         ParticleSystem[] psList;
-        WaitForSeconds damageInterval = new WaitForSeconds(0.5f);
+        WaitForSeconds damageInterval = new WaitForSeconds(1);
         Coroutine effectCoroutine;
 
 
         public DoTSystem(DoT effect) : base(effect)
         {
+            Effect = effect;
             this.effect = effect;
         }
 
         public override void Apply()
         {
             if (!IsEnded) return;
-            if (IsMaxStackReached) return;
-
+           
             if (Target.Prefab == null)
             {
                 Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
@@ -36,10 +36,12 @@ namespace Game.Systems.Effects
                 return;
             }
 
-            if (Target == null)
+            if (Target == null || IsMaxStackReached)
                 End();
             else
             {
+                base.Apply();
+
                 effectPrefab = Object.Instantiate(
                     effect.EffectPrefab,
                     Target.Prefab.transform.position + Vector3.up * 20,
@@ -48,9 +50,7 @@ namespace Game.Systems.Effects
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);
-
-                base.Apply();
-
+                
                 effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
             }
 
@@ -76,7 +76,7 @@ namespace Game.Systems.Effects
 
                 while (tickTimer < effect.Duration)
                 {
-                    tickTimer += 0.5f;
+                    tickTimer += 1;
 
                     if (Target is EnemySystem enemy)
                         this.DealDamage(enemy, effect.DamagePerTick);
@@ -92,11 +92,12 @@ namespace Game.Systems.Effects
 
         public override void End()
         {
+            base.End();
+
             if (effectCoroutine != null)
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
             Object.Destroy(effectPrefab);
-            base.End();
         }
     }
 }

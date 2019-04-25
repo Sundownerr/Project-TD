@@ -9,16 +9,15 @@ namespace Game.Systems
     public class EffectSystem : IEntitySystem
     {
         public bool IsEnded { get; protected set; } = true;
-        public bool IsMaxStackReached => Target.CountOf(effect) > effect.MaxStackCount;
+        public bool IsMaxStackReached => Target.CountOf(this) > Effect.MaxStackCount;
         public ICanReceiveEffects Target { get; protected set; }
         public IEntitySystem Owner { get; set; }
         public ID ID { get; set; }
-
-        protected Effect effect;
+        public Effect Effect { get; protected set; }
 
         public EffectSystem(Effect effect)
         {
-            this.effect = effect;
+            Effect = effect;
         }
 
         public void SetSystem(AbilitySystem ownerAbility)
@@ -26,29 +25,29 @@ namespace Game.Systems
             Owner = ownerAbility;
             ID = new ID(ownerAbility.ID);
             ID.Add(ownerAbility.EffectSystems.IndexOf(this));
+
         }
 
         public virtual void Apply()
         {
-            Target.AddEffect(effect);
+            Target.AddEffect(this);
             IsEnded = false;
         }
 
         public virtual void End()
         {
-            Target?.RemoveEffect(effect);
+            Target.RemoveEffect(this);
             IsEnded = true;
         }
 
-        public virtual void ApplyRestart()
+        public virtual void SetTarget(ICanReceiveEffects newTarget, bool forceSet)
         {
-            if (effect.MaxStackCount > 1) End();
-            else
-            if (IsEnded) End();
-        }
-    
-        public virtual void SetTarget(ICanReceiveEffects newTarget)
-        {
+            if (forceSet)
+            {
+                Target = newTarget;
+                return;
+            }
+
             if (Target == null || Target.Prefab == null)
                 Target = newTarget;
         }

@@ -57,11 +57,11 @@ namespace Game
     public interface ICanReceiveEffects : IPrefabComponent, IVulnerable
     {
         AppliedEffectSystem AppliedEffectSystem { get; }
-        void AddEffect(Effect Effect);
-        void RemoveEffect(Effect Effect);
-        int CountOf(Effect Effect);
-        event EventHandler<Effect> EffectApplied;
-        event EventHandler<Effect> EffectRemoved;
+        void AddEffect(EffectSystem Effect);
+        void RemoveEffect(EffectSystem Effect);
+        int CountOf(EffectSystem Effect);
+        event EventHandler<EffectSystem> EffectApplied;
+        event EventHandler<EffectSystem> EffectRemoved;
     }
 
     public interface IHealthComponent : IPrefabComponent, IVulnerable

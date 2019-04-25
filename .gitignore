@@ -6,7 +6,7 @@
 *.html
 Assets/ImportedAssets/
 Assets/Plugins/
-Assets/SMirror/
+Assets/Mirror
 Assets/Textures/
 Assets/Materials/
 Assets/Prefabs/
@@ -27,7 +27,7 @@ Assets/CinemachinePostProcessingV2/
 /Packages
 *.dll
 .vs
-playerData.json
+*.json
 *.zip
 *.png
 *.csproj

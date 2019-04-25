@@ -10,11 +10,12 @@ namespace Game.Data.Effects
         GameObject effectPrefab;
         Coroutine effectCoroutine;
 
-        new Stun effect;
+        Stun effect;
         WaitForSeconds stunDuration;
 
         public StunSystem(Stun effect) : base(effect)
         {
+            Effect = effect;
             this.effect = effect;
             stunDuration = new WaitForSeconds(effect.Duration);
         }
@@ -22,7 +23,7 @@ namespace Game.Data.Effects
         public override void Apply()
         {
             if (!IsEnded) return;
-            if (IsMaxStackReached) return;
+            if (IsMaxStackReached) { End(); return; }
 
             if (Target.Prefab == null)
             {
@@ -35,14 +36,14 @@ namespace Game.Data.Effects
                 End();
             else
             {
+                base.Apply();
+
                 effectPrefab = Object.Instantiate(
                     effect.EffectPrefab,
                     Target.Prefab.transform.position,
                     Quaternion.identity,
                     Target.Prefab.transform);
 
-                base.Apply();
-                
                 effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
             }
 
@@ -56,15 +57,16 @@ namespace Game.Data.Effects
 
         public override void End()
         {
+            base.End();
+
             if (effectCoroutine != null)
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
             if (Target != null)
-                Target.IsOn = true;
+                if (Target.CountOf(this) == 0)
+                    Target.IsOn = true;
 
             Object.Destroy(effectPrefab);
-
-            base.End();
         }
     }
 }

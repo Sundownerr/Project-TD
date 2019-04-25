@@ -13,7 +13,7 @@ namespace Game.Enemy
     public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanReceiveEffects
     {
         public event EventHandler<EnemySystem> LastWaypointReached;
-        public event EventHandler<Effect> EffectApplied, EffectRemoved;
+        public event EventHandler<EffectSystem> EffectApplied, EffectRemoved;
         public event EventHandler<IHealthComponent> Died;
 
         public EnemyData Data { get; set; }
@@ -124,21 +124,21 @@ namespace Game.Enemy
             #endregion
         }
 
-        public void AddEffect(Effect effect)
+        public void AddEffect(EffectSystem effect)
         {
             AppliedEffectSystem.AddEffect(effect);
 
             EffectApplied?.Invoke(null, effect);
         }
 
-        public void RemoveEffect(Effect effect)
+        public void RemoveEffect(EffectSystem effect)
         {
             AppliedEffectSystem.RemoveEffect(effect);
 
             EffectRemoved?.Invoke(null, effect);
         }
 
-        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);   
+        public int CountOf(EffectSystem effect) => AppliedEffectSystem.CountOf(effect);   
         public void ChangeHealth(IDamageDealer changer, double damage) => HealthSystem.ChangeHealth(changer, damage);
         public void OnZeroHealth(object _, IHealthComponent entity) => Died?.Invoke(null, entity);
     }

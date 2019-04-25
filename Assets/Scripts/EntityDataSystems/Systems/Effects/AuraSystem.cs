@@ -16,7 +16,7 @@ namespace Game.Systems
 
         public AuraSystem(Effect effect) : base(effect)
         {
-            this.effect = effect;
+            Effect = effect;
         }
 
         public override void Apply()

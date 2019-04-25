@@ -27,8 +27,6 @@ public class EntityAttribute_A<EnumType, ValueType> : EntityAttribute<EnumType, 
     public double Sum => Value + AppliedValue;
 }
 
-
-
 ///<summary>
 /// L is Level-Up-able: have per level values 
 ///
@@ -42,26 +40,14 @@ public class EntityAttribute_A_L<EnumType, ValueType> : EntityAttribute_A<EnumTy
 }
 
 [Serializable]
-public class NumeralAttribute : EntityAttribute_A_L<Numeral, double>
-{
-
-}
+public class NumeralAttribute : EntityAttribute_A_L<Numeral, double> { }
 
 [Serializable]
-public class SpiritAttribute : EntityAttribute_A_L<Spirit, double>
-{
-
-}
+public class SpiritAttribute : EntityAttribute_A_L<Spirit, double> { }
 
 [Serializable]
-public class EnemyAttribute : EntityAttribute_A<Enemy, double>
-{
-
-}
+public class EnemyAttribute : EntityAttribute_A<Enemy, double> { }
 
 [Serializable]
-public class SpiritFlagAttribute : EntityAttribute<SpiritFlag, bool>
-{
-
-}
+public class SpiritFlagAttribute : EntityAttribute<SpiritFlag, bool> { }
 

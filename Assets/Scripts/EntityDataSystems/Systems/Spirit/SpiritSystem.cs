@@ -14,8 +14,8 @@ namespace Game.Spirit
 {
     public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanReceiveEffects, IDisposable
     {
-        public event EventHandler<Effect> EffectApplied;
-        public event EventHandler<Effect> EffectRemoved;
+        public event EventHandler<EffectSystem> EffectApplied;
+        public event EventHandler<EffectSystem> EffectRemoved;
         public event EventHandler<SpiritSystem> LeveledUp;
         public event EventHandler StatsChanged;
 
@@ -170,19 +170,19 @@ namespace Game.Spirit
 
         public void AddExp(int amount) => dataSystem.AddExp(amount);
 
-        public void AddEffect(Effect effect)
+        public void AddEffect(EffectSystem effect)
         {
             AppliedEffectSystem.AddEffect(effect);
             EffectApplied?.Invoke(null, effect);
         }
 
-        public void RemoveEffect(Effect effect)
+        public void RemoveEffect(EffectSystem effect)
         {
             EffectRemoved?.Invoke(null, effect);
             AppliedEffectSystem.RemoveEffect(effect);
         }
 
-        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
+        public int CountOf(EffectSystem effect) => AppliedEffectSystem.CountOf(effect);
 
         #region IDisposable Support
         bool disposedValue = false; // To detect redundant calls

@@ -1,18 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Systems;
 using UnityEngine;
 
 public class AppliedEffectSystem 
 {
-    public List<Effect> AppliedEffects { get; private set; } = new List<Effect>();
+    public List<EffectSystem> AppliedEffects { get; private set; } = new List<EffectSystem>();
 
-    public void AddEffect(Effect effect)
+    public void AddEffect(EffectSystem effect)
     {
         AppliedEffects.Add(effect);
     }
 
-    public void RemoveEffect(Effect effect)
+    public void RemoveEffect(EffectSystem effect)
     {
         for (int i = 0; i < AppliedEffects.Count; i++)
             if (effect.ID.Compare(AppliedEffects[i].ID))
@@ -22,7 +23,7 @@ public class AppliedEffectSystem
             }
     }
 
-    public int CountOf(Effect effect)
+    public int CountOf(EffectSystem effect)
     {
         var count = 0;
         var appliedEffects = AppliedEffects;

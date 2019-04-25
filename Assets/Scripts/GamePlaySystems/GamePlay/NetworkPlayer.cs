@@ -21,6 +21,7 @@ public class NetworkPlayer : NetworkBehaviour
     public UIControlSystem UiControlSystem { get; private set; }
     
     float delay = 0.07f;
+    WaitForSeconds wfsDelay;
 
     PlayerSystem localPlayer;
     public PlayerSystem LocalPlayer
@@ -57,6 +58,7 @@ public class NetworkPlayer : NetworkBehaviour
         LocalMap = localMaps[MapID];
         UiControlSystem = uiCanvasPrefab.GetComponent<UIControlSystem>();
         UiControlSystem.IncreaseLevelButtonClicked += (s, e) => CmdIncreaseLevel(PlayerData);
+        wfsDelay = new WaitForSeconds(delay);
 
         LoadData();
         CmdGetWaves();
@@ -69,7 +71,7 @@ public class NetworkPlayer : NetworkBehaviour
 
         IEnumerator Wait()
         {
-            yield return new WaitForSeconds(delay);
+            yield return wfsDelay;
             function.Invoke();
         }
     }
@@ -124,7 +126,7 @@ public class NetworkPlayer : NetworkBehaviour
             var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells[request.CellIndex];
             var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits[request.DataBaseIndex];
 
-            var newSpirit = choosedCell != null ?
+            var newSpirit = isLocalPlayer ?
                 StaticMethods.CreateSpirit(spirit, choosedCell) :
                 StaticMethods.CreateSpirit(spirit, pos, false);
 

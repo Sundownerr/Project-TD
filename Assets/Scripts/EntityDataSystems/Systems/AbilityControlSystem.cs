@@ -11,7 +11,7 @@ namespace Game.Systems
     {
         IAbilitiySystem owner;
         List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
-        bool isAllEffectsEnded, isInContinueState, isOwnedByPlayer;
+        bool isAllEffectsEnded, isOwnedByPlayer;
 
         public AbilityControlSystem(IAbilitiySystem owner, bool isOwnedByPlayer)
         {
@@ -30,111 +30,58 @@ namespace Game.Systems
 
         public void UpdateSystem()
         {
-            if (!isOwnedByPlayer) return;
-
             var abilitySystems = owner.AbilitySystems;
 
-            if (owner is EnemySystem)
+            if (owner is EnemySystem)          
                 for (int i = 0; i < abilitySystems.Count; i++)
                     abilitySystems[i].Init();
-            else
-            if (owner.Targets.Count > 0)
-            {
-                isInContinueState = false;
 
-                for (int i = 0; i < abilitySystems.Count; i++)
+            if (!isOwnedByPlayer) return;
+
+            for (int i = 0; i < abilitySystems.Count; i++)
+            {
+               
+                if (owner.Targets.Count > 0)
+                {              
+                    abilitySystems[i].SetTarget(owner.Targets[0] as ICanReceiveEffects);
+                    Init(abilitySystems[i], CheckTargetInRange(abilitySystems[i].Target));       
+                }
+                else
                 {
-                    if (abilitySystems[i].IsNeedStack)
-                        CreateStack(i);
-                    Init(abilitySystems[i], CheckTargetInRange(abilitySystems[i].Target));
+                    abilitySystems[i].SetTarget(null);      
+                    Init(abilitySystems[i], !abilitySystems[i].CheckAllEffectsEnded());
                 }
 
-                for (int i = 0; i < abilityStacks.Count; i++)
-                    Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
+                if (abilitySystems[i].IsNeedStack)
+                    CreateStack(i);
             }
-            else
-            {
-                isAllEffectsEnded = true;
 
-                for (int i = 0; i < abilitySystems.Count; i++)
-                    CheckContinueEffects(abilitySystems[i]);
-
-                for (int i = 0; i < abilityStacks.Count; i++)
-                    CheckContinueEffects(abilityStacks[i]);
-
-                if (!isAllEffectsEnded)
-                    ContinueEffects();
-            }
+            for (int i = 0; i < abilityStacks.Count; i++)
+                Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
 
             #region  Helper functions
-
-            void CheckContinueEffects(AbilitySystem abilitySystem)
-            {
-                isAllEffectsEnded = abilitySystem.CheckAllEffectsEnded();
-            }
 
             void CreateStack(int index)
             {
                 var stack = new AbilitySystem(abilitySystems[index].Ability, owner);
 
-                stack.StackReset(owner);
                 stack.SetTarget(abilitySystems[index].Target);
+                stack.StackReset(abilitySystems[index]);
 
                 abilityStacks.Add(stack);
                 abilitySystems[index].IsNeedStack = false;
             }
 
-            void ContinueEffects()
-            {
-                isInContinueState = true;
-
-                for (int i = 0; i < abilitySystems.Count; i++)
-                    Init(abilitySystems[i], !abilitySystems[i].CheckAllEffectsEnded());
-
-                for (int i = 0; i < abilityStacks.Count; i++)
-                    Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
-            }
-
-            bool CheckTargetInRange(IHealthComponent target)
-            {
-                for (int i = 0; i < owner.Targets.Count; i++)
-                    if (target == owner.Targets[i])
-                        return true;
-                return false;
-            }
+            bool CheckTargetInRange(ICanReceiveEffects target) =>
+                owner.Targets.Find(targetInRange => target == targetInRange) != null;
 
             void Init(AbilitySystem abilitySystem, bool condition)
             {
                 if (abilitySystem.Target != null && condition)
-                {
-                    isAllEffectsEnded = false;
-                    abilitySystem.SetTarget(abilitySystem.Target);
                     abilitySystem.Init();
-                }
                 else
-                {
-                    if (!abilitySystem.IsStacked)
-                        if (!isInContinueState)
-                            abilitySystem.SetTarget(owner.Targets[0]);
-                        else
-                        {
-                            if (!abilitySystem.IsCooldowned)
-                            {
-                                abilitySystem.CooldownReset();
-                                abilitySystem.SetTarget(null);
-                            }
-                        }
-                    else
-                    {
-                        for (int i = 0; i < abilitySystem.EffectSystems.Count; i++)
-                            abilitySystem.EffectSystems.Remove(abilitySystem.EffectSystems[i]);
-
-                        abilitySystem.EffectSystems.Clear();
-                        abilityStacks.Remove(abilitySystem);
-                    }
-
-                    isAllEffectsEnded = true;
-                }
+                if (abilitySystem.IsStacked && abilitySystem.CheckAllEffectsEnded())
+                    abilityStacks.Remove(abilitySystem);
             }
 
             #endregion
