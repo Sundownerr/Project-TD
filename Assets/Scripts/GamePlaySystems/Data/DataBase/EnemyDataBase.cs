@@ -12,23 +12,21 @@ namespace Game.Data
     public class EnemyDataBase : ScriptableObject
     {
         [SerializeField]
-        public Race[] Races;
+        public Race[] Data;
 
 #if UNITY_EDITOR
 
         void Awake()
         {
-            if (Races == null)
+            if (Data == null)
             {
                 var races = Enum.GetValues(typeof(RaceType));
 
-                Races = new Race[races.Length];
+                Data = new Race[races.Length];
 
                 for (int i = 0; i < races.Length; i++)
-                    Races[i] = new Race();
-            }
-
-            EditorUtility.SetDirty(this);
+                    Data[i] = new Race();
+            }         
         }
 
 #endif

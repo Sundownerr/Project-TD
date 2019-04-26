@@ -62,6 +62,25 @@ public static class Ext
         return -1;
     }
 
+    ///<summary>
+    /// Return random element from given probabilites
+    ///</summary>
+    public static int RollDice(this List<double> probabilities)
+    {
+        var total = 0d;
+
+        probabilities.ForEach(probability => total += probability);
+       
+        var randomProbability = (double)StaticRandom.Instance.Next(0, (int)total);
+
+        for (int i = 0; i < probabilities.Count; i++)
+            if (randomProbability < probabilities[i])
+                return i;
+            else
+                randomProbability -= probabilities[i];
+        return -1;
+    }
+
     public static string[] SplitCamelCase(this string source) => Regex.Split(source, @"(?<!^)(?=[A-Z])");
 
     public static string GetLocalized<EnumType>(this EnumType type) where EnumType: struct, Enum =>

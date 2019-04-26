@@ -19,7 +19,7 @@ public class EnemyDataBaseEditor : Editor
 
     private void Awake()
     {
-        allCreeps = serializedObject.FindProperty("Races");
+        allCreeps = serializedObject.FindProperty("Data");
 
         races = new SerializedProperty[allCreeps.arraySize];
 

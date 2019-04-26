@@ -41,12 +41,14 @@ namespace Game.Systems
         public EnemyUISystem EnemyUISystem;
         public WorldUISystem WorldUISystem;
         public DescriptionUISystem DescriptionUISystem;
-        public EnemyDataBase EnemyDataBase;
-        public SpiritDataBase SpiritDataBase;
-        public WaveDataBase WaveDataBase;
-        public EnemyAbilityDataBase EnemyAbilityDataBase;
-        public EnemyTraitDataBase EnemyTraitDataBase;
-        public ItemDataBase ItemDataBase;
+        public SpiritDataBase SpiritDB;
+        public SpiritAbilityDataBase SpiritAbilityDB;
+        public SpiritTraitDataBase SpiritTraitDB;
+        public EnemyDataBase EnemyDB;
+        public EnemyAbilityDataBase EnemyAbilityDB;
+        public EnemyTraitDataBase EnemyTraitDB;
+        public WaveDataBase WaveDB;
+        public ItemDataBase ItemDB;
         public EnemySettings EnemySettings;
         public DamageToArmorSettings DamageToArmorSettings;
         public Transform CellParent;
@@ -150,13 +152,13 @@ namespace Game.Systems
             DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
 
             PlayerSystemData playerData;
-            
+
             playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
                 NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
                 GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
-                
+
             playerData.Mage = GameData.Instance.ChoosedMage;
-        
+
             PlayerDataSet?.Invoke(null, playerData);
         }
     }

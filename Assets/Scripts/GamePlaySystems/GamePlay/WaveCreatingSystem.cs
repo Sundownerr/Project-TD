@@ -17,8 +17,8 @@ namespace Game.Systems
             var randomWaveIDs = new int[waveAmount];
             var raceTypes = Enum.GetValues(typeof(RaceType));
             var generatedWaves = new Queue<Wave>(waveAmount);
-            var standartWaves = ReferenceHolder.Get.WaveDataBase.Waves;
-            var riftBreakerWaves = ReferenceHolder.Get.WaveDataBase.RiftbreakersWaves;
+            var standartWaves = ReferenceHolder.Get.WaveDB.Waves;
+            var riftBreakerWaves = ReferenceHolder.Get.WaveDB.RiftbreakersWaves;
 
             for (int i = 0; i < waveAmount; i++)
             {
@@ -149,7 +149,7 @@ namespace Game.Systems
             {
                 var raceID = waveIDs.IDs[i][0];
                 var enemyID = waveIDs.IDs[i][1];
-                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDataBase.Races[raceID].Enemies[enemyID]);
+                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[raceID].Enemies[enemyID]);
 
                 wave.EnemyTypes.Add(
                     CreateNewEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
@@ -166,7 +166,7 @@ namespace Game.Systems
                 for (int i = 0; i < waveIDs.AbilityIDs.Count; i++)
                 {
                     var neededAbilityID = waveIDs.AbilityIDs[i];
-                    var abilityFromDB = ReferenceHolder.Get.EnemyAbilityDataBase.Abilities.Find(x => x.ID.Compare(neededAbilityID));
+                    var abilityFromDB = ReferenceHolder.Get.EnemyAbilityDB.Data.Find(ability => ability.ID.Compare(neededAbilityID));
 
                     if (abilityFromDB == null)
                     {
@@ -186,7 +186,7 @@ namespace Game.Systems
                 for (int i = 0; i < waveIDs.TraitIDs.Count; i++)
                 {
                     var neededTraitID = waveIDs.TraitIDs[i];
-                    var traitFromDB = ReferenceHolder.Get.EnemyTraitDataBase.Traits.Find(x => x.ID.Compare(neededTraitID));
+                    var traitFromDB = ReferenceHolder.Get.EnemyTraitDB.Data.Find(trait => trait.ID.Compare(neededTraitID));
 
                     if (traitFromDB == null)
                     {
@@ -211,7 +211,7 @@ namespace Game.Systems
 
         static Wave CreateWave(Wave wave, int waveNumber)
         {
-            var races = ReferenceHolder.Get.EnemyDataBase.Races;
+            var races = ReferenceHolder.Get.EnemyDB.Data;
             var randomRace = RaceType.Humanoid;
             var waveRace = races[(int)randomRace];
             var fittingEnemies = ScriptableObject.CreateInstance<Wave>();
@@ -244,8 +244,8 @@ namespace Game.Systems
 
                 for (int i = 0; i < randomAbilityCount; i++)
                 {
-                    var randomAbilityId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.EnemyAbilityDataBase.Abilities.Count);
-                    var randomAbility = ReferenceHolder.Get.EnemyAbilityDataBase.Abilities[randomAbilityId];
+                    var randomAbilityId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.EnemyAbilityDB.Data.Count);
+                    var randomAbility = ReferenceHolder.Get.EnemyAbilityDB.Data[randomAbilityId];
 
                     randomAbilities.Add(randomAbility);
                 }
@@ -259,8 +259,8 @@ namespace Game.Systems
 
                 for (int i = 0; i < randomTraitCount; i++)
                 {
-                    var randomTraitId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.EnemyTraitDataBase.Traits.Count);
-                    var randomTrait = ReferenceHolder.Get.EnemyTraitDataBase.Traits[randomTraitId];
+                    var randomTraitId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.EnemyTraitDB.Data.Count);
+                    var randomTrait = ReferenceHolder.Get.EnemyTraitDB.Data[randomTraitId];
 
                     randomTraits.Add(randomTrait);
                 }

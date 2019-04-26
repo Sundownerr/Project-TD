@@ -124,7 +124,7 @@ public class NetworkPlayer : NetworkBehaviour
         {
             var pos = request.Position.ToVector3();
             var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells[request.CellIndex];
-            var spirit = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits[request.DataBaseIndex];
+            var spirit = ReferenceHolder.Get.SpiritDB.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits[request.DataBaseIndex];
 
             var newSpirit = isLocalPlayer ?
                 StaticMethods.CreateSpirit(spirit, choosedCell) :

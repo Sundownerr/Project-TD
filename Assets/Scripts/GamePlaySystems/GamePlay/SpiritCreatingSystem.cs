@@ -29,7 +29,7 @@ namespace Game.Systems
             //     GM.Instance.PlayerData.StartTowerRerollCount--;
             // }
             var elementLevels = Owner.Data.ElementLevels;
-            var dataBaseElements = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements;
+            var dataBaseElements = ReferenceHolder.Get.SpiritDB.Spirits.Elements;
 
             for (int lvldUpElementId = 0; lvldUpElementId < elementLevels.Count; lvldUpElementId++)
                 if (elementLevels[lvldUpElementId] > 0)
@@ -43,7 +43,7 @@ namespace Game.Systems
 
             void GetNewSpirit(int elementId)
             {
-                var elements = ReferenceHolder.Get.SpiritDataBase.Spirits.Elements;
+                var elements = ReferenceHolder.Get.SpiritDB.Spirits.Elements;
 
 
                 for (int i = 0; i < elements[elementId].Rarities.Length; i++)

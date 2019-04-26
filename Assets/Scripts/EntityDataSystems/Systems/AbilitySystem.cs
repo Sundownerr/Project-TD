@@ -30,6 +30,8 @@ namespace Game.Systems
 
             Ability.Effects.ForEach(effect =>
             {
+                effect = UnityEngine.Object.Instantiate(effect);
+
                 EffectSystems.Add(effect.EffectSystem);
                 nextEffectDelays.Add(new WaitForSeconds(effect.NextInterval));
             });

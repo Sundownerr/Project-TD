@@ -166,7 +166,7 @@ namespace Game.Systems
 
         bool CheckGradeListOk(out List<SpiritData> grades)
         {
-            var allSpirits = ReferenceHolder.Get.SpiritDataBase.Spirits.
+            var allSpirits = ReferenceHolder.Get.SpiritDB.Spirits.
                 Elements[(int)ChoosedSpirit.Data.Base.Element].
                 Rarities[(int)ChoosedSpirit.Data.Base.Rarity].
                 Spirits;

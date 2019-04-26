@@ -49,17 +49,19 @@ namespace Game.Systems
 
             ItemSystem CreateItem(int rarityId)
             {
-                var allItems = ReferenceHolder.Get.ItemDataBase.Items;
-                var fittingItems = new ItemSystem[allItems.Length];
-                var fittingItemsWeigths = new double[allItems.Length];
+                var ItemsFromDB = ReferenceHolder.Get.ItemDB.Data;
+                var fittingItems = new List<ItemSystem>(ItemsFromDB.Count);
+                var fittingItemsWeigths = new List<double>(ItemsFromDB.Count);
 
-                for (int i = 0; i < allItems.Length; i++)
-                    if (allItems[i].WaveLevel <= Owner.WaveSystem.WaveNumber)
+                ItemsFromDB.ForEach(item =>
+                {
+                    if (item.WaveLevel <= Owner.WaveSystem.WaveNumber)
                     {
-                        var newItem = new ItemSystem(allItems[i], Owner);
-                        fittingItems[i] = newItem;
-                        fittingItemsWeigths[i] = allItems[i].Weigth;
+                        var newItem = new ItemSystem(item, Owner);
+                        fittingItems.Add(newItem);
+                        fittingItemsWeigths.Add(item.Weigth);
                     }
+                });
 
                 return fittingItems[fittingItemsWeigths.RollDice()];
             }

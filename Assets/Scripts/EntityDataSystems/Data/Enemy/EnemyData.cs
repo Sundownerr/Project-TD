@@ -53,7 +53,7 @@ namespace Game.Enemy
         {
             if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
             {
-                var thisEnemyRace = dataBase.Races[(int)Race];
+                var thisEnemyRace = dataBase.Data[(int)Race];
 
                 if (!thisEnemyRace.Enemies.Contains(this))
                 {
@@ -75,7 +75,7 @@ namespace Game.Enemy
         {
             if (DataControlSystem.Load<EnemyDataBase>() is EnemyDataBase dataBase)
             {
-                dataBase.Races[(int)Race].Enemies.RemoveAt(numberInList);
+                dataBase.Data[(int)Race].Enemies.RemoveAt(numberInList);
                 DataControlSystem.Save(dataBase);
             }
         }
