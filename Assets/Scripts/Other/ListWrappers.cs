@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using System;
-using Game.Spirit.Data.Stats;
-using Game.Enums;
+using Game.Data.Spirit.Internal;
 
 namespace Game.Wrappers
 {
@@ -13,8 +10,5 @@ namespace Game.Wrappers
         public DamageType Type;
         public List<double> Percents;
     }
-
-
-
 }
 

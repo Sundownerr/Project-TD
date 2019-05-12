@@ -1,36 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Data;
-using Game.Systems;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using Game.Data.Effects;
 
-public class AppliedEffectSystem 
+namespace Game.Systems
 {
-    public List<EffectSystem> AppliedEffects { get; private set; } = new List<EffectSystem>();
-
-    public void AddEffect(EffectSystem effect)
+    public class AppliedEffectSystem
     {
-        AppliedEffects.Add(effect);
-    }
+        public List<Effect> AppliedEffects { get; private set; } = new List<Effect>();
 
-    public void RemoveEffect(EffectSystem effect)
-    {
-        for (int i = 0; i < AppliedEffects.Count; i++)
-            if (effect.ID.Compare(AppliedEffects[i].ID))
-            {
-                AppliedEffects.RemoveAt(i);
-                return;
-            }
-    }
+        public void AddEffect(Effect effect)
+        {
+            AppliedEffects.Add(effect);
+        }
 
-    public int CountOf(EffectSystem effect)
-    {
-        var count = 0;
-        var appliedEffects = AppliedEffects;
+        public void RemoveEffect(Effect effect)
+        {
+            for (int i = 0; i < AppliedEffects.Count; i++)
+                if (effect.ID.Compare(AppliedEffects[i].ID))
+                {
+                    AppliedEffects.RemoveAt(i);
+                    return;
+                }
+        }
 
-        for (int i = 0; i < appliedEffects.Count; i++)
-            if (effect.ID.Compare(appliedEffects[i].ID))
-                count++;
-        return count;
+        public int CountOf(Effect effect)
+        {
+            var count = 0;
+            var appliedEffects = AppliedEffects;
+
+            for (int i = 0; i < appliedEffects.Count; i++)
+                if (effect.ID.Compare(appliedEffects[i].ID))
+                    count++;
+            return count;
+        }
     }
 }

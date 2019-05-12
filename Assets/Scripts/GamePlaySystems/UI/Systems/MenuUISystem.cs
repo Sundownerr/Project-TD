@@ -5,8 +5,11 @@ using UnityEngine.SceneManagement;
 using System;
 using Game;
 using DG.Tweening;
+using Game.Systems;
+using Game.Consts;
+using Game.Managers;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class MenuUISystem : UIWindow
     {

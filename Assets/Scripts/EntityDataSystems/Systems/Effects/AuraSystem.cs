@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Spirit;
+﻿using Game.Data;
 using UnityEngine;
 using Game.Enums;
-using System;
+using Game.Utility;
+using Game.Data.Effects;
 
-namespace Game.Systems
+namespace Game.Systems.Effects
 {
     public class AuraSystem : EffectSystem
     {

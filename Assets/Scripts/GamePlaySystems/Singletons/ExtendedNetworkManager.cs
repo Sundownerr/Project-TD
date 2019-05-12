@@ -4,51 +4,56 @@ using UnityEngine;
 using Mirror;
 using FPClient = Facepunch.Steamworks.Client;
 using Game.Systems;
+using Game.Network;
+using NetworkPlayer = Game.Network.NetworkPlayer;
 
-public class ExtendedNetworkManager : NetworkManager
+namespace Game.Managers
 {
-    public GameObject GamemanagerPrefab;
-    public NetworkGameManager NetworkGameManager;
-
-  
-    public override void OnServerSceneChanged(string sceneName)
+    public class ExtendedNetworkManager : NetworkManager
     {
-        var gmPrefab = Instantiate(GamemanagerPrefab);
+        public GameObject GamemanagerPrefab;
+        public NetworkGameManager NetworkGameManager;
 
-        NetworkServer.Spawn(gmPrefab);
 
-        NetworkGameManager = gmPrefab.GetComponent<NetworkGameManager>();
-        NetworkGameManager.Set();
+        public override void OnServerSceneChanged(string sceneName)
+        {
+            var gmPrefab = Instantiate(GamemanagerPrefab);
 
-        base.OnServerSceneChanged(sceneName);
-    }
+            NetworkServer.Spawn(gmPrefab);
 
-    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
-    {
-        var freeMapID = NetworkGameManager.GetFreeMapID();
-        // var maxPlayers = FPClient.Instance != null ? FPClient.Instance.Lobby.NumMembers : 4;
-        // var currentPlayers = NetworkServer.connections.Count;
+            NetworkGameManager = gmPrefab.GetComponent<NetworkGameManager>();
+            NetworkGameManager.Set();
 
-        // if (currentPlayers > maxPlayers)
-        // {
-        //     conn.Disconnect();
-        //     return;
-        // }
+            base.OnServerSceneChanged(sceneName);
+        }
 
-        var playerGO = Instantiate(playerPrefab);
-        var player = playerGO.GetComponent<NetworkPlayer>();
+        public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
+        {
+            var freeMapID = NetworkGameManager.GetFreeMapID();
+            // var maxPlayers = FPClient.Instance != null ? FPClient.Instance.Lobby.NumMembers : 4;
+            // var currentPlayers = NetworkServer.connections.Count;
 
-        player.MapID = freeMapID;
+            // if (currentPlayers > maxPlayers)
+            // {
+            //     conn.Disconnect();
+            //     return;
+            // }
 
-        NetworkServer.AddPlayerForConnection(conn, playerGO);
-    }
+            var playerGO = Instantiate(playerPrefab);
+            var player = playerGO.GetComponent<NetworkPlayer>();
 
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
-        var player = conn.playerController;
+            player.MapID = freeMapID;
 
-        NetworkGameManager.RemovePlayer(player.gameObject, player.GetComponent<NetworkPlayer>().PlayerData);
+            NetworkServer.AddPlayerForConnection(conn, playerGO);
+        }
 
-        base.OnServerDisconnect(conn);
+        public override void OnServerDisconnect(NetworkConnection conn)
+        {
+            var player = conn.playerController;
+
+            NetworkGameManager.RemovePlayer(player.gameObject, player.GetComponent<NetworkPlayer>().PlayerData);
+
+            base.OnServerDisconnect(conn);
+        }
     }
 }

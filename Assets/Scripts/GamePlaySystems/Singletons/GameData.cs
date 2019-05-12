@@ -1,34 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
-using Facepunch.Steamworks;
-using FPClient = Facepunch.Steamworks.Client;
-using Transport.Steamworks;
-using Game;
-using System;
+using Game.Utility;
+using Game.Enums;
+using Game.Consts;
+using Game.Data.Mage;
 
-namespace Game.Systems
+namespace Game.Managers
 {
-    public class GameData : MonoBehaviour
+    public class GameData : SingletonDDOL<GameData>
     {
-        static GameData instance;
-        public static GameData Instance
-        {
-            get => instance;
-            private set
-            {
-                if (instance == null) instance = value;
-            }
-        }
-
         public PlayerData PlayerData { get; private set; }
         public MageData ChoosedMage;
 
-        void Awake()
+        protected override void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            Instance = this;
+            base.Awake();
+
             LoadData();
         }
 

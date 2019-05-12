@@ -1,21 +1,21 @@
 using System;
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Enemy.Data;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit.Data;
-using Game.Spirit.System;
 using UnityEngine;
 using U = UnityEngine.Object;
 using Game.Enums;
+using Game.Utility;
+using Game.Systems.Spirit.Internal;
+using Game.Systems.Enemy;
+using Game.Data.Spirit;
+using Game.Data.Effects;
+using Game.Systems.Abilities;
 
-namespace Game.Spirit
+namespace Game.Systems.Spirit
 {
     public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanReceiveEffects, IDisposable
     {
-        public event EventHandler<EffectSystem> EffectApplied;
-        public event EventHandler<EffectSystem> EffectRemoved;
+        public event EventHandler<Effect> EffectApplied;
+        public event EventHandler<Effect> EffectRemoved;
         public event EventHandler<SpiritSystem> LeveledUp;
         public event EventHandler StatsChanged;
 
@@ -94,18 +94,18 @@ namespace Game.Spirit
 
             void SetTraitSystems()
             {
-                for (int i = 0; i < Data.Traits.Count; i++)
+                Data.Traits?.ForEach(trait =>
                 {
-                    TraitSystems.Add(Data.Traits[i].GetSystem(this));
+                    TraitSystems.Add(trait.GetSystem(this));
                     TraitSystems[TraitSystems.Count - 1].Set();
-                }
+                });
+               
                 TraitControlSystem.Set();
             }
 
             void SetAbilitySystems()
             {
-                for (int i = 0; i < Data.Abilities.Count; i++)
-                    AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
+                Data.Abilities?.ForEach(ability => AbilitySystems.Add(new AbilitySystem(ability, this)));
 
                 AbilityControlSystem.Set();
             }
@@ -113,6 +113,7 @@ namespace Game.Spirit
             void SetShootSystem()
             {
                 var bullet = Prefab.transform.GetChild(2).gameObject;
+                
                 bullet.SetActive(false);
                 ShootSystem.Set(bullet);
             }
@@ -170,19 +171,19 @@ namespace Game.Spirit
 
         public void AddExp(int amount) => dataSystem.AddExp(amount);
 
-        public void AddEffect(EffectSystem effect)
+        public void AddEffect(Effect effect)
         {
             AppliedEffectSystem.AddEffect(effect);
             EffectApplied?.Invoke(null, effect);
         }
 
-        public void RemoveEffect(EffectSystem effect)
+        public void RemoveEffect(Effect effect)
         {
             EffectRemoved?.Invoke(null, effect);
             AppliedEffectSystem.RemoveEffect(effect);
         }
 
-        public int CountOf(EffectSystem effect) => AppliedEffectSystem.CountOf(effect);
+        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
 
         #region IDisposable Support
         bool disposedValue = false; // To detect redundant calls

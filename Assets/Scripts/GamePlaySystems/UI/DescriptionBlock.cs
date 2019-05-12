@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Managers;
+using Game.Systems;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class DescriptionBlock : MonoBehaviour, IHaveDescription, IPointerEnterHandler, IPointerExitHandler
     {

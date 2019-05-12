@@ -1,13 +1,10 @@
-using Game.Spirit;
-using System.Collections;
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Data.Effects;
 using UnityEngine;
 using Game.Enums;
+using Game.Systems.Spirit;
+using Game.Data.Effects;
 
-namespace Game.Systems
+namespace Game.Systems.Effects
 {
     public class SlowAuraSystem : AuraSystem
     {
@@ -28,12 +25,12 @@ namespace Game.Systems
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
             var removedAttackSpeedMod = (int)spiritAttackSpeed.Sum.GetPercent(effect.SlowPercent);
 
-            if (spirit.CountOf(this) <= 0)
+            if (spirit.CountOf(Effect) <= 0)
                 spiritAttackSpeed.AppliedValue -= removedAttackSpeedMod;
             else
                 removedAttackSpeedMod = (int)(spiritAttackSpeed.Sum - effect.SlowPercent).GetPercent(effect.SlowPercent);
 
-            spirit.AddEffect(this);
+            spirit.AddEffect(Effect);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
         }
 
@@ -44,12 +41,12 @@ namespace Game.Systems
             var spirit = entity as SpiritSystem;
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
 
-            if (spirit.CountOf(this) <= 1)
+            if (spirit.CountOf(Effect) <= 1)
                 if (removedAttackSpeedMods.TryGetValue(spirit, out int removedAttackSpeed))
                     spiritAttackSpeed.AppliedValue += removedAttackSpeed;
 
             removedAttackSpeedMods.Remove(spirit);
-            spirit.RemoveEffect(this);
+            spirit.RemoveEffect(Effect);
         }
 
         public override void Apply()

@@ -8,8 +8,10 @@ using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
 using Game;
 using DG.Tweening;
+using Game.Consts;
+using Game.Utility;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class LobbyDataChanger
     {

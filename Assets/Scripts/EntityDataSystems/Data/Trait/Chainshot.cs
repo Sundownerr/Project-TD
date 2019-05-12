@@ -1,8 +1,7 @@
-﻿using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+﻿using UnityEngine;
+using Game.Systems.Traits;
 
-namespace Game.Data
+namespace Game.Data.Traits
 {
     [CreateAssetMenu(fileName = "Chainshot", menuName = "Data/Spirit/Trait/Chainshot")]
 
@@ -10,8 +9,10 @@ namespace Game.Data
     {
         public int BounceCount, DecreaseDamagePerBounce;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             Name = "Chainshot";
             Description = $"Bounce between {BounceCount} targets";
         }

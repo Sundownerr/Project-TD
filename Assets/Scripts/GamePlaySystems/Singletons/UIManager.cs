@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Game.Data.Mage;
+using Game.Enums;
+using Game.UI;
+using Game.Utility;
 using UnityEngine;
 
-namespace Game.Systems
+namespace Game.Managers
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager : SingletonDDOL<UIManager>
     {
         public event EventHandler ReturnToMenu, GameStarted;
         public event EventHandler<MageData> MageSelected;
-
-        static UIManager instance;
-        public static UIManager Instance
-        {
-            get => instance;
-            private set
-            {
-                if (instance == null) instance = value;
-            }
-        }
 
         protected MenuUISystem menu;
         public MenuUISystem Menu
@@ -48,14 +41,6 @@ namespace Game.Systems
         protected LobbyUISystem lobby;
         protected MageSelectionUISystem mageSelection;
 
-        void Awake()
-        {
-            if (UIManager.Instance != null) { Destroy(gameObject); return; }
-
-            DontDestroyOnLoad(this);
-            Instance = this;
-        }
-
         void SetSystem()
         {
             lobbyList = Menu.LobbyList;
@@ -64,10 +49,13 @@ namespace Game.Systems
 
             Menu.StartMultiplayer += OnStartMultiplayer;
             Menu.StartSingleplayer += OnStartSingleplayer;
+
             lobbyList.CreatedLobby += OnLobbyCreated;
             lobbyList.JoinedLobby += OnLobbyJoined;
+
             lobby.GameStarted += OnGameStarted;
             lobby.ChangeMageClicked += OnLobbyMageChange;
+            
             mageSelection.MageSelected += OnMageSelected;
 
             GameManager.Instance.GameState = GameState.MainMenu;

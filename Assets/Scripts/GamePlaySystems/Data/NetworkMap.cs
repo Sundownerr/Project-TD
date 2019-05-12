@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-
-public class NetworkMap : NetworkBehaviour
+namespace Game.Network
 {
-    [SyncVar]
-    public bool IsUsed;
+    public class NetworkMap : NetworkBehaviour
+    {
+        [SyncVar]
+        public bool IsUsed;
 
-    [SyncVar]
-    public GameObject LocalMap;
+        [SyncVar]
+        public GameObject LocalMap;
 
-  
+
+    }
 }

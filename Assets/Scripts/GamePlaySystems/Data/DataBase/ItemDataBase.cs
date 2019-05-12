@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using Game.Data.Items;
 using UnityEngine;
 
-namespace Game.Data
+namespace Game.Data.Databases
 {
-    [Serializable, CreateAssetMenu(fileName = "ItemDB", menuName = "Data/Data Base/Item DataBase")]
+    [Serializable, CreateAssetMenu(fileName = "ItemDataBase", menuName = "Data/Data Base/Item DataBase")]
     public class ItemDataBase : EntityDataBase<Item> { }
 }

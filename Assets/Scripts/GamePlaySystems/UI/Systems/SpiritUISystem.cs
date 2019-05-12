@@ -2,13 +2,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Game.Spirit;
 using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Enums;
+using Game.Systems;
+using Game.Utility;
+using Game.Managers;
+using Game.Systems.Spirit;
+using Game.Data.Effects;
+using Game.Systems.Abilities;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class SpiritUISystem : ExtendedMonoBehaviour
     {
@@ -172,7 +177,7 @@ namespace Game.Systems
             #endregion
         }
 
-        void OnEffectRemoved(object sender, EffectSystem e)
+        void OnEffectRemoved(object sender, Effect e)
         {
             var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
             
@@ -182,15 +187,15 @@ namespace Game.Systems
             appliedEffectsUI.Remove(appliedEffectUI);
         }
 
-        void OnEffectApplied(object sender, EffectSystem e)
+        void OnEffectApplied(object sender, Effect e)
         {
             var poolObject = appliedEffectsUIPool.PopObject();
             var appliedEffectUI = poolObject.GetComponent<SlotWithCooldown>();
 
-            poolObject.GetComponent<Image>().sprite = e.Effect.Image;
+            poolObject.GetComponent<Image>().sprite = e.Image;
             appliedEffectsUI.Add(appliedEffectUI);
             appliedEffectUI.EntityID = e.ID;
-            appliedEffectUI.Description = e.Effect.Description;
+            appliedEffectUI.Description = e.Description;
         }
 
         void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);

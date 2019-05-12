@@ -1,10 +1,9 @@
 ﻿
 using System;
-using Game.Enemy;
-using Game.Data;
-using Game.Spirit;
-using UnityEngine;
 using Game.Enums;
+using Game.UI;
+using Game.Systems.Spirit;
+using Game.Systems.Enemy;
 
 namespace Game.Systems
 {

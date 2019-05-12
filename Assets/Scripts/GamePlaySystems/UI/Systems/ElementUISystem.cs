@@ -2,10 +2,12 @@
 using TMPro;
 using UnityEngine;
 using System;
-using Game.Spirit;
 using Game.Enums;
+using Game.Utility;
+using Game.Systems;
+using Game.Systems.Spirit;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class ElementUISystem : ExtendedMonoBehaviour
     {

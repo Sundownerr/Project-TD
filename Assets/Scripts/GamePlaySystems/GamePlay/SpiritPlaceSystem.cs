@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
-using Game.Spirit;
-using Game.Spirit.Data;
-using Game.Spirit.Data.Stats;
-using UnityEngine;
-using U = UnityEngine.Object;
-using Mirror;
 using Game.Enums;
+using Game.Data.NetworkRequests;
+using Game.Managers;
+using Game.Utility;
+using Game.Systems.Spirit;
+using Game.Data.Spirit;
 
 namespace Game.Systems
 {

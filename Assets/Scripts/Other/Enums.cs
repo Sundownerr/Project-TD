@@ -12,6 +12,20 @@ namespace Game.Enums
         SpiritVessel
     }
 
+
+    public enum GameState
+    {
+        MainMenu,
+        LoadingGame,
+        UnloadingGame,
+        InGameSingleplayer,
+        InGameMultiplayer,
+        BrowsingLobbies,
+        CreatingLobby,
+        InLobby,
+        SelectingMage
+    }
+    
     public enum CollideWith
     {
         Enemies,

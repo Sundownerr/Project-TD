@@ -3,52 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Systems;
 using System;
+using Game.Utility;
+using Game.Enums;
 
-public class GameLoop : MonoBehaviour
+namespace Game.Managers
 {
-    public event EventHandler<PlayerSystem> PlayerCreated;
-
-    static GameLoop instance;
-    public static GameLoop Instance
+    public class GameLoop : SingletonDDOL<GameLoop>
     {
-        get => instance;
-        private set
+        public event EventHandler<PlayerSystem> PlayerCreated;
+
+        PlayerSystem player;
+
+        void Start()
         {
-            if (instance == null)
-                instance = value;
+            ReferenceHolder.Get.PlayerDataSet += OnPlayerDataSet;
+            GameManager.Instance.StateChanged += OnGameStateChanged;
         }
-    }
 
-    PlayerSystem player;
+        void OnGameStateChanged(object sender, GameState e)
+        {
+            var inGame = e == GameState.InGameMultiplayer || e == GameState.InGameSingleplayer;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(this);
-        Instance = this;
-    }
+            if (!inGame)
+                player = null;
+        }
 
-    void Start()
-    {
-        ReferenceHolder.Get.PlayerDataSet += OnPlayerDataSet;
-        GameManager.Instance.StateChanged += OnGameStateChanged;
-    }
+        void OnPlayerDataSet(object _, PlayerSystemData e)
+        {
+            player = new PlayerSystem(e.Map, e.Mage);
+            PlayerCreated?.Invoke(null, player);
+        }
 
-    void OnGameStateChanged(object sender, GameState e)
-    {
-        var inGame = e == GameState.InGameMultiplayer || e == GameState.InGameSingleplayer;
-
-        if (!inGame)
-            player = null;
-    }
-
-    void OnPlayerDataSet(object _, PlayerSystemData e)
-    {
-        player = new PlayerSystem(e.Map, e.Mage);
-        PlayerCreated?.Invoke(null, player);
-    }
-
-    void FixedUpdate()
-    {
-        player?.UpdateSystem();
+        void FixedUpdate()
+        {
+            player?.UpdateSystem();
+        }
     }
 }

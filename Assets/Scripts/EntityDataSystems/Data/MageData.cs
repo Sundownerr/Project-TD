@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Game;
 using OneLine;
 using UnityEngine;
 using Game.Systems;
-using Lean.Localization;
-using Game.Enums;
 using NaughtyAttributes;
-using Game.Data;
+using Game.Data.Databases;
+using Game.Data.Attributes;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Game
+namespace Game.Data.Mage
 {
     [Serializable, CreateAssetMenu(fileName = "New Mage", menuName = "Data/Mage")]
     public class MageData : Entity
@@ -35,8 +32,7 @@ namespace Game
         [SerializeField, OneLine, OneLine.HideLabel]
         List<EnemyAttribute> enemyAttributes;
 
-        [NaughtyAttributes.ResizableTextArea]
-        public string AdvancedDescription;
+        public string AdvancedDescription { get; set; }
 
         public List<NumeralAttribute> NumeralAttributes { get => numeralAttributes; set => numeralAttributes = value; }
         public List<SpiritAttribute> SpiritAttributes { get => spiritAttributes; set => spiritAttributes = value; }
@@ -44,12 +40,6 @@ namespace Game
         public List<EnemyAttribute> EnemyAttributes { get => enemyAttributes; set => enemyAttributes = value; }
 
         StringBuilder bonusesBuilder;
-        [SerializeField, HideInInspector] private int numberInList;
-
-        void Awake()
-        {
-            Debug.Log($"mage id: {ID.ToString()}");
-        }
 
         public void GenerateDescription()
         {
@@ -73,25 +63,31 @@ namespace Game
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]
-        void AddToDataBase()
+        public void AddToDataBase()
         {
-            if (DataControlSystem.Load<MageDataBase>() is MageDataBase dataBase)
+            if (DataControlSystem.LoadDatabase<MageDataBase>() is MageDataBase dataBase)
             {
-                if (!dataBase.Data.Contains(this))
-                {
-                    numberInList = dataBase.Data.Count;
+                var isInDataBase = dataBase.Data.Find(element => element.Compare(this));
 
-                    ID = new ID() { numberInList };
+                if (isInDataBase == null)
+                {
+                    Index = dataBase.Data.Count;
 
                     dataBase.Data.Add(this);
                     EditorUtility.SetDirty(this);
                     DataControlSystem.Save(dataBase);
                 }
-                else Debug.LogWarning($"{this} already in data base");
+                else
+                {
+                    Debug.LogWarning($"{this} already in data base");
+                }
             }
-            else Debug.LogError($"{typeof(MageDataBase)} not found");
+            else
+            {
+                Debug.LogError($"{typeof(MageDataBase)} not found");
+            }
         }
-#endif 
+#endif
 
         string BuildDescription(List<SpiritAttribute> list, Attribute type, Value valueType)
         {

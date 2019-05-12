@@ -9,8 +9,14 @@ using TMPro;
 using System;
 using Game;
 using DG.Tweening;
+using Game.Utility;
+using Game.Systems;
+using Game.Consts;
+using Game.Managers;
+using Game.Enums;
+using Game.Data.Mage;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class LobbyUISystem : UIWindow
     {

@@ -7,29 +7,33 @@ using UnityEngine.EventSystems;
 using Game.Systems;
 using System;
 using TMPro;
+using Game.Data.Mage;
 
-public class MageUI : MonoBehaviour
+namespace Game.UI
 {
-    public event EventHandler<MageData> Selected;
-    public MageData MageData;
-
-    Button button;
-    
-    void Awake()
+    public class MageUI : MonoBehaviour
     {
-        MageData = Instantiate(MageData);
-        MageData.GenerateDescription();
-        button = transform.GetChild(0).GetComponent<Button>();
-        button.onClick.AddListener(() => Selected?.Invoke(null, MageData));    
+        public event EventHandler<MageData> Selected;
+        public MageData MageData;
 
-        GetComponentInChildren<Image>().sprite = MageData.Image;
-        GetComponentInChildren<TextMeshProUGUI>().text = MageData.Name;
-    }
+        Button button;
 
-    void OnDestroy()
-    {
-        Destroy(MageData);
-        Selected = null;
-        button.onClick.RemoveAllListeners();    
+        void Awake()
+        {
+            MageData = Instantiate(MageData);
+            MageData.GenerateDescription();
+            button = transform.GetChild(0).GetComponent<Button>();
+            button.onClick.AddListener(() => Selected?.Invoke(null, MageData));
+
+            GetComponentInChildren<Image>().sprite = MageData.Image;
+            GetComponentInChildren<TextMeshProUGUI>().text = MageData.Name;
+        }
+
+        void OnDestroy()
+        {
+            Destroy(MageData);
+            Selected = null;
+            button.onClick.RemoveAllListeners();
+        }
     }
 }

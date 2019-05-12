@@ -1,8 +1,9 @@
 using Game.Systems;
 using UnityEngine;
 using Mirror;
+using Game.Utility;
 
-namespace Game.Cells
+namespace Game.Systems.Cells
 {
     public class Cell : ExtendedMonoBehaviour
     {

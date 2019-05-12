@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Enums;
-using Game.Systems;
+using Game.Managers;
+using Game.Utility;
 using UnityEngine;
 
-namespace Game.Spirit.System
+namespace Game.Systems.Spirit.Internal
 {
     [Serializable]
     public class ShootSystem

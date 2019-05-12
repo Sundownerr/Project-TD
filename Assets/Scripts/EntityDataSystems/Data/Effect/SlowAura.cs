@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Systems;
+﻿using Game.Systems.Effects;
 using UnityEngine;
 
-namespace Game.Data
+namespace Game.Data.Effects
 {
     [CreateAssetMenu(fileName = "SlowAura", menuName = "Data/Effect/Slow Aura")]
 

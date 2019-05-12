@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+using Game.Systems.Traits;
+using Game.Systems.Spirit;
+using Game.Systems.Spirit.Internal;
+using Game.Data.Traits;
 
 namespace Game.Systems
 {

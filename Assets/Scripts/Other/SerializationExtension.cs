@@ -2,28 +2,31 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public static class SerializerDeserializerExtensions
+namespace Game.Utility
 {
-    public static byte[] Serializer(this object obj)
+    public static class SerializerDeserializerExtensions
     {
-        byte[] bytes;
-        using (var memoryStream = new MemoryStream())
+        public static byte[] Serializer(this object obj)
         {
-            IFormatter binaryFormatter = new BinaryFormatter();
-            binaryFormatter.Serialize(memoryStream, obj);
-            bytes = memoryStream.ToArray();
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                IFormatter binaryFormatter = new BinaryFormatter();
+                binaryFormatter.Serialize(memoryStream, obj);
+                bytes = memoryStream.ToArray();
+            }
+            return bytes;
         }
-        return bytes;
-    }
 
-    public static T Deserializer<T>(this byte[] _byteArray)
-    {
-        T returnValue;
-        using (var memoryStream = new MemoryStream(_byteArray))
+        public static T Deserializer<T>(this byte[] _byteArray)
         {
-            IFormatter binaryFormatter = new BinaryFormatter();
-            returnValue = (T)binaryFormatter.Deserialize(memoryStream);
+            T returnValue;
+            using (var memoryStream = new MemoryStream(_byteArray))
+            {
+                IFormatter binaryFormatter = new BinaryFormatter();
+                returnValue = (T)binaryFormatter.Deserialize(memoryStream);
+            }
+            return returnValue;
         }
-        return returnValue;
     }
 }

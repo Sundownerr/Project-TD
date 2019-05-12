@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 
-namespace Game.Data
+namespace Game.Data.Databases
 {
     [CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Data Base/Wave Data Base")]
 

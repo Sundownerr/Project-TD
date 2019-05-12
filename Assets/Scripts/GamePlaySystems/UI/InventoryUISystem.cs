@@ -1,12 +1,13 @@
-﻿using Game.Data;
+﻿using Game.Data.Items;
 using Game.Enums;
+using Game.Systems;
+using Game.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class InventoryUISystem : MonoBehaviour
     {

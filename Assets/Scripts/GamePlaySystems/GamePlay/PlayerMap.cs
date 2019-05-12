@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerMap : MonoBehaviour
+namespace Game.Data
 {
-    public GameObject[] CellAreas;
-    public PlayerSystem Owner;
-    public GameObject GroundSpawnPoint;
-    public GameObject FlyingSpawnPoint;
-    public GameObject[] GroundWaypoints;
-    public GameObject[] FlyingWaypoints;
+    public class PlayerMap : MonoBehaviour
+    {
+        public GameObject[] CellAreas;
+        public PlayerSystem Owner;
+        public GameObject GroundSpawnPoint;
+        public GameObject FlyingSpawnPoint;
+        public GameObject[] GroundWaypoints;
+        public GameObject[] FlyingWaypoints;
 
+    }
 }

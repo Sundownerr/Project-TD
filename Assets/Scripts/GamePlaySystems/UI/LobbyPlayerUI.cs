@@ -5,61 +5,65 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
+using Game.Consts;
 
-public class LobbyPlayerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace Game.UI
 {
-    public event EventHandler ReadyClicked;
-    public event EventHandler ChangeMageClicked;
-    public TextMeshProUGUI PlayerNameText, LevelText, ReadyText, MageNameText;
-    public RawImage Avatar;
-    public Button ChangeMageButton, ReadyButton;
-
-    bool isReady;
-    bool isOwner;
-
-    void Awake()
+    public class LobbyPlayerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        ReadyText.text = $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>";
-        ReadyButton.interactable = false;
+        public event EventHandler ReadyClicked;
+        public event EventHandler ChangeMageClicked;
+        public TextMeshProUGUI PlayerNameText, LevelText, ReadyText, MageNameText;
+        public RawImage Avatar;
+        public Button ChangeMageButton, ReadyButton;
 
-        ChangeMageButton.gameObject.SetActive(false);
-    }
+        bool isReady;
+        bool isOwner;
 
-    public void Set()
-    {
-        ReadyButton.interactable = true;
-        ReadyButton.onClick.AddListener(() =>
+        void Awake()
         {
-            isReady = !isReady;
-            ReadyText.text = isReady ?
-                $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>";
-            ReadyClicked?.Invoke(null, null);
-        });
+            ReadyText.text = $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>";
+            ReadyButton.interactable = false;
 
-        ChangeMageButton.gameObject.SetActive(true);
-        ChangeMageButton.onClick.AddListener(() => ChangeMageClicked?.Invoke(null, null));
-        ChangeMageButton.gameObject.SetActive(false);
-    }
+            ChangeMageButton.gameObject.SetActive(false);
+        }
 
-    void OnDestroy()
-    {
-        ReadyButton.onClick.RemoveAllListeners();
-        ChangeMageButton.onClick.RemoveAllListeners();
-    }
+        public void Set()
+        {
+            ReadyButton.interactable = true;
+            ReadyButton.onClick.AddListener(() =>
+            {
+                isReady = !isReady;
+                ReadyText.text = isReady ?
+                    $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
+                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>";
+                ReadyClicked?.Invoke(null, null);
+            });
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (!ReadyButton.interactable) return;
+            ChangeMageButton.gameObject.SetActive(true);
+            ChangeMageButton.onClick.AddListener(() => ChangeMageClicked?.Invoke(null, null));
+            ChangeMageButton.gameObject.SetActive(false);
+        }
 
-        ChangeMageButton.gameObject.SetActive(false);
+        void OnDestroy()
+        {
+            ReadyButton.onClick.RemoveAllListeners();
+            ChangeMageButton.onClick.RemoveAllListeners();
+        }
 
-    }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!ReadyButton.interactable) return;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (!ReadyButton.interactable) return;
+            ChangeMageButton.gameObject.SetActive(false);
 
-        ChangeMageButton.gameObject.SetActive(true);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!ReadyButton.interactable) return;
+
+            ChangeMageButton.gameObject.SetActive(true);
+        }
     }
 }

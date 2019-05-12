@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Systems;
-using UnityEngine;
-using Game.Spirit;
+using Game.Systems.Abilities;
+using Game.Systems.Enemy;
 
 namespace Game.Systems
 {

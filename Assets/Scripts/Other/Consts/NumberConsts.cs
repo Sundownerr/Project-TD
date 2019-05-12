@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class NumberConsts 
+namespace Game.Consts
 {
-    public const float UIAnimSpeed = 0.3f;
+    public static class NumberConsts
+    {
+        public const float UIAnimSpeed = 0.3f;
+    }
 }

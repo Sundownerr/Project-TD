@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Game.Enemy.Data;
 using UnityEngine;
 using System;
-using Game.Enemy;
+using Game.Data.Enemy;
 
 namespace Game.Data
 {

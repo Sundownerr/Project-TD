@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Game.Systems;
+using Game.Managers;
+using Game.Data.Effects;
+using Game.Systems.Abilities;
 
-namespace Game.Data.Effects
+namespace Game.Systems.Effects
 {
 
     public class StunSystem : EffectSystem
@@ -23,7 +25,12 @@ namespace Game.Data.Effects
         public override void Apply()
         {
             if (!IsEnded) return;
-            if (IsMaxStackReached) { End(); return; }
+
+            if (Target == null || IsMaxStackReached)
+            {
+                End();
+                return;
+            }
 
             if (Target.Prefab == null)
             {
@@ -32,20 +39,15 @@ namespace Game.Data.Effects
                 return;
             }
 
-            if (Target == null)
-                End();
-            else
-            {
-                base.Apply();
+            base.Apply();
 
-                effectPrefab = Object.Instantiate(
-                    effect.EffectPrefab,
-                    Target.Prefab.transform.position,
-                    Quaternion.identity,
-                    Target.Prefab.transform);
+            effectPrefab = Object.Instantiate(
+                effect.EffectPrefab,
+                Target.Prefab.transform.position,
+                Quaternion.identity,
+                Target.Prefab.transform);
 
-                effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
-            }
+            effectCoroutine = GameLoop.Instance.StartCoroutine(Stun());
 
             IEnumerator Stun()
             {
@@ -63,7 +65,7 @@ namespace Game.Data.Effects
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
             if (Target != null)
-                if (Target.CountOf(this) == 0)
+                if (Target.CountOf(Effect) == 0)
                     Target.IsOn = true;
 
             Object.Destroy(effectPrefab);

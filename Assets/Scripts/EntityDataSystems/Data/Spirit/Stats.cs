@@ -4,7 +4,7 @@ using System;
 using Game.Enums;
 using OneLine;
 
-namespace Game.Spirit.Data.Stats
+namespace Game.Data.Spirit.Internal
 {
 
     [Serializable]

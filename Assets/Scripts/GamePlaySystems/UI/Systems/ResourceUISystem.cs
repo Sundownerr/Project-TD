@@ -2,8 +2,10 @@
 using TMPro;
 using System;
 using UnityEngine;
+using Game.Utility;
+using Game.Systems;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class ResourceUISystem : ExtendedMonoBehaviour
     {

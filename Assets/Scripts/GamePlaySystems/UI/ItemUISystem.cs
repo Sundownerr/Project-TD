@@ -1,16 +1,12 @@
-﻿using Game.Data;
-using Game.Spirit;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Game.Systems;
+using Game.Utility;
 
-namespace Game.Systems
+namespace Game.UI
 {
-
-
     public enum DraggedFrom
     {
         PlayerInventory = 0,

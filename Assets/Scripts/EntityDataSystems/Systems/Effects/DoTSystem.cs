@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Game.Systems;
-using Game.Enemy;
-using Game.Spirit;
 using Game.Data.Effects;
-using Game.Data;
+using Game.Managers;
+using Game.Systems.Enemy;
+using Game.Systems.Abilities;
 
 namespace Game.Systems.Effects
 {
@@ -28,7 +28,13 @@ namespace Game.Systems.Effects
         public override void Apply()
         {
             if (!IsEnded) return;
-           
+
+            if (Target == null || IsMaxStackReached)
+            {
+                End();
+                return;
+            }
+
             if (Target.Prefab == null)
             {
                 Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
@@ -36,23 +42,19 @@ namespace Game.Systems.Effects
                 return;
             }
 
-            if (Target == null || IsMaxStackReached)
-                End();
-            else
-            {
-                base.Apply();
+            base.Apply();
 
-                effectPrefab = Object.Instantiate(
-                    effect.EffectPrefab,
-                    Target.Prefab.transform.position + Vector3.up * 20,
-                    Quaternion.identity,
-                    Target.Prefab.transform);
+            effectPrefab = Object.Instantiate(
+                effect.EffectPrefab,
+                Target.Prefab.transform.position + Vector3.up * 20,
+                Quaternion.identity,
+                Target.Prefab.transform);
 
-                psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                Show(true);
-                
-                effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
-            }
+            psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
+            Show(true);
+
+            effectCoroutine = GameLoop.Instance.StartCoroutine(DealDamageOverTime());
+
 
             #region Helper functions
 
@@ -79,7 +81,9 @@ namespace Game.Systems.Effects
                     tickTimer += 1;
 
                     if (Target is EnemySystem enemy)
+                    {
                         this.DealDamage(enemy, effect.DamagePerTick);
+                    }
 
                     yield return damageInterval;
                 }
@@ -95,7 +99,9 @@ namespace Game.Systems.Effects
             base.End();
 
             if (effectCoroutine != null)
+            {
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
+            }
 
             Object.Destroy(effectPrefab);
         }

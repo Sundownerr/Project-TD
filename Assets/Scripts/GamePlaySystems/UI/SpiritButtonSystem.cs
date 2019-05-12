@@ -1,10 +1,12 @@
 ﻿using UnityEngine.UI;
-using Game.Spirit.Data;
 using TMPro;
 using System;
 using Game.Enums;
+using Game.Utility;
+using Game.Systems;
+using Game.Data.Spirit;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class SpiritButtonSystem : ExtendedMonoBehaviour
     {

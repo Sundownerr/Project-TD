@@ -1,15 +1,17 @@
-﻿using Game.Systems;
-using Game.Spirit.Data.Stats;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
 using Game.Enums;
-using Game.Wrappers;
 using OneLine;
+using Game.Data.Attributes;
+using NaughtyAttributes;
+using Game.Data.Databases;
+using UnityEngine;
+using Game.Systems;
 
-namespace Game.Data
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+namespace Game.Data.Items
 {
     public class Item : Entity
     {
@@ -19,7 +21,6 @@ namespace Game.Data
         [OneLine, OneLine.HideLabel] public List<NumeralAttribute> NumeralAttributes;
         [OneLine, OneLine.HideLabel] public List<SpiritAttribute> SpiritAttributes;
 
-        // public NumeralAttribute Get(Numeral type) =>
-        //     Attributes.Find(attribute => attribute.Type == type);
+
     }
 }

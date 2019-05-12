@@ -2,13 +2,15 @@
 using UnityEngine;
 using System;
 using Game.Data;
-using UnityEngine.EventSystems;
-using NaughtyAttributes;
-using System.Collections;
 using Game.Enums;
-using Game.Enemy.Data;
+using Game.Data.Databases;
+using Game.Systems;
+using Game.UI;
+using Game.Data.Settings;
+using Game.Network;
+using NetworkPlayer = Game.Network.NetworkPlayer;
 
-namespace Game.Systems
+namespace Game.Managers
 {
     public class ReferenceHolder : MonoBehaviour
     {
@@ -42,11 +44,9 @@ namespace Game.Systems
         public WorldUISystem WorldUISystem;
         public DescriptionUISystem DescriptionUISystem;
         public SpiritDataBase SpiritDB;
-        public SpiritAbilityDataBase SpiritAbilityDB;
-        public SpiritTraitDataBase SpiritTraitDB;
+        public AbilityDatabase AbilityDB;
+        public TraitDatabase TraitDB;
         public EnemyDataBase EnemyDB;
-        public EnemyAbilityDataBase EnemyAbilityDB;
-        public EnemyTraitDataBase EnemyTraitDB;
         public WaveDataBase WaveDB;
         public ItemDataBase ItemDB;
         public EnemySettings EnemySettings;

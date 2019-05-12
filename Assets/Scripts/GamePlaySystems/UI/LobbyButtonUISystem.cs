@@ -6,18 +6,21 @@ using UnityEngine.UI;
 using Facepunch.Steamworks;
 using TMPro;
 
-public class LobbyButtonUISystem : MonoBehaviour
+namespace Game.UI
 {
-    public event EventHandler<LobbyList.Lobby> Clicked;
-
-    public LobbyList.Lobby Lobby { get; set; }
-    public TextMeshProUGUI Label { get; set; }
-
-    void Awake()
+    public class LobbyButtonUISystem : MonoBehaviour
     {
-        Label = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        public event EventHandler<LobbyList.Lobby> Clicked;
 
-        GetComponent<Button>().onClick.AddListener(() => Clicked?.Invoke(null, Lobby));
+        public LobbyList.Lobby Lobby { get; set; }
+        public TextMeshProUGUI Label { get; set; }
+
+        void Awake()
+        {
+            Label = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            GetComponent<Button>().onClick.AddListener(() => Clicked?.Invoke(null, Lobby));
+        }
+
     }
-   
 }

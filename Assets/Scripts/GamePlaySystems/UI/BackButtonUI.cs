@@ -5,34 +5,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Game.Utility;
+using Game.Managers;
 
-namespace Game.Systems
+namespace Game.UI
 {
-
-
-    public class BackButtonUI : MonoBehaviour
+    public class BackButtonUI : SingletonDDOL<BackButtonUI>
     {
         public GameObject ThisWindow, PreviousWindow;
         public string PreviousSceneName;
 
         public event EventHandler Clicked;
 
-        static BackButtonUI instance;
-        public static BackButtonUI Instance
-        {
-            get => instance;
-            private set
-            {
-                if (instance == null) instance = value;
-            }
-        }
-
         static TextMeshProUGUI buttonText;
 
-        void Awake()
+        protected override void Awake()
         {
-            DontDestroyOnLoad(this);
-            Instance = this;
+            base.Awake();
+
             buttonText = GetComponentInChildren<TextMeshProUGUI>();
             buttonText.text = "Back";
 

@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
-using Game.Systems;
-using Game.Spirit;
-using System.Collections;
 using System.Collections.Generic;
-using Game.Data;
-using Game.Enemy.Data;
-using Game.Spirit.System;
 using System;
+using Game.Data.Effects;
+using Game.Systems.Abilities;
+using Game.Data.Enemy;
 
-namespace Game.Enemy
+namespace Game.Systems.Enemy
 {
     public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanReceiveEffects
     {
         public event EventHandler<EnemySystem> LastWaypointReached;
-        public event EventHandler<EffectSystem> EffectApplied, EffectRemoved;
+        public event EventHandler<Effect> EffectApplied, EffectRemoved;
         public event EventHandler<IHealthComponent> Died;
 
         public EnemyData Data { get; set; }
@@ -66,18 +63,18 @@ namespace Game.Enemy
 
             void SetTraitSystems()
             {
-                for (int i = 0; i < Data.Traits.Count; i++)
+                Data.Traits?.ForEach(trait =>
                 {
-                    TraitSystems.Add(Data.Traits[i].GetSystem(this));
+                    TraitSystems.Add(trait.GetSystem(this));
                     TraitSystems[TraitSystems.Count - 1].Set();
-                }
+                });
+               
                 TraitControlSystem.Set();
             }
 
             void SetAbilitySystems()
             {
-                for (int i = 0; i < Data.Abilities.Count; i++)
-                    AbilitySystems.Add(new AbilitySystem(Data.Abilities[i], this));
+                Data.Abilities?.ForEach(ability => AbilitySystems.Add(new AbilitySystem(ability, this)));
 
                 AbilityControlSystem.Set();
             }
@@ -87,7 +84,7 @@ namespace Game.Enemy
 
         public void UpdateSystem()
         {
-            
+
             HealthSystem?.UpdateSystem();
             AbilityControlSystem.UpdateSystem();
 
@@ -124,21 +121,21 @@ namespace Game.Enemy
             #endregion
         }
 
-        public void AddEffect(EffectSystem effect)
+        public void AddEffect(Effect effect)
         {
             AppliedEffectSystem.AddEffect(effect);
 
             EffectApplied?.Invoke(null, effect);
         }
 
-        public void RemoveEffect(EffectSystem effect)
+        public void RemoveEffect(Effect effect)
         {
             AppliedEffectSystem.RemoveEffect(effect);
 
             EffectRemoved?.Invoke(null, effect);
         }
 
-        public int CountOf(EffectSystem effect) => AppliedEffectSystem.CountOf(effect);   
+        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
         public void ChangeHealth(IDamageDealer changer, double damage) => HealthSystem.ChangeHealth(changer, damage);
         public void OnZeroHealth(object _, IHealthComponent entity) => Died?.Invoke(null, entity);
     }

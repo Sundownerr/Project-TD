@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Game.Data.Enemy;
 
-namespace Game.Enemy.Data
+namespace Game.Data.Enemy.Internal
 {
 
     [Serializable]

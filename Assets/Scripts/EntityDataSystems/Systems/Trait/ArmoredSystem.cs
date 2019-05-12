@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+﻿using Game.Data.Traits;
+using Game.Systems.Enemy;
 
-namespace Game.Systems
+namespace Game.Systems.Traits
 {
-	public class ArmoredSystem : ITraitHandler
+    public class ArmoredSystem : ITraitHandler
     {
         public ITraitSystem Owner { get; set; }
 

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Game.Systems;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class DescriptionUISystem : MonoBehaviour
     {

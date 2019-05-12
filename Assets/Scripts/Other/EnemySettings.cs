@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Data
+namespace Game.Data.Settings
 {
     [CreateAssetMenu(fileName = "EnemySettings", menuName = "Data/Settings/Enemy Gold and Exp settings")]
 

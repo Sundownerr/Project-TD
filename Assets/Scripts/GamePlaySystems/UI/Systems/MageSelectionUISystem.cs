@@ -6,56 +6,61 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using Game.Consts;
+using Game.Data.Mage;
 
-public class MageSelectionUISystem : UIWindow
+namespace Game.UI
 {
-    public event EventHandler<MageData> MageSelected;
-
-    public Button SelectMageButton;
-    public TextMeshProUGUI MageBaseDescription, MageAdvancedDescription;
-    public Image MageImage;
-
-    List<MageUI> mageUIs;
-    MageData selectedMage;
-
-    void Awake()
+    public class MageSelectionUISystem : UIWindow
     {
-        defaultYs = new float[] { transform.GetChild(0).localPosition.y };
-        mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
-        mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
+        public event EventHandler<MageData> MageSelected;
 
-        SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(null, selectedMage));
-    }
+        public Button SelectMageButton;
+        public TextMeshProUGUI MageBaseDescription, MageAdvancedDescription;
+        public Image MageImage;
 
-    void Start()
-    {
-        UpdateMageInfo(mageUIs[0].MageData);
-    }
+        List<MageUI> mageUIs;
+        MageData selectedMage;
 
-    void OnMageSelected(object _, MageData e)
-    {
-        UpdateMageInfo(e);
-    }
+        void Awake()
+        {
+            defaultYs = new float[] { transform.GetChild(0).localPosition.y };
+            mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
+            mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
-    void UpdateMageInfo(MageData mage)
-    {
-        selectedMage = mage;
-        MageImage.sprite = mage.Image;
-        MageImage.color += new Color(0, 0, 0, 1);
-        MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mage.Name;
-        MageBaseDescription.text = mage.Description;
-        MageAdvancedDescription.text = mage.AdvancedDescription;
-    }
+            SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(null, selectedMage));
+        }
 
-    void OnDestroy()
-    {
-        MageSelected = null;
-        SelectMageButton.onClick.RemoveAllListeners();
-    }
+        void Start()
+        {
+            UpdateMageInfo(mageUIs[0].MageData);
+        }
 
-    public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
-    {
-        mageUIs.ForEach(mageUI => mageUI.MageData.GenerateDescription());
-        base.Open(timeToComplete);
+        void OnMageSelected(object _, MageData e)
+        {
+            UpdateMageInfo(e);
+        }
+
+        void UpdateMageInfo(MageData mage)
+        {
+            selectedMage = mage;
+            MageImage.sprite = mage.Image;
+            MageImage.color += new Color(0, 0, 0, 1);
+            MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mage.Name;
+            MageBaseDescription.text = mage.Description;
+            MageAdvancedDescription.text = mage.AdvancedDescription;
+        }
+
+        void OnDestroy()
+        {
+            MageSelected = null;
+            SelectMageButton.onClick.RemoveAllListeners();
+        }
+
+        public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
+        {
+            mageUIs.ForEach(mageUI => mageUI.MageData.GenerateDescription());
+            base.Open(timeToComplete);
+        }
     }
 }

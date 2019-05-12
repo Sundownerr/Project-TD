@@ -1,14 +1,15 @@
 ﻿using Game.Enums;
-using Game.Spirit;
+using Game.Systems;
+using Game.Systems.Spirit;
+using Game.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class WorldUISystem : ExtendedMonoBehaviour
     {

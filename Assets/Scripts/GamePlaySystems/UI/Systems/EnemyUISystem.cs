@@ -1,12 +1,11 @@
-﻿using Game.Enemy;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Game.Enums;
+using Game.Utility;
+using Game.Systems;
+using Game.Systems.Enemy;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class EnemyUISystem : MonoBehaviour
     {

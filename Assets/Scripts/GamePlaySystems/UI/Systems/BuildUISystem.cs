@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Game.Spirit.Data.Stats;
-using Game.Spirit.Data;
 using System;
 using TMPro;
-using Game.Spirit;
 using Game.Enums;
-using UnityEngine.Events;
+using Game.Utility;
+using Game.Systems;
+using Game.Systems.Spirit;
+using Game.Data.Spirit;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class BuildUISystem : ExtendedMonoBehaviour
     {
@@ -32,30 +32,19 @@ namespace Game.Systems
             ParentGO = transform.parent.gameObject;
         }
 
-
-
         public void SetSystem(PlayerSystem player)
         {
             Owner = player;
 
             rarityTransform = Rarity.transform;
-
-            // not working syntax highlighting made me do this
-            UnityAction showAstral = () => ShowRarity(ElementType.Astral);
-            UnityAction showDarkness = () => ShowRarity(ElementType.Darkness);
-            UnityAction showIce = () => ShowRarity(ElementType.Ice);
-            UnityAction showIron = () => ShowRarity(ElementType.Iron);
-            UnityAction showStorm = () => ShowRarity(ElementType.Storm);
-            UnityAction showNature = () => ShowRarity(ElementType.Nature);
-            UnityAction showFire = () => ShowRarity(ElementType.Fire);
-
-            ElementButtons[(int)ElementType.Astral].onClick.AddListener(() => ShowRarity(ElementType.Astral));
-            ElementButtons[(int)ElementType.Darkness].onClick.AddListener(showDarkness);
-            ElementButtons[(int)ElementType.Ice].onClick.AddListener(showIce);
-            ElementButtons[(int)ElementType.Iron].onClick.AddListener(showIron);
-            ElementButtons[(int)ElementType.Storm].onClick.AddListener(showStorm);
-            ElementButtons[(int)ElementType.Nature].onClick.AddListener(showNature);
-            ElementButtons[(int)ElementType.Fire].onClick.AddListener(showFire);
+            
+            ElementButtons[(int)ElementType.Astral].onClick.AddListener(ShowAstral);
+            ElementButtons[(int)ElementType.Darkness].onClick.AddListener(ShowDarkness);
+            ElementButtons[(int)ElementType.Ice].onClick.AddListener(ShowIce);
+            ElementButtons[(int)ElementType.Iron].onClick.AddListener(ShowIron);
+            ElementButtons[(int)ElementType.Storm].onClick.AddListener(ShowStorm);
+            ElementButtons[(int)ElementType.Nature].onClick.AddListener(ShowNature);
+            ElementButtons[(int)ElementType.Fire].onClick.AddListener(ShowFire);
 
             UpdateAvailableElement();
             animator = transform.parent.GetComponent<Animator>();
@@ -68,6 +57,14 @@ namespace Game.Systems
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
             Owner.PlayerInputSystem.ClickedOnSpirit += OnClicledOnSpirit;
             Owner.PlayerInputSystem.RMBPresed += OnClickedOnGround;
+
+            void ShowAstral() => ShowRarity(ElementType.Astral);
+            void ShowDarkness() => ShowRarity(ElementType.Darkness);
+            void ShowIce() => ShowRarity(ElementType.Ice);
+            void ShowIron() => ShowRarity(ElementType.Iron);
+            void ShowStorm() => ShowRarity(ElementType.Storm);
+            void ShowNature() => ShowRarity(ElementType.Nature);
+            void ShowFire() => ShowRarity(ElementType.Fire);
         }
 
         void ActivateUI(bool activate)

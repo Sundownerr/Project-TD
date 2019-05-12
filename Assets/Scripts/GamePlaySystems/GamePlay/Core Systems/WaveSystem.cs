@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Game.Enemy;
 using UnityEngine;
 using System;
-using Game.Enemy.Data;
-using U = UnityEngine.Object;
 using Game.Data;
-using Game.Spirit;
 using Game.Enums;
+using Game.Data.NetworkRequests;
+using Game.Managers;
+using Game.Utility;
+using Game.Systems.Enemy;
 
 namespace Game.Systems
 {
@@ -168,8 +168,8 @@ namespace Game.Systems
                             WaveNumber = WaveNumber,
                             Position = position,
                             PositionInWave = spawned,
-                            AbilityIDs = enemy.Abilities.GetIDs(),
-                            TraitIDs = enemy.Traits.GetIDs(),
+                            AbilityIDs = enemy.Abilities?.GetIDs(),
+                            TraitIDs = enemy.Traits?.GetIDs(),
                             Waypoints = new ListCoordinates3D(waypoints)
                         });
                     }

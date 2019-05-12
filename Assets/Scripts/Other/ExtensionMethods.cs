@@ -1,20 +1,17 @@
 ﻿using Game;
-using Game.Cells;
-using Game.Enemy;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit;
-using Game.Spirit.Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using Game.Enums;
-using Game.Wrappers;
 using System.Text.RegularExpressions;
 using Lean.Localization;
-using Game.Enemy.Data;
+using Game.Data.Attributes;
+using Game.Data.NetworkRequests;
+using Game.Utility;
+using Game.Managers;
+using Game.Data.Enemy;
+using Game.Systems.Cells;
 
 public static class Ext
 {
@@ -162,6 +159,9 @@ public static class Ext
         return that;
     }
 
+    ///<summary>
+    /// Return list with ids of entities in list.
+    ///</summary>  
     public static ListID GetIDs<T>(this List<T> list) where T : IIDComponent
     {
         var ids = new ListID();

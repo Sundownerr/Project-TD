@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+﻿using Game.Data.Traits;
 
-namespace Game.Systems
+namespace Game.Systems.Traits
 {
-	public class MultishotSystem : ITraitHandler
+    public class MultishotSystem : ITraitHandler
     {
         public ITraitSystem Owner { get; set; }
 

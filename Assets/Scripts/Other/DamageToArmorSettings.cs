@@ -1,36 +1,36 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Game.Data;
-using Game.Enemy.Data;
-using Game.Spirit.Data.Stats;
+using Game.Data.Enemy.Internal;
+using Game.Data.Spirit.Internal;
 using Game.Wrappers;
 using UnityEngine;
 
-
-[CreateAssetMenu(fileName = "DamageToArmorSettings", menuName = "Data/Settings/Damage to armor settings")]
-
-[Serializable]
-public class DamageToArmorSettings : ScriptableObject
+namespace Game.Data.Settings
 {
-    [SerializeField]
-    public List<DamageToArmor> DamageToArmorList;
+    [CreateAssetMenu(fileName = "DamageToArmorSettings", menuName = "Data/Settings/Damage to armor settings")]
 
-    void Awake()
+    [Serializable]
+    public class DamageToArmorSettings : ScriptableObject
     {
-        if (DamageToArmorList == null)
+        [SerializeField]
+        public List<DamageToArmor> DamageToArmorList;
+
+        void Awake()
         {
-            var damageTypes = Enum.GetValues(typeof(DamageType));
-            var armorTypes = Enum.GetValues(typeof(ArmorType));
-            
-            DamageToArmorList = new List<DamageToArmor>(damageTypes.Length);
-
-            for (int i = 0; i < damageTypes.Length; i++)
+            if (DamageToArmorList == null)
             {
-                DamageToArmorList.Add(new DamageToArmor() { Type = (DamageType)damageTypes.GetValue(i), Percents = new List<double>(armorTypes.Length) });
+                var damageTypes = Enum.GetValues(typeof(DamageType));
+                var armorTypes = Enum.GetValues(typeof(ArmorType));
 
-                for (int j = 0; j < armorTypes.Length; j++)
-                    DamageToArmorList[i].Percents.Add(100);
+                DamageToArmorList = new List<DamageToArmor>(damageTypes.Length);
+
+                for (int i = 0; i < damageTypes.Length; i++)
+                {
+                    DamageToArmorList.Add(new DamageToArmor() { Type = (DamageType)damageTypes.GetValue(i), Percents = new List<double>(armorTypes.Length) });
+
+                    for (int j = 0; j < armorTypes.Length; j++)
+                        DamageToArmorList[i].Percents.Add(100);
+                }
             }
         }
     }

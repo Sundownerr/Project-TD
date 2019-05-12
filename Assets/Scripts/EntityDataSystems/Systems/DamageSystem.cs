@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Spirit;
-using UnityEngine;
+using Game.Managers;
+using Game.Systems.Enemy;
+using Game.Systems.Spirit;
+using Game.Utility;
 
 namespace Game.Systems
 {

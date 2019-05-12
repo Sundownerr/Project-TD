@@ -1,10 +1,11 @@
-﻿using Game.Enemy;
-using Game.Data;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Game.UI;
+using Game.Managers;
+using Game.Systems.Enemy;
+using Game.Data.Items;
 
 namespace Game.Systems
 {

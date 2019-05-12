@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
-using Game.Spirit;
 using UnityEngine;
-namespace Game.Systems
+using Game.Managers;
+using Game.Data.Abilities;
+using Game.Systems.Effects;
+
+namespace Game.Systems.Abilities
 {
     public class AbilitySystem : IEntitySystem
     {
@@ -31,11 +32,9 @@ namespace Game.Systems
             Ability.Effects.ForEach(effect =>
             {
                 effect = UnityEngine.Object.Instantiate(effect);
-
                 EffectSystems.Add(effect.EffectSystem);
                 nextEffectDelays.Add(new WaitForSeconds(effect.NextInterval));
             });
-
             SetSystem(owner);
         }
 
@@ -47,7 +46,7 @@ namespace Game.Systems
 
             SetEffects();
         }
-        
+
         void SetStackedSystem(AbilitySystem baseAbility)
         {
             ID = new ID(baseAbility.ID);
@@ -143,7 +142,7 @@ namespace Game.Systems
                             return true;
                     }
                     else
-                    if (effectSystem.Target != Target && Target.CountOf(effectSystem) == 0)
+                    if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
                         return true;
                 }
 

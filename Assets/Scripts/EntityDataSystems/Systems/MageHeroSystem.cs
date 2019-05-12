@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Spirit;
-using Game.Spirit.Data;
-using Game.Systems;
-using UnityEngine;
-using Game.Enums;
+﻿using Game.Enums;
+using Game.Data.Attributes;
+using Game.Systems.Spirit;
+using Game.Systems.Enemy;
+using Game.Data.Mage;
+using Game.Data.Enemy;
+using Game.Data.Spirit;
 
-namespace Game
+namespace Game.Systems.Mage
 {
     public class MageHeroSystem : IEntitySystem
     {

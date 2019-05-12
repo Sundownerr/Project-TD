@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Game.Enemy;
-using Game.Systems;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game.Spirit
+namespace Game.Systems.Spirit.Internal
 {
     public class BulletSystem : IPrefabComponent
     {

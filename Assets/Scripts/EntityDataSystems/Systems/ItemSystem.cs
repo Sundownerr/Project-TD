@@ -1,10 +1,9 @@
-﻿using Game.Data;
+﻿using Game.Data.Attributes;
+using Game.Data.Items;
 using Game.Enums;
-using Game.Spirit;
+using Game.Systems.Spirit;
+using Game.Utility;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using U = UnityEngine.Object;
 
 namespace Game.Systems

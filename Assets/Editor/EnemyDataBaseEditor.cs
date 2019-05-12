@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using Game.Data;
-using Game.Enemy.Data;
 using System;
 using Game.Enums;
+using Game.Data.Databases;
 
 #if UNITY_EDITOR
 

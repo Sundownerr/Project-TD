@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using Game.Spirit.Data.Stats;
-using Game.Data;
 using Game.Systems;
-using Game.Enemy.Data;
 using OneLine;
 using Game.Enums;
-using Game.Wrappers;
+using Game.Data.Databases;
+using Game.Data.Attributes;
+using Game.Data.Traits;
+using Game.Data.Spirit.Internal;
+using Game.Data.Abilities;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Game.Spirit.Data
+namespace Game.Data.Spirit
 {
 
     [CreateAssetMenu(fileName = "New Spirit", menuName = "Data/Spirit/Spirit")]
@@ -48,7 +49,6 @@ namespace Game.Spirit.Data
         [SerializeField] List<Trait> TraitList;
         [SerializeField] public List<SpiritData> Grades;
         [SerializeField] public List<float> DamageToRace;
-        [SerializeField, HideInInspector] public int NumberInList;
 
         public int GradeCount { get; set; } = -1;
         public Inventory Inventory { get; set; }
@@ -65,64 +65,68 @@ namespace Game.Spirit.Data
             Inventory = new Inventory(this.Get(Enums.Spirit.MaxInventorySlots).Value);
         }
 
-        void Awake()
+        protected override void Awake()
         {
-
-            if (numeralAttributes == null || numeralAttributes.Count == 0)
-                numeralAttributes = Ext.CreateAttributeList_N();
-
-            if (flagAttributes == null || flagAttributes.Count == 0)
-                flagAttributes = Ext.CreateAttributeList_SF();
-
-            if (spiritAttributes == null || spiritAttributes.Count == 0)
-                spiritAttributes = Ext.CreateAttributeList_S();
-
+            base.Awake();
             ID.Add((int)Base.Element);
             ID.Add((int)Base.Rarity);
-            ID.Add(NumberInList);
+
+            if (numeralAttributes == null || numeralAttributes.Count == 0)
+            {
+                numeralAttributes = Ext.CreateAttributeList_N();
+            }
+
+            if (flagAttributes == null || flagAttributes.Count == 0)
+            {
+                flagAttributes = Ext.CreateAttributeList_SF();
+            }
+
+            if (spiritAttributes == null || spiritAttributes.Count == 0)
+            {
+                spiritAttributes = Ext.CreateAttributeList_S();
+            }
 
             if (DamageToRace == null || DamageToRace.Count == 0)
             {
-                DamageToRace = new List<float>();
                 var races = Enum.GetValues(typeof(RaceType));
+
+                DamageToRace = new List<float>();
+
                 for (int i = 0; i < races.Length; i++)
+                {
                     DamageToRace.Add(100f);
+                }
             }
         }
 
 #if UNITY_EDITOR
-
         [Button("Add to DataBase")]
         void AddToDataBase()
         {
             if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
-                if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)
+            {
+                if (DataControlSystem.LoadDatabase<SpiritDataBase>() is SpiritDataBase dataBase)
                 {
                     var thisElementAndRarityList = dataBase.Spirits.Elements[(int)Base.Element].Rarities[(int)Base.Rarity].Spirits;
 
                     if (!thisElementAndRarityList.Contains(this))
                     {
-                        NumberInList = thisElementAndRarityList.Count;
-
-                        ID = new ID() { (int)Base.Element, (int)Base.Rarity, NumberInList };
+                        Index = thisElementAndRarityList.Count;
 
                         thisElementAndRarityList.Add(this);
                         EditorUtility.SetDirty(this);
                         DataControlSystem.Save(dataBase);
                     }
-                    else Debug.LogWarning($"{this} already in data base");
+                    else
+                    {
+                        Debug.LogWarning($"{this} already in data base");
+                    }
                 }
-                else Debug.LogError($"{typeof(SpiritDataBase)} not found");
-        }
-
-        void RemoveFromDataBase()
-        {
-            if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
-                if (DataControlSystem.Load<SpiritDataBase>() is SpiritDataBase dataBase)
-                {
-                    dataBase.Spirits.Elements[(int)Base.Element].Rarities[(int)Base.Rarity].Spirits.RemoveAt(NumberInList);
-                    DataControlSystem.Save(dataBase);
-                }
+            }
+            else
+            {
+                Debug.LogError($"{typeof(SpiritDataBase)} not found");
+            }
         }
 #endif 
     }

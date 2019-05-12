@@ -8,8 +8,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Lean.Localization;
+using Game.Utility;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class NumeralStatValueUI : DescriptionBlock
     {

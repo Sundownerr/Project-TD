@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Game.Spirit;
-using Game.Enemy;
-using Game.Spirit.Data;
 using Game.Data;
-using Mirror;
-using FPClient = Facepunch.Steamworks.Client;
-using System;
 using U = UnityEngine.Object;
+using NetworkPlayer = Game.Network.NetworkPlayer;
+using Game.UI;
+using Game.Managers;
+using Game.Systems.Spirit;
+using Game.Systems.Enemy;
+using Game.Data.Mage;
+using Game.Systems.Mage;
+using Game.Data.Spirit;
+using Game.Data.Player;
 
 namespace Game.Systems
 {

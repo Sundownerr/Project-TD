@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Game.Data;
-using Game.Systems;
-using Game.Spirit.Data;
 using UnityEngine;
 using U = UnityEngine.Object;
 using Game.Enums;
+using Game.Managers;
+using Game.Data.Spirit;
+using Game.Data.Items;
 
-namespace Game.Spirit.System
+namespace Game.Systems.Spirit.Internal
 {
     [Serializable]
     public class SpiritDataSystem

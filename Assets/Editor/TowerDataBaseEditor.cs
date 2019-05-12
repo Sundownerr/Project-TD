@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
-using Game.Data;
 using System.Collections.Generic;
+using Game.Data.Databases;
 
 #if UNITY_EDITOR
-    
+
 [CustomEditor(typeof(SpiritDataBase), true)]
 [CanEditMultipleObjects]
 

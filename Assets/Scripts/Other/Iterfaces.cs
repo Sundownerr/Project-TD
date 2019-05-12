@@ -1,18 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Enemy;
-using Game.Data;
+﻿using System.Collections.Generic;
 using Game.Systems;
-using Game.Spirit;
-using Game.Spirit.Data;
-using Game.Spirit.System;
 using UnityEngine;
 using System;
-using Game.Enums;
-using OneLine;
-using Game.Wrappers;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Data.Attributes;
+using Game.Data.Traits;
+using Game.Data.Effects;
+using Game.Data.Abilities;
+using Game.Systems.Abilities;
 
 namespace Game
 {
@@ -57,11 +53,11 @@ namespace Game
     public interface ICanReceiveEffects : IPrefabComponent, IVulnerable
     {
         AppliedEffectSystem AppliedEffectSystem { get; }
-        void AddEffect(EffectSystem Effect);
-        void RemoveEffect(EffectSystem Effect);
-        int CountOf(EffectSystem Effect);
-        event EventHandler<EffectSystem> EffectApplied;
-        event EventHandler<EffectSystem> EffectRemoved;
+        void AddEffect(Effect Effect);
+        void RemoveEffect(Effect Effect);
+        int CountOf(Effect Effect);
+        event EventHandler<Effect> EffectApplied;
+        event EventHandler<Effect> EffectRemoved;
     }
 
     public interface IHealthComponent : IPrefabComponent, IVulnerable
@@ -72,14 +68,14 @@ namespace Game
         event EventHandler<IHealthComponent> Died;
     }
 
-    public interface ISpiritAttributes 
+    public interface ISpiritAttributes
     {
         List<NumeralAttribute> NumeralAttributes { get; }
         List<SpiritAttribute> SpiritAttributes { get; }
         List<SpiritFlagAttribute> FlagAttributes { get; }
     }
 
-    public interface IEnemyAttributes 
+    public interface IEnemyAttributes
     {
         List<NumeralAttribute> NumeralAttributes { get; }
         List<EnemyAttribute> EnemyAttributes { get; }
@@ -119,9 +115,9 @@ namespace Game
 
     public interface IHaveDescription : IPointerEnterHandler, IPointerExitHandler
     {
-        string Description {get; }
-        string Title {get; }
-        Image Image {get; }
+        string Description { get; }
+        string Title { get; }
+        Image Image { get; }
         void GetDescription();
     }
 }

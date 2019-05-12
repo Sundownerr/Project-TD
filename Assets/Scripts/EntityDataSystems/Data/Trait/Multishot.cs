@@ -1,8 +1,7 @@
-﻿using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+﻿using UnityEngine;
+using Game.Systems.Traits;
 
-namespace Game.Data
+namespace Game.Data.Traits
 {
     [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Spirit/Trait/Multishot")]
 
@@ -10,8 +9,9 @@ namespace Game.Data
     {
         public int Count;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Name = "Multishot";
             Description = $"Shoot {Count} additional targets";
         }

@@ -1,18 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Data;
-using UnityEngine;
-using System;
+﻿using Game.Data.Effects;
+using Game.Systems.Abilities;
 
-namespace Game.Systems
+namespace Game.Systems.Effects
 {
     public class EffectSystem : IEntitySystem
     {
         public bool IsEnded { get; protected set; } = true;
-        public bool IsMaxStackReached => Target.CountOf(this) > Effect.MaxStackCount;
+        public bool IsMaxStackReached => Target.CountOf(Effect) > Effect.MaxStackCount;
         public ICanReceiveEffects Target { get; protected set; }
-        public IEntitySystem Owner { get; set; }
-        public ID ID { get; set; }
+        public IEntitySystem Owner { get; protected set; }
+        public ID ID { get; protected set; }
         public Effect Effect { get; protected set; }
 
         public EffectSystem(Effect effect)
@@ -25,18 +22,21 @@ namespace Game.Systems
             Owner = ownerAbility;
             ID = new ID(ownerAbility.ID);
             ID.Add(ownerAbility.EffectSystems.IndexOf(this));
-
         }
 
         public virtual void Apply()
         {
-            Target.AddEffect(this);
+            Target.AddEffect(Effect);
             IsEnded = false;
         }
 
         public virtual void End()
         {
-            Target.RemoveEffect(this);
+            if (Target != null)
+            {
+                Target.RemoveEffect(Effect);
+            }
+
             IsEnded = true;
         }
 
@@ -49,7 +49,9 @@ namespace Game.Systems
             }
 
             if (Target == null || Target.Prefab == null)
+            {
                 Target = newTarget;
+            }
         }
     }
 }

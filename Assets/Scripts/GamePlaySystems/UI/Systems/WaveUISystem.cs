@@ -1,15 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System;
-using Game.Enemy.Data;
 using System.Text;
 using UnityEngine.UI;
 using Game.Enums;
 using Lean.Localization;
+using Game.Utility;
+using Game.Systems;
+using Game.Consts;
 
-namespace Game.Systems
+namespace Game.UI
 {
     public class WaveUISystem : ExtendedMonoBehaviour
     {
@@ -81,8 +81,8 @@ namespace Game.Systems
 
             string GetTraitsAndAbilities()
             {
-                wave.EnemyTypes[0].Traits.ForEach(trait => traitsAndAbilities.Append($"{trait.Name}     "));
-                wave.EnemyTypes.Find(enemy => enemy.IsBossOrCommander())?.Abilities.ForEach(ability => traitsAndAbilities.Append($"{ability.Name} "));
+                wave.EnemyTypes[0].Traits?.ForEach(trait => traitsAndAbilities.Append($"{trait.Name}     "));
+                wave.EnemyTypes.Find(enemy => enemy.IsBossOrCommander())?.Abilities?.ForEach(ability => traitsAndAbilities.Append($"{ability.Name} "));
 
                 var result = traitsAndAbilities.ToString();
                 traitsAndAbilities.Clear();

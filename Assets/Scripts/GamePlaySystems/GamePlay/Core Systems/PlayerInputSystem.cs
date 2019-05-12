@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Game.Spirit.Data;
 using System;
-using Game.Spirit;
-using Game.Spirit.Data.Stats;
-using Game.Cells;
-using Game.Enemy;
+using Game.Utility;
+using Game.Managers;
+using Game.Systems.Spirit;
+using Game.Systems.Enemy;
+using Game.Data.Spirit;
 
 namespace Game.Systems
 {

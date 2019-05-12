@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Data;
-using Game.Spirit;
+﻿using Game.Data.Traits;
+using Game.Systems.Spirit;
+using Game.Systems.Spirit.Internal;
 using UnityEngine;
 
-namespace Game.Systems
+namespace Game.Systems.Traits
 {
     public class ChainshotSystem : ITraitHandler
     {

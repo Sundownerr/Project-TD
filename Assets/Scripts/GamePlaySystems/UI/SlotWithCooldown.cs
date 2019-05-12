@@ -6,15 +6,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SlotWithCooldown : DescriptionBlock
+namespace Game.UI
 {
-    public GameObject CooldownPrefab;
-    public Image CooldownImage;
-
-    public ID EntityID { get; set; }
-
-    void Awake()
+    public class SlotWithCooldown : DescriptionBlock
     {
-        CooldownImage = Instantiate(CooldownPrefab, transform.position, Quaternion.identity, transform).GetComponent<Image>();
+        public GameObject CooldownPrefab;
+        public Image CooldownImage;
+
+        public ID EntityID { get; set; }
+
+        void Awake()
+        {
+            CooldownImage = Instantiate(CooldownPrefab, transform.position, Quaternion.identity, transform).GetComponent<Image>();
+        }
     }
 }

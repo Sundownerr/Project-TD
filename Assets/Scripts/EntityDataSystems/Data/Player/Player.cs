@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Spirit.Data.Stats;
 using UnityEngine;
 using Game.Systems;
 using Game.Enums;
 
-namespace Game.Data
+namespace Game.Data.Player
 {
     public class Resources
     {
         public double MagicCrystals, Resource, CurrentSpiritLimit, MaxSpiritLimit, StartSpiritRerollCount;
-
-       
     }
 
     [Serializable]

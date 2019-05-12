@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+using Game.Data.Mage;
 
-namespace Game.Data
+namespace Game.Data.Databases
 {
-    [Serializable, CreateAssetMenu(fileName = "MageDB", menuName = "Data/Data Base/Mage DataBase")]
+    [Serializable, CreateAssetMenu(fileName = "MageDataBase", menuName = "Data/Data Base/Mage DataBase")]
     public class MageDataBase : EntityDataBase<MageData> { }
 }

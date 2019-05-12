@@ -1,24 +1,27 @@
 ﻿using UnityEngine;
 
-public abstract class ExtendedMonoBehaviour : MonoBehaviour
+namespace Game.Utility
 {
-    public new Transform transform
+    public abstract class ExtendedMonoBehaviour : MonoBehaviour
     {
-        get
+        public new Transform transform
+        {
+            get
+            {
+                if ((object)CachedTransform == null)
+                    CachedTransform = base.transform;
+
+                return CachedTransform;
+            }
+        }
+
+
+        protected Transform CachedTransform;
+
+        protected virtual void Awake()
         {
             if ((object)CachedTransform == null)
                 CachedTransform = base.transform;
-
-            return CachedTransform;
         }
-    }
-
- 
-    protected Transform CachedTransform;
-
-    protected virtual void Awake()
-    {
-        if ((object)CachedTransform == null)
-            CachedTransform = base.transform;
     }
 }

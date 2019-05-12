@@ -1,11 +1,8 @@
-﻿using Game.Systems;
-using Game.Spirit;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Game.Utility;
+using Game.UI;
+using Game.Systems.Spirit;
 
-namespace Game.Data
+namespace Game.Systems
 {
     public class InventorySystem
     {

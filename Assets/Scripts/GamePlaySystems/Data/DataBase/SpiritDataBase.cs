@@ -1,29 +1,36 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
-using Game.Spirit.Data.Stats;
-using UnityEditor;
+using Game.Data.Spirit.Internal;
 using Game.Enums;
 
-namespace Game.Data
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+
+namespace Game.Data.Databases
 {
-    [CreateAssetMenu(fileName = "SpiritDB", menuName = "Data/Data Base/Spirit DataBase")]
+    [CreateAssetMenu(fileName = "SpiritDataBase", menuName = "Data/Data Base/Spirit DataBase")]
     [Serializable]
     public class SpiritDataBase : ScriptableObject
     {
         [SerializeField]
         public ElementList Spirits;
 
+        public static string Path { get; protected set; }
+
 #if UNITY_EDITOR
 
         void Awake()
         {
+            Path = AssetDatabase.GetAssetPath(this);
+            
             if (Spirits == null)
             {
                 var elementNames = Enum.GetNames(typeof(ElementType));
 
                 Spirits = new ElementList { Elements = new Element[elementNames.Length] };
-                
+
                 for (int i = 0; i < elementNames.Length; i++)
                     Spirits.Elements[i] = new Element(elementNames[i]);
             }

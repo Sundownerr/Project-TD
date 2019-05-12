@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Game.Enums;
-using Game.Spirit;
-using Game.Spirit.Data.Stats;
-using UnityEngine;
-using U = UnityEngine.Object;
+using Game.Managers;
 
 namespace Game.Systems
 {

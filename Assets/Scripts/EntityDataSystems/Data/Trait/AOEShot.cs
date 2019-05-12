@@ -1,8 +1,8 @@
-﻿using Game.Systems;
-using Game.Spirit;
-using UnityEngine;
+﻿using UnityEngine;
+using Game.Data.Traits;
+using Game.Systems.Traits;
 
-namespace Game.Data
+namespace Game.Data.Traits
 {
     [CreateAssetMenu(fileName = "AOE Shot", menuName = "Data/Spirit/Trait/AOE Shot")]
 
@@ -10,8 +10,10 @@ namespace Game.Data
     {
         public int Range;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             Name = "AOE SHot";
             Description = $"Damage targets in {Range} range";
         }

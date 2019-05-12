@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Game.Enemy;
-using Game.Systems;
-using Game.Spirit;
 using UnityEngine;
 using Game.Enums;
+using Game.Utility;
+using Game.Systems.Spirit;
+using Game.Systems.Enemy;
 
 namespace Game.Systems
 {

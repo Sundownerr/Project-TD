@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.Utility;
+using UnityEngine;
 
 public class CameraMovementScript : ExtendedMonoBehaviour
 {

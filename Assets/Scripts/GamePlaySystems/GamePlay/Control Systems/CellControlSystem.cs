@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Game.Cells;
-using Game.Spirit;
+using Game.Managers;
+using Game.Systems.Cells;
+using Game.Systems.Spirit;
 using UnityEngine;
 using U = UnityEngine.Object;
 
