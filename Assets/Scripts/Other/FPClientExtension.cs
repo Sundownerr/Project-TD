@@ -138,7 +138,7 @@ namespace Game.Utility
             LobbyExt.SetData(LobbyData.Difficulty, string.Empty);
             LobbyExt.SetData(LobbyData.Map, StringConsts.MultiplayerMap1);
             LobbyExt.SetData(LobbyData.Waves, string.Empty);
-            LobbyExt.SetMemberData(LobbyData.MageID, GameData.Instance.ChoosedMage.ID.Serializer().ToString());
+            LobbyExt.SetMemberData(LobbyData.MageID, $"{GameData.Instance.ChoosedMage.Index}");
             LobbyExt.SetMemberData(LobbyData.Ready, LobbyData.No);
 
         }

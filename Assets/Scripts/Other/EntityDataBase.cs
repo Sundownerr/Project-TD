@@ -33,8 +33,8 @@ namespace Game.Data
         protected void UpdateElementId()
         {
             for (int i = 0; i < Data.Count; i++)
-                if (Data[i].ID.Count == 0)
-                    Data[i].ID = new ID() { i };
+                if (Data[i].Index == -1)
+                    Data[i].Index = i;
         }
 
         [Button]
@@ -42,7 +42,7 @@ namespace Game.Data
         {
             Debug.Log(AssetDatabase.GetAssetPath(this));
             Debug.Log(name);
-            Data.ForEach(element => Debug.Log($"{element.Name}, ID: {element.ID.ToString()}"));
+            Data.ForEach(element => Debug.Log($"{element.Name}, Index: {element.Index}"));
         }
 
 #endif

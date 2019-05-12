@@ -13,7 +13,7 @@ namespace Game.UI
         public GameObject CooldownPrefab;
         public Image CooldownImage;
 
-        public ID EntityID { get; set; }
+        public int EntityIndex { get; set; }
 
         void Awake()
         {

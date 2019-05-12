@@ -154,7 +154,7 @@ namespace Game.Systems
 
         public void OnPlacingNewSpirit(object _, SpiritData spiritData)
         {
-            var placedSpirit = Owner.AvailableSpirits.Find(spirit => spirit.ID.Compare(spiritData.ID));
+            var placedSpirit = Owner.AvailableSpirits.Find(spirit => spirit.Index == spiritData.Index);
             Owner.AvailableSpirits.Remove(placedSpirit);
 
             PlacingSpirit?.Invoke(null, null);
@@ -164,12 +164,8 @@ namespace Game.Systems
 
         bool CheckGradeListOk(out List<SpiritData> grades)
         {
-            var allSpirits = ReferenceHolder.Get.SpiritDB.Spirits.
-                Elements[(int)ChoosedSpirit.Data.Base.Element].
-                Rarities[(int)ChoosedSpirit.Data.Base.Rarity].
-                Spirits;
-
-            var spirit = allSpirits.Find(x => x.ID.Compare(ChoosedSpirit.Data.ID));
+            var allSpirits = ReferenceHolder.Get.SpiritDB.Data;
+            var spirit = allSpirits.Find(x => x.Index == ChoosedSpirit.Data.Index);
 
             if (spirit != null)
             {

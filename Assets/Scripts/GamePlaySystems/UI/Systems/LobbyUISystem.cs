@@ -47,7 +47,7 @@ namespace Game.UI
         {
             if (GameManager.Instance.GameState != GameState.InLobby) return;
 
-            LobbyExt.SetMemberData(LobbyData.MageID, e.ID.Serializer().ToString());
+            LobbyExt.SetMemberData(LobbyData.MageID, $"{e.Index}");
             isChangingMage = false;
         }
 

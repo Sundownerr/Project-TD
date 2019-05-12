@@ -9,9 +9,8 @@ namespace Game.Data.Traits
     {
         public int Count;
 
-        protected override void Awake()
-        {
-            base.Awake();
+        protected void Awake()
+        {            
             Name = "Multishot";
             Description = $"Shoot {Count} additional targets";
         }

@@ -47,10 +47,9 @@ namespace Game.Systems
 
                         SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest()
                         {
-                            ID = spiritData.ID,
+                            Index = spiritData.Index,
                             Rarity = (int)spiritData.Base.Rarity,
                             Element = (int)spiritData.Base.Element,
-                            DataBaseIndex = spiritData.ID[spiritData.ID.Count - 1],
                             Position = position,
                             CellIndex = Owner.CellControlSystem.Cells.IndexOf(choosedCell)
                         });

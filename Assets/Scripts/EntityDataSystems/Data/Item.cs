@@ -20,7 +20,5 @@ namespace Game.Data.Items
         public int WaveLevel;
         [OneLine, OneLine.HideLabel] public List<NumeralAttribute> NumeralAttributes;
         [OneLine, OneLine.HideLabel] public List<SpiritAttribute> SpiritAttributes;
-
-
     }
 }

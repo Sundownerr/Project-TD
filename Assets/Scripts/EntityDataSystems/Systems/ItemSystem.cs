@@ -8,15 +8,16 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
-    public class ItemSystem : IEntitySystem
+    public class ItemSystem : IEntitySystem, IIndexComponent
     {
         public Item Data { get; set; }
-        public IEntitySystem Owner { get ; set ; }
-        public ID ID { get ; set ; }
+        public IEntitySystem Owner { get; set; }
 
         public event EventHandler<double> ConsumedMagicCrystals;
         public event EventHandler<double> ConsumedSpiritVessels;
         public event EventHandler StatsApplied;
+
+        public int Index { get; private set; }
 
         Item defaultData;
         bool isStatsApplied;
@@ -24,11 +25,9 @@ namespace Game.Systems
         public ItemSystem(Item data, IEntitySystem owner)
         {
             Owner = owner;
-            Data = U.Instantiate(data);          
+            Data = U.Instantiate(data);
             defaultData = data;
-
-            ID = new ID(data.ID);
-            ID.Add((owner as PlayerSystem).ItemsCount);
+            Index = (owner as PlayerSystem).ItemsCount;
         }
 
         public void OnSpiritLevelUp(object _, SpiritSystem e) =>

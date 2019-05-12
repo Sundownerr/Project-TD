@@ -8,10 +8,10 @@ using Game.Systems.Effects;
 
 namespace Game.Systems.Abilities
 {
-    public class AbilitySystem : IEntitySystem
+    public class AbilitySystem : IEntitySystem, IIndexComponent
     {
         public event EventHandler<AbilitySystem> Used;
-        public ID ID { get; private set; }
+
         public IEntitySystem Owner { get; private set; }
         public Ability Ability { get; private set; }
         public ICanReceiveEffects Target { get; private set; }
@@ -20,6 +20,7 @@ namespace Game.Systems.Abilities
         public bool IsStacked { get; private set; }
         public bool IsNeedStack { get; set; }
         public bool IsCooldowned { get; private set; } = true;
+        public int Index { get; private set; }
 
         WaitForSeconds cooldownDelay;
         List<WaitForSeconds> nextEffectDelays = new List<WaitForSeconds>();
@@ -41,15 +42,14 @@ namespace Game.Systems.Abilities
         void SetSystem(IAbilitiySystem owner)
         {
             Owner = owner;
-            ID = new ID(owner.ID);
-            ID.Add(owner.AbilitySystems.Count > 0 ? owner.AbilitySystems.IndexOf(this) : 0);
+            Index = owner.AbilitySystems.Count > 0 ? owner.AbilitySystems.IndexOf(this) : 0;
 
             SetEffects();
         }
 
         void SetStackedSystem(AbilitySystem baseAbility)
         {
-            ID = new ID(baseAbility.ID);
+            Index = baseAbility.Index;
             SetEffects();
         }
 

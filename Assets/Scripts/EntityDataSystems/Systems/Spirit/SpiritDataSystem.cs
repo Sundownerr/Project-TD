@@ -38,7 +38,7 @@ namespace Game.Systems.Spirit.Internal
         {
             Set(newData);
 
-            CurrentData.ID = previousSpirit.Data.ID;
+            CurrentData.Index = previousSpirit.Data.Index;
             CurrentData.GradeCount = previousSpirit.Data.GradeCount + 1;
             CurrentData.Get(Numeral.Exp).Value = previousSpirit.Data.Get(Numeral.Exp).Value;
 

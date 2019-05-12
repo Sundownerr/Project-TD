@@ -42,12 +42,14 @@ namespace Game.Systems
             return generatedWaves;
         }
 
-        public static Queue<Wave> GenerateWaves(List<WaveEnemyID> waveEnemyIDs)
+        public static Queue<Wave> GenerateWaves(List<NetworkWaveData> networkWaveDatas)
         {
             var generatedWaves = new Queue<Wave>();
 
-            for (int i = 0; i < waveEnemyIDs.Count; i++)
-                generatedWaves.Enqueue(CreateWave(waveEnemyIDs[i], i));
+            for (int i = 0; i < networkWaveDatas.Count; i++)
+            {
+                generatedWaves.Enqueue(CreateWave(networkWaveDatas[i], i));
+            }
 
             return generatedWaves;
         }
@@ -55,7 +57,7 @@ namespace Game.Systems
         static EnemyData CreateEnemyData(EnemyData choosedData, int waveNumber, List<Ability> abilities, List<Trait> traits, ArmorType armor)
         {
             var newData = U.Instantiate(choosedData);
-            newData.ID = new ID(choosedData.ID);
+            newData.Index = choosedData.Index;
 
             CalculateStats();
 
@@ -136,24 +138,21 @@ namespace Game.Systems
         }
 
 
-        static Wave CreateWave(WaveEnemyID waveIDs, int waveNumber)
+        static Wave CreateWave(NetworkWaveData networkWaveData, int waveNumber)
         {
-
             var wave = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetTraitsByID();
             var waveAbilities = GetAbilitiesByID();
-            var armor = (ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(waveIDs.ArmorID);
+            var armor = (ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(networkWaveData.ArmorIndex);
 
             wave.EnemyTypes = new List<EnemyData>();
 
-            for (int i = 0; i < waveIDs.IDs.Count; i++)
+            for (int i = 0; i < networkWaveData.EnemyIndexes.Count; i++)
             {
-                var enemyID = waveIDs.IDs[i][0];
-                var raceID = waveIDs.IDs[i][1];
-                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[raceID].Enemies[enemyID]);
+                var enemyIndex = networkWaveData.EnemyIndexes[i];
+                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[enemyIndex]);
 
-                wave.EnemyTypes.Add(
-                    CreateEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
+                wave.EnemyTypes.Add(CreateEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
             }
 
             return wave;
@@ -162,17 +161,17 @@ namespace Game.Systems
 
             List<Ability> GetAbilitiesByID()
             {
-                if (waveIDs.AbilityIDs == null)
+                if (networkWaveData.AbilityIndexes == null)
                 {
                     return null;
                 }
 
                 var abilities = new HashSet<Ability>();
 
-                for (int i = 0; i < waveIDs.AbilityIDs.Count; i++)
+                for (int i = 0; i < networkWaveData.AbilityIndexes.Count; i++)
                 {
-                    var neededAbilityID = waveIDs.AbilityIDs[i];
-                    var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(ability => ability.ID.Compare(neededAbilityID));
+                    var neededAbilityID = networkWaveData.AbilityIndexes[i];
+                    var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == neededAbilityID);
 
                     if (abilityFromDB == null)
                     {
@@ -187,17 +186,17 @@ namespace Game.Systems
 
             List<Trait> GetTraitsByID()
             {
-                if (waveIDs.TraitIDs == null)
+                if (networkWaveData.TraitIndexes == null)
                 {
                     return null;
                 }
 
                 var traits = new HashSet<Trait>();
 
-                for (int i = 0; i < waveIDs.TraitIDs.Count; i++)
+                for (int i = 0; i < networkWaveData.TraitIndexes.Count; i++)
                 {
-                    var neededTraitID = waveIDs.TraitIDs[i];
-                    var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(trait => trait.ID.Compare(neededTraitID));
+                    var neededTraitIndex = networkWaveData.TraitIndexes[i];
+                    var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == neededTraitIndex);
 
                     if (traitFromDB == null)
                     {
@@ -222,9 +221,8 @@ namespace Game.Systems
 
         static Wave CreateWave(Wave wave, int waveNumber)
         {
-            var races = ReferenceHolder.Get.EnemyDB.Data;
+            var enemiesInDataBase = ReferenceHolder.Get.EnemyDB.Data;
             var randomRace = RaceType.Humanoid;
-            var waveRace = races[(int)randomRace];
             var fittingEnemies = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetRandomTraits();
             var waveAbilities = GetRandomAbilities();
@@ -232,16 +230,12 @@ namespace Game.Systems
 
             if (waveNumber % 8 == 0)
             {
-                waveRace = races[(int)RaceType.RiftCreature];
-                waveTraits = new List<Trait>();
-                waveAbilities = new List<Ability>();
+                randomRace = RaceType.RiftCreature;
+                waveTraits = null;
+                waveAbilities = null;
             }
 
-            fittingEnemies.EnemyTypes = new List<EnemyData>();
-
-            for (int i = 0; i < waveRace.Enemies.Count; i++)
-                if (waveRace.Enemies[i].WaveLevel <= waveNumber)
-                    fittingEnemies.EnemyTypes.Add(waveRace.Enemies[i]);
+            fittingEnemies.EnemyTypes = enemiesInDataBase.FindAll(enemy => enemy.Race == randomRace);
 
             return GetFittingEnemies();
 
@@ -260,7 +254,7 @@ namespace Game.Systems
 
                     randomAbilities.Add(randomAbility);
                 }
-                return new List<Ability>(randomAbilities);
+                return randomAbilities.Count > 0 ? new List<Ability>(randomAbilities) : null;
             }
 
             List<Trait> GetRandomTraits()
@@ -275,7 +269,7 @@ namespace Game.Systems
 
                     randomTraits.Add(randomTrait);
                 }
-                return new List<Trait>(randomTraits);
+                return randomTraits.Count > 0 ? new List<Trait>(randomTraits) : null;
             }
 
             Wave GetFittingEnemies()

@@ -34,7 +34,6 @@ namespace Game.Systems.Spirit
         public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; private set; }
-        public ID ID { get; private set; }
         public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
@@ -68,7 +67,6 @@ namespace Game.Systems.Spirit
             }
 
             Owner = player;
-            ID = new ID() { player.SpiritControlSystem.AllSpirits.Count };
 
             if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
             {

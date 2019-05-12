@@ -19,9 +19,7 @@ namespace Game.Data.Traits
         {
             if (DataControlSystem.LoadDatabase<TraitDatabase>() is TraitDatabase dataBase)
             {
-                var isInDataBase = dataBase.Data.Find(element => element.Compare(this));
-
-                if (isInDataBase == null)
+                if (dataBase.Data.Find(entity => entity.Index == Index) == null)
                 {
                     Index = dataBase.Data.Count;
 

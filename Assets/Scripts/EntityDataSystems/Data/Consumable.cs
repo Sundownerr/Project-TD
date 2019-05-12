@@ -13,7 +13,9 @@ using UnityEngine;
 
 namespace Game.Data.Items
 {
+#if UNITY_EDITOR
     [CreateAssetMenu(fileName = "Consumable", menuName = "Data/Item/Consumable")]
+#endif
 
     [Serializable]
     public class Consumable : Item
@@ -26,9 +28,7 @@ namespace Game.Data.Items
         {
             if (DataControlSystem.LoadDatabase<ItemDataBase>() is ItemDataBase dataBase)
             {
-                var isInDataBase = dataBase.Data.Find(element => element.Compare(this));
-
-                if (isInDataBase == null)
+                if (dataBase.Data.Find(entity => entity.Index == Index) == null)
                 {
                     Index = dataBase.Data.Count;
 

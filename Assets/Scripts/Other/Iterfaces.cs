@@ -12,18 +12,18 @@ using Game.Systems.Abilities;
 
 namespace Game
 {
-    public interface IPrefabComponent : IIDComponent
+    public interface IPrefabComponent
     {
         [SerializeField] GameObject Prefab { get; }
 
     }
 
-    public interface IIDComponent
+    public interface IIndexComponent
     {
-        [SerializeField] ID ID { get; }
+        int Index { get; }
     }
 
-    public interface IEntitySystem : IIDComponent
+    public interface IEntitySystem
     {
         [SerializeField] IEntitySystem Owner { get; }
     }

@@ -27,7 +27,7 @@ namespace Game.Network
         public GameObjectSyncList Players;
         public PlayerData[] PlayerDatas;
         public string[] PlayerNames;
-        public List<WaveEnemyID> WaveEnenmyIDs;
+        public List<NetworkWaveData> NetworkWaveDatas;
         int waveAmount;
 
         public void Set()
@@ -38,7 +38,7 @@ namespace Game.Network
             PlayerDatas = new PlayerData[maxPlayers];
             Players = new GameObjectSyncList();
             NetworkMaps = new GameObjectSyncList();
-            WaveEnenmyIDs = new List<WaveEnemyID>();
+            NetworkWaveDatas = new List<NetworkWaveData>();
 
             //waveAmount = int.Parse(LobbyExtension.GetData(LobbyData.Waves) ?? "100");
 
@@ -55,11 +55,10 @@ namespace Game.Network
 
                 for (int wave = 0; wave < waves.Count; wave++)
                 {
-                    WaveEnenmyIDs.Add(new WaveEnemyID()
+                    NetworkWaveDatas.Add(new NetworkWaveData()
                     {
-                        IDs = waves[wave].EnemyTypes.GetIDs(),
-                        TraitIDs = new ListID(),
-                        ArmorID = (int)waves[wave].EnemyTypes[0].ArmorType
+                        EnemyIndexes = waves[wave].EnemyTypes.GetIDs(),
+                        ArmorIndex = (int)waves[wave].EnemyTypes[0].ArmorType
                     });
 
                     for (int j = 0; j < waves[wave].EnemyTypes.Count; j++)
@@ -68,14 +67,12 @@ namespace Game.Network
 
                         if (enemy.Abilities != null)
                         {
-                            WaveEnenmyIDs[wave].AbilityIDs = new ListID();
-                            WaveEnenmyIDs[wave].AbilityIDs.AddRange(enemy.Abilities.GetIDs());
+                            NetworkWaveDatas[wave].AbilityIndexes = enemy.Abilities.GetIDs();
                         }
 
                         if (enemy.Traits != null)
                         {
-                            WaveEnenmyIDs[wave].TraitIDs = new ListID();
-                            WaveEnenmyIDs[wave].TraitIDs.AddRange(enemy.Traits.GetIDs());
+                            NetworkWaveDatas[wave].TraitIndexes = enemy.Traits.GetIDs();
                         }
                     }
                 }

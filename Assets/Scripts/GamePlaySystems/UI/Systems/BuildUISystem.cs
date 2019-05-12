@@ -156,7 +156,7 @@ namespace Game.UI
 
             spiritButtons.ForEach(button =>
             {
-                if (button.SpiritData.ID.Compare(spiritData.ID))
+                if (button.SpiritData.Index == spiritData.Index)
                 {
                     isSameSpirit = true;
                     button.Count++;

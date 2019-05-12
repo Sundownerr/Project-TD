@@ -57,7 +57,7 @@ namespace Game.Systems
             if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
             else
-                Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.WaveEnenmyIDs);
+                Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.NetworkWaveDatas);
 
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
@@ -70,15 +70,18 @@ namespace Game.Systems
                 FlyingWaypoints = new Vector3[Owner.Map.FlyingWaypoints.Length];
 
                 for (int i = 0; i < GroundWaypoints.Length; i++)
+                {
                     GroundWaypoints[i] = Owner.Map.GroundWaypoints[i].transform.position;
+                }
 
                 for (int i = 0; i < FlyingWaypoints.Length; i++)
+                {
                     FlyingWaypoints[i] = Owner.Map.FlyingWaypoints[i].transform.position;
+                }
             }
 
             #endregion
         }
-
 
         public void UpdateSystem()
         {
@@ -137,6 +140,7 @@ namespace Game.Systems
                 {
                     Vector3 spawnPosition;
                     Vector3[] waypoints;
+                    
                     GetSpawnAndWayPoints();
 
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
@@ -163,13 +167,13 @@ namespace Game.Systems
 
                         EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest()
                         {
-                            ID = enemy.ID,
+                            Index = enemy.Index,
                             Race = (int)enemy.Race,
                             WaveNumber = WaveNumber,
                             Position = position,
                             PositionInWave = spawned,
-                            AbilityIDs = enemy.Abilities?.GetIDs(),
-                            TraitIDs = enemy.Traits?.GetIDs(),
+                            AbilityIndexes = enemy.Abilities?.GetIDs(),
+                            TraitIndexes = enemy.Traits?.GetIDs(),
                             Waypoints = new ListCoordinates3D(waypoints)
                         });
                     }

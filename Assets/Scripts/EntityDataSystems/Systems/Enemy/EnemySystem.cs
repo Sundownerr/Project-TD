@@ -22,7 +22,6 @@ namespace Game.Systems.Enemy
         public GameObject Prefab { get; set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; set; }
-        public ID ID { get; set; }
         public List<IHealthComponent> Targets { get; set; } = new List<IHealthComponent>();
         public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
         public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
@@ -52,8 +51,7 @@ namespace Game.Systems.Enemy
 
 
             Owner = player;
-            ID = new ID() { player.EnemyControlSystem.AllEnemies.Count };
-
+         
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
 
             SetAbilitySystems();

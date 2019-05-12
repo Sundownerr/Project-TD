@@ -38,13 +38,13 @@ namespace Game.Network
             }
         }
 
-        List<WaveEnemyID> waveEnenmyIDs;
-        public List<WaveEnemyID> WaveEnenmyIDs
+        List<NetworkWaveData> networkWaveDatas;
+        public List<NetworkWaveData> NetworkWaveDatas
         {
-            get => waveEnenmyIDs;
+            get => networkWaveDatas;
             set
             {
-                waveEnenmyIDs = value;
+                networkWaveDatas = value;
                 ReferenceHolder.Get.NetworkPlayer = this;
             }
         }
@@ -82,7 +82,7 @@ namespace Game.Network
         [Command]
         void CmdGetWaves()
         {
-            var sendData = (NetworkManager.singleton as ExtendedNetworkManager).NetworkGameManager.WaveEnenmyIDs.Serializer();
+            var sendData = (NetworkManager.singleton as ExtendedNetworkManager).NetworkGameManager.NetworkWaveDatas.Serializer();
 
             WaitAndDo(delay, () =>
             {
@@ -93,10 +93,10 @@ namespace Game.Network
         [TargetRpc]
         void TargetGetWaves(NetworkConnection conn, byte[] byteData)
         {
-            var receivedData = byteData.Deserializer<List<WaveEnemyID>>();
+            var receivedData = byteData.Deserializer<List<NetworkWaveData>>();
             WaitAndDo(delay, () =>
             {
-                WaveEnenmyIDs = receivedData;
+                NetworkWaveDatas = receivedData;
             });
         }
 
@@ -125,7 +125,7 @@ namespace Game.Network
             {
                 var pos = request.Position.ToVector3();
                 var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells[request.CellIndex];
-                var spirit = ReferenceHolder.Get.SpiritDB.Spirits.Elements[request.Element].Rarities[request.Rarity].Spirits[request.DataBaseIndex];
+                var spirit = ReferenceHolder.Get.SpiritDB.Data[request.Index];
 
                 var newSpirit = isLocalPlayer ?
                     StaticMethods.CreateSpirit(spirit, choosedCell) :
@@ -177,13 +177,13 @@ namespace Game.Network
 
                     void SetAbilities()
                     {
-                        request.AbilityIDs?.ForEach(id =>
+                        request.AbilityIndexes?.ForEach(index =>
                         {
-                            var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(ability => ability.ID.Compare(id));
+                            var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == index);
 
                             if (abilityFromDB == null)
                             {
-                                Debug.LogError($"can't find ability with id {id}");
+                                Debug.LogError($"can't find ability with index {index}");
                             }
                             else
                             {
@@ -194,13 +194,13 @@ namespace Game.Network
 
                     void SetTraits()
                     {
-                        request.TraitIDs?.ForEach(id =>
+                        request.TraitIndexes?.ForEach(index =>
                         {
-                            var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(trait => trait.ID.Compare(id));
+                            var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == index);
 
                             if (traitFromDB == null)
                             {
-                                Debug.LogError($"can't find trait with id {id}");
+                                Debug.LogError($"can't find trait with index {index}");
                             }
                             else
                             {

@@ -9,7 +9,6 @@ namespace Game.Systems.Effects
         public bool IsMaxStackReached => Target.CountOf(Effect) > Effect.MaxStackCount;
         public ICanReceiveEffects Target { get; protected set; }
         public IEntitySystem Owner { get; protected set; }
-        public ID ID { get; protected set; }
         public Effect Effect { get; protected set; }
 
         public EffectSystem(Effect effect)
@@ -19,9 +18,7 @@ namespace Game.Systems.Effects
 
         public void SetSystem(AbilitySystem ownerAbility)
         {
-            Owner = ownerAbility;
-            ID = new ID(ownerAbility.ID);
-            ID.Add(ownerAbility.EffectSystems.IndexOf(this));
+            Owner = ownerAbility;      
         }
 
         public virtual void Apply()

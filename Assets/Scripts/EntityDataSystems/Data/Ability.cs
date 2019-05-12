@@ -30,9 +30,7 @@ namespace Game.Data.Abilities
         {
             if (DataControlSystem.LoadDatabase<AbilityDatabase>() is AbilityDatabase dataBase)
             {
-                var isInDataBase = dataBase.Data.Find(element => element.Compare(this));
-
-                if (isInDataBase == null)
+                if (dataBase.Data.Find(entity => entity.Index == Index) == null)
                 {
                     Index = dataBase.Data.Count;
 
@@ -52,6 +50,4 @@ namespace Game.Data.Abilities
         }
 #endif
     }
-
- 
 }

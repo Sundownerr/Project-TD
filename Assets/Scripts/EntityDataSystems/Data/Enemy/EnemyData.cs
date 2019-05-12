@@ -35,11 +35,6 @@ namespace Game.Data.Enemy
         public List<NumeralAttribute> NumeralAttributes { get; private set; }
         public List<EnemyAttribute> EnemyAttributes { get; private set; }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            ID.Add((int)Race);         
-        }
 
         public void CreateNewAttributes()
         {
@@ -53,16 +48,11 @@ namespace Game.Data.Enemy
         {
             if (DataControlSystem.LoadDatabase<EnemyDataBase>() is EnemyDataBase dataBase)
             {
-                var thisEnemyRace = dataBase.Data[(int)Race];
-
-                if (!thisEnemyRace.Enemies.Contains(this))
+                if (dataBase.Data.Find(entity => entity.Index == Index) == null)
                 {
-                    index = thisEnemyRace.Enemies.Count;
+                    Index = dataBase.Data.Count;
 
-                    ID = new ID() { index, (int)Race };
-                    SetName();
-
-                    thisEnemyRace.Enemies.Add(this);
+                    dataBase.Data.Add(this);
                     EditorUtility.SetDirty(this);
                     DataControlSystem.Save(dataBase);
                 }

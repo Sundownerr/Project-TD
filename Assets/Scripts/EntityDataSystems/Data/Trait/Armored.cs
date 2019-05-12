@@ -13,10 +13,8 @@ namespace Game.Data.Traits
     {
         public int AdditionalArmor;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            
             Name = "Armored";
             Description = $"Add {AdditionalArmor} armor";
         }

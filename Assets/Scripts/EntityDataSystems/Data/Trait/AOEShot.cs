@@ -10,10 +10,8 @@ namespace Game.Data.Traits
     {
         public int Range;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            
             Name = "AOE SHot";
             Description = $"Damage targets in {Range} range";
         }

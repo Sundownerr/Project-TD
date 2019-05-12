@@ -30,9 +30,7 @@ namespace Game.Data.Effects
         {
             if (DataControlSystem.LoadDatabase<EffectDataBase>() is EffectDataBase dataBase)
             {
-                var isEffectInDataBase = dataBase.Data.Find(effect => effect.Compare(this));
-
-                if (!isEffectInDataBase)
+                if (dataBase.Data.Find(effect => effect.Index == Index) == null)
                 {
                     Index = dataBase.Data.Count;
 
@@ -49,7 +47,7 @@ namespace Game.Data.Effects
             {
                 Debug.LogError($"{typeof(EffectDataBase)} not found");
             }
-        }  
-#endif 
+        }
+#endif
     }
 }

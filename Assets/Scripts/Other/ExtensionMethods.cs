@@ -67,7 +67,7 @@ public static class Ext
         var total = 0d;
 
         probabilities.ForEach(probability => total += probability);
-       
+
         var randomProbability = (double)StaticRandom.Instance.Next(0, (int)total);
 
         for (int i = 0; i < probabilities.Count; i++)
@@ -80,7 +80,7 @@ public static class Ext
 
     public static string[] SplitCamelCase(this string source) => Regex.Split(source, @"(?<!^)(?=[A-Z])");
 
-    public static string GetLocalized<EnumType>(this EnumType type) where EnumType: struct, Enum =>
+    public static string GetLocalized<EnumType>(this EnumType type) where EnumType : struct, Enum =>
         LeanLocalization.GetTranslationText(type.GetStringKey());
 
     public static string GetLocalized(this string key) =>
@@ -113,7 +113,7 @@ public static class Ext
         var emptyList = new List<EnemyAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
-            emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i), Value = 0, AppliedValue = 0});
+            emptyList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i), Value = 0, AppliedValue = 0 });
         return emptyList;
     }
 
@@ -162,12 +162,11 @@ public static class Ext
     ///<summary>
     /// Return list with ids of entities in list.
     ///</summary>  
-    public static ListID GetIDs<T>(this List<T> list) where T : IIDComponent
+    public static List<int> GetIDs<T>(this List<T> list) where T : IIndexComponent
     {
-        var ids = new ListID();
+        var ids = new List<int>();
 
-        for (int i = 0; i < list.Count; i++)
-            ids.Add(list[i].ID);
+        list.ForEach(entity => ids.Add(entity.Index));
 
         return ids;
     }
@@ -195,19 +194,6 @@ public static class Ext
             return system;
 
         return entitySystem.Owner == null ? default(T) : entitySystem.Owner.GetOwnerOfType<T>();
-    }
-
-    ///<summary>
-    /// Return id as string
-    ///</summary>   
-    public static string GetIdString(this List<int> Id)
-    {
-        var stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < Id.Count; i++)
-            stringBuilder.Append(Id[i].ToString());
-
-        return stringBuilder.ToString();
     }
 
     public static Vector3 ToVector3(this Coordinates3D position) => new Vector3(position.X, position.Y, position.Z);

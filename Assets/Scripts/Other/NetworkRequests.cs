@@ -42,18 +42,22 @@ namespace Game.Data.NetworkRequests
     public class SpiritCreationRequest
     {
         [SerializeField] public Coordinates3D Position;
-        [SerializeField] public ID ID;
-        [SerializeField] public int Rarity, Element, CellIndex, DataBaseIndex;
+        [SerializeField] public int Index;
+        [SerializeField] public int Rarity;
+        [SerializeField] public int Element;
+        [SerializeField] public int CellIndex;
     }
 
     [Serializable]
     public class EnemyCreationRequest
     {
         [SerializeField] public Coordinates3D Position;
-        [SerializeField] public ID ID;
-        [SerializeField] public int Race, WaveNumber, PositionInWave;
-        [SerializeField] public ListID AbilityIDs;
-        [SerializeField] public ListID TraitIDs;
+        [SerializeField] public int Index;
+        [SerializeField] public int Race;
+        [SerializeField] public int WaveNumber;
+        [SerializeField] public int PositionInWave;
+        [SerializeField] public List<int> AbilityIndexes;
+        [SerializeField] public List<int> TraitIndexes;
         [SerializeField] public ListCoordinates3D Waypoints;
     }
 }

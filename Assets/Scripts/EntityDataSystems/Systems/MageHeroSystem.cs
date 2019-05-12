@@ -11,7 +11,6 @@ namespace Game.Systems.Mage
     public class MageHeroSystem : IEntitySystem
     {
         public IEntitySystem Owner { get; private set; }
-        public ID ID { get; private set; }
         public MageData Mage { get; private set; }
 
         enum From

@@ -9,10 +9,8 @@ namespace Game.Data.Traits
     {
         public int BounceCount, DecreaseDamagePerBounce;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            
             Name = "Chainshot";
             Description = $"Bounce between {BounceCount} targets";
         }

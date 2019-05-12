@@ -179,7 +179,7 @@ namespace Game.UI
 
         void OnEffectRemoved(object sender, Effect e)
         {
-            var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityID.Compare(e.ID));
+            var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityIndex == e.Index);
             
             if (appliedEffectUI == null) return;
 
@@ -194,7 +194,7 @@ namespace Game.UI
 
             poolObject.GetComponent<Image>().sprite = e.Image;
             appliedEffectsUI.Add(appliedEffectUI);
-            appliedEffectUI.EntityID = e.ID;
+            appliedEffectUI.EntityIndex = e.Index;
             appliedEffectUI.Description = e.Description;
         }
 
@@ -304,7 +304,7 @@ namespace Game.UI
 
             choosedSpiritItems.ForEach(itemInInventory =>
             {
-                var itemFromDroppedItems = AllItemsUIInSpirits.Find(droppedItem => itemInInventory.ID.Compare(droppedItem.System.ID));
+                var itemFromDroppedItems = AllItemsUIInSpirits.Find(droppedItem => itemInInventory.Index == droppedItem.System.Index);
 
                 if (itemFromDroppedItems != null)
                 {
@@ -337,13 +337,13 @@ namespace Game.UI
                 AbilitySlots[i].Description = spiritAbilities[i].Description;
                 AbilitySlots[i].GetComponent<Image>().sprite = spiritAbilities[i].Image;
                 AbilitySlots[i].CooldownImage.fillAmount = 0;
-                AbilitySlots[i].EntityID = choosedSpirit.AbilitySystems[i].ID;
+                AbilitySlots[i].EntityIndex = choosedSpirit.AbilitySystems[i].Index;
             }
         }
 
         void OnAbilityUsed(object sender, AbilitySystem e)
         {
-            var slot = AbilitySlots.Find(x => x.EntityID.Compare(e.ID));
+            var slot = AbilitySlots.Find(x => x.EntityIndex == e.Index);
             slot.CooldownImage.fillAmount = 1f;
 
             StartCoroutine(Cooldown());

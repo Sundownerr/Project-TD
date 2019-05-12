@@ -25,11 +25,11 @@ namespace Game.Systems
             //     GM.Instance.PlayerData.StartTowerRerollCount--;
             // }
             var elementLevels = Owner.Data.ElementLevels;
-            var dataBaseElements = ReferenceHolder.Get.SpiritDB.Spirits.Elements;
+            var dataBaseElements = ReferenceHolder.Get.SpiritDB.Data;
 
             for (int lvldUpElementId = 0; lvldUpElementId < elementLevels.Count; lvldUpElementId++)
                 if (elementLevels[lvldUpElementId] > 0)
-                    for (int dbElementId = 0; dbElementId < dataBaseElements.Length; dbElementId++)
+                    for (int dbElementId = 0; dbElementId < dataBaseElements.Count; dbElementId++)
                         if (dbElementId == lvldUpElementId)
                             GetNewSpirit(lvldUpElementId);
 
@@ -39,19 +39,14 @@ namespace Game.Systems
 
             void GetNewSpirit(int elementId)
             {
-                var elements = ReferenceHolder.Get.SpiritDB.Spirits.Elements;
+                var spirits = ReferenceHolder.Get.SpiritDB.Data;
 
-
-                for (int i = 0; i < elements[elementId].Rarities.Length; i++)
+                for (int i = 0; i < spirits.Count; i++)
                 {
-                    var rarities = elements[elementId].Rarities[i];
-                    for (int j = 0; j < rarities.Spirits.Count; j++)
+                    if (spirits[i].Get(Numeral.WaveLevel).Value <= Owner.WaveSystem.WaveNumber)
                     {
-                        if (rarities.Spirits[j].Get(Numeral.WaveLevel).Value <= Owner.WaveSystem.WaveNumber)
-                        {
-                            Owner.AvailableSpirits.Add(rarities.Spirits[j]);
-                            Owner.BuildUISystem.AddSpiritButton(rarities.Spirits[j]);
-                        }
+                        Owner.AvailableSpirits.Add(spirits[i]);
+                        Owner.BuildUISystem.AddSpiritButton(spirits[i]);
                     }
                 }
             }

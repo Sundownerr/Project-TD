@@ -65,11 +65,9 @@ namespace Game.Data.Spirit
             Inventory = new Inventory(this.Get(Enums.Spirit.MaxInventorySlots).Value);
         }
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            ID.Add((int)Base.Element);
-            ID.Add((int)Base.Rarity);
+           
 
             if (numeralAttributes == null || numeralAttributes.Count == 0)
             {
@@ -107,9 +105,9 @@ namespace Game.Data.Spirit
             {
                 if (DataControlSystem.LoadDatabase<SpiritDataBase>() is SpiritDataBase dataBase)
                 {
-                    var thisElementAndRarityList = dataBase.Spirits.Elements[(int)Base.Element].Rarities[(int)Base.Rarity].Spirits;
+                    var thisElementAndRarityList = dataBase.Data;
 
-                    if (!thisElementAndRarityList.Contains(this))
+                    if (thisElementAndRarityList.Find(element => element.Index == Index) == null)
                     {
                         Index = thisElementAndRarityList.Count;
 
