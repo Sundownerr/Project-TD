@@ -87,12 +87,12 @@ namespace Game.UI
             }
         }
 
-        void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
-        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
-        void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
+        void OnClickedOnCell(GameObject go) => ActivateUI(true);
+        void OnClickedOnGround() => ActivateUI(false);
+        void OnClicledOnSpirit(GameObject go) => ActivateUI(false);
+        void OnSpiritPlaced(SpiritSystem spirit) => ActivateUI(false);
 
-        void UpdateUI(object _, EventArgs e)
+        void UpdateUI()
         {
             UpdateAvailableElement();
             UpdateRarity();
@@ -116,7 +116,7 @@ namespace Game.UI
                 spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Base.Element == ChoosedElement);
         }
 
-        public void OnAllThisSpiritsUsed(object _, SpiritButtonSystem spiritButton)
+        public void OnAllThisSpiritsUsed(SpiritButtonSystem spiritButton)
         {
             spiritButtonGOs.Remove(spiritButton.gameObject);
             spiritButtons.Remove(spiritButton);
@@ -171,7 +171,7 @@ namespace Game.UI
             if (!isSameSpirit)
                 CreateSpiritButton();
 
-            UpdateUI(this, null);
+            UpdateUI();
 
             #region  Helper functions
 

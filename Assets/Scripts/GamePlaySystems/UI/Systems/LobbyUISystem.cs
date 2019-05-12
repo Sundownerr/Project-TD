@@ -20,7 +20,7 @@ namespace Game.UI
 {
     public class LobbyUISystem : UIWindow
     {
-        public event EventHandler GameStarted, ChangeMageClicked;
+        public event Action GameStarted, ChangeMageClicked;
         public TextMeshProUGUI MaxPlayersText;
         public Slider PlayersSlider;
         public TMP_Dropdown ModeDropdown, VisibilityDropdown, DifficultyDropdown, MapDropdown, WavesDropdown;
@@ -43,7 +43,7 @@ namespace Game.UI
             UIManager.Instance.MageSelected += OnMageSelected;
         }
 
-        void OnMageSelected(object sender, MageData e)
+        void OnMageSelected(MageData e)
         {
             if (GameManager.Instance.GameState != GameState.InLobby) return;
 
@@ -155,7 +155,7 @@ namespace Game.UI
             {
                 if (!FPClient.Instance.Lobby.IsOwner)
                 {
-                    GameStarted?.Invoke(null, null);
+                    GameStarted?.Invoke();
                     networkManager.StartClient();
                 }
 
@@ -237,13 +237,13 @@ namespace Game.UI
             LobbyMemberDataUpdated(steamID);
         }
 
-        void OnChangeMageClicked(object sender, EventArgs e)
+        void OnChangeMageClicked()
         {
             isChangingMage = true;
-            ChangeMageClicked?.Invoke(null, null);
+            ChangeMageClicked?.Invoke();
         }
 
-        void OnReadyClicked(object sender, EventArgs e)
+        void OnReadyClicked()
         {
             LobbyExt.SetMemberData(LobbyData.Ready,
                 LobbyExt.GetMemberData(FPClient.Instance.SteamId, LobbyData.Ready) == LobbyData.Yes ? LobbyData.No : LobbyData.Yes);

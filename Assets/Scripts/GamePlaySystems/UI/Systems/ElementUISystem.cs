@@ -81,11 +81,11 @@ namespace Game.UI
                 Owner.ResourceUISystem.GetSpiritButton.gameObject.SetActive(false);
         }
 
-        void OnClickedOnCell(object _, GameObject go) => ActivateUI(true);
-        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        void OnClicledOnSpirit(object _, GameObject go) => ActivateUI(false);
-        void OnSpiritPlaced(object _, SpiritSystem spirit) => ActivateUI(false);
-        void OnElementLearned(object _, int learnCost) => UpdateUI();
+        void OnClickedOnCell(GameObject go) => ActivateUI(true);
+        void OnClickedOnGround() => ActivateUI(false);
+        void OnClicledOnSpirit(GameObject go) => ActivateUI(false);
+        void OnSpiritPlaced(SpiritSystem spirit) => ActivateUI(false);
+        void OnElementLearned(int learnCost) => UpdateUI();
 
         void UpdateUI()
         {

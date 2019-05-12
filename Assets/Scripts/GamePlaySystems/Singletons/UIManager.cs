@@ -11,8 +11,8 @@ namespace Game.Managers
 {
     public class UIManager : SingletonDDOL<UIManager>
     {
-        public event EventHandler ReturnToMenu, GameStarted;
-        public event EventHandler<MageData> MageSelected;
+        public event Action ReturnToMenu, GameStarted;
+        public event Action<MageData> MageSelected;
 
         protected MenuUISystem menu;
         public MenuUISystem Menu
@@ -62,53 +62,53 @@ namespace Game.Managers
             state.ChangeState(new InMainMenu(this));
         }
 
-        void OnBackButtonClicked(object _, EventArgs e) { state.Update(); }
+        void OnBackButtonClicked() { state.Update(); }
 
-        void OnLobbyCreated(object _, EventArgs e)
+        void OnLobbyCreated()
         {
             GameManager.Instance.GameState = GameState.InLobby;
             state.ChangeState(new InLobby(this));
         }
 
-        void OnLobbyJoined(object _, EventArgs e)
+        void OnLobbyJoined()
         {
             GameManager.Instance.GameState = GameState.InLobby;
             state.ChangeState(new InLobby(this));
         }
 
-        void OnLobbyMageChange(object _, EventArgs e)
+        void OnLobbyMageChange()
         {
             GameManager.Instance.GameState = GameState.SelectingMage;
             state.ChangeState(new InMageSelection(this));
         }
 
-        void OnStartSingleplayer(object _, EventArgs e)
+        void OnStartSingleplayer()
         {
             GameManager.Instance.GameState = GameState.SelectingMage;
             state.ChangeState(new InMageSelection(this));
         }
 
-        void OnStartMultiplayer(object _, EventArgs e)
+        void OnStartMultiplayer()
         {
             GameManager.Instance.GameState = GameState.BrowsingLobbies;
             state.ChangeState(new InBrowsingLobbies(this));
         }
 
-        void OnMageSelected(object _, MageData e)
+        void OnMageSelected(MageData e)
         {
             if (GameManager.Instance.PreviousGameState == GameState.MainMenu)
-                OnGameStarted(null, null);
+                OnGameStarted();
             else
             if (GameManager.Instance.PreviousGameState == GameState.InLobby)
-                OnLobbyJoined(null, null);
+                OnLobbyJoined();
 
-            MageSelected?.Invoke(null, e);
+            MageSelected?.Invoke(e);
         }
 
-        void OnGameStarted(object _, EventArgs e)
+        void OnGameStarted()
         {
             GameManager.Instance.GameState = GameState.LoadingGame;
-            GameStarted?.Invoke(null, null);
+            GameStarted?.Invoke();
 
             state.ChangeState(new InGame(this));
         }
@@ -175,7 +175,7 @@ namespace Game.Managers
             public InGame(UIManager o) => this.o = o;
 
             public void Enter() { }
-            public void Execute() { DialogWindowManager.Instance.Show("Back to menu?", () => { o.ReturnToMenu?.Invoke(null, null); }); }
+            public void Execute() { DialogWindowManager.Instance.Show("Back to menu?", () => { o.ReturnToMenu?.Invoke(); }); }
             public void Exit() { }
         }
     }

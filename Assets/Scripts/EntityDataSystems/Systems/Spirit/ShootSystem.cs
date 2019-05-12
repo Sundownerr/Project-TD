@@ -12,9 +12,9 @@ namespace Game.Systems.Spirit.Internal
     {
         public int ShotCount { get => shotCount; set => shotCount = value > 0 ? value : 0; }
         public bool isHaveChainTargets;
-        public event EventHandler<BulletSystem> BulletHit;
-        public event EventHandler PrepareToShoot;
-        public event EventHandler<BulletSystem> Shooting;
+        public event Action<BulletSystem> BulletHit;
+        public event Action PrepareToShoot;
+        public event Action<BulletSystem> Shooting;
 
         List<BulletSystem> bullets = new List<BulletSystem>();
         List<GameObject> bulletGOs = new List<GameObject>();
@@ -85,7 +85,7 @@ namespace Game.Systems.Spirit.Internal
 
             void ShotBullet()
             {
-                PrepareToShoot?.Invoke(null, null);
+                PrepareToShoot?.Invoke();
 
                 for (int i = 0; i < shotCount; i++)
                     CreateBullet(ownerSpirit.Targets[i]);
@@ -99,7 +99,7 @@ namespace Game.Systems.Spirit.Internal
 
                     SetBulletData(bullets[bullets.Count - 1]);
 
-                    Shooting?.Invoke(null, bullets[bullets.Count - 1]);
+                    Shooting?.Invoke(bullets[bullets.Count - 1]);
                     bulletGOs[bulletGOs.Count - 1].SetActive(true);
 
                     void SetBulletData(BulletSystem bullet)
@@ -171,6 +171,6 @@ namespace Game.Systems.Spirit.Internal
             }
         }
 
-        void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(null, bullet);
+        void HitTarget(BulletSystem bullet) => BulletHit?.Invoke(bullet);
     }
 }

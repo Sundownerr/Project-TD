@@ -11,8 +11,8 @@ namespace Game.UI
 {
     public class LobbyPlayerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        public event EventHandler ReadyClicked;
-        public event EventHandler ChangeMageClicked;
+        public event Action ReadyClicked;
+        public event Action ChangeMageClicked;
         public TextMeshProUGUI PlayerNameText, LevelText, ReadyText, MageNameText;
         public RawImage Avatar;
         public Button ChangeMageButton, ReadyButton;
@@ -37,11 +37,11 @@ namespace Game.UI
                 ReadyText.text = isReady ?
                     $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
                     $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>";
-                ReadyClicked?.Invoke(null, null);
+                ReadyClicked?.Invoke();
             });
 
             ChangeMageButton.gameObject.SetActive(true);
-            ChangeMageButton.onClick.AddListener(() => ChangeMageClicked?.Invoke(null, null));
+            ChangeMageButton.onClick.AddListener(() => ChangeMageClicked?.Invoke());
             ChangeMageButton.gameObject.SetActive(false);
         }
 

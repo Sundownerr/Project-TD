@@ -9,7 +9,7 @@ namespace Game.Systems
     public class HealthSystem
     {
 
-        public event EventHandler<IHealthComponent> ZeroHealth;
+        public event Action<IHealthComponent> ZeroHealth;
         public bool IsVulnerable { get; set; }
 
         IHealthComponent owner;
@@ -72,7 +72,7 @@ namespace Game.Systems
                     GiveResources();
                     IsVulnerable = false;
 
-                    ZeroHealth?.Invoke(null, owner);
+                    ZeroHealth?.Invoke(owner);
                 }
             }
 

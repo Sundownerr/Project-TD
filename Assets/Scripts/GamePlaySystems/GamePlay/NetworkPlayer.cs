@@ -58,7 +58,7 @@ namespace Game.Network
 
             LocalMap = localMaps[MapID];
             UiControlSystem = uiCanvasPrefab.GetComponent<UIControlSystem>();
-            UiControlSystem.IncreaseLevelButtonClicked += (s, e) => CmdIncreaseLevel(PlayerData);
+            UiControlSystem.IncreaseLevelButtonClicked += () => CmdIncreaseLevel(PlayerData);
             wfsDelay = new WaitForSeconds(delay);
 
             LoadData();
@@ -104,7 +104,7 @@ namespace Game.Network
 
         #region Spirit creating request
 
-        void OnSpiritCreatingRequest(object _, SpiritCreationRequest e)
+        void OnSpiritCreatingRequest(SpiritCreationRequest e)
         {
             var sendData = e.Serializer();
 
@@ -139,7 +139,7 @@ namespace Game.Network
 
         #region EnemyCreatingRequest
 
-        void OnEnemyCreatingRequest(object _, EnemyCreationRequest e)
+        void OnEnemyCreatingRequest(EnemyCreationRequest e)
         {
             var sendData = e.Serializer();
             WaitAndDo(delay, () => CmdCreateEnemy(sendData));

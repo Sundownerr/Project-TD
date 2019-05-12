@@ -25,7 +25,7 @@ namespace Game.Systems
                 spirit.ShootSystem.PrepareToShoot += OnPrepareToShoot;
                 spirit.ShootSystem.Shooting += OnShooting;
 
-                void OnBulletHit(object _, BulletSystem bullet)
+                void OnBulletHit(BulletSystem bullet)
                 {
                     var bulletTraitCount = 0;
                     var isHaveChainShot = false;
@@ -53,7 +53,7 @@ namespace Game.Systems
                     }
                 }
 
-                void OnPrepareToShoot(object _, EventArgs e)
+                void OnPrepareToShoot()
                 {
                     spirit.ShootSystem.ShotCount = 1;
 
@@ -68,7 +68,7 @@ namespace Game.Systems
                     }
                 }
 
-                void OnShooting(object _, BulletSystem bullet)
+                void OnShooting(BulletSystem bullet)
                 {
                     var chainshotTrait = spirit.Data.Traits.Find(trait => trait is Chainshot) as Chainshot;
                     if (chainshotTrait != null)

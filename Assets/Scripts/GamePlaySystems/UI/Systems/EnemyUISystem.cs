@@ -27,7 +27,7 @@ namespace Game.UI
             EnemyUI.SetActive(false);
         }
 
-        void OnClickedOnEnemy(object _, GameObject e)
+        void OnClickedOnEnemy(GameObject e)
         {
             for (int i = 0; i < Owner.EnemyControlSystem.AllEnemies.Count; i++)
                 if(Owner.EnemyControlSystem.AllEnemies[i].Prefab == e)

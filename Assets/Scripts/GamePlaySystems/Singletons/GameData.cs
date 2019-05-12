@@ -25,8 +25,8 @@ namespace Game.Managers
             UIManager.Instance.MageSelected += OnMageSelected;
         }
 
-        void OnMageSelected(object _, MageData e) => ChoosedMage = e;
-        void OnGameStateChanged(object _, GameState e)
+        void OnMageSelected(MageData e) => ChoosedMage = e;
+        void OnGameStateChanged(GameState e)
         {
             if (e == GameState.InLobby)
             {

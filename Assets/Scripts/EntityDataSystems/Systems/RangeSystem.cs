@@ -14,9 +14,9 @@ namespace Game.Systems
         public List<GameObject> Entities { get; set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
-        public event EventHandler<IVulnerable> EntityEntered;
-        public event EventHandler<IVulnerable> EntityExit;
-        public event EventHandler Destroyed;
+        public event Action<IVulnerable> EntityEntered;
+        public event Action<IVulnerable> EntityExit;
+        public event Action Destroyed;
 
         Renderer rend;
         Color transparent, notTransparent;
@@ -35,7 +35,7 @@ namespace Game.Systems
 
         void OnDestroy()
         {
-            Destroyed?.Invoke(null, null);
+            Destroyed?.Invoke();
         }
 
         void OnTriggerEnter(Collider other)
@@ -81,7 +81,7 @@ namespace Game.Systems
                     {
                         EntitySystems.Add(entitySystem);
                         Entities.Add(entitySystem.Prefab);
-                        EntityEntered?.Invoke(null, entitySystem);
+                        EntityEntered?.Invoke(entitySystem);
 
                         return true;
                     }
@@ -100,7 +100,7 @@ namespace Game.Systems
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (other.gameObject == EntitySystems[i].Prefab)
                 {
-                    EntityExit?.Invoke(null, EntitySystems[i]);
+                    EntityExit?.Invoke(EntitySystems[i]);
                     EntitySystems.Remove(EntitySystems[i]);
                     Entities.Remove(other.gameObject);
                 }
@@ -111,7 +111,7 @@ namespace Game.Systems
             for (int i = 0; i < EntitySystems.Count; i++)
                 if (EntitySystems[i] == null || EntitySystems[i].Prefab == null)
                 {
-                    EntityExit?.Invoke(null, EntitySystems[i]);
+                    EntityExit?.Invoke(EntitySystems[i]);
                     Entities.RemoveAt(i);
                     EntitySystems.RemoveAt(i);
                 }

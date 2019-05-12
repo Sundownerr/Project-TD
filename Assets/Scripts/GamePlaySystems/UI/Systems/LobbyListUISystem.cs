@@ -16,7 +16,7 @@ namespace Game.UI
 {
     public class LobbyListUISystem : UIWindow
     {
-        public event EventHandler JoinedLobby, CreatedLobby;
+        public event Action JoinedLobby, CreatedLobby;
         public GameObject LobbyButtonPrefab, LobbyInfoTextPrefab, NetworkManagerPrefab, LobbyListGroup, LobbyInfoGroup;
         public LobbyUISystem LobbyUI;
         public Button RefreshButton, CreateLobbyButton, JoinLobbyButton;
@@ -57,7 +57,7 @@ namespace Game.UI
             {
                 
                 LobbyExt.SetLobbyDefaultData();
-                CreatedLobby?.Invoke(null, null);
+                CreatedLobby?.Invoke();
             }
         }
 
@@ -69,7 +69,7 @@ namespace Game.UI
                 lobbyButtonsPool.DeactivateAll();
 
                 selectedLobby = null;
-                JoinedLobby?.Invoke(null, null);
+                JoinedLobby?.Invoke();
             }
         }
 
@@ -96,7 +96,7 @@ namespace Game.UI
             }
         }
 
-        void OnLobbyButtonClicked(object _, LobbyList.Lobby lobby)
+        void OnLobbyButtonClicked(LobbyList.Lobby lobby)
         {
             if (lobby == null) return;
 

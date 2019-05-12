@@ -24,7 +24,7 @@ namespace Game.UI
             UpdateUI();
         }
 
-        void OnResourcesChanged(object _, EventArgs e) => UpdateUI();
+        void OnResourcesChanged() => UpdateUI();
 
         public void UpdateUI()
         {

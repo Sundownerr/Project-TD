@@ -12,10 +12,10 @@ namespace Game.UI
     public class InventoryUISystem : MonoBehaviour
     {
         public PlayerSystem Owner { get; set; }
-        public event EventHandler<ItemUISystem> MoveItemToSpirit;
-        public event EventHandler<ItemUISystem> ItemAddedToPlayer;
-        public event EventHandler<ItemUISystem> ItemRemovedFromPlayer;
-        public event EventHandler<ConsumableEventArgs> ApplyConsumable;
+        public event Action<ItemUISystem> MoveItemToSpirit;
+        public event Action<ItemUISystem> ItemAddedToPlayer;
+        public event Action<ItemUISystem> ItemRemovedFromPlayer;
+        public event Action<ConsumableEventArgs> ApplyConsumable;
         public Button InventoryButton;
         public GameObject BGPanel;
         public List<GameObject> Slots;
@@ -46,7 +46,7 @@ namespace Game.UI
             Owner.SpiritUISystem.MoveItemToPlayer += OnItemMovedToPlayer;
         }
 
-        void OnItemUICreated(object _, ItemUISystem itemUI)
+        void OnItemUICreated(ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -54,7 +54,7 @@ namespace Game.UI
             ApplyConsumable += itemUI.System.OnConsumableApplied;
         }
 
-        void OnItemMovedToPlayer(object _, ItemUISystem itemUI)
+        void OnItemMovedToPlayer(ItemUISystem itemUI)
         {
             var freeSlotIndex = isSlotEmpty.IndexOf(true);
             if (freeSlotIndex == -1) return;
@@ -67,7 +67,7 @@ namespace Game.UI
             AddItemToPlayer(itemUI, freeSlotIndex);
         }
 
-        void OnItemCreated(object _, ItemSystem item)
+        void OnItemCreated(ItemSystem item)
         {
             var freeSlotIndex = isSlotEmpty.IndexOf(true);
             if (freeSlotIndex == -1) return;
@@ -78,21 +78,21 @@ namespace Game.UI
             isSlotEmpty[freeSlotIndex] = false;
             Slots[freeSlotIndex].SetActive(false);
 
-            ItemAddedToPlayer?.Invoke(null, ItemsUI[ItemsUI.Count - 1]);
+            ItemAddedToPlayer?.Invoke(ItemsUI[ItemsUI.Count - 1]);
             return;
 
         }
 
-        public void OnItemBeingDragged(object _, ItemDragEventArgs e) => RemoveItemFromPlayer(e.ItemUI);
+        public void OnItemBeingDragged(ItemDragEventArgs e) => RemoveItemFromPlayer(e.ItemUI);
 
-        public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
+        public void OnItemDoubleClicked(ItemUISystem itemUI)
         {
             var isSpiritChoosed = Owner.PlayerInputSystem.ChoosedSpirit != null;
 
             if (itemUI.System.Data is Consumable item)
                 if (item.Type != ConsumableType.Essence)
                 {
-                    ApplyConsumable?.Invoke(null, new ConsumableEventArgs(Owner, itemUI));
+                    ApplyConsumable?.Invoke(new ConsumableEventArgs(Owner, itemUI));
                     RemoveItemFromPlayer(itemUI);
                     Destroy(itemUI.gameObject);
                     return;
@@ -100,7 +100,7 @@ namespace Game.UI
                 else
                     if (isSpiritChoosed && item.Type == ConsumableType.Essence)
                 {
-                    ApplyConsumable?.Invoke(null, new ConsumableEventArgs(Owner.PlayerInputSystem.ChoosedSpirit, itemUI));
+                    ApplyConsumable?.Invoke(new ConsumableEventArgs(Owner.PlayerInputSystem.ChoosedSpirit, itemUI));
                     RemoveItemFromPlayer(itemUI);
                     Destroy(itemUI.gameObject);
                     return;
@@ -110,12 +110,12 @@ namespace Game.UI
                 if (itemUI.DraggedFrom == DraggedFrom.PlayerInventory)
                 {
                     RemoveItemFromPlayer(itemUI);
-                    MoveItemToSpirit?.Invoke(null, itemUI);
+                    MoveItemToSpirit?.Invoke(itemUI);
                 }
 
         }
 
-        public void OnItemDragEnd(object _, ItemDragEventArgs e)
+        public void OnItemDragEnd(ItemDragEventArgs e)
         {
             if (e.OverlappedSlot == null && e.ItemUI.DraggedFrom == DraggedFrom.PlayerInventory)
                 AddItemToPlayer(e.ItemUI, e.ItemUI.SlotNumber);
@@ -133,7 +133,7 @@ namespace Game.UI
                 Slots[itemUI.SlotNumber].SetActive(true);
                 ItemsUI.Remove(itemUI);
 
-                ItemRemovedFromPlayer?.Invoke(null, itemUI);
+                ItemRemovedFromPlayer?.Invoke(itemUI);
             }
 
         }
@@ -146,7 +146,7 @@ namespace Game.UI
             Slots[slotNumber].SetActive(false);
             isSlotEmpty[slotNumber] = false;
 
-            ItemAddedToPlayer?.Invoke(null, itemUI);
+            ItemAddedToPlayer?.Invoke(itemUI);
         }
     }
 }

@@ -25,11 +25,11 @@ namespace Game.UI
         public List<SlotWithCooldown> ItemSlots, AbilitySlots, TraitSlots;
 
         public List<ItemUISystem> AllItemsUIInSpirits = new List<ItemUISystem>();
-        public event EventHandler Selling;
-        public event EventHandler Upgrading;
-        public event EventHandler<SpiritItemEventArgs> ItemAddedToSpirit;
-        public event EventHandler<SpiritItemEventArgs> ItemRemovedFromSpirit;
-        public event EventHandler<ItemUISystem> MoveItemToPlayer;
+        public event Action Selling;
+        public event Action Upgrading;
+        public event Action<SpiritItemEventArgs> ItemAddedToSpirit;
+        public event Action<SpiritItemEventArgs> ItemRemovedFromSpirit;
+        public event Action<ItemUISystem> MoveItemToPlayer;
         List<NumeralStatValueUI> numeralStatValues;
         List<SpiritStatValueUI> spiritStatValues;
 
@@ -98,18 +98,18 @@ namespace Game.UI
 
             SellButton.onClick.AddListener(() =>
             {
-                Selling?.Invoke(null, null);
+                Selling?.Invoke();
                 ActivateUI(false);
             });
 
             UpgradeButton.onClick.AddListener(() =>
             {
-                Upgrading?.Invoke(null, null);
+                Upgrading?.Invoke();
                 UpdateUI();
             });
         }
 
-        void OnItemUICreated(object _, ItemUISystem itemUI)
+        void OnItemUICreated(ItemUISystem itemUI)
         {
             itemUI.BeingDragged += OnItemBeingDragged;
             itemUI.DragEnd += OnItemDragEnd;
@@ -177,7 +177,7 @@ namespace Game.UI
             #endregion
         }
 
-        void OnEffectRemoved(object sender, Effect e)
+        void OnEffectRemoved(Effect e)
         {
             var appliedEffectUI = appliedEffectsUI.Find(x => x.EntityIndex == e.Index);
             
@@ -187,7 +187,7 @@ namespace Game.UI
             appliedEffectsUI.Remove(appliedEffectUI);
         }
 
-        void OnEffectApplied(object sender, Effect e)
+        void OnEffectApplied(Effect e)
         {
             var poolObject = appliedEffectsUIPool.PopObject();
             var appliedEffectUI = poolObject.GetComponent<SlotWithCooldown>();
@@ -198,17 +198,17 @@ namespace Game.UI
             appliedEffectUI.Description = e.Description;
         }
 
-        void OnClickedOnSpirit(object _, GameObject spirit) => ActivateUI(true);
-        void OnClickedOnCell(object _, GameObject spirit) => ActivateUI(false);
-        void OnClickedOnGround(object _, EventArgs e) => ActivateUI(false);
-        void OnStatsApplied(object _, EventArgs e) => UpdateValues();
+        void OnClickedOnSpirit(GameObject spirit) => ActivateUI(true);
+        void OnClickedOnCell(GameObject spirit) => ActivateUI(false);
+        void OnClickedOnGround() => ActivateUI(false);
+        void OnStatsApplied() => UpdateValues();
 
-        void OnMoveItemToSpirit(object _, ItemUISystem itemUI)
+        void OnMoveItemToSpirit(ItemUISystem itemUI)
         {
             var emptySlot = isSlotEmpty.IndexOf(true);
 
             if (emptySlot < 0)
-                MoveItemToPlayer?.Invoke(null, itemUI);
+                MoveItemToPlayer?.Invoke(itemUI);
             else
             {
                 itemUI.transform.position = ItemSlots[emptySlot].transform.position;
@@ -218,12 +218,12 @@ namespace Game.UI
             }
         }
 
-        public void OnItemDoubleClicked(object _, ItemUISystem itemUI)
+        public void OnItemDoubleClicked(ItemUISystem itemUI)
         {
             if (itemUI.DraggedFrom == DraggedFrom.SpiritInventory)
             {
                 RemoveItemFromSpirit(itemUI);
-                MoveItemToPlayer?.Invoke(null, itemUI);
+                MoveItemToPlayer?.Invoke(itemUI);
             }
         }
 
@@ -341,7 +341,7 @@ namespace Game.UI
             }
         }
 
-        void OnAbilityUsed(object sender, AbilitySystem e)
+        void OnAbilityUsed(AbilitySystem e)
         {
             var slot = AbilitySlots.Find(x => x.EntityIndex == e.Index);
             slot.CooldownImage.fillAmount = 1f;
@@ -387,13 +387,13 @@ namespace Game.UI
             UpdateTraits();
         }
 
-        void OnItemBeingDragged(object _, ItemDragEventArgs e)
+        void OnItemBeingDragged(ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
             RemoveItemFromSpirit(e.ItemUI);
         }
 
-        void OnItemDragEnd(object _, ItemDragEventArgs e)
+        void OnItemDragEnd(ItemDragEventArgs e)
         {
             choosedSpirit = Owner.PlayerInputSystem.ChoosedSpirit;
 
@@ -418,7 +418,7 @@ namespace Game.UI
             itemUI.DraggedFrom = DraggedFrom.SpiritInventory;
             itemUI.SlotNumber = slotNumber;
 
-            ItemAddedToSpirit?.Invoke(null, new SpiritItemEventArgs(choosedSpirit, itemUI));
+            ItemAddedToSpirit?.Invoke(new SpiritItemEventArgs(choosedSpirit, itemUI));
             UpdateItems();
             UpdateValues();
         }
@@ -431,7 +431,7 @@ namespace Game.UI
                 isSlotEmpty[itemUI.SlotNumber] = true;
                 ItemSlots[itemUI.SlotNumber].gameObject.SetActive(true);
 
-                ItemRemovedFromSpirit?.Invoke(null, new SpiritItemEventArgs(choosedSpirit, itemUI));
+                ItemRemovedFromSpirit?.Invoke(new SpiritItemEventArgs(choosedSpirit, itemUI));
                 UpdateValues();
             }
         }

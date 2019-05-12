@@ -8,7 +8,7 @@ namespace Game.Systems
 {
     public static class DamageSystem
     {
-        public static event EventHandler<DamageEventArgs> DamageDealt;
+        public static event Action<DamageEventArgs> DamageDealt;
 
         public static void DealDamage(this IDamageDealer damageDealer, IHealthComponent target, double damage)
         {
@@ -35,7 +35,7 @@ namespace Game.Systems
                 CalculateArmorDamageModifier();
                 CalculateCrit();
 
-                DamageDealt?.Invoke(null, new DamageEventArgs(target, damage, critCount));
+                DamageDealt?.Invoke(new DamageEventArgs(target, damage, critCount));
                 return damage;
 
                 #region Helper functions

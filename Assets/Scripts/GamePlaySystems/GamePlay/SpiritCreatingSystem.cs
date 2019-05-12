@@ -6,7 +6,7 @@ namespace Game.Systems
 {
     public class SpiritCreatingSystem
     {
-        public event EventHandler AddedNewAvailableSpirit;
+        public event Action AddedNewAvailableSpirit;
 
         public PlayerSystem Owner { get; set; }
 
@@ -33,7 +33,7 @@ namespace Game.Systems
                         if (dbElementId == lvldUpElementId)
                             GetNewSpirit(lvldUpElementId);
 
-            AddedNewAvailableSpirit?.Invoke(null, null);
+            AddedNewAvailableSpirit?.Invoke();
 
             #region  Helper functions
 

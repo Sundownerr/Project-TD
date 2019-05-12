@@ -9,9 +9,9 @@ namespace Game.Systems.Enemy
 {
     public class EnemySystem : IAbilitiySystem, ITraitSystem, IHealthComponent, ICanReceiveEffects
     {
-        public event EventHandler<EnemySystem> LastWaypointReached;
-        public event EventHandler<Effect> EffectApplied, EffectRemoved;
-        public event EventHandler<IHealthComponent> Died;
+        public event Action<EnemySystem> LastWaypointReached;
+        public event Action<Effect> EffectApplied, EffectRemoved;
+        public event Action<IHealthComponent> Died;
 
         public EnemyData Data { get; set; }
         public int WaypointIndex { get; set; }
@@ -96,7 +96,7 @@ namespace Game.Systems.Enemy
                     else
                         WaypointIndex++;
                 else
-                    LastWaypointReached?.Invoke(null, this);
+                    LastWaypointReached?.Invoke(this);
             }
 
             #region  Helper functions
@@ -123,18 +123,18 @@ namespace Game.Systems.Enemy
         {
             AppliedEffectSystem.AddEffect(effect);
 
-            EffectApplied?.Invoke(null, effect);
+            EffectApplied?.Invoke(effect);
         }
 
         public void RemoveEffect(Effect effect)
         {
             AppliedEffectSystem.RemoveEffect(effect);
 
-            EffectRemoved?.Invoke(null, effect);
+            EffectRemoved?.Invoke(effect);
         }
 
         public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
         public void ChangeHealth(IDamageDealer changer, double damage) => HealthSystem.ChangeHealth(changer, damage);
-        public void OnZeroHealth(object _, IHealthComponent entity) => Died?.Invoke(null, entity);
+        public void OnZeroHealth(IHealthComponent entity) => Died?.Invoke(entity);
     }
 }

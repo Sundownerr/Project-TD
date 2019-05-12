@@ -17,8 +17,8 @@ namespace Game.Managers
 {
     public class GameManager : SingletonDDOL<GameManager>
     {
-        public event EventHandler<GameState> StateChanged;
-        public event EventHandler SteamLostConnection, SteamConnected;
+        public event Action<GameState> StateChanged;
+        public event Action SteamLostConnection, SteamConnected;
         public GameObject[] Managers;
 
         MenuUISystem menu;
@@ -46,7 +46,7 @@ namespace Game.Managers
 
                 PreviousGameState = currentGameState;
                 currentGameState = value;
-                StateChanged?.Invoke(null, currentGameState);
+                StateChanged?.Invoke(currentGameState);
                 Debug.Log(value);
             }
         }
@@ -78,13 +78,13 @@ namespace Game.Managers
             UIManager.Instance.GameStarted += OnGameStarted;
         }
 
-        void OnGameStarted(object sender, EventArgs e)
+        void OnGameStarted()
         {
             GameState = GameState.LoadingGame;
             SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);
         }
 
-        void OnSteamConnected(object sender, EventArgs e) => SteamConnected?.Invoke(null, null);
+        void OnSteamConnected() => SteamConnected?.Invoke();
 
         void OnLocalizationChanged()
         {
@@ -123,13 +123,13 @@ namespace Game.Managers
             }
         }
 
-        void OnReturnToMenu(object _, EventArgs e)
+        void OnReturnToMenu()
         {
             GameState = GameState.UnloadingGame;
             SceneManager.LoadSceneAsync(StringConsts.MainMenu);
         }
 
-        void OnSteamLostConnection(object _, EventArgs e)
+        void OnSteamLostConnection()
         {
             var isUsingSteam =
                 GameState == GameState.InGameMultiplayer ||
@@ -137,7 +137,7 @@ namespace Game.Managers
                 GameState == GameState.BrowsingLobbies ||
                 GameState == GameState.CreatingLobby;
 
-            SteamLostConnection?.Invoke(null, null);
+            SteamLostConnection?.Invoke();
 
             if (isUsingSteam)
                 GoToMainMenu();

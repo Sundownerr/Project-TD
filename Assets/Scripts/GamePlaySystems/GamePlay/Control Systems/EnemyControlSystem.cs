@@ -10,7 +10,7 @@ namespace Game.Systems
         public List<EnemySystem> OwnedEnemies { get; private set; } = new List<EnemySystem>();
         public List<EnemySystem> NotOwnedEnemies { get; private set; } = new List<EnemySystem>();
         public List<EnemySystem> AllEnemies { get; private set; } = new List<EnemySystem>();
-        public event EventHandler<EnemySystem> EnemyDied;
+        public event Action<EnemySystem> EnemyDied;
 
         PlayerSystem Owner;
 
@@ -27,9 +27,9 @@ namespace Game.Systems
                 AllEnemies[i].UpdateSystem();
         }
 
-        void OnEnemySpawned(object _, EnemySystem e) => AddEnemy(e);
-        void OnEnemyDied(object _, IHealthComponent e) => DestroyEnemy(e as EnemySystem);
-        void OnLastWaypointReached(object _, EnemySystem e) => DestroyEnemy(e);
+        void OnEnemySpawned(EnemySystem e) => AddEnemy(e);
+        void OnEnemyDied(IHealthComponent e) => DestroyEnemy(e as EnemySystem);
+        void OnLastWaypointReached(EnemySystem e) => DestroyEnemy(e);
 
         void AddEnemy(EnemySystem enemy)
         {
@@ -47,7 +47,7 @@ namespace Game.Systems
 
         void DestroyEnemy(EnemySystem enemy)
         {
-            EnemyDied?.Invoke(null, enemy);
+            EnemyDied?.Invoke(enemy);
 
             AllEnemies.Remove(enemy);
 

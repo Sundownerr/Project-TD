@@ -51,7 +51,7 @@ namespace Game.UI
                 }
         }
 
-        void OnDamageDealt(object _, DamageEventArgs e)
+        void OnDamageDealt(DamageEventArgs e)
         {
             if (e.Target == null || e.Target.Prefab == null)
                 return;
@@ -84,9 +84,9 @@ namespace Game.UI
             damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
         }
 
-        void OnSpiritPlaced(object _, SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
+        void OnSpiritPlaced(SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
 
-        void OnSpiritLevelUp(object _, SpiritSystem spirit)
+        void OnSpiritLevelUp(SpiritSystem spirit)
         {
             var text = levelUpTextPool.PopObject();
             var random = UnityEngine.Random.Range(-20, 20);

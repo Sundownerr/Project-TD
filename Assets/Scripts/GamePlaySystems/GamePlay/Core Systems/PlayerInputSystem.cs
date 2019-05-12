@@ -17,14 +17,14 @@ namespace Game.Systems
         public GameObject Selection;
         public EventSystem EventSystem;
 
-        public event EventHandler PlacingSpirit;
-        public event EventHandler<SpiritSystem> SpiritSold;
-        public event EventHandler<SpiritSystem> SpiritUpgraded;
-        public event EventHandler<GameObject> ClickedOnCell;
-        public event EventHandler<GameObject> ClickedOnSpirit;
-        public event EventHandler<GameObject> ClickedOnEnemy;
-        public event EventHandler ClikedOnGround;
-        public event EventHandler RMBPresed;
+        public event Action PlacingSpirit;
+        public event Action<SpiritSystem> SpiritSold;
+        public event Action<SpiritSystem> SpiritUpgraded;
+        public event Action<GameObject> ClickedOnCell;
+        public event Action<GameObject> ClickedOnSpirit;
+        public event Action<GameObject> ClickedOnEnemy;
+        public event Action ClikedOnGround;
+        public event Action RMBPresed;
 
         EnemySystem choosedEnemy;
         GameObject selection;
@@ -81,18 +81,18 @@ namespace Game.Systems
                         if (isMouseOnSpirit)
                         {
                             GetChoosedSpirit();
-                            ClickedOnSpirit?.Invoke(null, hit.transform.gameObject);
+                            ClickedOnSpirit?.Invoke(hit.transform.gameObject);
                         }
 
                         if (isMouseOnEnemy)
                         {
                             GetChoosedEnemy();
-                            ClickedOnEnemy?.Invoke(null, hit.transform.gameObject);
+                            ClickedOnEnemy?.Invoke(hit.transform.gameObject);
                         }
 
                         if (isMouseOnGround)
                         {
-                            ClikedOnGround?.Invoke(null, null);
+                            ClikedOnGround?.Invoke();
                             ChoosedSpirit = null;
                             choosedEnemy = null;
                             SetSelection(false);
@@ -101,7 +101,7 @@ namespace Game.Systems
                         if (isMouseOnCell)
                         {
 
-                            ClickedOnCell?.Invoke(null, hit.transform.gameObject);
+                            ClickedOnCell?.Invoke(hit.transform.gameObject);
                             ChoosedSpirit = null;
                             choosedEnemy = null;
                             SetSelection(false);
@@ -111,7 +111,7 @@ namespace Game.Systems
 
             if (Input.GetMouseButtonDown(1))
             {
-                RMBPresed?.Invoke(null, null);
+                RMBPresed?.Invoke();
                 ChoosedSpirit = null;
                 choosedEnemy = null;
                 SetSelection(false);
@@ -152,15 +152,15 @@ namespace Game.Systems
                 selection.SetActive(activate);
         }
 
-        public void OnPlacingNewSpirit(object _, SpiritData spiritData)
+        public void OnPlacingNewSpirit(SpiritData spiritData)
         {
             var placedSpirit = Owner.AvailableSpirits.Find(spirit => spirit.Index == spiritData.Index);
             Owner.AvailableSpirits.Remove(placedSpirit);
 
-            PlacingSpirit?.Invoke(null, null);
+            PlacingSpirit?.Invoke();
         }
 
-        void OnSelling(object _, EventArgs e) => SpiritSold?.Invoke(null, ChoosedSpirit);
+        void OnSelling() => SpiritSold?.Invoke(ChoosedSpirit);
 
         bool CheckGradeListOk(out List<SpiritData> grades)
         {
@@ -180,7 +180,7 @@ namespace Game.Systems
             return false;
         }
 
-        void OnUpgrading(object _, EventArgs e)
+        void OnUpgrading()
         {
             if (CheckGradeListOk(out List<SpiritData> grades))
             {
@@ -194,8 +194,8 @@ namespace Game.Systems
                 upgradedSpirit.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);
                 upgradedSpirit.SetSystem(Owner);
 
-                SpiritUpgraded?.Invoke(null, upgradedSpirit);
-                SpiritSold?.Invoke(null, ChoosedSpirit);
+                SpiritUpgraded?.Invoke(upgradedSpirit);
+                SpiritSold?.Invoke(ChoosedSpirit);
                 ChoosedSpirit = upgradedSpirit;
             }
             Owner.SpiritUISystem.ActivateUpgradeButton(ChoosedSpirit.Data.GradeCount < grades.Count - 1);

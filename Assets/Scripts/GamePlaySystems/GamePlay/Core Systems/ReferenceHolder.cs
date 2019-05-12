@@ -14,7 +14,7 @@ namespace Game.Managers
 {
     public class ReferenceHolder : MonoBehaviour
     {
-        public event EventHandler<PlayerSystemData> PlayerDataSet;
+        public event Action<PlayerSystemData> PlayerDataSet;
         static ReferenceHolder get;
         public static ReferenceHolder Get
         {
@@ -118,7 +118,7 @@ namespace Game.Managers
         }
 
 
-        void OnPlayerCreated(object _, PlayerSystem e)
+        void OnPlayerCreated(PlayerSystem e)
         {
             Player = e;
 
@@ -127,7 +127,7 @@ namespace Game.Managers
 
         }
 
-        void OnGameStateChanged(object _, GameState e)
+        void OnGameStateChanged(GameState e)
         {
             if (e == GameState.InGameSingleplayer)
             {
@@ -159,7 +159,7 @@ namespace Game.Managers
 
             playerData.Mage = GameData.Instance.ChoosedMage;
 
-            PlayerDataSet?.Invoke(null, playerData);
+            PlayerDataSet?.Invoke(playerData);
         }
     }
 }

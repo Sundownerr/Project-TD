@@ -10,7 +10,7 @@ namespace Game.Systems.Abilities
 {
     public class AbilitySystem : IEntitySystem, IIndexComponent
     {
-        public event EventHandler<AbilitySystem> Used;
+        public event Action<AbilitySystem> Used;
 
         public IEntitySystem Owner { get; private set; }
         public Ability Ability { get; private set; }
@@ -98,7 +98,7 @@ namespace Game.Systems.Abilities
 
         void StartAbility()
         {
-            Used?.Invoke(null, this);
+            Used?.Invoke(this);
             GameLoop.Instance.StartCoroutine(Cooldown());
             GameLoop.Instance.StartCoroutine(InitEffect());
         }

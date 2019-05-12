@@ -22,7 +22,7 @@ namespace Game.Systems
             Owner.InventoryUISystem.ApplyConsumable += OnConsumbleApplied;
         }
 
-        void OnConsumbleApplied(object _, ConsumableEventArgs e)
+        void OnConsumbleApplied(ConsumableEventArgs e)
         {
             if (e.Entity is SpiritSystem spirit)
             {
@@ -34,26 +34,26 @@ namespace Game.Systems
                 e.ItemUI.System.Owner = player;
         }
 
-        void OnItemAddedToSpirit(object _, SpiritItemEventArgs e)
+        void OnItemAddedToSpirit(SpiritItemEventArgs e)
         {          
             e.ItemUI.System.Owner = e.Spirit;
             AddItem(e.Spirit.Data.Inventory, e.ItemUI.System);
             e.ItemUI.System.ApplyStats();           
         }
 
-        void OnItemRemovedFromSpirit(object _, SpiritItemEventArgs e)
+        void OnItemRemovedFromSpirit(SpiritItemEventArgs e)
         {          
             RemoveItem(e.Spirit.Data.Inventory, e.ItemUI.System);            
             e.ItemUI.System.RemoveStats();           
         }
 
-        void OnItemAddedToPlayer(object _, ItemUISystem itemUI)
+        void OnItemAddedToPlayer(ItemUISystem itemUI)
         {          
             itemUI.System.Owner = Owner;
             AddItem(Owner.Data.Inventory, itemUI.System);
         }
 
-        public void OnItemRemovedFromPlayer(object _, ItemUISystem itemUI)
+        public void OnItemRemovedFromPlayer(ItemUISystem itemUI)
         {
             RemoveItem(Owner.Data.Inventory, itemUI.System);
         }

@@ -14,10 +14,10 @@ namespace Game.Systems.Spirit
 {
     public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanReceiveEffects, IDisposable
     {
-        public event EventHandler<Effect> EffectApplied;
-        public event EventHandler<Effect> EffectRemoved;
-        public event EventHandler<SpiritSystem> LeveledUp;
-        public event EventHandler StatsChanged;
+        public event Action<Effect> EffectApplied;
+        public event Action<Effect> EffectRemoved;
+        public event Action<SpiritSystem> LeveledUp;
+        public event Action StatsChanged;
 
         public Transform RangeTransform { get; private set; }
         public Transform MovingPart { get; private set; }
@@ -71,8 +71,8 @@ namespace Game.Systems.Spirit
             if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
             {
                 dataSystem.Set();
-                dataSystem.LeveledUp += (_, e) => LeveledUp?.Invoke(null, this);
-                dataSystem.StatsChanged += (_, e) => StatsChanged?.Invoke(null, null);
+                dataSystem.LeveledUp += (spirit) => LeveledUp?.Invoke(this);
+                dataSystem.StatsChanged += () => StatsChanged?.Invoke();
             }
 
             SetTraitSystems();
@@ -154,7 +154,7 @@ namespace Game.Systems.Spirit
             }
         }
 
-        void OnEntityEnteredRange(object _, IVulnerable e)
+        void OnEntityEnteredRange(IVulnerable e)
         {
             if (e is EnemySystem enemy)
                 if (enemy.Data.Type == EnemyType.Flying && !Data.Get(Enums.SpiritFlag.CanAttackFlying).Value)
@@ -163,7 +163,7 @@ namespace Game.Systems.Spirit
                     Targets.Add(e as IHealthComponent);
         }
 
-        void OnEntityExitRange(object _, IVulnerable e) => Targets.Remove(e as IHealthComponent);
+        void OnEntityExitRange(IVulnerable e) => Targets.Remove(e as IHealthComponent);
 
         public void Upgrade(SpiritSystem previousSpirit, SpiritData newData) => dataSystem.Upgrade(previousSpirit, newData);
 
@@ -172,12 +172,12 @@ namespace Game.Systems.Spirit
         public void AddEffect(Effect effect)
         {
             AppliedEffectSystem.AddEffect(effect);
-            EffectApplied?.Invoke(null, effect);
+            EffectApplied?.Invoke(effect);
         }
 
         public void RemoveEffect(Effect effect)
         {
-            EffectRemoved?.Invoke(null, effect);
+            EffectRemoved?.Invoke(effect);
             AppliedEffectSystem.RemoveEffect(effect);
         }
 

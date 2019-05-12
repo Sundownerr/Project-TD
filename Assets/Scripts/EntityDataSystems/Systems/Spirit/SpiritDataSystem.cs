@@ -14,8 +14,8 @@ namespace Game.Systems.Spirit.Internal
     {
         public SpiritData CurrentData { get; set; }
         public SpiritData BaseData { get; set; }
-        public event EventHandler StatsChanged;
-        public event EventHandler<SpiritSystem> LeveledUp;
+        public event Action StatsChanged;
+        public event Action<SpiritSystem> LeveledUp;
 
         SpiritSystem ownerSpirit;
         List<Consumable> appliedConsumables = new List<Consumable>();
@@ -31,7 +31,7 @@ namespace Game.Systems.Spirit.Internal
 
             BaseData = data;
 
-            StatsChanged?.Invoke(null, null);
+            StatsChanged?.Invoke();
         }
 
         public void Upgrade(SpiritSystem previousSpirit, SpiritData newData)
@@ -47,7 +47,7 @@ namespace Game.Systems.Spirit.Internal
             for (int i = 0; i < previousSpirit.Data.Get(Numeral.Level).Value; i++)
                 IncreaseStatsPerLevel();
 
-            StatsChanged?.Invoke(null, null);
+            StatsChanged?.Invoke();
         }
 
         void IncreaseStatsPerLevel()
@@ -81,7 +81,7 @@ namespace Game.Systems.Spirit.Internal
 
             U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
 
-            LeveledUp?.Invoke(null, ownerSpirit);
+            LeveledUp?.Invoke(ownerSpirit);
         }
 
         public void AddExp(int amount)
@@ -99,7 +99,7 @@ namespace Game.Systems.Spirit.Internal
             }
 
             if (ownerSpirit.GetOwnerOfType<PlayerSystem>().PlayerInputSystem.ChoosedSpirit == ownerSpirit)
-                StatsChanged?.Invoke(null, null);
+                StatsChanged?.Invoke();
         }
     }
 }

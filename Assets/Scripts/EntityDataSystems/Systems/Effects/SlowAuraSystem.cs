@@ -18,7 +18,7 @@ namespace Game.Systems.Effects
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
 
-        void OnSpiritEnteredRange(object _, IVulnerable e)
+        void OnSpiritEnteredRange(IVulnerable e)
         {
             var spirit = e as SpiritSystem;
 
@@ -34,7 +34,7 @@ namespace Game.Systems.Effects
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
         }
 
-        void OnSpiritExitRange(object _, IVulnerable e) => RemoveEffect(e as ICanReceiveEffects);
+        void OnSpiritExitRange(IVulnerable e) => RemoveEffect(e as ICanReceiveEffects);
 
         void RemoveEffect(ICanReceiveEffects entity)
         {
@@ -65,7 +65,7 @@ namespace Game.Systems.Effects
             range.SetShow(true);
         }
 
-        void OnRangeDestroyed(object _, System.EventArgs e) => End();
+        void OnRangeDestroyed() => End();
 
         public override void End()
         {

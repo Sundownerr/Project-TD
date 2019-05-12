@@ -6,7 +6,7 @@ namespace Game.Systems
 {
     public class ElementSystem
     {
-        public event EventHandler<int> LearnedElement;
+        public event Action<int> LearnedElement;
 
         PlayerSystem owner;
 
@@ -17,7 +17,7 @@ namespace Game.Systems
             owner.ResourceSystem.ResourcesChanged += OnResourcesChanged;
         }
 
-        void OnResourcesChanged(object sender, EventArgs e)
+        void OnResourcesChanged()
         {
             for (int i = 0; i < owner.ElementUISystem.Buttons.Length; i++)
             {
@@ -34,7 +34,7 @@ namespace Game.Systems
             if (check.canLearn)
             {
                 owner.Data.ElementLevels[elementId]++;
-                LearnedElement?.Invoke(null, check.learnCost);
+                LearnedElement?.Invoke(check.learnCost);
             }
         }
 

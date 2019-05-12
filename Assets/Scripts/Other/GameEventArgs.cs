@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using Game.UI;
 using Game.Systems.Spirit;
+using System;
 
 namespace Game.Utility
 {
 
-    public class DamageEventArgs
+    public class DamageEventArgs : EventArgs
     {
         public IHealthComponent Target { get; set; }
         public double Damage { get; set; }
@@ -19,7 +20,7 @@ namespace Game.Utility
         }
     }
 
-    public class ConsumableEventArgs
+    public class ConsumableEventArgs : EventArgs
     {
         public IEntitySystem Entity { get; set; }
         public ItemUISystem ItemUI { get; set; }
@@ -31,7 +32,7 @@ namespace Game.Utility
         }
     }
 
-    public class ItemDragEventArgs
+    public class ItemDragEventArgs : EventArgs
     {
         public ItemUISystem ItemUI { get; set; }
         public GameObject OverlappedSlot { get; set; }
@@ -48,7 +49,7 @@ namespace Game.Utility
         }
     }
 
-    public class SpiritItemEventArgs
+    public class SpiritItemEventArgs : EventArgs
     {
         public ItemUISystem ItemUI { get; set; }
         public SpiritSystem Spirit { get; set; }

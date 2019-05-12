@@ -10,7 +10,7 @@ namespace Game.Managers
 {
     public class GameLoop : SingletonDDOL<GameLoop>
     {
-        public event EventHandler<PlayerSystem> PlayerCreated;
+        public event Action<PlayerSystem> PlayerCreated;
 
         PlayerSystem player;
 
@@ -20,7 +20,7 @@ namespace Game.Managers
             GameManager.Instance.StateChanged += OnGameStateChanged;
         }
 
-        void OnGameStateChanged(object sender, GameState e)
+        void OnGameStateChanged(GameState e)
         {
             var inGame = e == GameState.InGameMultiplayer || e == GameState.InGameSingleplayer;
 
@@ -28,10 +28,10 @@ namespace Game.Managers
                 player = null;
         }
 
-        void OnPlayerDataSet(object _, PlayerSystemData e)
+        void OnPlayerDataSet(PlayerSystemData e)
         {
             player = new PlayerSystem(e.Map, e.Mage);
-            PlayerCreated?.Invoke(null, player);
+            PlayerCreated?.Invoke(player);
         }
 
         void FixedUpdate()

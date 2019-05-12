@@ -34,7 +34,7 @@ namespace Game.Systems.Mage
 
         }
 
-        void OnSpiritPlaced(object _, SpiritSystem e)
+        void OnSpiritPlaced(SpiritSystem e)
         {
             if (e.IsOwnedByLocalPlayer)
             {
@@ -43,13 +43,13 @@ namespace Game.Systems.Mage
             }
         }
 
-        void OnEnemyCreated(object _, EnemySystem e)
+        void OnEnemyCreated(EnemySystem e)
         {
             if (e.IsOwnedByLocalPlayer)
                 ModifyAttributes(e.Data, From.StartingAttribute);
         }
 
-        void OnSpiritLeveledUp(object _, SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+        void OnSpiritLeveledUp(SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
 
         void ModifyAttributes(EnemyData enemy, From getFrom)
         {

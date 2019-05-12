@@ -13,7 +13,7 @@ namespace Game.UI
 {
     public class MenuUISystem : UIWindow
     {
-        public event EventHandler Active, StartSingleplayer, StartMultiplayer;
+        public event Action Active, StartSingleplayer, StartMultiplayer;
 
         public LobbyListUISystem LobbyList;
         public MageSelectionUISystem MageSelection;
@@ -26,8 +26,8 @@ namespace Game.UI
 
         void Start()
         {
-            SingleplayerButton.onClick.AddListener(() => StartSingleplayer?.Invoke(null, null));
-            MultiplayerButton.onClick.AddListener(() => StartMultiplayer?.Invoke(null, null));
+            SingleplayerButton.onClick.AddListener(() => StartSingleplayer?.Invoke());
+            MultiplayerButton.onClick.AddListener(() => StartMultiplayer?.Invoke());
 
             GameManager.Instance.SteamConnected += OnSteamConnected;
             GameManager.Instance.SteamLostConnection += OnSteamLostConnection;
@@ -36,12 +36,12 @@ namespace Game.UI
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-            Active?.Invoke(null, null);
+            Active?.Invoke();
             base.Open();
         }
 
-        void OnSteamLostConnection(object _, EventArgs e) => MultiplayerButton.interactable = false;
-        void OnSteamConnected(object _, EventArgs e) => MultiplayerButton.interactable = true;
+        void OnSteamLostConnection() => MultiplayerButton.interactable = false;
+        void OnSteamConnected() => MultiplayerButton.interactable = true;
 
         void OnDestroy()
         {

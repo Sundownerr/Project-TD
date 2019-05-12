@@ -56,16 +56,16 @@ namespace Game
         void AddEffect(Effect Effect);
         void RemoveEffect(Effect Effect);
         int CountOf(Effect Effect);
-        event EventHandler<Effect> EffectApplied;
-        event EventHandler<Effect> EffectRemoved;
+        event Action<Effect> EffectApplied;
+        event Action<Effect> EffectRemoved;
     }
 
     public interface IHealthComponent : IPrefabComponent, IVulnerable
     {
         void ChangeHealth(IDamageDealer changer, double damage);
-        void OnZeroHealth(object _, IHealthComponent entity);
+        void OnZeroHealth(IHealthComponent entity);
         HealthSystem HealthSystem { get; }
-        event EventHandler<IHealthComponent> Died;
+        event Action<IHealthComponent> Died;
     }
 
     public interface ISpiritAttributes

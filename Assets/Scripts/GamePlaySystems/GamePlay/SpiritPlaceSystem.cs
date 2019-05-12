@@ -10,8 +10,8 @@ namespace Game.Systems
 {
     public class SpiritPlaceSystem
     {
-        public event EventHandler<SpiritSystem> SpiritPlaced;
-        public event EventHandler<SpiritCreationRequest> SpiritCreationRequested;
+        public event Action<SpiritSystem> SpiritPlaced;
+        public event Action<SpiritCreationRequest> SpiritCreationRequested;
 
         public PlayerSystem Owner { get; set; }
 
@@ -24,10 +24,10 @@ namespace Game.Systems
 
         public void NetworkCreateSpirit(SpiritSystem spirit)
         {
-            SpiritPlaced?.Invoke(null, spirit);
+            SpiritPlaced?.Invoke(spirit);
         }
 
-        public void OnPlacingNewSpirit(object _, SpiritData spiritData)
+        public void OnPlacingNewSpirit(SpiritData spiritData)
         {
             if (Owner.CellControlSystem.IsGridBuilded)
             {
@@ -45,7 +45,7 @@ namespace Game.Systems
                             (int)choosedCell.transform.position.y,
                             (int)choosedCell.transform.position.z);
 
-                        SpiritCreationRequested?.Invoke(null, new SpiritCreationRequest()
+                        SpiritCreationRequested?.Invoke(new SpiritCreationRequest()
                         {
                             Index = spiritData.Index,
                             Rarity = (int)spiritData.Base.Rarity,
@@ -57,7 +57,7 @@ namespace Game.Systems
                     else
                     {
                         var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, true);
-                        SpiritPlaced?.Invoke(null, newSpirit);
+                        SpiritPlaced?.Invoke(newSpirit);
                     }
             }
         }

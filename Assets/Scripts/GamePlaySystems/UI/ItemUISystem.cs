@@ -16,10 +16,10 @@ namespace Game.UI
     public class ItemUISystem : DescriptionBlock, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler
     {
         public PlayerSystem Owner { get; set; }
-        public event EventHandler<ItemDragEventArgs> BeingDragged;
-        public event EventHandler<ItemDragEventArgs> DragEnd;
-        public event EventHandler<ItemUISystem> DoubleClickedInPlayerInventory;
-        public event EventHandler<ItemUISystem> DoubleClickedInSpiritInventory;
+        public event Action<ItemDragEventArgs> BeingDragged;
+        public event Action<ItemDragEventArgs> DragEnd;
+        public event Action<ItemUISystem> DoubleClickedInPlayerInventory;
+        public event Action<ItemUISystem> DoubleClickedInSpiritInventory;
 
         public int SlotNumber { get; set; }
         public ItemSystem System { get; set; }
@@ -50,7 +50,7 @@ namespace Game.UI
             startPos = transform.position;
             parent = transform.parent;
 
-            BeingDragged?.Invoke(null, new ItemDragEventArgs(this));
+            BeingDragged?.Invoke(new ItemDragEventArgs(this));
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -82,7 +82,7 @@ namespace Game.UI
                 transform.SetParent(parent);
             }
 
-            DragEnd?.Invoke(null, new ItemDragEventArgs(this, overlappedSlot));
+            DragEnd?.Invoke(new ItemDragEventArgs(this, overlappedSlot));
 
             overlappedSlot = null;
         }
@@ -91,9 +91,9 @@ namespace Game.UI
         {
             if (eventData.clickCount == 2)
                 if (DraggedFrom == DraggedFrom.PlayerInventory)
-                    DoubleClickedInPlayerInventory?.Invoke(null, this);
+                    DoubleClickedInPlayerInventory?.Invoke(this);
                 else
-                    DoubleClickedInSpiritInventory?.Invoke(null, this);
+                    DoubleClickedInSpiritInventory?.Invoke(this);
         }
     }
 }

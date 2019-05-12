@@ -27,8 +27,8 @@ namespace Game.Systems
                 AllSpirits[i].UpdateSystem();
         }
 
-        void OnSpiritCreated(object _, SpiritSystem spirit) => AddSpirit(spirit);
-        void OnSpiritRemoved(object _, SpiritSystem spirit) => RemoveSpirit(spirit);
+        void OnSpiritCreated(SpiritSystem spirit) => AddSpirit(spirit);
+        void OnSpiritRemoved(SpiritSystem spirit) => RemoveSpirit(spirit);
 
         void AddSpirit(SpiritSystem spirit)
         {

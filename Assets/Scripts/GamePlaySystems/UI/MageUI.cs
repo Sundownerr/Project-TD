@@ -13,7 +13,7 @@ namespace Game.UI
 {
     public class MageUI : MonoBehaviour
     {
-        public event EventHandler<MageData> Selected;
+        public event Action<MageData> Selected;
         public MageData MageData;
 
         Button button;
@@ -23,7 +23,7 @@ namespace Game.UI
             MageData = Instantiate(MageData);
             MageData.GenerateDescription();
             button = transform.GetChild(0).GetComponent<Button>();
-            button.onClick.AddListener(() => Selected?.Invoke(null, MageData));
+            button.onClick.AddListener(() => Selected?.Invoke(MageData));
 
             GetComponentInChildren<Image>().sprite = MageData.Image;
             GetComponentInChildren<TextMeshProUGUI>().text = MageData.Name;

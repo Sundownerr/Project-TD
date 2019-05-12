@@ -26,7 +26,7 @@ namespace Game.Managers
             image.DOFade(0, 1);
         }
 
-        void OnGameStateChanged(object sender, GameState e)
+        void OnGameStateChanged(GameState e)
         {
             var isFadeOut =
                 e == GameState.MainMenu ||

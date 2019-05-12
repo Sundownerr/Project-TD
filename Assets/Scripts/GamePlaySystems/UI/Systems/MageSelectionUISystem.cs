@@ -13,7 +13,7 @@ namespace Game.UI
 {
     public class MageSelectionUISystem : UIWindow
     {
-        public event EventHandler<MageData> MageSelected;
+        public event Action<MageData> MageSelected;
 
         public Button SelectMageButton;
         public TextMeshProUGUI MageBaseDescription, MageAdvancedDescription;
@@ -28,7 +28,7 @@ namespace Game.UI
             mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
             mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
-            SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(null, selectedMage));
+            SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(selectedMage));
         }
 
         void Start()
@@ -36,7 +36,7 @@ namespace Game.UI
             UpdateMageInfo(mageUIs[0].MageData);
         }
 
-        void OnMageSelected(object _, MageData e)
+        void OnMageSelected(MageData e)
         {
             UpdateMageInfo(e);
         }

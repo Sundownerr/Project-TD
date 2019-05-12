@@ -14,7 +14,7 @@ namespace Game.Systems
     public class UIControlSystem : MonoBehaviour
     {
         public TMP_InputField ChatInputField;
-        public event EventHandler IncreaseLevelButtonClicked;
+        public event Action IncreaseLevelButtonClicked;
         public GameObject TextPrefab, ChatTextPrefab, ChatTextGroup;
         public Button IncreaseLevelButton, QuitButton;
 
@@ -28,7 +28,7 @@ namespace Game.Systems
         {
             if (FPClient.Instance != null)
                 FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
-            IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke(null, null));
+            IncreaseLevelButton.onClick.AddListener(() => IncreaseLevelButtonClicked?.Invoke());
             QuitButton.onClick.AddListener(QuitGame);
         }
 

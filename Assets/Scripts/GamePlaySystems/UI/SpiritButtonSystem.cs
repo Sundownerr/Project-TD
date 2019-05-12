@@ -16,8 +16,8 @@ namespace Game.UI
         public ElementType Element => SpiritData.Base.Element;
         public SpiritData SpiritData { get; set; }
         public TextMeshProUGUI SpiritCountText { get; set; }
-        public event EventHandler<SpiritData> PlaceNewSpirit;
-        public event EventHandler<SpiritButtonSystem> AllThisSpiritsPlaced;
+        public event Action<SpiritData> PlaceNewSpirit;
+        public event Action<SpiritButtonSystem> AllThisSpiritsPlaced;
 
         protected override void Awake()
         {
@@ -35,14 +35,14 @@ namespace Game.UI
 
             if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
             {
-                PlaceNewSpirit?.Invoke(null, SpiritData);
+                PlaceNewSpirit?.Invoke(SpiritData);
                 Count--;
 
                 if (Count >= 1)
                     SpiritCountText.text = Count.ToString();
                 else
                 {
-                    AllThisSpiritsPlaced?.Invoke(null, this);
+                    AllThisSpiritsPlaced?.Invoke(this);
                     Destroy(gameObject);
                 }                              
             }

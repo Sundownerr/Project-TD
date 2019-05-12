@@ -11,8 +11,8 @@ namespace Game.Systems
 {
     public class ItemDropSystem
     {
-        public event EventHandler<ItemSystem> ItemCreated;
-        public event EventHandler<ItemUISystem> ItemUICreated;
+        public event Action<ItemSystem> ItemCreated;
+        public event Action<ItemUISystem> ItemUICreated;
 
         public PlayerSystem Owner { get; set; }
 
@@ -33,7 +33,7 @@ namespace Game.Systems
             Owner.EnemyControlSystem.EnemyDied += OnEnemyDied;
         }
 
-        void OnEnemyDied(object _, EnemySystem enemy)
+        void OnEnemyDied(EnemySystem enemy)
         {
             var isItemDropped = itemDropProbabilities.RollDice() == 0;
 
@@ -42,7 +42,7 @@ namespace Game.Systems
                 var newItem = CreateItem(itemRarityProbabilities.RollDice());
                 Owner.ItemsCount++;
 
-                ItemCreated?.Invoke(null, newItem);
+                ItemCreated?.Invoke(newItem);
                 // Debug.Log($"{newItem.Data.Name} {newItem.Data.Rarity}");
             }
 
@@ -85,7 +85,7 @@ namespace Game.Systems
             itemUI.DraggedFrom = owner is PlayerSystem ? DraggedFrom.PlayerInventory : DraggedFrom.SpiritInventory;
             itemUI.SlotNumber = slotNumber;
 
-            ItemUICreated?.Invoke(null, itemUI);
+            ItemUICreated?.Invoke(itemUI);
             return itemUI;
         }
     }

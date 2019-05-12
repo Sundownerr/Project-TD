@@ -14,9 +14,9 @@ namespace Game.Systems
 
     public class WaveSystem
     {
-        public event EventHandler WaveEnded, WaveStarted, AllWaveEnemiesKilled;
-        public event EventHandler<EnemySystem> EnemyCreated;
-        public event EventHandler<EnemyCreationRequest> EnemyCreationRequested;
+        public event Action WaveEnded, WaveStarted, AllWaveEnemiesKilled;
+        public event Action<EnemySystem> EnemyCreated;
+        public event Action<EnemyCreationRequest> EnemyCreationRequested;
         public int WaveNumber { get; set; }
         public PlayerSystem Owner { get; private set; }
         public Queue<Wave> Waves { get; private set; } = new Queue<Wave>();
@@ -37,7 +37,7 @@ namespace Game.Systems
             if (isEnenmyOwned)
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
 
-            EnemyCreated?.Invoke(null, e);
+            EnemyCreated?.Invoke(e);
 
             if (spawned == Waves.Peek().EnemyTypes.Count)
                 if (WaveNumber <= Owner.WaveAmount)
@@ -101,7 +101,7 @@ namespace Game.Systems
                             killedEnemyCount++;
                             if (killedEnemyCount == currentEnemyCount[waveId])
                             {
-                                AllWaveEnemiesKilled?.Invoke(null, null);
+                                AllWaveEnemiesKilled?.Invoke();
                                 wavesEnemySystem.RemoveAt(waveId);
                                 currentEnemyCount.RemoveAt(waveId);
                                 break;
@@ -118,10 +118,10 @@ namespace Game.Systems
             Waves.Dequeue();
             WaveNumber++;
 
-            WaveEnded?.Invoke(null, null);
+            WaveEnded?.Invoke();
         }
 
-        public void OnWaveStarted(object _, EventArgs e)
+        public void OnWaveStarted()
         {
             currentEnemyCount.Add(Waves.Peek().EnemyTypes.Count);
             wavesEnemySystem.Add(new List<EnemySystem>());
@@ -132,7 +132,7 @@ namespace Game.Systems
 
             IEnumerator SpawnEnemyWave()
             {
-                WaveStarted?.Invoke(null, null);
+                WaveStarted?.Invoke();
 
                 spawned = 0;
 
@@ -140,7 +140,7 @@ namespace Game.Systems
                 {
                     Vector3 spawnPosition;
                     Vector3[] waypoints;
-                    
+
                     GetSpawnAndWayPoints();
 
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
@@ -157,7 +157,7 @@ namespace Game.Systems
                     {
                         var newEnemy = StaticMethods.CreateEnemy(Waves.Peek().EnemyTypes[spawned], spawnPosition, waypoints);
                         wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
-                        EnemyCreated?.Invoke(null, newEnemy);
+                        EnemyCreated?.Invoke(newEnemy);
                     }
 
                     void CreateEnemyRequest()
@@ -165,7 +165,7 @@ namespace Game.Systems
                         var enemy = Waves.Peek().EnemyTypes[spawned];
                         var position = spawnPosition.ToCoordinates3D();
 
-                        EnemyCreationRequested?.Invoke(null, new EnemyCreationRequest()
+                        EnemyCreationRequested?.Invoke(new EnemyCreationRequest()
                         {
                             Index = enemy.Index,
                             Race = (int)enemy.Race,

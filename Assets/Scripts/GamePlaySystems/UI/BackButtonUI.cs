@@ -15,7 +15,7 @@ namespace Game.UI
         public GameObject ThisWindow, PreviousWindow;
         public string PreviousSceneName;
 
-        public event EventHandler Clicked;
+        public event Action Clicked;
 
         static TextMeshProUGUI buttonText;
 
@@ -26,7 +26,7 @@ namespace Game.UI
             buttonText = GetComponentInChildren<TextMeshProUGUI>();
             buttonText.text = "Back";
 
-            GetComponentInChildren<Button>().onClick.AddListener(() => { Clicked?.Invoke(null, null); });
+            GetComponentInChildren<Button>().onClick.AddListener(() => { Clicked?.Invoke(); });
             UIManager.Instance.BackButton = this;
         }
     }
