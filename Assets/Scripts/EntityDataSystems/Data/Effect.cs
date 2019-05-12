@@ -14,15 +14,18 @@ namespace Game.Data.Effects
     [Serializable]
     public abstract class Effect : Entity
     {
-        public float Duration;
-        public float NextInterval;
+        [SerializeField] float duration;
+        [SerializeField] float nextInterval;
 
 #if UNITY_EDITOR
         [MinValue(1), MaxValue(1000)]
 #endif
-        public int MaxStackCount;
+        [SerializeField] int maxStackCount;
 
         public abstract EffectSystem EffectSystem { get; }
+        public float NextInterval { get => nextInterval; set => nextInterval = value; }
+        public float Duration { get => duration; set => duration = value; }
+        public int MaxStackCount { get => maxStackCount; set => maxStackCount = value; }
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]

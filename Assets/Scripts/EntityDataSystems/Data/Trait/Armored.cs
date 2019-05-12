@@ -11,7 +11,9 @@ namespace Game.Data.Traits
 
     public class Armored : Trait
     {
-        public int AdditionalArmor;
+        [SerializeField] int additionalArmor;
+
+        public int AdditionalArmor { get => additionalArmor; private set => additionalArmor = value; }
 
         protected void Awake()
         {

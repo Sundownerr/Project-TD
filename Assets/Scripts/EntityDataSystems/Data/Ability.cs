@@ -17,12 +17,15 @@ namespace Game.Data.Abilities
     [Serializable]
     public class Ability : Entity
     {
-        public float Cooldown, TriggerChance;
-        public int ManaCost;
+        [SerializeField] float cooldown;
+        [SerializeField] float triggerChance;
+        [SerializeField] int manaCost;
+        [SerializeField, Expandable] List<Effect> effects;
 
-        [Expandable]
-        public List<Effect> Effects;
-        
+        public int ManaCost { get => manaCost; set => manaCost = value; }
+        public float TriggerChance { get => triggerChance; set => triggerChance = value; }
+        public float Cooldown { get => cooldown; set => cooldown = value; }
+        public List<Effect> Effects { get => effects; set => effects = value; }
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]

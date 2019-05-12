@@ -75,7 +75,7 @@ namespace Game.Systems
             NetworkPlayer = ReferenceHolder.Get.NetworkPlayer;
 
             AvailableSpirits = new List<SpiritData>();
-            Data = ScriptableObject.CreateInstance<Player>();
+            Data = new Player();
             Data.System = this;
 
             MageHeroSystem = new MageHeroSystem(this, mage);

@@ -6,21 +6,25 @@ using UnityEngine;
 [SerializeField, Serializable]
 public struct PlayerData
 {
-    [SerializeField] public int Level;
-    [SerializeField] public bool IsNotEmpty;
-    [SerializeField] public ulong SteamID;
+    [SerializeField] int level;
+    [SerializeField] bool isNotEmpty;
+    [SerializeField] ulong steamID;
+
+    public int Level { get => level; private set => level = value; }
+    public bool IsNotEmpty { get => isNotEmpty; set => isNotEmpty = value; }
+    public ulong SteamID { get => steamID; private set => steamID = value; }
 
     public PlayerData(int level)
     {
-        Level = level;
-        IsNotEmpty = true;
-        SteamID = 0;
+        this.steamID = 0;
+        this.level = level;
+        isNotEmpty = true;
     }
 
     public PlayerData(int level, ulong steamID)
     {
-        SteamID = steamID;
-        Level = level;
-        IsNotEmpty = true;
+        this.steamID = steamID;
+        this.level = level;
+        isNotEmpty = true;
     }
 }

@@ -8,7 +8,9 @@ namespace Game.Data.Traits
 
     public class AOEShot : Trait
     {
-        public int Range;
+        [SerializeField] int range;
+
+        public int Range { get => range; private set => range = value; }
 
         protected void Awake()
         {

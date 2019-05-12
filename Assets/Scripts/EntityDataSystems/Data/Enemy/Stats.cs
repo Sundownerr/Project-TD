@@ -5,7 +5,6 @@ using Game.Data.Enemy;
 
 namespace Game.Data.Enemy.Internal
 {
-
     [Serializable]
     public enum ArmorType
     {
@@ -22,17 +21,5 @@ namespace Game.Data.Enemy.Internal
     {
         public ArmorType Type { get; set; }
         public float Value { get; set; }
-    }
-
-    [Serializable]
-    public class Race
-    {
-        [SerializeField, Expandable]
-        public List<EnemyData> Enemies;
-
-        public Race()
-        {
-            Enemies = new List<EnemyData>();
-        }
     }
 }

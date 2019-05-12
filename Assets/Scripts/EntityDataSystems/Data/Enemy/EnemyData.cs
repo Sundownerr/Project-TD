@@ -23,9 +23,9 @@ namespace Game.Data.Enemy
     public class EnemyData : Entity, IEnemyAttributes, IAbilityComponent, ITraitComponent, IPrefabComponent
     {
         [SerializeField, ShowAssetPreview()] GameObject prefab;
-        [SerializeField] public int WaveLevel;
-        [SerializeField] public RaceType Race;
-        [SerializeField] public EnemyType Type;
+        [SerializeField] int waveLevel;
+        [SerializeField] RaceType race;
+        [SerializeField] EnemyType type;
 
         public GameObject Prefab { get => prefab; set => prefab = value; }
         public List<Trait> Traits { get; set; }
@@ -34,7 +34,9 @@ namespace Game.Data.Enemy
 
         public List<NumeralAttribute> NumeralAttributes { get; private set; }
         public List<EnemyAttribute> EnemyAttributes { get; private set; }
-
+        public EnemyType Type { get => type; private set => type = value; }
+        public RaceType Race { get => race; private set => race = value; }
+        public int WaveLevel { get => waveLevel; private set => waveLevel = value; }
 
         public void CreateNewAttributes()
         {

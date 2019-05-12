@@ -11,16 +11,18 @@ namespace Game
     [Serializable]
     public abstract class Entity : ScriptableObject, IIndexComponent
     {
-        [SerializeField] public string Name;
-        [SerializeField, NaughtyAttributes.ResizableTextArea] public string Description;
-
+        [SerializeField] protected new string name;
+        [SerializeField, NaughtyAttributes.ResizableTextArea] protected string description;
         [SerializeField] protected int index = -1;
-        public int Index { get => index; set => index = value; }
 
 #if UNITY_EDITOR
         [ShowAssetPreview(125, 125)]
 #endif
-        [SerializeField]
-        public Sprite Image;
+        [SerializeField] Sprite image;
+
+        public int Index { get => index; set => index = value; }
+        public string Name { get => name; protected set => name = value; }
+        public string Description { get => description; protected set => description = value; }
+        public Sprite Image { get => image; protected set => image = value; }
     }
 }

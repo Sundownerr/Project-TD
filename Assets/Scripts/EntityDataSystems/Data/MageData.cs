@@ -34,10 +34,10 @@ namespace Game.Data.Mage
 
         public string AdvancedDescription { get; set; }
 
-        public List<NumeralAttribute> NumeralAttributes { get => numeralAttributes; set => numeralAttributes = value; }
-        public List<SpiritAttribute> SpiritAttributes { get => spiritAttributes; set => spiritAttributes = value; }
-        public List<SpiritFlagAttribute> SpiritFlagAttributes { get => spiritFlagAttributes; set => spiritFlagAttributes = value; }
-        public List<EnemyAttribute> EnemyAttributes { get => enemyAttributes; set => enemyAttributes = value; }
+        public List<NumeralAttribute> NumeralAttributes { get => numeralAttributes; private set => numeralAttributes = value; }
+        public List<SpiritAttribute> SpiritAttributes { get => spiritAttributes; private set => spiritAttributes = value; }
+        public List<SpiritFlagAttribute> SpiritFlagAttributes { get => spiritFlagAttributes; private set => spiritFlagAttributes = value; }
+        public List<EnemyAttribute> EnemyAttributes { get => enemyAttributes; private set => enemyAttributes = value; }
 
         StringBuilder bonusesBuilder;
 

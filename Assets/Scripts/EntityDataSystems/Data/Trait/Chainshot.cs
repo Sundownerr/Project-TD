@@ -7,7 +7,11 @@ namespace Game.Data.Traits
 
     public class Chainshot : Trait
     {
-        public int BounceCount, DecreaseDamagePerBounce;
+        [SerializeField] int bounceCount;
+        [SerializeField] int decreaseDamagePerBounce;
+
+        public int BounceCount { get => bounceCount; private set => bounceCount = value; }
+        public int DecreaseDamagePerBounce { get => decreaseDamagePerBounce; private set => decreaseDamagePerBounce = value; }
 
         protected void Awake()
         {

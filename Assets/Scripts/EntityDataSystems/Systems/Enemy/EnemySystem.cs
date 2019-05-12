@@ -16,15 +16,15 @@ namespace Game.Systems.Enemy
         public EnemyData Data { get; set; }
         public int WaypointIndex { get; set; }
         public IDamageDealer LastDamageDealer { get; set; }
-        public AbilityControlSystem AbilityControlSystem { get; set; }
-        public TraitControlSystem TraitControlSystem { get; set; }
-        public HealthSystem HealthSystem { get; set; }
+        public AbilityControlSystem AbilityControlSystem { get; private set; }
+        public TraitControlSystem TraitControlSystem { get; private set; }
+        public HealthSystem HealthSystem { get; private set; }
         public GameObject Prefab { get; set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; set; }
-        public List<IHealthComponent> Targets { get; set; } = new List<IHealthComponent>();
-        public List<ITraitHandler> TraitSystems { get; set; } = new List<ITraitHandler>();
-        public List<AbilitySystem> AbilitySystems { get; set; } = new List<AbilitySystem>();
+        public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
+        public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
+        public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
         public bool IsOwnedByLocalPlayer { get; private set; }
 
@@ -51,7 +51,7 @@ namespace Game.Systems.Enemy
 
 
             Owner = player;
-         
+
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
 
             SetAbilitySystems();
@@ -66,7 +66,7 @@ namespace Game.Systems.Enemy
                     TraitSystems.Add(trait.GetSystem(this));
                     TraitSystems[TraitSystems.Count - 1].Set();
                 });
-               
+
                 TraitControlSystem.Set();
             }
 

@@ -10,8 +10,9 @@ namespace Game.Data.Effects
 
     public class Stun : Effect
     {
-        public GameObject EffectPrefab;
+        [SerializeField] GameObject effectPrefab;
 
-        public override EffectSystem EffectSystem { get => new StunSystem(this); }
+        public override EffectSystem EffectSystem => new StunSystem(this); 
+        public GameObject EffectPrefab { get => effectPrefab; set => effectPrefab = value; }
     }
 }

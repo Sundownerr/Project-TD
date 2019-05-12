@@ -10,9 +10,12 @@ namespace Game.Data.Effects
 
     public class DoT : Effect
     {
-        public int DamagePerTick;
-        public GameObject EffectPrefab;
+        [SerializeField] int damagePerTick;
+        [SerializeField] GameObject effectPrefab;
 
-        public override EffectSystem EffectSystem { get => new DoTSystem(this); }
+        public override EffectSystem EffectSystem => new DoTSystem(this);
+
+        public int DamagePerTick { get => damagePerTick; private set => damagePerTick = value; }
+        public GameObject EffectPrefab { get => effectPrefab; private set => effectPrefab = value; }
     }
 }

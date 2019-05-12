@@ -147,13 +147,11 @@ namespace Game.Systems
 
             wave.EnemyTypes = new List<EnemyData>();
 
-            for (int i = 0; i < networkWaveData.EnemyIndexes.Count; i++)
-            {
-                var enemyIndex = networkWaveData.EnemyIndexes[i];
-                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[enemyIndex]);
-
+            networkWaveData.EnemyIndexes.ForEach(index =>
+            {  
+                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[index]);
                 wave.EnemyTypes.Add(CreateEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
-            }
+            });
 
             return wave;
 
@@ -168,10 +166,9 @@ namespace Game.Systems
 
                 var abilities = new HashSet<Ability>();
 
-                for (int i = 0; i < networkWaveData.AbilityIndexes.Count; i++)
+                foreach (var index in networkWaveData.AbilityIndexes)
                 {
-                    var neededAbilityID = networkWaveData.AbilityIndexes[i];
-                    var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == neededAbilityID);
+                    var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == index);
 
                     if (abilityFromDB == null)
                     {
@@ -193,10 +190,9 @@ namespace Game.Systems
 
                 var traits = new HashSet<Trait>();
 
-                for (int i = 0; i < networkWaveData.TraitIndexes.Count; i++)
+                foreach (var index in networkWaveData.TraitIndexes)
                 {
-                    var neededTraitIndex = networkWaveData.TraitIndexes[i];
-                    var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == neededTraitIndex);
+                    var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == index);
 
                     if (traitFromDB == null)
                     {
@@ -216,6 +212,7 @@ namespace Game.Systems
         {
             var armorTypes = Enum.GetValues(typeof(ArmorType));
             var randomArmorId = StaticRandom.Instance.Next(0, armorTypes.Length);
+
             return (ArmorType)armorTypes.GetValue(randomArmorId);
         }
 
@@ -286,19 +283,23 @@ namespace Game.Systems
                     ChooseEnemyDataFrom(EnemyType.Normal),
                 };
 
-                for (int i = 0; i < wave.EnemyTypes.Count; i++)
-                    sortedEnemies.EnemyTypes.Add(
-                        CreateEnemyData(GetEnemyDataOfType(wave.EnemyTypes[i]), waveNumber, waveAbilities, waveTraits, armor));
+                wave.EnemyTypes.ForEach(enemy =>                
+                    sortedEnemies.EnemyTypes.Add(CreateEnemyData(GetEnemyDataOfType(enemy.Type), waveNumber, waveAbilities, waveTraits, armor))
+                );
 
                 return sortedEnemies;
 
                 #region Helper functions
 
-                EnemyData GetEnemyDataOfType(EnemyData enemy)
+                EnemyData GetEnemyDataOfType(EnemyType type)
                 {
                     for (int i = 0; i < choosedEnemies.Length; i++)
-                        if (choosedEnemies[i].Type == enemy.Type)
+                    {
+                        if (choosedEnemies[i].Type == type)
+                        {
                             return choosedEnemies[i];
+                        }
+                    }
                     return null;
                 }
 
@@ -307,8 +308,12 @@ namespace Game.Systems
                     var tempChoosedEnemies = new List<EnemyData>();
 
                     for (int i = 0; i < fittingEnemies.EnemyTypes.Count; i++)
+                    {
                         if (fittingEnemies.EnemyTypes[i].Type == enemyType)
+                        {
                             tempChoosedEnemies.Add(fittingEnemies.EnemyTypes[i]);
+                        }
+                    }
 
                     var random = StaticRandom.Instance.Next(0, tempChoosedEnemies.Count);
                     return tempChoosedEnemies.Count > 0 ? tempChoosedEnemies[random] : null;

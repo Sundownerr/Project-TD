@@ -20,7 +20,9 @@ namespace Game.Data.Items
     [Serializable]
     public class Consumable : Item
     {
-        public ConsumableType Type;
+        [SerializeField] ConsumableType type;
+
+        public ConsumableType Type { get => type; private set => type = value; }
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]

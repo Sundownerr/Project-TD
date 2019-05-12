@@ -18,7 +18,9 @@ namespace Game.Data.Items
 
     public class NonConsumable : Item
     {
-        public List<Ability> Abilities;
+        [SerializeField] List<Ability> abilities;
+
+        public List<Ability> Abilities { get => abilities; private set => abilities = value; }
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]

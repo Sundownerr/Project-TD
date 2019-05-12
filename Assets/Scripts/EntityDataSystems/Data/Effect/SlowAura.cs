@@ -7,9 +7,14 @@ namespace Game.Data.Effects
 
     public class SlowAura : Effect
     {
-        public float Size, SlowPercent;
-        public GameObject EffectPrefab;
+        [SerializeField] float size;
+        [SerializeField] float slowPercent;
+        [SerializeField] GameObject effectPrefab;
 
-        public override EffectSystem EffectSystem { get => new SlowAuraSystem(this); }
+        public override EffectSystem EffectSystem => new SlowAuraSystem(this);
+
+        public float SlowPercent { get => slowPercent; private set => slowPercent = value; }
+        public float Size { get => size; private set => size = value; }
+        public GameObject EffectPrefab { get => effectPrefab; private set => effectPrefab = value; }
     }
 }

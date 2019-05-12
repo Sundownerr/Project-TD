@@ -7,7 +7,9 @@ namespace Game.Data.Traits
 
     public class Multishot : Trait
     {
-        public int Count;
+        [SerializeField] int count;
+
+        public int Count { get => count; private set => count = value; }
 
         protected void Awake()
         {            

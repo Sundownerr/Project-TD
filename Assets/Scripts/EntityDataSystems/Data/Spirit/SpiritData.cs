@@ -25,9 +25,13 @@ namespace Game.Data.Spirit
         [Serializable]
         public struct BaseData
         {
-            [SerializeField] public RarityType Rarity;
-            [SerializeField] public DamageType DamageType;
-            [SerializeField] public ElementType Element;
+            [SerializeField] RarityType rarity;
+            [SerializeField] DamageType damageType;
+            [SerializeField] ElementType element;
+
+            public RarityType Rarity { get => rarity; set => rarity = value; }
+            public DamageType DamageType { get => damageType; set => damageType = value; }
+            public ElementType Element { get => element; set => element = value; }
         }
 
         [SerializeField, ShowAssetPreview()]
@@ -47,8 +51,8 @@ namespace Game.Data.Spirit
 
         [SerializeField] List<Ability> AbilityList;
         [SerializeField] List<Trait> TraitList;
-        [SerializeField] public List<SpiritData> Grades;
-        [SerializeField] public List<float> DamageToRace;
+        [SerializeField] List<SpiritData> grades;
+        [SerializeField] List<float> damageToRace;
 
         public int GradeCount { get; set; } = -1;
         public Inventory Inventory { get; set; }
@@ -58,6 +62,8 @@ namespace Game.Data.Spirit
         public List<SpiritAttribute> SpiritAttributes { get => spiritAttributes; set => spiritAttributes = value; }
         public List<SpiritFlagAttribute> FlagAttributes { get => flagAttributes; set => flagAttributes = value; }
         public List<NumeralAttribute> NumeralAttributes { get => numeralAttributes; set => numeralAttributes = value; }
+        public List<SpiritData> Grades { get => grades; private set => grades = value; }
+        public List<float> DamageToRace { get => damageToRace; set => damageToRace = value; }
 
         public void SetData()
         {
@@ -67,8 +73,6 @@ namespace Game.Data.Spirit
 
         protected void Awake()
         {
-           
-
             if (numeralAttributes == null || numeralAttributes.Count == 0)
             {
                 numeralAttributes = Ext.CreateAttributeList_N();

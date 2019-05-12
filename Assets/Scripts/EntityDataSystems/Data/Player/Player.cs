@@ -8,24 +8,26 @@ namespace Game.Data.Player
 {
     public class Resources
     {
-        public double MagicCrystals, Resource, CurrentSpiritLimit, MaxSpiritLimit, StartSpiritRerollCount;
+        public double MagicCrystals;
+        public double Resource;
+        public double CurrentSpiritLimit;
+        public double MaxSpiritLimit;
+        public double StartSpiritRerollCount;
     }
 
     [Serializable]
-    public class Player : ScriptableObject
+    public class Player
     {
-        [SerializeField]
-        public Inventory Inventory;
-
-        [SerializeField]
-        public Resources Resources;
-
-        [SerializeField]
-        public List<int> ElementLevels;
+        [SerializeField] Inventory inventory;
+        [SerializeField] Resources resources ;
+        [SerializeField] List<int> elementLevels;
 
         public PlayerSystem System { get; set; }
- 
-        void Awake()
+        public Inventory Inventory { get => inventory; set => inventory = value; }
+        public Resources Resources { get => resources; set => resources = value; }
+        public List<int> ElementLevels { get => elementLevels; set => elementLevels = value; }
+
+        public Player()
         {
             var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
             ElementLevels = new List<int>();
