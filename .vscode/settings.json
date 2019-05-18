@@ -67,6 +67,9 @@
         "Obj/":true,
         "ProjectSettings/":true,
         "temp/":true,
-        "Temp/":true
+        "Temp/":true,
+        "Assets/Resources/":true,
+        "Assets/Plugins/":true,
+        "Assets/DataBase/":true,
     }
 }
