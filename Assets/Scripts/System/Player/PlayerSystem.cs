@@ -71,8 +71,8 @@ namespace Game.Systems
         {
             WaveAmount = 100;
             Map = map;
-            ReferenceHolder.Get.Player = this;
-            NetworkPlayer = ReferenceHolder.Get.NetworkPlayer;
+          //  GameData.Instance.Player = this;
+            NetworkPlayer = GameData.Instance.NetworkPlayer;
 
             AvailableSpirits = new List<SpiritData>();
             Data = new Player();
@@ -90,20 +90,20 @@ namespace Game.Systems
             ElementSystem = new ElementSystem(this);
             InventorySystem = new InventorySystem(this);
 
-            UICanvas = ReferenceHolder.Get.UICanvas;
-            WorldCanvas = ReferenceHolder.Get.WorldCanvas;
+            UICanvas = ReferenceHolder.Instance.UICanvas;
+            WorldCanvas = ReferenceHolder.Instance.WorldCanvas;
 
-            PlayerInputSystem = U.Instantiate(ReferenceHolder.Get.PlayerInputSystem.gameObject).GetComponent<PlayerInputSystem>();
-            InventoryUISystem = U.Instantiate(ReferenceHolder.Get.InventoryUISystem.gameObject, UICanvas.transform).GetComponent<InventoryUISystem>();
-            ResourceUISystem = U.Instantiate(ReferenceHolder.Get.ResourceUISystem.gameObject, UICanvas.transform).GetComponent<ResourceUISystem>();
-            
-            SpiritUISystem = U.Instantiate(ReferenceHolder.Get.SpiritUISystem.gameObject, UICanvas.transform).GetComponent<SpiritUISystem>();
-            BuildUISystem = U.Instantiate(ReferenceHolder.Get.BuildUISystem.gameObject, WorldCanvas.transform).GetComponentInChildren<BuildUISystem>();
+            PlayerInputSystem = U.Instantiate(ReferenceHolder.Instance.PlayerInputSystem.gameObject).GetComponent<PlayerInputSystem>();
+            InventoryUISystem = U.Instantiate(ReferenceHolder.Instance.InventoryUISystem.gameObject, UICanvas.transform).GetComponent<InventoryUISystem>();
+            ResourceUISystem = U.Instantiate(ReferenceHolder.Instance.ResourceUISystem.gameObject, UICanvas.transform).GetComponent<ResourceUISystem>();
+
+            SpiritUISystem = U.Instantiate(ReferenceHolder.Instance.SpiritUISystem.gameObject, UICanvas.transform).GetComponent<SpiritUISystem>();
+            BuildUISystem = U.Instantiate(ReferenceHolder.Instance.BuildUISystem.gameObject, WorldCanvas.transform).GetComponentInChildren<BuildUISystem>();
             ElementUISystem = BuildUISystem.transform.parent.GetComponentInChildren<ElementUISystem>();
-            WaveUISystem = U.Instantiate(ReferenceHolder.Get.WaveUISystem.gameObject, UICanvas.transform).GetComponent<WaveUISystem>();
-            EnemyUISystem = U.Instantiate(ReferenceHolder.Get.EnemyUISystem.gameObject, WorldCanvas.transform).GetComponent<EnemyUISystem>();
-            WorldUISystem = U.Instantiate(ReferenceHolder.Get.WorldUISystem.gameObject, WorldCanvas.transform).GetComponent<WorldUISystem>();
-            DescriptionUISystem = U.Instantiate(ReferenceHolder.Get.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
+            WaveUISystem = U.Instantiate(ReferenceHolder.Instance.WaveUISystem.gameObject, UICanvas.transform).GetComponent<WaveUISystem>();
+            EnemyUISystem = U.Instantiate(ReferenceHolder.Instance.EnemyUISystem.gameObject, WorldCanvas.transform).GetComponent<EnemyUISystem>();
+            WorldUISystem = U.Instantiate(ReferenceHolder.Instance.WorldUISystem.gameObject, WorldCanvas.transform).GetComponent<WorldUISystem>();
+            DescriptionUISystem = U.Instantiate(ReferenceHolder.Instance.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
 
             SetSystem();
         }
@@ -132,7 +132,7 @@ namespace Game.Systems
             SpiritControlSystem.SetSystem();
             MageHeroSystem.SetSystem();
 
-            ReferenceHolder.Get.StartCoroutine(SetCameraPos());
+            ReferenceHolder.Instance.StartCoroutine(SetCameraPos());
             isSet = true;
         }
 

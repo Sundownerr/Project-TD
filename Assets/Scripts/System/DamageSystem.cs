@@ -22,8 +22,12 @@ namespace Game.Systems
             IDamageDealer GetDealerEntity()
             {
                 var dealerEntity = damageDealer;
+
                 if (dealerEntity is IDamageDealerChild dealerChild)
+                {
                     dealerEntity = dealerChild.GetOwnerOfType<IDamageDealer>();
+                }
+
                 return dealerEntity;
             }
 
@@ -43,20 +47,21 @@ namespace Game.Systems
                 void CalculateArmorDamageModifier()
                 {
                     if (damageDealer is SpiritSystem spirit)
+                    {
                         if (target is EnemySystem enemy)
                         {
                             var armorValue = enemy.Data.Get(Enums.Enemy.ArmorValue).Sum;
                             if (armorValue == 0) return;
 
                             var armorType = enemy.Data.ArmorType;
-                            var damageToArmor = ReferenceHolder.Get.DamageToArmorSettings.DamageToArmorList.Find(x => x.Type == spirit.Data.Base.DamageType).Percents[(int)armorType];
+                            var damageToArmor = ReferenceHolder.Instance.DamageToArmorSettings.DamageToArmorList.Find(x => x.Type == spirit.Data.Base.DamageType).Percents[(int)armorType];
                             damage = damage.GetPercent(damageToArmor);
 
                             if (armorValue > 0)
                             {
                                 var damageReductionPerArmorPoint = 0.06;
                                 var diminishedDamageReduction = armorValue * damageReductionPerArmorPoint;
-                                var damageReduction = (diminishedDamageReduction) / (1 + 0.06 * (armorValue));
+                                var damageReduction = (diminishedDamageReduction) / (1 + damageReductionPerArmorPoint * (armorValue));
 
                                 damage -= damage.GetPercent(damageReduction * 100);
                                 return;
@@ -68,13 +73,18 @@ namespace Game.Systems
                                 damage += damage.GetPercent(damageIncrease * 100);
                             }
                         }
+                    }
                 }
 
                 void CalculateRaceDamageModifier()
                 {
                     if (damageDealer is SpiritSystem spirit)
+                    {
                         if (target is EnemySystem enemy)
+                        {
                             damage = damage.GetPercent(spirit.Data.DamageToRace[(int)enemy.Data.Race]);
+                        }
+                    }
                 }
 
                 void CalculateCrit()
@@ -82,9 +92,9 @@ namespace Game.Systems
                     if (damageDealer is SpiritSystem spirit)
                     {
                         var critChance = spirit.Data.Get(Enums.Spirit.CritChance).Sum;
-                        var isCrit = new double[] { critChance, 100 - critChance }.RollDice();
+                        var isCrit = new double[] { critChance, 100 - critChance }.RollDice() == 0;
 
-                        if (isCrit == 0)
+                        if (isCrit)
                         {
                             critCount = 1;
 
@@ -103,7 +113,11 @@ namespace Game.Systems
                             {
                                 for (int multicritNumber = 0; multicritNumber < multicritCount; multicritNumber++)
                                 {
-                                    var chanceToMulticrit = Math.Pow(critChance * 0.1d, 1 + multicritNumber) * Math.Pow(0.1d, multicritNumber - 1);
+                                    // TODO: rename
+                                    var value1 = Math.Pow(critChance * 0.1d, critCount + multicritNumber);
+                                    var value2 = Math.Pow(0.1d, multicritNumber - critCount);
+                                    var chanceToMulticrit = value1 * value2;
+
                                     multicritChances[multicritNumber] = chanceToMulticrit;
                                 }
                             }
@@ -117,13 +131,17 @@ namespace Game.Systems
                                     chances[0] = multicritChances[multicritNumber];
                                     chances[1] = 100 - multicritChances[multicritNumber];
 
-                                    var isMulticrit = chances.RollDice();
+                                    var isMulticrit = chances.RollDice() == 0;
 
-                                    if (isMulticrit == 0)
+                                    if (isMulticrit)
                                     {
                                         critCount = multicritNumber + 1;
+
                                         for (int i = 0; i < multicritNumber; i++)
+                                        {
                                             critMultiplier += critMultiplier;
+                                        }
+
                                         break;
                                     }
                                 }

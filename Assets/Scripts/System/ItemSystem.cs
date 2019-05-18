@@ -30,13 +30,14 @@ namespace Game.Systems
             Index = (owner as PlayerSystem).ItemsCount;
         }
 
-        public void OnSpiritLevelUp(SpiritSystem e) =>
-            IncreaseStatsPerLevel();
+        public void OnSpiritLevelUp(SpiritSystem e) => IncreaseStatsPerLevel();
 
         public void OnConsumableApplied(ConsumableEventArgs e)
         {
             if (e.ItemUI.System == this)
+            {
                 ApplyStats();
+            }
         }
 
         public void ApplyStats()
@@ -54,10 +55,14 @@ namespace Game.Systems
             if (entity is SpiritSystem spirit)
             {
                 for (int i = 0; i < spirit.Data.Get(Numeral.Level).Value; i++)
+                {
                     IncreaseStatsPerLevel();
+                }
 
                 for (int i = 0; i < Data.NumeralAttributes.Count; i++)
+                {
                     spirit.Data.Get(Data.NumeralAttributes[i].Type).AppliedValue += GetValue(Data.NumeralAttributes[i], spirit);
+                }
 
                 return;
             }
@@ -65,40 +70,53 @@ namespace Game.Systems
             if (entity is PlayerSystem player)
             {
                 if (Data is Consumable item)
+                {
                     if (item.Type == ConsumableType.MagicCrystals)
+                    {
                         ConsumedMagicCrystals?.Invoke(item.NumeralAttributes[0].Value);
-                    else
-                        if (item.Type == ConsumableType.SpiritVessel)
+                    }
+                    else if (item.Type == ConsumableType.SpiritVessel)
+                    {
                         ConsumedSpiritVessels?.Invoke(item.NumeralAttributes[0].Value);
+                    }
+                }
             }
         }
 
         public void RemoveStats()
         {
             if (isStatsApplied)
+            {
                 if (Owner is SpiritSystem spirit)
                 {
                     isStatsApplied = false;
                     for (int i = 0; i < Data.NumeralAttributes.Count; i++)
+                    {
                         spirit.Data.Get(Data.NumeralAttributes[i].Type).AppliedValue -= GetValue(Data.NumeralAttributes[i], spirit);
+                    }
 
                     Data = U.Instantiate(defaultData);
                     U.Destroy(Data);
                 }
+            }
         }
 
         void IncreaseStatsPerLevel()
         {
             if (Owner is SpiritSystem spirit)
+            {
                 for (int i = 0; i < Data.NumeralAttributes.Count; i++)
                 {
                     var valuePerLevel = GetValuePerLevel(Data.NumeralAttributes[i]);
 
                     if (isStatsApplied)
+                    {
                         spirit.Data.Get(Data.NumeralAttributes[i].Type).AppliedValue += valuePerLevel;
+                    }
 
                     Data.NumeralAttributes[i].Value += valuePerLevel;
                 }
+            }
 
             double GetValuePerLevel(NumeralAttribute attribute) =>
                 attribute.IncreasePerLevel == Increase.ByPercent ?

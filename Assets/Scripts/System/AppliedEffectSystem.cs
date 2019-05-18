@@ -15,11 +15,13 @@ namespace Game.Systems
         public void RemoveEffect(Effect effect)
         {
             for (int i = 0; i < AppliedEffects.Count; i++)
+            {
                 if (effect.Index == AppliedEffects[i].Index)
                 {
                     AppliedEffects.RemoveAt(i);
                     return;
                 }
+            }
         }
 
         public int CountOf(Effect effect)
@@ -28,8 +30,12 @@ namespace Game.Systems
             var appliedEffects = AppliedEffects;
 
             for (int i = 0; i < appliedEffects.Count; i++)
+            {
                 if (effect.Index == AppliedEffects[i].Index)
+                {
                     count++;
+                }
+            }
             return count;
         }
     }

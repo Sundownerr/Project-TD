@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using U = UnityEngine.Object;
 using Game.Enums;
-using Game.Utility;
 using Game.Systems.Spirit.Internal;
 using Game.Systems.Enemy;
 using Game.Data.Spirit;
 using Game.Data.Effects;
 using Game.Systems.Abilities;
+using Game.Utility.Creator;
 
 namespace Game.Systems.Spirit
 {
@@ -84,7 +84,7 @@ namespace Game.Systems.Spirit
 
             void SetRangeSystem()
             {
-                RangeSystem = StaticMethods.CreateRange(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies);
+                RangeSystem = Create.Range(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies);
                 RangeSystem.EntityEntered += OnEntityEnteredRange;
                 RangeSystem.EntityExit += OnEntityExitRange;
                 Renderers = Prefab.GetComponentsInChildren<Renderer>();

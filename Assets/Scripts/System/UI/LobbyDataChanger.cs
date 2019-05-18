@@ -10,6 +10,7 @@ using Game;
 using DG.Tweening;
 using Game.Consts;
 using Game.Utility;
+using Game.Utility.Localization;
 
 namespace Game.UI
 {

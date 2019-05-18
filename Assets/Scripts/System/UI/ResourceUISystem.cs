@@ -30,8 +30,8 @@ namespace Game.UI
         {
             var resources = Owner.Data.Resources;
 
-            Gold.text           = StaticMethods.KiloFormat(resources.Resource);
-            MagicCrystals.text  = StaticMethods.KiloFormat(resources.MagicCrystals);
+            Gold.text           = Uty.KiloFormat(resources.Resource);
+            MagicCrystals.text  = Uty.KiloFormat(resources.MagicCrystals);
             SpiritLimit.text     = $"{resources.CurrentSpiritLimit}/{resources.MaxSpiritLimit}";
         }
 

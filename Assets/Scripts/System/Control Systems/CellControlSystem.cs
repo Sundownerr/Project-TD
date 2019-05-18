@@ -57,10 +57,10 @@ namespace Game.Systems
                             new Vector3(0, cellAreas[i].transform.localScale.y / 1.9f, 0);
 
                         var prefab = U.Instantiate(
-                            ReferenceHolder.Get.CellPrefab,
+                             ReferenceHolder.Instance.CellPrefab,
                             spawnPos,
                             Quaternion.identity,
-                            ReferenceHolder.Get.CellParent).GetComponent<Cell>();
+                             ReferenceHolder.Instance.CellParent).GetComponent<Cell>();
 
                         prefab.Owner = Owner;
                         Cells.Add(prefab);

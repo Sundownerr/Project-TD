@@ -3,6 +3,7 @@ using UnityEngine;
 using Game.Enums;
 using Game.Utility;
 using Game.Data.Effects;
+using Game.Utility.Creator;
 
 namespace Game.Systems.Effects
 {
@@ -19,7 +20,7 @@ namespace Game.Systems.Effects
         public override void Apply()
         {
             var owner = Owner.GetOwnerOfType<IEntitySystem>();
-            range = StaticMethods.CreateRange(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
+            range = Create.Range(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
 
             IsEnded = false;
         }

@@ -26,10 +26,16 @@ namespace Game.Data.Settings
 
                 for (int i = 0; i < damageTypes.Length; i++)
                 {
-                    DamageToArmorList.Add(new DamageToArmor() { Type = (DamageType)damageTypes.GetValue(i), Percents = new List<double>(armorTypes.Length) });
+                    DamageToArmorList.Add(new DamageToArmor()
+                    {
+                        Type = (DamageType)damageTypes.GetValue(i),
+                        Percents = new List<double>(armorTypes.Length)
+                    });
 
                     for (int j = 0; j < armorTypes.Length; j++)
+                    {
                         DamageToArmorList[i].Percents.Add(100);
+                    }
                 }
             }
         }

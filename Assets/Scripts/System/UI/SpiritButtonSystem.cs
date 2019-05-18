@@ -29,9 +29,9 @@ namespace Game.UI
 
         void OnClick()
         {
-            var goldCost            = SpiritData.Get(Numeral.ResourceCost).Value;
-            var spiritLimit          = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
-            var magicCrystalsCost   = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
+            var goldCost = SpiritData.Get(Numeral.ResourceCost).Value;
+            var spiritLimit = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
+            var magicCrystalsCost = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
             if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
             {
@@ -39,12 +39,14 @@ namespace Game.UI
                 Count--;
 
                 if (Count >= 1)
+                {
                     SpiritCountText.text = Count.ToString();
+                }
                 else
                 {
                     AllThisSpiritsPlaced?.Invoke(this);
                     Destroy(gameObject);
-                }                              
+                }
             }
         }
     }

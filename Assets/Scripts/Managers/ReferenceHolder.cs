@@ -8,22 +8,14 @@ using Game.Systems;
 using Game.UI;
 using Game.Data.Settings;
 using NetworkPlayer = Game.Systems.Network.NetworkPlayer;
+using Game.Utility;
+using Game.Systems.Network;
 
 namespace Game.Managers
 {
-    public class ReferenceHolder : MonoBehaviour
+    public class ReferenceHolder : SingletonDDOL<ReferenceHolder>
     {
-        public event Action<PlayerSystemData> PlayerDataSet;
-        static ReferenceHolder get;
-        public static ReferenceHolder Get
-        {
-            get => get;
-            private set
-            {
-                if (get == null)
-                    get = value;
-            }
-        }
+        public event Action ReferencesSet;
 
         public GameObject[] ElementPlaceEffects;
         public GameObject CellPrefab;
@@ -55,7 +47,7 @@ namespace Game.Managers
         public Transform EnemyParent;
         public Canvas UICanvas;
         public Canvas WorldCanvas;
-        public PlayerSystem Player;
+
         public GameObject NetworkEnemy;
 
         DescriptionUISystem descriptionUISystem;
@@ -89,76 +81,49 @@ namespace Game.Managers
             649
         };
 
-        NetworkPlayer networkPlayer;
-        public NetworkPlayer NetworkPlayer
+        protected override void Awake()
         {
-            get => networkPlayer;
-            set
-            {
-                if (networkPlayer == null)
-                {
-                    networkPlayer = value;
-                    GetReferences();
-                }
-            }
-        }
-
-        void Awake()
-        {
-            DontDestroyOnLoad(this);
-            Get = this;
+            base.Awake();
             GC.Collect();
         }
 
         void Start()
         {
             GameManager.Instance.StateChanged += OnGameStateChanged;
-            GameLoop.Instance.PlayerCreated += OnPlayerCreated;
-        }
 
-
-        void OnPlayerCreated(PlayerSystem e)
-        {
-            Player = e;
-
-            if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
-                NetworkPlayer.LocalPlayer = e;
-
-        }
-
-        void OnGameStateChanged(GameState e)
-        {
-            if (e == GameState.InGameSingleplayer)
+            void OnGameStateChanged(GameState e)
             {
-                GetReferences();
-                return;
+                var inGame =
+                    e == GameState.InGameMultiplayer ||
+                    e == GameState.InGameSingleplayer;
+
+                if (inGame)
+                {
+                    GetReferences();
+                    return;
+                }
+
+                void GetReferences()
+                {
+                    if (descriptionUISystem == null)
+                        descriptionUISystem = DescriptionUISystem;
+
+                    UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
+                    WorldCanvas = GameObject.FindWithTag("WorldCanvas").GetComponent<Canvas>();
+                    CellParent = GameObject.FindWithTag("CellParent").transform;
+                    SpiritParent = GameObject.FindWithTag("SpiritParent").transform;
+                    EnemyParent = GameObject.FindWithTag("EnemyParent").transform;
+
+                    DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
+
+
+                    if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
+                    {
+                        ReferencesSet?.Invoke();
+                    }
+
+                }
             }
-
-            Player = null;
-        }
-
-        void GetReferences()
-        {
-            if (descriptionUISystem == null)
-                descriptionUISystem = DescriptionUISystem;
-
-            UICanvas = GameObject.FindWithTag("UICanvas").GetComponent<Canvas>();
-            WorldCanvas = GameObject.FindWithTag("WorldCanvas").GetComponent<Canvas>();
-            CellParent = GameObject.FindWithTag("CellParent").transform;
-            SpiritParent = GameObject.FindWithTag("SpiritParent").transform;
-            EnemyParent = GameObject.FindWithTag("EnemyParent").transform;
-
-            DescriptionUISystem = Instantiate(descriptionUISystem, UICanvas.transform);
-
-            PlayerSystemData playerData;
-
-            playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
-                NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
-                GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
-
-            playerData.Mage = GameData.Instance.ChoosedMage;
-
-            PlayerDataSet?.Invoke(playerData);
         }
     }
 }

@@ -28,17 +28,16 @@ namespace Game.UI
             mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
             mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
-            SelectMageButton.onClick.AddListener(() => MageSelected?.Invoke(selectedMage));
+            SelectMageButton.onClick.AddListener(OnSelectMageButton);
+
+            void OnSelectMageButton() => MageSelected?.Invoke(selectedMage);
+
+            void OnMageSelected(MageData e) => UpdateMageInfo(e);
         }
 
         void Start()
         {
             UpdateMageInfo(mageUIs[0].MageData);
-        }
-
-        void OnMageSelected(MageData e)
-        {
-            UpdateMageInfo(e);
         }
 
         void UpdateMageInfo(MageData mage)

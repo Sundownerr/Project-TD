@@ -26,9 +26,9 @@ namespace Game.Systems.Network
     {
         public GameObject MapComponentPrefab;
         public GameObjectSyncList NetworkMaps;
-        public GameObjectSyncList Players;
-        public PlayerData[] PlayerDatas;
-        public string[] PlayerNames;
+        public GameObjectSyncList Users;
+        public UserData[] UserDatas;
+        public string[] UserNames;
         public List<NetworkWaveData> NetworkWaveDatas;
         int waveAmount;
 
@@ -36,9 +36,9 @@ namespace Game.Systems.Network
         {
             var maxPlayers = NetworkManager.singleton.maxConnections;
 
-            PlayerNames = new string[maxPlayers];
-            PlayerDatas = new PlayerData[maxPlayers];
-            Players = new GameObjectSyncList();
+            UserNames = new string[maxPlayers];
+            UserDatas = new UserData[maxPlayers];
+            Users = new GameObjectSyncList();
             NetworkMaps = new GameObjectSyncList();
             NetworkWaveDatas = new List<NetworkWaveData>();
 
@@ -59,7 +59,7 @@ namespace Game.Systems.Network
                 {
                     NetworkWaveDatas.Add(new NetworkWaveData()
                     {
-                        EnemyIndexes = waves[wave].EnemyTypes.GetIDs(),
+                        EnemyIndexes = waves[wave].EnemyTypes.GetIndexes(),
                         ArmorIndex = (int)waves[wave].EnemyTypes[0].ArmorType
                     });
 
@@ -69,12 +69,12 @@ namespace Game.Systems.Network
 
                         if (enemy.Abilities != null)
                         {
-                            NetworkWaveDatas[wave].AbilityIndexes = enemy.Abilities.GetIDs();
+                            NetworkWaveDatas[wave].AbilityIndexes = enemy.Abilities.GetIndexes();
                         }
 
                         if (enemy.Traits != null)
                         {
-                            NetworkWaveDatas[wave].TraitIndexes = enemy.Traits.GetIDs();
+                            NetworkWaveDatas[wave].TraitIndexes = enemy.Traits.GetIndexes();
                         }
                     }
                 }
@@ -111,14 +111,14 @@ namespace Game.Systems.Network
             return -1;
         }
 
-        public void RemovePlayer(GameObject playerGO, PlayerData playerData)
+        public void RemovePlayer(GameObject userGO, UserData userData)
         {
-            var player = playerGO.GetComponent<NetworkPlayer>();
-            Players.Remove(playerGO);
+            var user = userGO.GetComponent<NetworkPlayer>();
+            Users.Remove(userGO);
 
             FreeMap();
             RemovePlayerData();
-            UpdatePlayersUI();
+            UpdateUsersUI();
 
             #region Helper functions
 
@@ -128,9 +128,9 @@ namespace Game.Systems.Network
                 {
                     var map = NetworkMaps[i].GetComponent<NetworkMap>();
 
-                    if (i == player.MapID)
+                    if (i == user.MapID)
                     {
-                        player.MapID = -1;
+                        user.MapID = -1;
                         map.IsUsed = false;
 
                         break;
@@ -140,23 +140,23 @@ namespace Game.Systems.Network
 
             void RemovePlayerData()
             {
-                for (int i = 0; i < PlayerDatas.Length; i++)
+                for (int i = 0; i < UserDatas.Length; i++)
                 {
-                    if (PlayerDatas[i].IsNotEmpty)
-                        if (PlayerDatas[i].Equals(playerData))
+                    if (UserDatas[i].IsNotEmpty)
+                        if (UserDatas[i].Equals(userData))
                         {
-                            PlayerDatas[i] = new PlayerData();
-                            PlayerDatas[i].IsNotEmpty = false;
+                            UserDatas[i] = new UserData();
+                            UserDatas[i].IsNotEmpty = false;
                             break;
                         }
                 }
             }
 
-            void UpdatePlayersUI()
+            void UpdateUsersUI()
             {
-                for (int i = 0; i < Players.Count; i++)
+                for (int i = 0; i < Users.Count; i++)
                 {
-                    Players[i].GetComponent<NetworkPlayer>().RpcUpdateUI(PlayerDatas, PlayerNames);
+                    Users[i].GetComponent<NetworkPlayer>().RpcUpdateUI(UserDatas, UserNames);
                 }
             }
 

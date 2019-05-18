@@ -19,7 +19,7 @@ namespace Game.Data.Player
     public class Player
     {
         [SerializeField] Inventory inventory;
-        [SerializeField] Resources resources ;
+        [SerializeField] Resources resources;
         [SerializeField] List<int> elementLevels;
 
         public PlayerSystem System { get; set; }
@@ -42,7 +42,9 @@ namespace Game.Data.Player
             };
 
             for (int i = 0; i < elementAmount; i++)
+            {
                 ElementLevels.Add(0);
+            }
         }
     }
 }

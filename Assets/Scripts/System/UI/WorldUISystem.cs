@@ -39,16 +39,20 @@ namespace Game.UI
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
         }
 
-        void FixedUpdate()
+        void Update()
         {
             for (int i = 0; i < damageNumbers.Count; i++)
+            {
                 if (damageNumbers[i].fontSize > 11)
+                {
                     damageNumbers[i].fontSize -= 0.3f;
+                }
                 else
                 {
                     damageNumbers[i].gameObject.SetActive(false);
                     damageNumbers.RemoveAt(i);
                 }
+            }
         }
 
         void OnDamageDealt(DamageEventArgs e)
@@ -58,7 +62,7 @@ namespace Game.UI
 
             var damageNumber = damageNumbersPool.PopObject();
             var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
-            var damageText = StaticMethods.KiloFormat((int)e.Damage);
+            var damageText = Uty.KiloFormat((int)e.Damage);
             var fontColor = defaultFontColor;
             var random = UnityEngine.Random.Range(-20, 20);
             var textPositionOffset = new Vector3(random, 90 + random, random);
@@ -68,7 +72,9 @@ namespace Game.UI
                 var sb = new StringBuilder();
 
                 for (int i = 1; i < e.CritCount; i++)
+                {
                     sb.Append("!");
+                }
 
                 fontColor = critFontColor;
                 damageText = $"{damageText} {sb.ToString()}";
@@ -91,25 +97,21 @@ namespace Game.UI
             var text = levelUpTextPool.PopObject();
             var random = UnityEngine.Random.Range(-20, 20);
             var textPositionOffset = new Vector3(random, Math.Abs(random + 10), random);
-
-
-            text.SetActive(true);
-            text.transform.position = spirit.Prefab.transform.position + textPositionOffset;
-
             var textComponent = text.GetComponent<TextMeshProUGUI>();
-            levelUpTexts.Add(textComponent);
-            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level).Value}";
-            StartCoroutine(DeactivateLevelUpText());
 
-            #region Helper functions
+            textComponent.gameObject.SetActive(true);
+            textComponent.transform.position = spirit.Prefab.transform.position + textPositionOffset;
+            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level).Value}";
+
+            levelUpTexts.Add(textComponent);
+
+            StartCoroutine(DeactivateLevelUpText());
 
             IEnumerator DeactivateLevelUpText()
             {
                 yield return levelUpTextFadeDelay;
                 text.SetActive(false);
             }
-
-            #endregion
         }
     }
 }

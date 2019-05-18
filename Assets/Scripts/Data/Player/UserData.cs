@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SerializeField, Serializable]
-public struct PlayerData
+public struct UserData
 {
     [SerializeField] int level;
     [SerializeField] bool isNotEmpty;
@@ -14,14 +14,14 @@ public struct PlayerData
     public bool IsNotEmpty { get => isNotEmpty; set => isNotEmpty = value; }
     public ulong SteamID { get => steamID; private set => steamID = value; }
 
-    public PlayerData(int level)
+    public UserData(int level)
     {
         this.steamID = 0;
         this.level = level;
         isNotEmpty = true;
     }
 
-    public PlayerData(int level, ulong steamID)
+    public UserData(int level, ulong steamID)
     {
         this.steamID = steamID;
         this.level = level;

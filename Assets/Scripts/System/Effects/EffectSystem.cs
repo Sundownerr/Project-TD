@@ -18,7 +18,7 @@ namespace Game.Systems.Effects
 
         public void SetSystem(AbilitySystem ownerAbility)
         {
-            Owner = ownerAbility;      
+            Owner = ownerAbility;
         }
 
         public virtual void Apply()

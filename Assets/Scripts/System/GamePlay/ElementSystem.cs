@@ -15,15 +15,15 @@ namespace Game.Systems
         public void SetSystem()
         {
             owner.ResourceSystem.ResourcesChanged += OnResourcesChanged;
-        }
 
-        void OnResourcesChanged()
-        {
-            for (int i = 0; i < owner.ElementUISystem.Buttons.Length; i++)
+            void OnResourcesChanged()
             {
-                var button = owner.ElementUISystem.Buttons[i];
-                var check = CheckCanLearn(owner.Data.ElementLevels[i]);
-                button.interactable = check.canLearn;
+                for (int i = 0; i < owner.ElementUISystem.Buttons.Length; i++)
+                {
+                    var button = owner.ElementUISystem.Buttons[i];
+                    var check = CheckCanLearn(owner.Data.ElementLevels[i]);
+                    button.interactable = check.canLearn;
+                }
             }
         }
 

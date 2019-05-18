@@ -60,7 +60,9 @@ namespace Game.Systems.Abilities
                 effectSystem.SetSystem(this);
 
                 if (effectSystem is IDamageDealerChild child)
+                {
                     child.OwnerDamageDealer = this.GetOwnerOfType<IDamageDealer>();
+                }
             });
 
             Ability.Effects[Ability.Effects.Count - 1].NextInterval = 0.01f;
@@ -80,7 +82,9 @@ namespace Game.Systems.Abilities
             yield return cooldownDelay;
 
             if (!IsStacked)
+            {
                 CooldownReset();
+            }
         }
 
         IEnumerator InitEffect()
@@ -117,7 +121,9 @@ namespace Game.Systems.Abilities
             CurrentEffectIndex = baseAbility.CurrentEffectIndex;
 
             for (int i = 0; i < CurrentEffectIndex; i++)
+            {
                 EffectSystems[i].End();
+            }
 
             StartAbility();
         }
@@ -139,11 +145,14 @@ namespace Game.Systems.Abilities
                     if (effectSystem.Effect.MaxStackCount > 1)
                     {
                         if (!effectSystem.IsEnded && !effectSystem.IsMaxStackReached)
+                        {
                             return true;
+                        }
                     }
-                    else
-                    if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
+                    else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
+                    {
                         return true;
+                    }
                 }
 
                 return false;
@@ -155,8 +164,12 @@ namespace Game.Systems.Abilities
         public bool CheckAllEffectsEnded()
         {
             foreach (var effectSystem in EffectSystems)
+            {
                 if (!effectSystem.IsEnded)
+                {
                     return false;
+                }
+            }
             return true;
         }
     }

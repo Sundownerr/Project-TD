@@ -37,6 +37,7 @@ namespace Game.Data.Enemy
         public EnemyType Type { get => type; private set => type = value; }
         public RaceType Race { get => race; private set => race = value; }
         public int WaveLevel { get => waveLevel; private set => waveLevel = value; }
+        public bool IsBossOrCommander => Type == EnemyType.Boss || Type == EnemyType.Commander;
 
         public void CreateNewAttributes()
         {

@@ -4,61 +4,100 @@ using Game.Utility;
 using Game.Enums;
 using Game.Consts;
 using Game.Data.Mage;
+using Game.Systems;
+using System;
+using Game.Data;
+using NetworkPlayer = Game.Systems.Network.NetworkPlayer;
 
 namespace Game.Managers
 {
     public class GameData : SingletonDDOL<GameData>
     {
-        public PlayerData PlayerData { get; private set; }
-        public MageData ChoosedMage;
+        public event Action<PlayerSystem> PlayerDataSet;
+
+        NetworkPlayer networkPlayer;
+        public NetworkPlayer NetworkPlayer
+        {
+            get => networkPlayer;
+            set
+            {
+                networkPlayer = value;
+                SetPlayerData();
+            }
+        }
+
+        public UserData UserData { get; private set; }
+        public MageData ChoosedMage { get; private set; }
+        public PlayerSystem Player { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
 
             LoadData();
+
+            void LoadData()
+            {
+                if (!File.Exists("playerData.json"))
+                {
+                    var newFile = JsonUtility.ToJson(UserData);
+
+                    UserData = new UserData(0);
+                    File.WriteAllText("playerData.json", newFile);
+                }
+                else
+                {
+                    var stringFromFile = File.ReadAllText("playerData.json");
+                    var playerDataFromFile = JsonUtility.FromJson<UserData>(stringFromFile);
+
+                    UserData = new UserData(playerDataFromFile.Level);
+                }
+            }
         }
 
         void Start()
         {
             GameManager.Instance.StateChanged += OnGameStateChanged;
             UIManager.Instance.MageSelected += OnMageSelected;
-        }
+            ReferenceHolder.Instance.ReferencesSet += OnReferencesSet;
 
-        void OnMageSelected(MageData e) => ChoosedMage = e;
-        void OnGameStateChanged(GameState e)
-        {
-            if (e == GameState.InLobby)
+            void OnMageSelected(MageData e) => ChoosedMage = e;
+
+            void OnReferencesSet() => SetPlayerData();
+
+            void OnGameStateChanged(GameState e)
             {
-                LobbyExt.SetMemberData(LobbyData.Level, PlayerData.Level.ToString());
+                if (e == GameState.InLobby)
+                {
+                    LobbyExt.SetMemberData(LobbyData.Level, UserData.Level.ToString());
+                    return;
+                }
             }
         }
 
-        void LoadData()
+        void SetPlayerData()
         {
-            PlayerData data;
+            var playerData = new PlayerSystemData();
 
-            if (!File.Exists("playerData.json"))
+            playerData.Map = GameManager.Instance.GameState == GameState.InGameMultiplayer ?
+                NetworkPlayer.LocalMap.GetComponent<PlayerMap>() :
+                GameObject.FindGameObjectWithTag("map").GetComponent<PlayerMap>();
+
+            playerData.Mage = ChoosedMage;
+
+            Player = new PlayerSystem(playerData.Map, playerData.Mage);
+
+            if (NetworkPlayer != null)
             {
-                data = new PlayerData(0);
-
-                var newFile = JsonUtility.ToJson(data);
-                File.WriteAllText("playerData.json", newFile);
-            }
-            else
-            {
-                var stringFromFile = File.ReadAllText("playerData.json");
-                var playerDataFromFile = JsonUtility.FromJson<PlayerData>(stringFromFile);
-
-                data = new PlayerData(playerDataFromFile.Level);
+                NetworkPlayer.LocalPlayer = Player;
             }
 
-            PlayerData = new PlayerData(data.Level);
+            PlayerDataSet?.Invoke(Player);
         }
 
-        public void SaveData(PlayerData data)
+        public void SaveData(UserData data)
         {
-            PlayerData = data;
+            UserData = data;
 
             var newFile = JsonUtility.ToJson(data);
             File.WriteAllText("playerData.json", newFile);

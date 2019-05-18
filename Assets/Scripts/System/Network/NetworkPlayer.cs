@@ -7,14 +7,16 @@ using Game.Systems;
 using System;
 using Game;
 using Game.Data.NetworkRequests;
-using Game.Utility;
+using Game.Utility.Creator;
 using Game.Managers;
+using Game.Utility;
+using Game.Utility.Serialization;
 
 namespace Game.Systems.Network
 {
     public class NetworkPlayer : NetworkBehaviour
     {
-        [SyncVar] public PlayerData PlayerData;
+        [SyncVar] public UserData PlayerData;
         [SyncVar] public int MapID;
         [SyncVar] public GameObject NetEnemy;
         public GameObject LocalMap;
@@ -33,8 +35,8 @@ namespace Game.Systems.Network
                 if (!isLocalPlayer) return;
 
                 localPlayer = value;
-                ReferenceHolder.Get.Player.SpiritPlaceSystem.SpiritCreationRequested += OnSpiritCreatingRequest;
-                ReferenceHolder.Get.Player.WaveSystem.EnemyCreationRequested += OnEnemyCreatingRequest;
+                localPlayer.SpiritPlaceSystem.SpiritCreationRequested += OnSpiritCreatingRequest;
+                localPlayer.WaveSystem.EnemyCreationRequested += OnEnemyCreatingRequest;
             }
         }
 
@@ -45,7 +47,7 @@ namespace Game.Systems.Network
             set
             {
                 networkWaveDatas = value;
-                ReferenceHolder.Get.NetworkPlayer = this;
+                GameData.Instance.NetworkPlayer = this;
             }
         }
 
@@ -83,21 +85,14 @@ namespace Game.Systems.Network
         void CmdGetWaves()
         {
             var sendData = (NetworkManager.singleton as ExtendedNetworkManager).NetworkGameManager.NetworkWaveDatas.Serializer();
-
-            WaitAndDo(delay, () =>
-            {
-                TargetGetWaves(connectionToClient, sendData);
-            });
+            WaitAndDo(delay, () => TargetGetWaves(connectionToClient, sendData));
         }
 
         [TargetRpc]
         void TargetGetWaves(NetworkConnection conn, byte[] byteData)
         {
             var receivedData = byteData.Deserializer<List<NetworkWaveData>>();
-            WaitAndDo(delay, () =>
-            {
-                NetworkWaveDatas = receivedData;
-            });
+            WaitAndDo(delay, () => NetworkWaveDatas = receivedData);
         }
 
         #endregion
@@ -107,11 +102,7 @@ namespace Game.Systems.Network
         void OnSpiritCreatingRequest(SpiritCreationRequest e)
         {
             var sendData = e.Serializer();
-
-            WaitAndDo(delay, () =>
-            {
-                CmdCreateSpirit(sendData);
-            });
+            WaitAndDo(delay, () => CmdCreateSpirit(sendData));
         }
 
         [Command] void CmdCreateSpirit(byte[] byteRequest) => RpcCreateSpirit(byteRequest);
@@ -120,19 +111,7 @@ namespace Game.Systems.Network
         void RpcCreateSpirit(byte[] byteRequest)
         {
             var request = byteRequest.Deserializer<SpiritCreationRequest>();
-
-            WaitAndDo(delay, () =>
-            {
-                var pos = request.Position.ToVector3();
-                var choosedCell = ReferenceHolder.Get.Player.CellControlSystem.Cells[request.CellIndex];
-                var spirit = ReferenceHolder.Get.SpiritDB.Data[request.Index];
-
-                var newSpirit = isLocalPlayer ?
-                    StaticMethods.CreateSpirit(spirit, choosedCell) :
-                    StaticMethods.CreateSpirit(spirit, pos, false);
-
-                ReferenceHolder.Get.Player.SpiritPlaceSystem.NetworkCreateSpirit(newSpirit);
-            });
+            WaitAndDo(delay, () => Create.Spirit(request, isLocalPlayer));
         }
 
         #endregion
@@ -145,71 +124,13 @@ namespace Game.Systems.Network
             WaitAndDo(delay, () => CmdCreateEnemy(sendData));
         }
 
-        [Command]
-        public void CmdCreateEnemy(byte[] byteRequest)
-        {
-            RpcCreateEnemy(byteRequest);
-        }
+        [Command] public void CmdCreateEnemy(byte[] byteRequest) => RpcCreateEnemy(byteRequest);
 
         [ClientRpc]
         public void RpcCreateEnemy(byte[] byteRequest)
         {
             var request = byteRequest.Deserializer<EnemyCreationRequest>();
-
-            WaitAndDo(delay, () =>
-            {
-                var enemyFromDB = ReferenceHolder.Get.Player.WaveSystem.ListWaves[request.WaveNumber + 1].EnemyTypes[request.PositionInWave];
-                var spawnPos = request.Position.ToVector3();
-                var waypoints = request.Waypoints.ToVector3Array();
-
-                if (enemyFromDB == null)
-                {
-                    Debug.LogError("enemyfromdb is null");
-                }
-                else
-                {
-                    var newEnemy = StaticMethods.CreateEnemy(enemyFromDB, spawnPos, waypoints, isLocalPlayer);
-
-                    SetAbilities();
-                    SetTraits();
-
-                    ReferenceHolder.Get.Player.WaveSystem.NetworkSpawnEnemy(newEnemy, isLocalPlayer);
-
-                    void SetAbilities()
-                    {
-                        request.AbilityIndexes?.ForEach(index =>
-                        {
-                            var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == index);
-
-                            if (abilityFromDB == null)
-                            {
-                                Debug.LogError($"can't find ability with index {index}");
-                            }
-                            else
-                            {
-                                newEnemy.Data.Abilities.Add(abilityFromDB);
-                            }
-                        });
-                    }
-
-                    void SetTraits()
-                    {
-                        request.TraitIndexes?.ForEach(index =>
-                        {
-                            var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == index);
-
-                            if (traitFromDB == null)
-                            {
-                                Debug.LogError($"can't find trait with index {index}");
-                            }
-                            else
-                            {
-                                newEnemy.Data.Traits.Add(traitFromDB);
-                            }
-                        });
-                    }
-                }
-            });
+            WaitAndDo(delay, () => Create.Enemy(request, isLocalPlayer));
         }
 
         #endregion
@@ -223,7 +144,7 @@ namespace Game.Systems.Network
         {
             if (!isLocalPlayer) return;
 
-            var data = GameData.Instance.PlayerData;
+            var data = GameData.Instance.UserData;
             var userName = FPClient.Instance.Username;
 
             CmdSendData(gameObject, data, userName);
@@ -233,37 +154,27 @@ namespace Game.Systems.Network
         {
             if (!isLocalPlayer) return;
 
-            GameData.Instance.SaveData(new PlayerData(PlayerData.Level));
-
-            if (FPClient.Instance == null) return;
-
-            FPClient.Instance.Lobby.OnLobbyStateChanged = null;
-            FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
-            FPClient.Instance.LobbyList.OnLobbiesUpdated = null;
-            FPClient.Instance.Lobby.OnLobbyCreated = null;
-            FPClient.Instance.Lobby.OnLobbyJoined = null;
-            FPClient.Instance.Lobby.OnChatStringRecieved = null;
-
-            FPClient.Instance.Lobby.Leave();
+            GameData.Instance.SaveData(new UserData(PlayerData.Level));
+            FPClientExt.LeaveGame();
         }
 
         [Command]
-        void CmdSendData(GameObject player, PlayerData data, string name)
+        void CmdSendData(GameObject player, UserData data, string name)
         {
             var manager = NetworkManager.singleton as ExtendedNetworkManager;
 
-            for (int i = 0; i < manager.NetworkGameManager.PlayerDatas.Length; i++)
+            for (int i = 0; i < manager.NetworkGameManager.UserDatas.Length; i++)
             {
-                if (!manager.NetworkGameManager.PlayerDatas[i].IsNotEmpty)
+                if (!manager.NetworkGameManager.UserDatas[i].IsNotEmpty)
                 {
-                    manager.NetworkGameManager.PlayerDatas[i] = new PlayerData(data.Level, data.SteamID);
-                    manager.NetworkGameManager.PlayerNames[i] = name;
+                    manager.NetworkGameManager.UserDatas[i] = new UserData(data.Level, data.SteamID);
+                    manager.NetworkGameManager.UserNames[i] = name;
                     break;
                 }
             }
 
-            manager.NetworkGameManager.Players.Add(gameObject);
-            player.GetComponent<NetworkPlayer>().PlayerData = new PlayerData(data.Level, data.SteamID);
+            manager.NetworkGameManager.Users.Add(gameObject);
+            player.GetComponent<NetworkPlayer>().PlayerData = new UserData(data.Level, data.SteamID);
 
             UpdatePlayersUI(manager);
         }
@@ -274,18 +185,18 @@ namespace Game.Systems.Network
 
         public void UpdatePlayersUI(ExtendedNetworkManager manager)
         {
-            for (int i = 0; i < manager.NetworkGameManager.Players.Count; i++)
+            for (int i = 0; i < manager.NetworkGameManager.Users.Count; i++)
             {
-                var player = manager.NetworkGameManager.Players[i].GetComponent<NetworkPlayer>();
-                player.RpcUpdateUI(manager.NetworkGameManager.PlayerDatas, manager.NetworkGameManager.PlayerNames);
+                var player = manager.NetworkGameManager.Users[i].GetComponent<NetworkPlayer>();
+                player.RpcUpdateUI(manager.NetworkGameManager.UserDatas, manager.NetworkGameManager.UserNames);
             }
         }
 
 
         [ClientRpc]
-        public void RpcUpdateUI(PlayerData[] playerDatas, string[] playerNames)
+        public void RpcUpdateUI(UserData[] playerDatas, string[] playerNames)
         {
-            if (!StaticMethods.CheckLocalPlayer(this)) return;
+            if (!isLocalPlayer) return;
 
             UiControlSystem.UpdateUI(playerDatas, playerNames);
         }
@@ -293,15 +204,15 @@ namespace Game.Systems.Network
         #endregion
 
         [Command]
-        void CmdIncreaseLevel(PlayerData data)
+        void CmdIncreaseLevel(UserData data)
         {
             var manager = NetworkManager.singleton as ExtendedNetworkManager;
 
-            for (int i = 0; i < manager.NetworkGameManager.PlayerDatas.Length; i++)
-                if (manager.NetworkGameManager.PlayerDatas[i].Equals(data))
+            for (int i = 0; i < manager.NetworkGameManager.UserDatas.Length; i++)
+                if (manager.NetworkGameManager.UserDatas[i].Equals(data))
                 {
-                    manager.NetworkGameManager.PlayerDatas[i] = new PlayerData(data.Level + 1, data.SteamID);
-                    manager.NetworkGameManager.Players[i].GetComponent<NetworkPlayer>().PlayerData = new PlayerData(data.Level + 1, data.SteamID);
+                    manager.NetworkGameManager.UserDatas[i] = new UserData(data.Level + 1, data.SteamID);
+                    manager.NetworkGameManager.Users[i].GetComponent<NetworkPlayer>().PlayerData = new UserData(data.Level + 1, data.SteamID);
                     break;
                 }
 

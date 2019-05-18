@@ -23,10 +23,12 @@ namespace Game.UI
             MageData = Instantiate(MageData);
             MageData.GenerateDescription();
             button = transform.GetChild(0).GetComponent<Button>();
-            button.onClick.AddListener(() => Selected?.Invoke(MageData));
+            button.onClick.AddListener(OnClick);
 
             GetComponentInChildren<Image>().sprite = MageData.Image;
             GetComponentInChildren<TextMeshProUGUI>().text = MageData.Name;
+
+            void OnClick() => Selected?.Invoke(MageData);
         }
 
         void OnDestroy()

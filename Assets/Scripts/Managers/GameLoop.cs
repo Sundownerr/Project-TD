@@ -10,31 +10,32 @@ namespace Game.Managers
 {
     public class GameLoop : SingletonDDOL<GameLoop>
     {
-        public event Action<PlayerSystem> PlayerCreated;
-
         PlayerSystem player;
 
         void Start()
         {
-            ReferenceHolder.Get.PlayerDataSet += OnPlayerDataSet;
+            GameData.Instance.PlayerDataSet += OnPlayerDataSet;
             GameManager.Instance.StateChanged += OnGameStateChanged;
+
+            void OnGameStateChanged(GameState e)
+            {
+                var inGame =
+                    e == GameState.InGameMultiplayer ||
+                    e == GameState.InGameSingleplayer;
+
+                if (!inGame)
+                {
+                    player = null;
+                }
+            }
+
+            void OnPlayerDataSet(PlayerSystem e)
+            {
+                player = e;
+            }
         }
 
-        void OnGameStateChanged(GameState e)
-        {
-            var inGame = e == GameState.InGameMultiplayer || e == GameState.InGameSingleplayer;
-
-            if (!inGame)
-                player = null;
-        }
-
-        void OnPlayerDataSet(PlayerSystemData e)
-        {
-            player = new PlayerSystem(e.Map, e.Mage);
-            PlayerCreated?.Invoke(player);
-        }
-
-        void FixedUpdate()
+        void Update()
         {
             player?.UpdateSystem();
         }

@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Game.Utility
+namespace Game.Utility.Serialization
 {
     public static class SerializerDeserializerExtensions
     {

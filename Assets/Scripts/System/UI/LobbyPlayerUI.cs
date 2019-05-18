@@ -6,6 +6,8 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using Game.Consts;
+using Game.Utility;
+using Game.Utility.Localization;
 
 namespace Game.UI
 {

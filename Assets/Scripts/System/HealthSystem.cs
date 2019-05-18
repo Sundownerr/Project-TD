@@ -38,11 +38,14 @@ namespace Game.Systems
                     regenTimer = regenTimer > 1 ? 0 : regenTimer += Time.deltaTime;
 
                     if (regenTimer == 1)
+                    {
                         health += healthRegen;
+                    }
                 }
-                else
-                    if (health > maxHealth)
+                else if (health > maxHealth)
+                {
                     health = maxHealth;
+                }
             }
         }
 
@@ -53,14 +56,16 @@ namespace Game.Systems
 
             if (owner is EnemySystem enemy)
             {
-
-
                 enemy.LastDamageDealer = changer;
 
                 if (enemy.Data.Get(Enums.Enemy.Health).AppliedValue > 0)
+                {
                     enemy.Data.Get(Enums.Enemy.Health).AppliedValue -= damage;
+                }
                 else
+                {
                     enemy.Data.Get(Enums.Enemy.Health).Value -= damage;
+                }
 
                 var remainingHealth =
                     enemy.Data.Get(Enums.Enemy.Health).AppliedValue > 0 ?
@@ -81,7 +86,9 @@ namespace Game.Systems
             void GiveResources()
             {
                 if (enemy.LastDamageDealer is SpiritSystem spirit)
+                {
                     spirit.AddExp((int)enemy.Data.Get(Numeral.Exp).Sum);
+                }
             }
 
             #endregion

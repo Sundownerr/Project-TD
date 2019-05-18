@@ -35,10 +35,6 @@ namespace Game.Data.NetworkRequests
         }
     }
 
-    // [Serializable]
-    // public class NumeralAttributeList : List<NumeralAttribute> { }
-
-
     [Serializable]
     public class NetworkWaveData
     {
@@ -47,7 +43,7 @@ namespace Game.Data.NetworkRequests
         [SerializeField] public List<int> TraitIndexes;
         [SerializeField] public int ArmorIndex;
     }
-    
+
     [Serializable]
     public class SpiritCreationRequest
     {

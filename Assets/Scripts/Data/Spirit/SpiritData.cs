@@ -103,7 +103,7 @@ namespace Game.Data.Spirit
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]
-        void AddToDataBase()
+        public void AddToDataBase()
         {
             if (!this.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Data.Enemy.Internal;
 using Game.Enums;
+using Game.Utility.Localization;
 
 namespace Game.Utility
 {
@@ -17,31 +18,33 @@ namespace Game.Utility
         public static readonly Dictionary<RaceType, string> Race = CreateStringKeyDictionary<RaceType>();
         public static readonly Dictionary<ArmorType, string> Armor = CreateStringKeyDictionary<ArmorType>();
 
-        static Dictionary<EnumType, string> CreateStringKeyDictionary<EnumType>() where EnumType : Enum
+        static Dictionary<T, string> CreateStringKeyDictionary<T>() where T : Enum
         {
-            var numerals = Enum.GetValues(typeof(EnumType));
-            var dictionary = new Dictionary<EnumType, string>();
+            var enums = Enum.GetValues(typeof(T));
+            var stringKeyDictionary = new Dictionary<T, string>();
             var keyPrefix =
-                typeof(EnumType) == typeof(Numeral) ? "a" :
-                typeof(EnumType) == typeof(Game.Enums.Spirit) ? "a" :
-                typeof(EnumType) == typeof(Game.Enums.SpiritFlag) ? "a" :
-                typeof(EnumType) == typeof(Game.Enums.Enemy) ? "a" :
-                typeof(EnumType) == typeof(ElementType) ? "element" :
-                typeof(EnumType) == typeof(RarityType) ? "rarity" :
-                typeof(EnumType) == typeof(ArmorType) ? "e-armor" :
-                typeof(EnumType) == typeof(EnemyType) ? "e-type" :
-                typeof(EnumType) == typeof(RaceType) ? "e-race" :
+                typeof(T) == typeof(Numeral) ? "a" :
+                typeof(T) == typeof(Game.Enums.Spirit) ? "a" :
+                typeof(T) == typeof(Game.Enums.SpiritFlag) ? "a" :
+                typeof(T) == typeof(Game.Enums.Enemy) ? "a" :
+                typeof(T) == typeof(ElementType) ? "element" :
+                typeof(T) == typeof(RarityType) ? "rarity" :
+                typeof(T) == typeof(ArmorType) ? "e-armor" :
+                typeof(T) == typeof(EnemyType) ? "e-type" :
+                typeof(T) == typeof(RaceType) ? "e-race" :
                 "error";
 
-            for (int i = 0; i < numerals.Length; i++)
-                dictionary.Add(
-                    (EnumType)numerals.GetValue(i),
-                    Enum.GetName(typeof(EnumType), i).StringEnumToStringKey(keyPrefix));
+            for (int i = 0; i < enums.Length; i++)
+            {
+                var enumKey = (T)enums.GetValue(i);
+                var stringValue = Enum.GetName(typeof(T), i).StringEnumToStringKey(keyPrefix);
 
-            return dictionary;
+                stringKeyDictionary.Add(enumKey, stringValue);
+            }
+            return stringKeyDictionary;
         }
 
-        public static string GetStringKey<EnumType>(this EnumType type) where EnumType : struct, Enum =>
+        public static string GetStringKey<T>(this T type) where T : struct, Enum =>
                 type is Numeral numeral ? EnumStringKeys.Numeral[numeral] :
                 type is Game.Enums.Spirit spirit ? EnumStringKeys.Spirit[spirit] :
                 type is Game.Enums.SpiritFlag spiritFlag ? EnumStringKeys.SpiritFlag[spiritFlag] :

@@ -21,8 +21,8 @@ namespace Game.Systems
             var randomWaveIDs = new int[waveAmount];
             var raceTypes = Enum.GetValues(typeof(RaceType));
             var generatedWaves = new Queue<Wave>(waveAmount);
-            var standartWaves = ReferenceHolder.Get.WaveDB.Waves;
-            var riftBreakerWaves = ReferenceHolder.Get.WaveDB.RiftbreakersWaves;
+            var standartWaves =  ReferenceHolder.Instance.WaveDB.Waves;
+            var riftBreakerWaves =  ReferenceHolder.Instance.WaveDB.RiftbreakersWaves;
 
             for (int i = 0; i < waveAmount; i++)
             {
@@ -63,7 +63,7 @@ namespace Game.Systems
             CalculateStats();
 
             newData.Traits = traits;
-            newData.Abilities = newData.IsBossOrCommander() ? abilities : null;
+            newData.Abilities = newData.IsBossOrCommander ? abilities : null;
             newData.ArmorType = armor;
 
             return newData;
@@ -95,7 +95,7 @@ namespace Game.Systems
 
                 void SetGoldAndExp()
                 {
-                    var settings = ReferenceHolder.Get.EnemySettings;
+                    var settings =  ReferenceHolder.Instance.EnemySettings;
                     var gold = 0d;
                     var exp = 0d;
 
@@ -150,7 +150,7 @@ namespace Game.Systems
 
             networkWaveData.EnemyIndexes.ForEach(index =>
             {  
-                var enemyFromDB = U.Instantiate(ReferenceHolder.Get.EnemyDB.Data[index]);
+                var enemyFromDB = U.Instantiate( ReferenceHolder.Instance.EnemyDB.Data[index]);
                 wave.EnemyTypes.Add(CreateEnemyData(enemyFromDB, waveNumber, waveAbilities, waveTraits, armor));
             });
 
@@ -169,7 +169,7 @@ namespace Game.Systems
 
                 foreach (var index in networkWaveData.AbilityIndexes)
                 {
-                    var abilityFromDB = ReferenceHolder.Get.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == index);
+                    var abilityFromDB =  ReferenceHolder.Instance.AbilityDB.Data.Find(abilityInDataBase => abilityInDataBase.Index == index);
 
                     if (abilityFromDB == null)
                     {
@@ -193,7 +193,7 @@ namespace Game.Systems
 
                 foreach (var index in networkWaveData.TraitIndexes)
                 {
-                    var traitFromDB = ReferenceHolder.Get.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == index);
+                    var traitFromDB =  ReferenceHolder.Instance.TraitDB.Data.Find(traitInDataBase => traitInDataBase.Index == index);
 
                     if (traitFromDB == null)
                     {
@@ -219,7 +219,7 @@ namespace Game.Systems
 
         static Wave CreateWave(Wave wave, int waveNumber)
         {
-            var enemiesInDataBase = ReferenceHolder.Get.EnemyDB.Data;
+            var enemiesInDataBase =  ReferenceHolder.Instance.EnemyDB.Data;
             var randomRace = RaceType.Humanoid;
             var fittingEnemies = ScriptableObject.CreateInstance<Wave>();
             var waveTraits = GetRandomTraits();
@@ -247,8 +247,8 @@ namespace Game.Systems
 
                 for (int i = 0; i < randomAbilityCount; i++)
                 {
-                    var randomAbilityId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.AbilityDB.Data.Count);
-                    var randomAbility = ReferenceHolder.Get.AbilityDB.Data[randomAbilityId];
+                    var randomAbilityId = StaticRandom.Instance.Next(0,  ReferenceHolder.Instance.AbilityDB.Data.Count);
+                    var randomAbility =  ReferenceHolder.Instance.AbilityDB.Data[randomAbilityId];
 
                     randomAbilities.Add(randomAbility);
                 }
@@ -262,8 +262,8 @@ namespace Game.Systems
 
                 for (int i = 0; i < randomTraitCount; i++)
                 {
-                    var randomTraitId = StaticRandom.Instance.Next(0, ReferenceHolder.Get.TraitDB.Data.Count);
-                    var randomTrait = ReferenceHolder.Get.TraitDB.Data[randomTraitId];
+                    var randomTraitId = StaticRandom.Instance.Next(0,  ReferenceHolder.Instance.TraitDB.Data.Count);
+                    var randomTrait =  ReferenceHolder.Instance.TraitDB.Data[randomTraitId];
 
                     randomTraits.Add(randomTrait);
                 }

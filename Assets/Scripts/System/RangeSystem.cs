@@ -47,10 +47,16 @@ namespace Game.Systems
             void AddToList()
             {
                 if (CollideType == CollideWith.Enemies)
+                {
                     AddEntity<EnemySystem>();
+                    return;
+                }
 
                 if (CollideType == CollideWith.Spirits)
+                {
                     AddEntity<SpiritSystem>();
+                    return;
+                }
 
                 if (CollideType == CollideWith.EnemiesAndSpirits)
                 {
@@ -65,14 +71,26 @@ namespace Game.Systems
                     var owner = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
 
                     if (typeof(T) == typeof(EnemySystem))
+                    {
                         for (int i = 0; i < owner.EnemyControlSystem.AllEnemies.Count; i++)
+                        {
                             if (CheckFound(owner.EnemyControlSystem.AllEnemies[i]))
+                            {
                                 return;
+                            }
+                        }
+                    }
 
                     if (typeof(T) == typeof(SpiritSystem))
+                    {
                         for (int i = 0; i < owner.SpiritControlSystem.AllSpirits.Count; i++)
+                        {
                             if (CheckFound(owner.SpiritControlSystem.AllSpirits[i]))
+                            {
                                 return;
+                            }
+                        }
+                    }
                 }
 
                 bool CheckFound(IVulnerable entitySystem)

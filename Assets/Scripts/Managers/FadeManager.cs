@@ -24,25 +24,25 @@ namespace Game.Managers
         {
             GameManager.Instance.StateChanged += OnGameStateChanged;
             image.DOFade(0, 1);
-        }
 
-        void OnGameStateChanged(GameState e)
-        {
-            var isFadeOut =
-                e == GameState.MainMenu ||
-                e == GameState.InGameSingleplayer ||
-                e == GameState.InGameMultiplayer;
+            void OnGameStateChanged(GameState e)
+            {
+                var isFadeOut =
+                    e == GameState.MainMenu ||
+                    e == GameState.InGameSingleplayer ||
+                    e == GameState.InGameMultiplayer;
 
-            var isFadeIn =
-                e == GameState.LoadingGame ||
-                e == GameState.UnloadingGame;
+                var isFadeIn =
+                    e == GameState.LoadingGame ||
+                    e == GameState.UnloadingGame;
 
 
-            if (isFadeOut)
-                image.DOFade(0, 0.05f);
+                if (isFadeOut)
+                    image.DOFade(0, 0.05f);
 
-            if (isFadeIn)
-                image.DOFade(1, 0.1f);
+                if (isFadeIn)
+                    image.DOFade(1, 0.1f);
+            }
         }
     }
 }

@@ -7,6 +7,8 @@ using Game.Systems;
 using NaughtyAttributes;
 using Game.Data.Databases;
 using Game.Data.Attributes;
+using Game.Utility;
+using Game.Utility.Localization;
 
 #if UNITY_EDITOR
 using UnityEditor;

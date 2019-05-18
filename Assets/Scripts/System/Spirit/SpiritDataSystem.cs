@@ -83,7 +83,7 @@ namespace Game.Systems.Spirit.Internal
             ownerSpirit.TraitControlSystem.IncreaseStatsPerLevel();
 
             var effect = U.Instantiate(
-                ReferenceHolder.Get.LevelUpEffect,
+                 ReferenceHolder.Instance.LevelUpEffect,
                 ownerSpirit.Prefab.transform.position,
                 Quaternion.identity);
 

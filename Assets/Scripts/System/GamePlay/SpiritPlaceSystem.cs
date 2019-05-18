@@ -5,6 +5,7 @@ using Game.Managers;
 using Game.Utility;
 using Game.Systems.Spirit;
 using Game.Data.Spirit;
+using Game.Utility.Creator;
 
 namespace Game.Systems
 {
@@ -36,6 +37,7 @@ namespace Game.Systems
                 var newMagicCrystalCost = spiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
                 if (Owner.ResourceSystem.CheckHaveResources(newSpiritLimit, newGoldCost, newMagicCrystalCost))
+                {
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                     {
                         var choosedCell = Owner.CellControlSystem.ChoosedCell;
@@ -56,9 +58,10 @@ namespace Game.Systems
                     }
                     else
                     {
-                        var newSpirit = StaticMethods.CreateSpirit(spiritData, Owner.CellControlSystem.ChoosedCell, true);
+                        var newSpirit = Create.Spirit(spiritData, Owner.CellControlSystem.ChoosedCell, true);
                         SpiritPlaced?.Invoke(newSpirit);
                     }
+                }
             }
         }
     }

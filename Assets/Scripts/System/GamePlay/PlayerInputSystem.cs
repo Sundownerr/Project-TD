@@ -164,7 +164,7 @@ namespace Game.Systems
 
         bool CheckGradeListOk(out List<SpiritData> grades)
         {
-            var allSpirits = ReferenceHolder.Get.SpiritDB.Data;
+            var allSpirits =  ReferenceHolder.Instance.SpiritDB.Data;
             var spirit = allSpirits.Find(x => x.Index == ChoosedSpirit.Data.Index);
 
             if (spirit != null)
@@ -188,7 +188,7 @@ namespace Game.Systems
                     grades[ChoosedSpirit.Data.GradeCount + 1].Prefab,
                     ChoosedSpirit.Prefab.transform.position,
                     Quaternion.identity,
-                    ReferenceHolder.Get.SpiritParent);
+                     ReferenceHolder.Instance.SpiritParent);
                 var upgradedSpirit = new SpiritSystem(upgradedSpiritPrefab, true);
 
                 upgradedSpirit.Upgrade(ChoosedSpirit, grades[ChoosedSpirit.Data.GradeCount + 1]);

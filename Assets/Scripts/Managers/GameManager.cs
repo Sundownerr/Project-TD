@@ -59,7 +59,7 @@ namespace Game.Managers
         protected override void Awake()
         {
             base.Awake();
-            
+
             Application.targetFrameRate = 70;
             QualitySettings.vSyncCount = 0;
             Cursor.lockState = CursorLockMode.Confined;
@@ -68,6 +68,43 @@ namespace Game.Managers
 
             SceneManager.sceneLoaded += OnSceneLoaded;
             Lean.Localization.LeanLocalization.OnLocalizationChanged += OnLocalizationChanged;
+
+            void OnLocalizationChanged()
+            {
+                if (!managersInstanced)
+                {
+                    for (int i = 0; i < Managers.Length; i++)
+                        Instantiate(Managers[i]);
+                    managersInstanced = true;
+                }
+            }
+
+            void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+            {
+                if (scene.name == StringConsts.SingleplayerMap)
+                {
+                    GameState = GameState.InGameSingleplayer;
+                    return;
+                }
+
+                if (scene.name == StringConsts.MultiplayerMap1)
+                {
+                    GameState = GameState.InGameMultiplayer;
+                    return;
+                }
+
+                if (scene.name == StringConsts.MainMenu)
+                {
+                    RefreshReferences();
+                    GameState = GameState.MainMenu;
+                }
+
+                void RefreshReferences()
+                {
+                    Menu = GameObject.FindGameObjectWithTag(StringConsts.MenuUITag).GetComponent<MenuUISystem>();
+
+                }
+            }
         }
 
         void Start()
@@ -76,71 +113,36 @@ namespace Game.Managers
             Steam.Instance.Connected += OnSteamConnected;
             UIManager.Instance.ReturnToMenu += OnReturnToMenu;
             UIManager.Instance.GameStarted += OnGameStarted;
-        }
 
-        void OnGameStarted()
-        {
-            GameState = GameState.LoadingGame;
-            SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);
-        }
-
-        void OnSteamConnected() => SteamConnected?.Invoke();
-
-        void OnLocalizationChanged()
-        {
-            if (!managersInstanced)
+            void OnGameStarted()
             {
-                for (int i = 0; i < Managers.Length; i++)
-                    Instantiate(Managers[i]);
-                managersInstanced = true;
-            }
-        }
-
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name == StringConsts.SingleplayerMap)
-            {
-                GameState = GameState.InGameSingleplayer;
-                return;
+                GameState = GameState.LoadingGame;
+                SceneManager.LoadSceneAsync(StringConsts.SingleplayerMap);
             }
 
-            if (scene.name == StringConsts.MultiplayerMap1)
+            void OnSteamConnected() => SteamConnected?.Invoke();
+
+            void OnReturnToMenu()
             {
-                GameState = GameState.InGameMultiplayer;
-                return;
+                GameState = GameState.UnloadingGame;
+                SceneManager.LoadSceneAsync(StringConsts.MainMenu);
             }
 
-            if (scene.name == StringConsts.MainMenu)
+            void OnSteamLostConnection()
             {
-                RefreshReferences();
-                GameState = GameState.MainMenu;
+                var isUsingSteam =
+                    GameState == GameState.InGameMultiplayer ||
+                    GameState == GameState.InLobby ||
+                    GameState == GameState.BrowsingLobbies ||
+                    GameState == GameState.CreatingLobby;
+
+                SteamLostConnection?.Invoke();
+
+                if (isUsingSteam)
+                {
+                    GoToMainMenu();
+                }
             }
-
-            void RefreshReferences()
-            {
-                Menu = GameObject.FindGameObjectWithTag(StringConsts.MenuUITag).GetComponent<MenuUISystem>();
-
-            }
-        }
-
-        void OnReturnToMenu()
-        {
-            GameState = GameState.UnloadingGame;
-            SceneManager.LoadSceneAsync(StringConsts.MainMenu);
-        }
-
-        void OnSteamLostConnection()
-        {
-            var isUsingSteam =
-                GameState == GameState.InGameMultiplayer ||
-                GameState == GameState.InLobby ||
-                GameState == GameState.BrowsingLobbies ||
-                GameState == GameState.CreatingLobby;
-
-            SteamLostConnection?.Invoke();
-
-            if (isUsingSteam)
-                GoToMainMenu();
         }
 
         public void GoToMainMenu()

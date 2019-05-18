@@ -50,7 +50,7 @@ namespace Game.Systems
 
             ItemSystem CreateItem(int rarityId)
             {
-                var ItemsFromDB = ReferenceHolder.Get.ItemDB.Data;
+                var ItemsFromDB =  ReferenceHolder.Instance.ItemDB.Data;
                 var fittingItems = new List<ItemSystem>(ItemsFromDB.Count);
                 var fittingItemsWeigths = new List<double>(ItemsFromDB.Count);
 
@@ -73,7 +73,7 @@ namespace Game.Systems
         public ItemUISystem CreateItemUI(Item item, int slotNumber, Transform slotTransform, IEntitySystem owner)
         {
             var itemUIGO = UnityEngine.Object.Instantiate(
-                ReferenceHolder.Get.ItemPrefab,
+                 ReferenceHolder.Instance.ItemPrefab,
                 slotTransform.position,
                 Quaternion.identity,
                 slotTransform.parent);

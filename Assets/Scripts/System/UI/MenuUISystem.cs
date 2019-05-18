@@ -31,7 +31,10 @@ namespace Game.UI
 
             GameManager.Instance.SteamConnected += OnSteamConnected;
             GameManager.Instance.SteamLostConnection += OnSteamLostConnection;
-            GameManager.Instance.Menu = this;  
+            GameManager.Instance.Menu = this;
+
+            void OnSteamLostConnection() => MultiplayerButton.interactable = false;
+            void OnSteamConnected() => MultiplayerButton.interactable = true;
         }
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
@@ -39,9 +42,6 @@ namespace Game.UI
             Active?.Invoke();
             base.Open();
         }
-
-        void OnSteamLostConnection() => MultiplayerButton.interactable = false;
-        void OnSteamConnected() => MultiplayerButton.interactable = true;
 
         void OnDestroy()
         {

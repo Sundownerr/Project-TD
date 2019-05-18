@@ -15,6 +15,7 @@ using Game.Consts;
 using Game.Managers;
 using Game.Enums;
 using Game.Data.Mage;
+using Game.Utility.Localization;
 
 namespace Game.UI
 {
@@ -41,14 +42,14 @@ namespace Game.UI
 
             StartServerButton.onClick.AddListener(LobbyExt.StartLobbyServer);
             UIManager.Instance.MageSelected += OnMageSelected;
-        }
 
-        void OnMageSelected(MageData e)
-        {
-            if (GameManager.Instance.GameState != GameState.InLobby) return;
+            void OnMageSelected(MageData e)
+            {
+                if (GameManager.Instance.GameState != GameState.InLobby) return;
 
-            LobbyExt.SetMemberData(LobbyData.MageID, $"{e.Index}");
-            isChangingMage = false;
+                LobbyExt.SetMemberData(LobbyData.MageID, $"{e.Index}");
+                isChangingMage = false;
+            }
         }
 
         void Update()
@@ -106,6 +107,66 @@ namespace Game.UI
                 }
             }
 
+            void LobbyStateChanged(Lobby.MemberStateChange stateChange, ulong initiatorID, ulong affectedID)
+            {
+                var initiatorName = FPClient.Instance.Friends.GetName(initiatorID);
+                var affectedName = FPClient.Instance.Friends.GetName(affectedID);
+
+                if (stateChange == Lobby.MemberStateChange.Entered)
+                {
+                    LobbyExt.SendChatMessage($"{initiatorName} has joined.");
+                    AddPlayer(initiatorID);
+                }
+                else
+                {
+                    if (stateChange == Lobby.MemberStateChange.Left) LobbyExt.SendChatMessage($"{initiatorName} has left");
+                    else
+                    if (stateChange == Lobby.MemberStateChange.Disconnected) LobbyExt.SendChatMessage($"{initiatorName} has disconnected");
+                    else
+                    if (stateChange == Lobby.MemberStateChange.Kicked) LobbyExt.SendChatMessage($"{initiatorName} has been kicked");
+                    else
+                    if (stateChange == Lobby.MemberStateChange.Banned) LobbyExt.SendChatMessage($"{initiatorName} has been banned");
+
+                    Destroy(playerTexts[initiatorID].gameObject);
+                    playerTexts.Remove(initiatorID);
+                }
+            }
+
+            void LobbyDataUpdated()
+            {
+                if (!FPClient.Instance.Lobby.IsOwner)
+                {
+                    WavesDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Waves));
+                    ModeDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Mode));
+                    MapDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Map));
+                    DifficultyDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Difficulty));
+                    PlayersSlider.value = int.Parse(LobbyExt.GetData(LobbyData.MaxPlayers));
+                    VisibilityDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Visibility));
+                }
+
+                var networkManager = NetworkManager.singleton as ExtendedNetworkManager;
+
+                if (LobbyExt.GetData(LobbyData.GameStarting) == LobbyData.Yes)
+                    if (!NetworkClient.isConnected && !NetworkServer.active)
+                    {
+                        networkManager.networkAddress = FPClient.Instance.Lobby.Owner.ToString();
+                        networkManager.onlineScene = LobbyExt.GetData(LobbyData.Map);
+                    }
+
+                if (LobbyExt.GetData(LobbyData.GameStarted) == LobbyData.Yes)
+                {
+                    if (!FPClient.Instance.Lobby.IsOwner)
+                    {
+                        GameStarted?.Invoke();
+                        networkManager.StartClient();
+                    }
+
+                    LobbyExt.ClearLobbyCallbacks();
+                }
+            }
+
+            void ChatMessageReceived(ulong senderID, string message) => chatTextsPool.PopObject().GetComponent<TMP_InputField>().text = message;
+
             #endregion
         }
 
@@ -127,42 +188,6 @@ namespace Game.UI
             lobbyDataChanger = null;
         }
 
-        void ChatMessageReceived(ulong senderID, string message) => CreateChatMessage(message);
-        void CreateChatMessage(string message) => chatTextsPool.PopObject().GetComponent<TMP_InputField>().text = message;
-
-        void LobbyDataUpdated()
-        {
-            if (!FPClient.Instance.Lobby.IsOwner)
-            {
-                WavesDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Waves));
-                ModeDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Mode));
-                MapDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Map));
-                DifficultyDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Difficulty));
-                PlayersSlider.value = int.Parse(LobbyExt.GetData(LobbyData.MaxPlayers));
-                VisibilityDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Visibility));
-            }
-
-            var networkManager = NetworkManager.singleton as ExtendedNetworkManager;
-
-            if (LobbyExt.GetData(LobbyData.GameStarting) == LobbyData.Yes)
-                if (!NetworkClient.isConnected && !NetworkServer.active)
-                {
-                    networkManager.networkAddress = FPClient.Instance.Lobby.Owner.ToString();
-                    networkManager.onlineScene = LobbyExt.GetData(LobbyData.Map);
-                }
-
-            if (LobbyExt.GetData(LobbyData.GameStarted) == LobbyData.Yes)
-            {
-                if (!FPClient.Instance.Lobby.IsOwner)
-                {
-                    GameStarted?.Invoke();
-                    networkManager.StartClient();
-                }
-
-                LobbyExt.ClearLobbyCallbacks();
-            }
-        }
-
         void LobbyMemberDataUpdated(ulong steamID)
         {
             playerTexts[steamID]
@@ -178,38 +203,15 @@ namespace Game.UI
                 var playerIDs = FPClient.Instance.Lobby.GetMemberIDs();
 
                 for (int i = 0; i < playerIDs.Length; i++)
+                {
                     if (LobbyExt.GetMemberData(playerIDs[i], LobbyData.Ready) == LobbyData.No)
                     {
                         StartServerButton.interactable = false;
                         return;
                     }
+                }
 
                 StartServerButton.interactable = true;
-            }
-        }
-
-        void LobbyStateChanged(Lobby.MemberStateChange stateChange, ulong initiatorID, ulong affectedID)
-        {
-            var initiatorName = FPClient.Instance.Friends.GetName(initiatorID);
-            var affectedName = FPClient.Instance.Friends.GetName(affectedID);
-
-            if (stateChange == Lobby.MemberStateChange.Entered)
-            {
-                LobbyExt.SendChatMessage($"{initiatorName} has joined.");
-                AddPlayer(initiatorID);
-            }
-            else
-            {
-                if (stateChange == Lobby.MemberStateChange.Left) LobbyExt.SendChatMessage($"{initiatorName} has left");
-                else
-                if (stateChange == Lobby.MemberStateChange.Disconnected) LobbyExt.SendChatMessage($"{initiatorName} has disconnected");
-                else
-                if (stateChange == Lobby.MemberStateChange.Kicked) LobbyExt.SendChatMessage($"{initiatorName} has been kicked");
-                else
-                if (stateChange == Lobby.MemberStateChange.Banned) LobbyExt.SendChatMessage($"{initiatorName} has been banned");
-
-                Destroy(playerTexts[initiatorID].gameObject);
-                playerTexts.Remove(initiatorID);
             }
         }
 
@@ -235,18 +237,18 @@ namespace Game.UI
             }
 
             LobbyMemberDataUpdated(steamID);
-        }
 
-        void OnChangeMageClicked()
-        {
-            isChangingMage = true;
-            ChangeMageClicked?.Invoke();
-        }
+            void OnChangeMageClicked()
+            {
+                isChangingMage = true;
+                ChangeMageClicked?.Invoke();
+            }
 
-        void OnReadyClicked()
-        {
-            LobbyExt.SetMemberData(LobbyData.Ready,
-                LobbyExt.GetMemberData(FPClient.Instance.SteamId, LobbyData.Ready) == LobbyData.Yes ? LobbyData.No : LobbyData.Yes);
+            void OnReadyClicked()
+            {
+                LobbyExt.SetMemberData(LobbyData.Ready,
+                    LobbyExt.GetMemberData(FPClient.Instance.SteamId, LobbyData.Ready) == LobbyData.Yes ? LobbyData.No : LobbyData.Yes);
+            }
         }
     }
 }

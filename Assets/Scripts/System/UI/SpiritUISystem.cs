@@ -270,9 +270,9 @@ namespace Game.UI
                         value == Numeral.DebuffTime;
 
                     if (value == Numeral.Level)
-                        return $"{StaticMethods.KiloFormat((int)spirit.Get(value).Sum)}";
+                        return $"{Uty.KiloFormat((int)spirit.Get(value).Sum)}";
 
-                    return $"{StaticMethods.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
+                    return $"{Uty.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
                 }
 
                 string SpiritToString(Enums.Spirit value)
@@ -285,7 +285,7 @@ namespace Game.UI
                         value == Enums.Spirit.ResourceRate ||
                         value == Enums.Spirit.CritMultiplier;
 
-                    return $"{StaticMethods.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
+                    return $"{Uty.KiloFormat(spirit.Get(value).Sum)}{(withPercent ? "%" : string.Empty)}";
                 }
                 #endregion
             }

@@ -8,6 +8,7 @@ using Game.Data.NetworkRequests;
 using Game.Managers;
 using Game.Utility;
 using Game.Systems.Enemy;
+using Game.Utility.Creator;
 
 namespace Game.Systems
 {
@@ -35,17 +36,24 @@ namespace Game.Systems
         public void NetworkSpawnEnemy(EnemySystem e, bool isEnenmyOwned)
         {
             if (isEnenmyOwned)
+            {
                 wavesEnemySystem[wavesEnemySystem.Count - 1].Add(e);
+            }
 
             EnemyCreated?.Invoke(e);
 
             if (spawned == Waves.Peek().EnemyTypes.Count)
+            {
                 if (WaveNumber <= Owner.WaveAmount)
                 {
                     if (spawnCoroutine != null)
-                        ReferenceHolder.Get.StopCoroutine(spawnCoroutine);
+                    {
+                        GameLoop.Instance.StopCoroutine(spawnCoroutine);
+                    }
+
                     SetNextWave();
                 }
+            }
         }
 
         public void SetSystem()
@@ -55,9 +63,13 @@ namespace Game.Systems
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
             if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
+            {
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
+            }
             else
+            {
                 Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.NetworkWaveDatas);
+            }
 
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
@@ -126,7 +138,7 @@ namespace Game.Systems
             currentEnemyCount.Add(Waves.Peek().EnemyTypes.Count);
             wavesEnemySystem.Add(new List<EnemySystem>());
 
-            spawnCoroutine = ReferenceHolder.Get.StartCoroutine(SpawnEnemyWave());
+            spawnCoroutine = GameLoop.Instance.StartCoroutine(SpawnEnemyWave());
 
             #region  Helper functions
 
@@ -144,9 +156,13 @@ namespace Game.Systems
                     GetSpawnAndWayPoints();
 
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
+                    {
                         CreateEnemyRequest();
+                    }
                     else
+                    {
                         CreateEnemy();
+                    }
 
                     spawned++;
                     yield return spawnDelay;
@@ -155,7 +171,8 @@ namespace Game.Systems
 
                     void CreateEnemy()
                     {
-                        var newEnemy = StaticMethods.CreateEnemy(Waves.Peek().EnemyTypes[spawned], spawnPosition, waypoints);
+                        var newEnemy = Create.Enemy(Waves.Peek().EnemyTypes[spawned], spawnPosition, waypoints);
+
                         wavesEnemySystem[wavesEnemySystem.Count - 1].Add(newEnemy);
                         EnemyCreated?.Invoke(newEnemy);
                     }
@@ -172,8 +189,8 @@ namespace Game.Systems
                             WaveNumber = WaveNumber,
                             Position = position,
                             PositionInWave = spawned,
-                            AbilityIndexes = enemy.Abilities?.GetIDs(),
-                            TraitIndexes = enemy.Traits?.GetIDs(),
+                            AbilityIndexes = enemy.Abilities?.GetIndexes(),
+                            TraitIndexes = enemy.Traits?.GetIndexes(),
                             Waypoints = new ListCoordinates3D(waypoints)
                         });
                     }
@@ -196,8 +213,12 @@ namespace Game.Systems
                 }
 
                 if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
+                {
                     if (WaveNumber <= Owner.WaveAmount)
+                    {
                         SetNextWave();
+                    }
+                }
             }
 
             #endregion

@@ -40,6 +40,23 @@ namespace Game.Utility
         }
     }
 
+    public static class FPClientExt
+    {
+        public static void LeaveGame()
+        {
+            if (FPClient.Instance == null) return;
+            
+            FPClient.Instance.Lobby.OnLobbyStateChanged = null;
+            FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
+            FPClient.Instance.LobbyList.OnLobbiesUpdated = null;
+            FPClient.Instance.Lobby.OnLobbyCreated = null;
+            FPClient.Instance.Lobby.OnLobbyJoined = null;
+            FPClient.Instance.Lobby.OnChatStringRecieved = null;
+
+            FPClient.Instance.Lobby.Leave();
+        }
+    }
+
     public static class LobbyExt
     {
         public static void SetCallbacks(LobbyCallbacks lobbyCallbacks)

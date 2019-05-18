@@ -32,45 +32,47 @@ namespace Game.Systems.Mage
             ownerPlayer.WaveSystem.EnemyCreated += OnEnemyCreated;
             ownerPlayer.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
 
-        }
 
-        void OnSpiritPlaced(SpiritSystem e)
-        {
-            if (e.IsOwnedByLocalPlayer)
+            void OnSpiritPlaced(SpiritSystem e)
             {
-                ModifyAttributes(e.Data, From.StartingAttribute);
-                e.LeveledUp += OnSpiritLeveledUp;
+                if (e.IsOwnedByLocalPlayer)
+                {
+                    ModifyAttributes(e.Data, From.StartingAttribute);
+                    e.LeveledUp += OnSpiritLeveledUp;
+
+                    void OnSpiritLeveledUp(SpiritSystem _) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+
+                    void ModifyAttributes(SpiritData spirit, From getFrom)
+                    {
+                        ModifyNumeralAttributes(spirit, getFrom);
+
+                        Mage.SpiritAttributes.ForEach(mageAttribute =>
+                            ModifyEntityAttribute(
+                                spirit.SpiritAttributes.Find(attribute => attribute.Type == mageAttribute.Type),
+                                mageAttribute,
+                                getFrom));
+
+                        Mage.SpiritFlagAttributes.ForEach(mageAttribute =>
+                            spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
+                    }
+                }
             }
-        }
 
-        void OnEnemyCreated(EnemySystem e)
-        {
-            if (e.IsOwnedByLocalPlayer)
-                ModifyAttributes(e.Data, From.StartingAttribute);
-        }
+            void OnEnemyCreated(EnemySystem e)
+            {
+                if (e.IsOwnedByLocalPlayer)
+                {
+                    ModifyAttributes(e.Data, From.StartingAttribute);
+                }
 
-        void OnSpiritLeveledUp(SpiritSystem e) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+                void ModifyAttributes(EnemyData enemy, From getFrom)
+                {
+                    ModifyNumeralAttributes(enemy, getFrom);
 
-        void ModifyAttributes(EnemyData enemy, From getFrom)
-        {
-            ModifyNumeralAttributes(enemy, getFrom);
-
-            Mage.EnemyAttributes.ForEach(mageAttribute =>
-                enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
-        }
-
-        void ModifyAttributes(SpiritData spirit, From getFrom)
-        {
-            ModifyNumeralAttributes(spirit, getFrom);
-
-            Mage.SpiritAttributes.ForEach(mageAttribute =>
-                ModifyEntityAttribute(
-                    spirit.SpiritAttributes.Find(attribute => attribute.Type == mageAttribute.Type),
-                    mageAttribute,
-                    getFrom));
-
-            Mage.SpiritFlagAttributes.ForEach(mageAttribute =>
-                spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
+                    Mage.EnemyAttributes.ForEach(mageAttribute =>
+                        enemy.EnemyAttributes.Find(attribute => mageAttribute.Type == attribute.Type).AppliedValue += mageAttribute.Value);
+                }
+            }
         }
 
         void ModifyNumeralAttributes<EntityData>(EntityData data, From getFrom)
@@ -80,10 +82,14 @@ namespace Game.Systems.Mage
             Mage.NumeralAttributes.ForEach(mageAttribute =>
             {
                 if (data is EnemyData enemy)
+                {
                     entityAttribute = enemy.NumeralAttributes.Find(attribute => attribute.Type == mageAttribute.Type);
+                }
 
                 if (data is SpiritData spirit)
+                {
                     entityAttribute = spirit.NumeralAttributes.Find(attribute => attribute.Type == mageAttribute.Type);
+                }
 
                 ModifyEntityAttribute(entityAttribute, mageAttribute, getFrom);
             });

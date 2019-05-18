@@ -14,20 +14,8 @@ using Game.Systems.Cells;
 
 namespace Game.Utility
 {
-    public static class StaticMethods
+    public static class Uty
     {
-        public static RangeSystem CreateRange(IPrefabComponent owner, double size, CollideWith collideType)
-        {
-            var range = UnityEngine.Object.Instantiate(ReferenceHolder.Get.RangePrefab, owner.Prefab.transform);
-            range.transform.localScale = new Vector3((float)size, 0.001f, (float)size);
-
-            var rangeSystem = range.GetComponent<RangeSystem>();
-            rangeSystem.Owner = owner;
-            rangeSystem.CollideType = collideType;
-
-            return rangeSystem;
-        }
-
         public static string KiloFormat(double num)
         {
             if (num >= 1000000000) return (num / 1000000000).ToString("#.0" + "B");
@@ -38,70 +26,7 @@ namespace Game.Utility
 
             return num.ToString("0.#");
         }
-
-        public static bool CheckLocalPlayer(NetworkPlayer player)
-        {
-            if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
-                return true;
-
-            return GameManager.Instance.GameState == GameState.InGameMultiplayer && player.isLocalPlayer;
-        }
-
-        public static void CreatePlaceEffect(ElementType element, Vector3 position)
-        {
-            var placeEffect = U.Instantiate(
-                ReferenceHolder.Get.ElementPlaceEffects[(int)element],
-                position + Vector3.up * 5,
-                Quaternion.identity);
-            U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
-        }
-
-        public static SpiritSystem CreateSpirit(SpiritData data, Cell cell, bool isOwnedByPlayer = true)
-        {
-            var newSpiritPrefab = U.Instantiate(
-                data.Prefab,
-                cell.transform.position,
-                Quaternion.identity,
-                ReferenceHolder.Get.SpiritParent);
-
-            var newSpirit = new SpiritSystem(newSpiritPrefab, isOwnedByPlayer)
-            {
-                Data = data,
-                UsedCell = cell.gameObject
-            };
-
-            newSpirit.SetSystem(ReferenceHolder.Get.Player);
-            CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
-            return newSpirit;
-        }
-
-        public static SpiritSystem CreateSpirit(SpiritData data, Vector3 position, bool isOwnedByPlayer = true)
-        {
-            var newSpiritPrefab = U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.SpiritParent);
-            var newSpirit = new SpiritSystem(newSpiritPrefab, isOwnedByPlayer)
-            {
-                Data = data,
-                UsedCell = null
-            };
-
-            newSpirit.SetSystem(ReferenceHolder.Get.Player);
-            CreatePlaceEffect(newSpirit.Data.Base.Element, newSpiritPrefab.transform.position);
-            return newSpirit;
-        }
-
-
-        public static EnemySystem CreateEnemy(EnemyData data, Vector3 position, Vector3[] waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
-        {
-
-            var enemy = prefab ?? U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Get.EnemyParent);
-            var enemySystem = new EnemySystem(enemy, waypoints, isOwnedByPlayer) { Data = data };
-
-            enemySystem.SetSystem(ReferenceHolder.Get.Player);
-
-            return enemySystem;
-        }
     }
-
 
     public static class JsonHelper
     {

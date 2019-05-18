@@ -16,16 +16,18 @@ namespace Game.UI
         public virtual void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
         {
             for (int i = 0; i < defaultYs.Length; i++)
+            {
                 transform.GetChild(i).DOLocalMoveY(0, NumberConsts.UIAnimSpeed).SetEase(Ease.InOutQuint);
+            }
         }
 
         public virtual void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
         {
             for (int i = 0; i < defaultYs.Length; i++)
-                transform.GetChild(i).DOLocalMoveY(
-                    moveTo == Move.Up ? defaultYs[i] : -defaultYs[i],
-                    NumberConsts.UIAnimSpeed)
+            {
+                transform.GetChild(i).DOLocalMoveY(moveTo == Move.Up ? defaultYs[i] : -defaultYs[i], NumberConsts.UIAnimSpeed)
                     .SetEase(Ease.InOutQuint);
+            }
         }
     }
 }
