@@ -5,6 +5,7 @@ using Game.Systems.Enemy;
 using Game.Data.Mage;
 using Game.Data.Enemy;
 using Game.Data.Spirit;
+using UnityEngine;
 
 namespace Game.Systems.Mage
 {
@@ -78,7 +79,6 @@ namespace Game.Systems.Mage
         void ModifyNumeralAttributes<EntityData>(EntityData data, From getFrom)
         {
             var entityAttribute = new EntityAttribute_A_L<Numeral, double>();
-
             Mage.NumeralAttributes.ForEach(mageAttribute =>
             {
                 if (data is EnemyData enemy)

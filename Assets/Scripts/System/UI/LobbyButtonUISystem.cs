@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Facepunch.Steamworks;
 using TMPro;
 
-namespace Game.UI
+namespace Game.UI.Lobbies
 {
     public class LobbyButtonUISystem : MonoBehaviour
     {

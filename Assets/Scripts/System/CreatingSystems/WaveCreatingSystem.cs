@@ -68,8 +68,6 @@ namespace Game.Systems
 
             return newData;
 
-            #region Helper functions
-
             void CalculateStats()
             {
                 newData.CreateNewAttributes();
@@ -90,8 +88,6 @@ namespace Game.Systems
                 newData.Get(Enums.Enemy.MoveSpeed).Value += 120 + waveNumber * 5;
                 newData.Get(Enums.Enemy.MaxHealth).Value = newData.Get(Enums.Enemy.Health).Value;
                 newData.Get(Enums.Enemy.DefaultMoveSpeed).Value = newData.Get(Enums.Enemy.MoveSpeed).Value;
-
-                #region Helper functions
 
                 void SetGoldAndExp()
                 {
@@ -133,9 +129,7 @@ namespace Game.Systems
                     newData.Get(Numeral.Exp).Value = exp;
                     newData.Get(Numeral.ResourceCost).Value = gold;
                 }
-                #endregion
             }
-            #endregion
         }
 
 
@@ -155,8 +149,6 @@ namespace Game.Systems
             });
 
             return wave;
-
-            #region Helper functions
 
             List<Ability> GetAbilitiesByID()
             {
@@ -205,8 +197,6 @@ namespace Game.Systems
                 }
                 return new List<Trait>(traits);
             }
-
-            #endregion
         }
 
         static ArmorType GetRandomArmor()
@@ -236,9 +226,6 @@ namespace Game.Systems
             fittingEnemies.EnemyTypes = enemiesInDataBase.FindAll(enemy => enemy.Race == randomRace);
 
             return GetFittingEnemies();
-
-            #region Helper functions
-
 
             List<Ability> GetRandomAbilities()
             {
@@ -290,8 +277,6 @@ namespace Game.Systems
 
                 return sortedEnemies;
 
-                #region Helper functions
-
                 EnemyData GetEnemyDataOfType(EnemyType type)
                 {
                     for (int i = 0; i < choosedEnemies.Length; i++)
@@ -319,12 +304,7 @@ namespace Game.Systems
                     var random = StaticRandom.Instance.Next(0, tempChoosedEnemies.Count);
                     return tempChoosedEnemies.Count > 0 ? tempChoosedEnemies[random] : null;
                 }
-
-                #endregion
             }
-            #endregion
         }
-
-
     }
 }

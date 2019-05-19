@@ -47,35 +47,38 @@ namespace Game.UI
 
             void OnItemMovedToPlayer(ItemUISystem itemUI)
             {
-                var freeSlotIndex = isSlotEmpty.IndexOf(true);
-                if (freeSlotIndex == -1) return;
+                if (CheckHaveFreeSlot(out var freeSlotIndex))
+                {
+                    var freeSlot = Slots[freeSlotIndex];
 
-                var freeSlot = Slots[freeSlotIndex];
+                    itemUI.transform.position = freeSlot.transform.position;
+                    itemUI.transform.SetParent(freeSlot.transform.parent);
 
-                itemUI.transform.position = freeSlot.transform.position;
-                itemUI.transform.SetParent(freeSlot.transform.parent);
-
-                AddItemToPlayer(itemUI, freeSlotIndex);
+                    AddItemToPlayer(itemUI, freeSlotIndex);
+                }
             }
 
             void OnItemCreated(ItemSystem item)
             {
-                var freeSlotIndex = isSlotEmpty.IndexOf(true);
-                if (freeSlotIndex == -1) return;
+                if (CheckHaveFreeSlot(out var freeSlotIndex))
+                {
+                    ItemsUI.Add(
+                        Owner.ItemDropSystem.CreateItemUI(item.Data, freeSlotIndex, Slots[freeSlotIndex].transform, Owner));
 
-                ItemsUI.Add(
-                    Owner.ItemDropSystem.CreateItemUI(item.Data, freeSlotIndex, Slots[freeSlotIndex].transform, Owner));
+                    isSlotEmpty[freeSlotIndex] = false;
+                    Slots[freeSlotIndex].SetActive(false);
 
-                isSlotEmpty[freeSlotIndex] = false;
-                Slots[freeSlotIndex].SetActive(false);
-
-                ItemAddedToPlayer?.Invoke(ItemsUI[ItemsUI.Count - 1]);
-                return;
-
+                    ItemAddedToPlayer?.Invoke(ItemsUI[ItemsUI.Count - 1]);
+                    return;
+                }
             }
 
+            bool CheckHaveFreeSlot(out int freeSlotIndex)
+            {
+                freeSlotIndex = isSlotEmpty.IndexOf(true);
+                return freeSlotIndex != -1;
+            }
         }
-
 
         public void OnItemBeingDragged(ItemDragEventArgs e) => RemoveItemFromPlayer(e.ItemUI);
 
@@ -84,6 +87,7 @@ namespace Game.UI
             var isSpiritChoosed = Owner.PlayerInputSystem.ChoosedSpirit != null;
 
             if (itemUI.System.Data is Consumable item)
+            {
                 if (item.Type != ConsumableType.Essence)
                 {
                     ApplyConsumable?.Invoke(new ConsumableEventArgs(Owner, itemUI));
@@ -91,32 +95,39 @@ namespace Game.UI
                     Destroy(itemUI.gameObject);
                     return;
                 }
-                else
-                    if (isSpiritChoosed && item.Type == ConsumableType.Essence)
+                else if (isSpiritChoosed && item.Type == ConsumableType.Essence)
                 {
                     ApplyConsumable?.Invoke(new ConsumableEventArgs(Owner.PlayerInputSystem.ChoosedSpirit, itemUI));
                     RemoveItemFromPlayer(itemUI);
                     Destroy(itemUI.gameObject);
                     return;
                 }
+            }
 
             if (isSpiritChoosed)
+            {
                 if (itemUI.DraggedFrom == DraggedFrom.PlayerInventory)
                 {
                     RemoveItemFromPlayer(itemUI);
                     MoveItemToSpirit?.Invoke(itemUI);
                 }
-
+            }
         }
 
         public void OnItemDragEnd(ItemDragEventArgs e)
         {
             if (e.OverlappedSlot == null && e.ItemUI.DraggedFrom == DraggedFrom.PlayerInventory)
+            {
                 AddItemToPlayer(e.ItemUI, e.ItemUI.SlotNumber);
+            }
 
             for (int i = 0; i < Slots.Count; i++)
+            {
                 if (e.OverlappedSlot == Slots[i])
+                {
                     AddItemToPlayer(e.ItemUI, i);
+                }
+            }
         }
 
         void RemoveItemFromPlayer(ItemUISystem itemUI)
@@ -129,7 +140,6 @@ namespace Game.UI
 
                 ItemRemovedFromPlayer?.Invoke(itemUI);
             }
-
         }
 
         void AddItemToPlayer(ItemUISystem itemUI, int slotNumber)

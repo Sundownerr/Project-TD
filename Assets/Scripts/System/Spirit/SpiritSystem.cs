@@ -88,6 +88,23 @@ namespace Game.Systems.Spirit
                 RangeSystem.EntityEntered += OnEntityEnteredRange;
                 RangeSystem.EntityExit += OnEntityExitRange;
                 Renderers = Prefab.GetComponentsInChildren<Renderer>();
+
+                void OnEntityEnteredRange(IVulnerable e)
+                {
+                    if (e is EnemySystem enemy)
+                    {
+                        if (enemy.Data.Type == EnemyType.Flying && !Data.Get(Enums.SpiritFlag.CanAttackFlying).Value)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            Targets.Add(e as IHealthComponent);
+                        }
+                    }
+                }
+
+                void OnEntityExitRange(IVulnerable e) => Targets.Remove(e as IHealthComponent);
             }
 
             void SetTraitSystems()
@@ -164,23 +181,6 @@ namespace Game.Systems.Spirit
 
             #endregion
         }
-
-        void OnEntityEnteredRange(IVulnerable e)
-        {
-            if (e is EnemySystem enemy)
-            {
-                if (enemy.Data.Type == EnemyType.Flying && !Data.Get(Enums.SpiritFlag.CanAttackFlying).Value)
-                {
-                    return;
-                }
-                else
-                {
-                    Targets.Add(e as IHealthComponent);
-                }
-            }
-        }
-
-        void OnEntityExitRange(IVulnerable e) => Targets.Remove(e as IHealthComponent);
 
         public void Upgrade(SpiritSystem previousSpirit, SpiritData newData) => dataSystem.Upgrade(previousSpirit, newData);
 

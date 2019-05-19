@@ -122,7 +122,6 @@ namespace Game.UI
                 itemUI.DoubleClickedInSpiritInventory += OnItemDoubleClicked;
                 itemUI.System.StatsApplied += OnStatsApplied;
 
-
                 void OnItemDoubleClicked(ItemUISystem _)
                 {
                     if (itemUI.DraggedFrom == DraggedFrom.SpiritInventory)

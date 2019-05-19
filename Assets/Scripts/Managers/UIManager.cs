@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Data.Mage;
 using Game.Enums;
 using Game.UI;
+using Game.UI.Lobbies;
 using Game.Utility;
 using UnityEngine;
 
@@ -33,6 +34,8 @@ namespace Game.Managers
             {
                 backButton = value;
                 backButton.Clicked += OnBackButtonClicked;
+
+                void OnBackButtonClicked() { state.Update(); }
             }
         }
 
@@ -49,68 +52,63 @@ namespace Game.Managers
 
             Menu.StartMultiplayer += OnStartMultiplayer;
             Menu.StartSingleplayer += OnStartSingleplayer;
-
             lobbyList.CreatedLobby += OnLobbyCreated;
             lobbyList.JoinedLobby += OnLobbyJoined;
-
             lobby.GameStarted += OnGameStarted;
             lobby.ChangeMageClicked += OnLobbyMageChange;
-            
             mageSelection.MageSelected += OnMageSelected;
 
             GameManager.Instance.GameState = GameState.MainMenu;
             state.ChangeState(new InMainMenu(this));
-        }
 
-        void OnBackButtonClicked() { state.Update(); }
+            void OnLobbyCreated()
+            {
+                GameManager.Instance.GameState = GameState.InLobby;
+                state.ChangeState(new InLobby(this));
+            }
 
-        void OnLobbyCreated()
-        {
-            GameManager.Instance.GameState = GameState.InLobby;
-            state.ChangeState(new InLobby(this));
-        }
+            void OnLobbyJoined()
+            {
+                GameManager.Instance.GameState = GameState.InLobby;
+                state.ChangeState(new InLobby(this));
+            }
 
-        void OnLobbyJoined()
-        {
-            GameManager.Instance.GameState = GameState.InLobby;
-            state.ChangeState(new InLobby(this));
-        }
+            void OnLobbyMageChange()
+            {
+                GameManager.Instance.GameState = GameState.SelectingMage;
+                state.ChangeState(new InMageSelection(this));
+            }
 
-        void OnLobbyMageChange()
-        {
-            GameManager.Instance.GameState = GameState.SelectingMage;
-            state.ChangeState(new InMageSelection(this));
-        }
+            void OnStartSingleplayer()
+            {
+                GameManager.Instance.GameState = GameState.SelectingMage;
+                state.ChangeState(new InMageSelection(this));
+            }
 
-        void OnStartSingleplayer()
-        {
-            GameManager.Instance.GameState = GameState.SelectingMage;
-            state.ChangeState(new InMageSelection(this));
-        }
+            void OnStartMultiplayer()
+            {
+                GameManager.Instance.GameState = GameState.BrowsingLobbies;
+                state.ChangeState(new InBrowsingLobbies(this));
+            }
 
-        void OnStartMultiplayer()
-        {
-            GameManager.Instance.GameState = GameState.BrowsingLobbies;
-            state.ChangeState(new InBrowsingLobbies(this));
-        }
+            void OnMageSelected(MageData e)
+            {
+                if (GameManager.Instance.PreviousGameState == GameState.MainMenu)
+                    OnGameStarted();
+                else
+                if (GameManager.Instance.PreviousGameState == GameState.InLobby)
+                    OnLobbyJoined();
 
-        void OnMageSelected(MageData e)
-        {
-            if (GameManager.Instance.PreviousGameState == GameState.MainMenu)
-                OnGameStarted();
-            else
-            if (GameManager.Instance.PreviousGameState == GameState.InLobby)
-                OnLobbyJoined();
+                MageSelected?.Invoke(e);
+            }
 
-            MageSelected?.Invoke(e);
-        }
+            void OnGameStarted()
+            {
+                GameManager.Instance.GameState = GameState.LoadingGame;
+                GameStarted?.Invoke();
 
-        void OnGameStarted()
-        {
-            GameManager.Instance.GameState = GameState.LoadingGame;
-            GameStarted?.Invoke();
-
-            state.ChangeState(new InGame(this));
+                state.ChangeState(new InGame(this));
+            }
         }
 
         class InMainMenu : IState

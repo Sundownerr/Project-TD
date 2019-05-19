@@ -49,15 +49,12 @@ namespace Game.Systems.Enemy
                 return;
             }
 
-
             Owner = player;
 
             HealthSystem = new HealthSystem(this) { IsVulnerable = true };
 
             SetAbilitySystems();
             SetTraitSystems();
-
-            #region Helper functions
 
             void SetTraitSystems()
             {
@@ -76,13 +73,10 @@ namespace Game.Systems.Enemy
 
                 AbilityControlSystem.Set();
             }
-
-            #endregion
         }
 
         public void UpdateSystem()
         {
-
             HealthSystem?.UpdateSystem();
             AbilityControlSystem.UpdateSystem();
 
@@ -91,15 +85,21 @@ namespace Game.Systems.Enemy
                 var waypointReached = Prefab.transform.position.GetDistanceTo(waypoints[WaypointIndex]) < 30;
 
                 if (WaypointIndex < waypoints.Length - 1)
+                {
                     if (!waypointReached)
+                    {
                         MoveAndRotateEnemy();
+                    }
                     else
+                    {
                         WaypointIndex++;
+                    }
+                }
                 else
+                {
                     LastWaypointReached?.Invoke(this);
+                }
             }
-
-            #region  Helper functions
 
             void MoveAndRotateEnemy()
             {
@@ -113,10 +113,7 @@ namespace Game.Systems.Enemy
 
                 Prefab.transform.Translate(Vector3.forward * (float)(Time.deltaTime * Data.Get(Enums.Enemy.MoveSpeed).Sum), Space.Self);
                 Prefab.transform.localRotation = rotation;
-
             }
-
-            #endregion
         }
 
         public void AddEffect(Effect effect)

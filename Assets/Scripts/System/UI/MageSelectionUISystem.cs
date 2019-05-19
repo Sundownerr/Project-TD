@@ -8,6 +8,7 @@ using TMPro;
 using DG.Tweening;
 using Game.Consts;
 using Game.Data.Mage;
+using Game.Managers;
 
 namespace Game.UI
 {
@@ -28,9 +29,9 @@ namespace Game.UI
             mageUIs = new List<MageUI>(gameObject.GetComponentsInChildren<MageUI>());
             mageUIs.ForEach(mageUI => mageUI.Selected += OnMageSelected);
 
-            SelectMageButton.onClick.AddListener(OnSelectMageButton);
+            SelectMageButton.onClick.AddListener(OnSelectMageClick);
 
-            void OnSelectMageButton() => MageSelected?.Invoke(selectedMage);
+            void OnSelectMageClick() => MageSelected?.Invoke(selectedMage);
 
             void OnMageSelected(MageData e) => UpdateMageInfo(e);
         }
@@ -43,6 +44,11 @@ namespace Game.UI
         void UpdateMageInfo(MageData mage)
         {
             selectedMage = mage;
+
+            // DELETE LATER
+            GameData.Instance.ChoosedMage = mage;
+            // DELETE LATER
+            
             MageImage.sprite = mage.Image;
             MageImage.color += new Color(0, 0, 0, 1);
             MageImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mage.Name;

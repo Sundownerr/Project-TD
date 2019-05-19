@@ -71,7 +71,6 @@ namespace Game.Systems
         {
             WaveAmount = 100;
             Map = map;
-          //  GameData.Instance.Player = this;
             NetworkPlayer = GameData.Instance.NetworkPlayer;
 
             AvailableSpirits = new List<SpiritData>();
@@ -134,6 +133,21 @@ namespace Game.Systems
 
             ReferenceHolder.Instance.StartCoroutine(SetCameraPos());
             isSet = true;
+
+            IEnumerator SetCameraPos()
+            {
+                var cameraObject = Camera.main.transform.parent;
+                var cameraPos = new Vector3(Map.transform.position.x, cameraObject.position.y, cameraObject.position.z);
+                var cinemachineCamera = cameraObject.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().gameObject;
+
+                cinemachineCamera.SetActive(false);
+                cameraObject.position = cameraPos;
+
+                yield return new WaitForSeconds(0.1f);
+                cinemachineCamera.SetActive(true);
+
+
+            }
         }
 
         public void UpdateSystem()
@@ -146,21 +160,6 @@ namespace Game.Systems
 
                 WaveSystem.UpdateSystem();
             }
-        }
-
-        IEnumerator SetCameraPos()
-        {
-            var cameraObject = Camera.main.transform.parent;
-            var cameraPos = new Vector3(Map.transform.position.x, cameraObject.position.y, cameraObject.position.z);
-            var cinemachineCamera = cameraObject.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().gameObject;
-
-            cinemachineCamera.SetActive(false);
-            cameraObject.position = cameraPos;
-
-            yield return new WaitForSeconds(0.1f);
-            cinemachineCamera.SetActive(true);
-
-
         }
     }
 }

@@ -9,7 +9,7 @@ using Game.Consts;
 using Game.Utility;
 using Game.Utility.Localization;
 
-namespace Game.UI
+namespace Game.UI.Lobbies
 {
     public class LobbyPlayerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

@@ -8,6 +8,7 @@ using DG.Tweening;
 using Game.Systems;
 using Game.Consts;
 using Game.Managers;
+using Game.UI.Lobbies;
 
 namespace Game.UI
 {
@@ -26,13 +27,15 @@ namespace Game.UI
 
         void Start()
         {
-            SingleplayerButton.onClick.AddListener(() => StartSingleplayer?.Invoke());
-            MultiplayerButton.onClick.AddListener(() => StartMultiplayer?.Invoke());
+            SingleplayerButton.onClick.AddListener(OnSingleplayerButtonClick);
+            MultiplayerButton.onClick.AddListener(OnMultiplayerButtonClick);
 
             GameManager.Instance.SteamConnected += OnSteamConnected;
             GameManager.Instance.SteamLostConnection += OnSteamLostConnection;
             GameManager.Instance.Menu = this;
 
+            void OnMultiplayerButtonClick() => StartMultiplayer?.Invoke();
+            void OnSingleplayerButtonClick() => StartSingleplayer?.Invoke();
             void OnSteamLostConnection() => MultiplayerButton.interactable = false;
             void OnSteamConnected() => MultiplayerButton.interactable = true;
         }

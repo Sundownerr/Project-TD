@@ -36,6 +36,7 @@ namespace Game.Systems.Abilities
                 EffectSystems.Add(effect.EffectSystem);
                 nextEffectDelays.Add(new WaitForSeconds(effect.NextInterval));
             });
+            
             SetSystem(owner);
         }
 
@@ -44,12 +45,6 @@ namespace Game.Systems.Abilities
             Owner = owner;
             Index = owner.AbilitySystems.Count > 0 ? owner.AbilitySystems.IndexOf(this) : 0;
 
-            SetEffects();
-        }
-
-        void SetStackedSystem(AbilitySystem baseAbility)
-        {
-            Index = baseAbility.Index;
             SetEffects();
         }
 
@@ -68,6 +63,68 @@ namespace Game.Systems.Abilities
             Ability.Effects[Ability.Effects.Count - 1].NextInterval = 0.01f;
         }
 
+        void StartAbility()
+        {
+            Used?.Invoke(this);
+            GameLoop.Instance.StartCoroutine(Cooldown());
+            GameLoop.Instance.StartCoroutine(InitEffect());
+
+            IEnumerator Cooldown()
+            {
+                yield return cooldownDelay;
+
+                if (!IsStacked)
+                {
+                    CooldownReset();
+                }
+
+                void CooldownReset()
+                {
+                    CurrentEffectIndex = 0;
+                    IsCooldowned = true;
+                    IsNeedStack = CheckNeedStack();
+
+                    bool CheckNeedStack()
+                    {
+                        if (Target == null)
+                        {
+                            return false;
+                        }
+
+                        foreach (var effectSystem in EffectSystems)
+                        {
+                            if (effectSystem.Effect.MaxStackCount > 1)
+                            {
+                                if (!effectSystem.IsEnded && !effectSystem.IsMaxStackReached)
+                                {
+                                    return true;
+                                }
+                            }
+                            else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                }
+            }
+
+            IEnumerator InitEffect()
+            {
+                EffectSystems[CurrentEffectIndex].Apply();
+
+                yield return nextEffectDelays[CurrentEffectIndex];
+
+                if (CurrentEffectIndex < Ability.Effects.Count - 1)
+                {
+                    CurrentEffectIndex++;
+                    GameLoop.Instance.StartCoroutine(InitEffect());
+                }
+            }
+        }
+
         public void Init()
         {
             if (IsCooldowned)
@@ -75,36 +132,6 @@ namespace Game.Systems.Abilities
                 IsCooldowned = false;
                 StartAbility();
             }
-        }
-
-        IEnumerator Cooldown()
-        {
-            yield return cooldownDelay;
-
-            if (!IsStacked)
-            {
-                CooldownReset();
-            }
-        }
-
-        IEnumerator InitEffect()
-        {
-            EffectSystems[CurrentEffectIndex].Apply();
-
-            yield return nextEffectDelays[CurrentEffectIndex];
-
-            if (CurrentEffectIndex < Ability.Effects.Count - 1)
-            {
-                CurrentEffectIndex++;
-                GameLoop.Instance.StartCoroutine(InitEffect());
-            }
-        }
-
-        void StartAbility()
-        {
-            Used?.Invoke(this);
-            GameLoop.Instance.StartCoroutine(Cooldown());
-            GameLoop.Instance.StartCoroutine(InitEffect());
         }
 
         public void SetTarget(ICanReceiveEffects target, bool forceSet = false)
@@ -115,7 +142,7 @@ namespace Game.Systems.Abilities
 
         public void StackReset(AbilitySystem baseAbility)
         {
-            SetStackedSystem(baseAbility);
+            SetStackedSystem();
 
             IsStacked = true;
             CurrentEffectIndex = baseAbility.CurrentEffectIndex;
@@ -126,39 +153,12 @@ namespace Game.Systems.Abilities
             }
 
             StartAbility();
-        }
 
-        void CooldownReset()
-        {
-            CurrentEffectIndex = 0;
-            IsCooldowned = true;
-            IsNeedStack = CheckNeedStack();
-
-            #region helper functions
-
-            bool CheckNeedStack()
+            void SetStackedSystem()
             {
-                if (Target == null) return false;
-
-                foreach (var effectSystem in EffectSystems)
-                {
-                    if (effectSystem.Effect.MaxStackCount > 1)
-                    {
-                        if (!effectSystem.IsEnded && !effectSystem.IsMaxStackReached)
-                        {
-                            return true;
-                        }
-                    }
-                    else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                Index = baseAbility.Index;
+                SetEffects();
             }
-
-            #endregion
         }
 
         public bool CheckAllEffectsEnded()

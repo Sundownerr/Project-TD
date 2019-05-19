@@ -12,7 +12,7 @@ using Game.Utility;
 using Game.Consts;
 using Game.Managers;
 
-namespace Game.UI
+namespace Game.UI.Lobbies
 {
     public class LobbyListUISystem : UIWindow
     {
@@ -31,9 +31,30 @@ namespace Game.UI
             lobbyButtonsPool = new ObjectPool(LobbyButtonPrefab, LobbyListGroup.transform, 20);
             lobbyInfoTextPool = new ObjectPool(LobbyInfoTextPrefab, LobbyInfoGroup.transform, 10);
 
-            RefreshButton.onClick.AddListener(UpdateLobbyList);
-            CreateLobbyButton.onClick.AddListener(() => FPClient.Instance.Lobby.Create(Lobby.Type.Public, 2));
-            JoinLobbyButton.onClick.AddListener(JoinLobby);
+            RefreshButton.onClick.AddListener(OnRefreshButtonClick);
+            CreateLobbyButton.onClick.AddListener(OnCreateLobbyClick);
+            JoinLobbyButton.onClick.AddListener(OnJoinLobbyClick);
+
+            void OnCreateLobbyClick() => FPClient.Instance.Lobby.Create(Lobby.Type.Public, 2);
+
+            void OnJoinLobbyClick()
+            {
+                if (selectedLobby != null)
+                {
+                    FPClient.Instance.Lobby.Join(selectedLobby.LobbyID);
+                }
+            }
+
+            void OnRefreshButtonClick()
+            {
+                var lobbyFilter = new LobbyList.Filter
+                {
+                    DistanceFilter = LobbyList.Filter.Distance.Worldwide
+                };
+
+                FPClient.Instance.LobbyList.Refresh(lobbyFilter);
+                lobbyButtonsPool.DeactivateAll();
+            }
         }
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
@@ -49,73 +70,62 @@ namespace Game.UI
             FPClient.Instance.Lobby.OnLobbyCreated = LobbyCreated;
 
             base.Open(timeToComplete);
-        }
 
-        void LobbyCreated(bool isSuccesful)
-        {
-            if (isSuccesful)
+            void LobbyCreated(bool isSuccesful)
             {
-                
-                LobbyExt.SetLobbyDefaultData();
-                CreatedLobby?.Invoke();
+                if (isSuccesful)
+                {
+
+                    LobbyExt.SetLobbyDefaultData();
+                    CreatedLobby?.Invoke();
+                }
             }
-        }
 
-        void LobbyJoined(bool isSuccesful)
-        {
-            if (isSuccesful)
+            void LobbyJoined(bool isSuccesful)
             {
-                lobbyInfoTextPool.DeactivateAll();
-                lobbyButtonsPool.DeactivateAll();
+                if (isSuccesful)
+                {
+                    lobbyInfoTextPool.DeactivateAll();
+                    lobbyButtonsPool.DeactivateAll();
 
-                selectedLobby = null;
-                JoinedLobby?.Invoke();
+                    selectedLobby = null;
+                    JoinedLobby?.Invoke();
+                }
             }
-        }
 
-        void JoinLobby() { if (selectedLobby != null) FPClient.Instance.Lobby.Join(selectedLobby.LobbyID); }
-
-        void LobbiesUpdated()
-        {
-            var lobbies = FPClient.Instance.LobbyList.Lobbies;
-            var sb = new StringBuilder();
-
-            for (int i = 0; i < lobbies.Count; i++)
+            void LobbiesUpdated()
             {
-                sb.Append($"{i}.   ")
-                    .Append($"{lobbies[i]?.Name}  ")
-                    .Append($"{lobbies[i]?.NumMembers} / ")
-                    .Append(lobbies[i]?.MemberLimit);
+                var lobbies = FPClient.Instance.LobbyList.Lobbies;
+                var sb = new StringBuilder();
 
-                var lobbyButton = lobbyButtonsPool.PopObject().GetComponent<LobbyButtonUISystem>();
+                for (int i = 0; i < lobbies.Count; i++)
+                {
+                    sb.Append($"{i}.   ")
+                        .Append($"{lobbies[i]?.Name}  ")
+                        .Append($"{lobbies[i]?.NumMembers} / ")
+                        .Append(lobbies[i]?.MemberLimit);
 
-                lobbyButton.Lobby = lobbies[i];
-                lobbyButton.Label.text = sb.ToString();
-                lobbyButton.Clicked += OnLobbyButtonClicked;
-                sb.Clear();
+                    var lobbyButton = lobbyButtonsPool.PopObject().GetComponent<LobbyButtonUISystem>();
+
+                    lobbyButton.Lobby = lobbies[i];
+                    lobbyButton.Label.text = sb.ToString();
+                    lobbyButton.Clicked += OnLobbyButtonClicked;
+                    sb.Clear();
+                }
+
+                void OnLobbyButtonClicked(LobbyList.Lobby lobby)
+                {
+                    if (lobby == null) return;
+
+                    selectedLobby = lobby;
+                    lobbyInfoTextPool.DeactivateAll();
+
+                    foreach (var pair in lobby.GetAllData())
+                    {
+                        lobbyInfoTextPool.PopObject().GetComponent<TextMeshProUGUI>().text = $"{pair.Key} {pair.Value}";
+                    }
+                }
             }
-        }
-
-        void OnLobbyButtonClicked(LobbyList.Lobby lobby)
-        {
-            if (lobby == null) return;
-
-            selectedLobby = lobby;
-            lobbyInfoTextPool.DeactivateAll();
-
-            foreach (var pair in lobby.GetAllData())
-                lobbyInfoTextPool.PopObject().GetComponent<TextMeshProUGUI>().text = $"{pair.Key} {pair.Value}";
-        }
-
-        void UpdateLobbyList()
-        {
-            var lobbyFilter = new LobbyList.Filter
-            {
-                DistanceFilter = LobbyList.Filter.Distance.Worldwide
-            };
-
-            FPClient.Instance.LobbyList.Refresh(lobbyFilter);
-            lobbyButtonsPool.DeactivateAll();
         }
     }
 }

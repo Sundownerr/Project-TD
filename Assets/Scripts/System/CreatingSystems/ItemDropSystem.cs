@@ -46,8 +46,6 @@ namespace Game.Systems
                 // Debug.Log($"{newItem.Data.Name} {newItem.Data.Rarity}");
             }
 
-            #region Helper functions
-
             ItemSystem CreateItem(int rarityId)
             {
                 var ItemsFromDB =  ReferenceHolder.Instance.ItemDB.Data;
@@ -66,8 +64,6 @@ namespace Game.Systems
 
                 return fittingItems[fittingItemsWeigths.RollDice()];
             }
-
-            #endregion
         }
 
         public ItemUISystem CreateItemUI(Item item, int slotNumber, Transform slotTransform, IEntitySystem owner)

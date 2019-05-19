@@ -48,13 +48,11 @@ namespace Game.Managers
         public Transform EnemyParent;
         public Canvas UICanvas;
         public Canvas WorldCanvas;
-
-
         public GameObject NetworkEnemy;
 
         DescriptionUISystem descriptionUISystem;
 
-        public static List<int> ExpToLevelUp { get; } = new List<int>(25)
+        public static List<int> ExpToLevelUp { get; } = new List<int>()
         {
             12,
             24,

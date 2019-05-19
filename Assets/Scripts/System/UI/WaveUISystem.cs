@@ -48,83 +48,79 @@ namespace Game.UI
             Owner.WaveSystem.WaveStarted += OnWaveStarted;
 
             ActivateUI(true);
-        }
 
-        void OnWaveStarted() => ActivateUI(false);
-        void OnWaveEnded() => ActivateUI(true);
+            void OnWaveStarted() => ActivateUI(false);
+            void OnWaveEnded() => ActivateUI(true);
 
-        void ActivateUI(bool activate)
-        {
-            if (activate)
+            void ActivateUI(bool activate)
             {
-                UpdateUI();
-                animator.SetBool("isOpen", true);
-                StartWaveButton.gameObject.SetActive(true);
-            }
-            else
-            {
-                animator.SetBool("isOpen", false);
-                StartWaveButton.gameObject.SetActive(false);
-            }
-
-            void UpdateUI()
-            {
-                var wave = Owner.WaveSystem.Waves.Peek();
-
-                Race.text = wave.EnemyTypes[0].Race.GetLocalized();
-                Armor.text = wave.EnemyTypes[0].ArmorType.GetLocalized();
-                EnemyTypes.text = CalculateTypeAmounts();
-                Traits.text = GetTraitsAndAbilities();
-                WaveNumber.text = $"{LeanLocalization.GetTranslationText(LocaleKeys.UIWave)} {Owner.WaveSystem.WaveNumber + 1}";
-
-                #region  Helper functions
-
-                string GetTraitsAndAbilities()
+                if (activate)
                 {
-                    wave.EnemyTypes[0].Traits?
-                        .ForEach(trait => traitsAndAbilities.Append($"{trait.Name}     "));
-
-                    wave.EnemyTypes
-                        .Find(enemy => enemy.IsBossOrCommander)?.Abilities?
-                            .ForEach(ability => traitsAndAbilities.Append($"{ability.Name} "));
-
-                    var result = traitsAndAbilities.ToString();
-                    traitsAndAbilities.Clear();
-
-                    return result;
+                    UpdateUI();
+                    animator.SetBool("isOpen", true);
+                    StartWaveButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    animator.SetBool("isOpen", false);
+                    StartWaveButton.gameObject.SetActive(false);
                 }
 
-                string CalculateTypeAmounts()
+                void UpdateUI()
                 {
-                    var smallCount = 0;
-                    var normalCount = 0;
-                    var commanterCount = 0;
-                    var flyingCount = 0;
-                    var bossCount = 0;
+                    var wave = Owner.WaveSystem.Waves.Peek();
 
-                    for (int i = 0; i < wave.EnemyTypes.Count; i++)
+                    Race.text = wave.EnemyTypes[0].Race.GetLocalized();
+                    Armor.text = wave.EnemyTypes[0].ArmorType.GetLocalized();
+                    EnemyTypes.text = CalculateTypeAmounts();
+                    Traits.text = GetTraitsAndAbilities();
+                    WaveNumber.text = $"{LeanLocalization.GetTranslationText(LocaleKeys.UIWave)} {Owner.WaveSystem.WaveNumber + 1}";
+
+                    string GetTraitsAndAbilities()
                     {
-                        if (wave.EnemyTypes[i].Type == EnemyType.Small) { smallCount++; continue; }
-                        if (wave.EnemyTypes[i].Type == EnemyType.Normal) { normalCount++; continue; }
-                        if (wave.EnemyTypes[i].Type == EnemyType.Commander) { commanterCount++; continue; }
-                        if (wave.EnemyTypes[i].Type == EnemyType.Flying) { flyingCount++; continue; }
-                        if (wave.EnemyTypes[i].Type == EnemyType.Boss) { bossCount++; continue; }
+                        wave.EnemyTypes[0].Traits?
+                            .ForEach(trait => traitsAndAbilities.Append($"{trait.Name}     "));
+
+                        wave.EnemyTypes
+                            .Find(enemy => enemy.IsBossOrCommander)?.Abilities?
+                                .ForEach(ability => traitsAndAbilities.Append($"{ability.Name} "));
+
+                        var result = traitsAndAbilities.ToString();
+                        traitsAndAbilities.Clear();
+
+                        return result;
                     }
 
-                    enemyTypes
-                        .Append(smallCount > 0 ? $"{smallCount} {EnemyType.Small.GetLocalized()} " : string.Empty)
-                        .Append(normalCount > 0 ? $"{normalCount} {EnemyType.Normal.GetLocalized()} " : string.Empty)
-                        .Append(commanterCount > 0 ? $"{commanterCount} {EnemyType.Commander.GetLocalized()} " : string.Empty)
-                        .Append(flyingCount > 0 ? $"{flyingCount} {EnemyType.Flying.GetLocalized()} " : string.Empty)
-                        .Append(bossCount > 0 ? $"{bossCount} {EnemyType.Boss.GetLocalized()} " : string.Empty);
+                    string CalculateTypeAmounts()
+                    {
+                        var smallCount = 0;
+                        var normalCount = 0;
+                        var commanterCount = 0;
+                        var flyingCount = 0;
+                        var bossCount = 0;
 
-                    var result = enemyTypes.ToString();
-                    enemyTypes.Clear();
+                        for (int i = 0; i < wave.EnemyTypes.Count; i++)
+                        {
+                            if (wave.EnemyTypes[i].Type == EnemyType.Small) { smallCount++; continue; }
+                            if (wave.EnemyTypes[i].Type == EnemyType.Normal) { normalCount++; continue; }
+                            if (wave.EnemyTypes[i].Type == EnemyType.Commander) { commanterCount++; continue; }
+                            if (wave.EnemyTypes[i].Type == EnemyType.Flying) { flyingCount++; continue; }
+                            if (wave.EnemyTypes[i].Type == EnemyType.Boss) { bossCount++; continue; }
+                        }
 
-                    return result;
+                        enemyTypes
+                            .Append(smallCount > 0 ? $"{smallCount} {EnemyType.Small.GetLocalized()} " : string.Empty)
+                            .Append(normalCount > 0 ? $"{normalCount} {EnemyType.Normal.GetLocalized()} " : string.Empty)
+                            .Append(commanterCount > 0 ? $"{commanterCount} {EnemyType.Commander.GetLocalized()} " : string.Empty)
+                            .Append(flyingCount > 0 ? $"{flyingCount} {EnemyType.Flying.GetLocalized()} " : string.Empty)
+                            .Append(bossCount > 0 ? $"{bossCount} {EnemyType.Boss.GetLocalized()} " : string.Empty);
+
+                        var result = enemyTypes.ToString();
+                        enemyTypes.Clear();
+
+                        return result;
+                    }
                 }
-
-                #endregion
             }
         }
     }

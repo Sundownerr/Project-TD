@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEngine.UI;
 using Facepunch.Steamworks;
 using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
-using Game;
-using DG.Tweening;
 using Game.Consts;
 using Game.Utility;
 using Game.Utility.Localization;
 
-namespace Game.UI
+namespace Game.UI.Lobbies
 {
     public class LobbyDataChanger
     {
         TextMeshProUGUI maxPlayersText;
         Slider playersSlider;
-        TMP_Dropdown modeDropdown, visibilityDropdown, difficultyDropdown, mapDropdown, wavesDropdown;
+        TMP_Dropdown modeDropdown;
+        TMP_Dropdown visibilityDropdown;
+        TMP_Dropdown difficultyDropdown;
+        TMP_Dropdown mapDropdown;
+        TMP_Dropdown wavesDropdown;
         TMP_InputField LobbyName;
 
         public LobbyDataChanger(LobbyUISystem lobbyUISystem)
@@ -34,7 +33,9 @@ namespace Game.UI
             LocalizeDropdownItems();
 
             if (!FPClient.Instance.Lobby.IsOwner)
+            {
                 ActivateDropdowns(false);
+            }
             else
             {
                 ActivateDropdowns(true);

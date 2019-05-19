@@ -17,7 +17,7 @@ using Game.Enums;
 using Game.Data.Mage;
 using Game.Utility.Localization;
 
-namespace Game.UI
+namespace Game.UI.Lobbies
 {
     public class LobbyUISystem : UIWindow
     {
@@ -86,8 +86,6 @@ namespace Game.UI
             UpdateLobbyData();
 
             base.Open(timeToComplete);
-
-            #region Helper functions
 
             void UpdatePlayers()
             {
@@ -167,7 +165,41 @@ namespace Game.UI
 
             void ChatMessageReceived(ulong senderID, string message) => chatTextsPool.PopObject().GetComponent<TMP_InputField>().text = message;
 
-            #endregion
+            void AddPlayer(ulong steamID)
+            {
+                if (playerTexts.ContainsKey(steamID)) return;
+
+                playerTexts.Add(steamID, Instantiate(PlayerTextPrefab, PlayerTextGroup.transform).GetComponent<LobbyPlayerUI>());
+
+                playerTexts[steamID]
+                    .SetName(FPClient.Instance.Friends.GetName(steamID))
+                    .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
+                    .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
+                        $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
+                        $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
+                    .SetAvatar(steamID);
+
+                if (steamID == FPClient.Instance.SteamId)
+                {
+                    playerTexts[steamID].ReadyClicked += OnReadyClicked;
+                    playerTexts[steamID].ChangeMageClicked += OnChangeMageClicked;
+                    playerTexts[steamID].Set();
+                }
+
+                LobbyMemberDataUpdated(steamID);
+
+                void OnChangeMageClicked()
+                {
+                    isChangingMage = true;
+                    ChangeMageClicked?.Invoke();
+                }
+
+                void OnReadyClicked()
+                {
+                    LobbyExt.SetMemberData(LobbyData.Ready,
+                        LobbyExt.GetMemberData(FPClient.Instance.SteamId, LobbyData.Ready) == LobbyData.Yes ? LobbyData.No : LobbyData.Yes);
+                }
+            }
         }
 
         public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
@@ -215,40 +247,6 @@ namespace Game.UI
             }
         }
 
-        void AddPlayer(ulong steamID)
-        {
-            if (playerTexts.ContainsKey(steamID)) return;
 
-            playerTexts.Add(steamID, Instantiate(PlayerTextPrefab, PlayerTextGroup.transform).GetComponent<LobbyPlayerUI>());
-
-            playerTexts[steamID]
-                .SetName(FPClient.Instance.Friends.GetName(steamID))
-                .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
-                .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
-                    $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
-                .SetAvatar(steamID);
-
-            if (steamID == FPClient.Instance.SteamId)
-            {
-                playerTexts[steamID].ReadyClicked += OnReadyClicked;
-                playerTexts[steamID].ChangeMageClicked += OnChangeMageClicked;
-                playerTexts[steamID].Set();
-            }
-
-            LobbyMemberDataUpdated(steamID);
-
-            void OnChangeMageClicked()
-            {
-                isChangingMage = true;
-                ChangeMageClicked?.Invoke();
-            }
-
-            void OnReadyClicked()
-            {
-                LobbyExt.SetMemberData(LobbyData.Ready,
-                    LobbyExt.GetMemberData(FPClient.Instance.SteamId, LobbyData.Ready) == LobbyData.Yes ? LobbyData.No : LobbyData.Yes);
-            }
-        }
     }
 }

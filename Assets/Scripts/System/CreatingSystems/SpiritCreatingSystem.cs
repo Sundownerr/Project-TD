@@ -35,8 +35,6 @@ namespace Game.Systems
 
             AddedNewAvailableSpirit?.Invoke();
 
-            #region  Helper functions
-
             void GetNewSpirit(int elementId)
             {
                 var spirits =  ReferenceHolder.Instance.SpiritDB.Data;
@@ -49,9 +47,7 @@ namespace Game.Systems
                         Owner.BuildUISystem.AddSpiritButton(spirits[i]);
                     }
                 }
-            }
-
-            #endregion                                            
+            }                                       
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Game.Managers
         }
 
         public UserData UserData { get; private set; }
-        public MageData ChoosedMage { get; private set; }
+        public MageData ChoosedMage { get;  set; }
         public PlayerSystem Player { get; private set; }
 
         protected override void Awake()

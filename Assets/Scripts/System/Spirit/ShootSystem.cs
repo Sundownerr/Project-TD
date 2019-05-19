@@ -64,8 +64,6 @@ namespace Game.Systems.Spirit.Internal
                     removeTimers.RemoveAt(i);
                 }
 
-            #region Helper functions
-
             IEnumerator AttackCooldown()
             {
                 yield return delayBetweenAttacks;
@@ -125,8 +123,6 @@ namespace Game.Systems.Spirit.Internal
                 bullets.Remove(bullet);
                 bulletGOs.Remove(bullet.Prefab);
             }
-
-            #endregion
         }
 
         public void SetTargetReached(BulletSystem bullet)

@@ -31,12 +31,75 @@ namespace Game.UI
 
             damageNumbersPool = new ObjectPool(DamageNumber, transform, 15);
             levelUpTextPool = new ObjectPool(LevelUpText, transform, 5);
+
+            void OnDamageDealt(DamageEventArgs e)
+            {
+                if (e.Target == null || e.Target.Prefab == null)
+                    return;
+
+                var damageNumber = damageNumbersPool.PopObject();
+                var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
+                var damageText = Uty.KiloFormat((int)e.Damage);
+                var fontColor = defaultFontColor;
+                var random = UnityEngine.Random.Range(-20, 20);
+                var textPositionOffset = new Vector3(random, 90 + random, random);
+
+                if (e.CritCount > 0)
+                {
+                    var sb = new StringBuilder();
+
+                    for (int i = 1; i < e.CritCount; i++)
+                    {
+                        sb.Append("!");
+                    }
+
+                    fontColor = critFontColor;
+                    damageText = $"{damageText} {sb.ToString()}";
+                }
+
+                damageNumbers.Add(textComponent);
+                damageNumber.SetActive(true);
+
+                textComponent.text = damageText;
+                textComponent.fontSize = 18 + e.CritCount * 2;
+                textComponent.color = fontColor;
+
+                damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
+            }
+
         }
 
         public void SetSystem(PlayerSystem player)
         {
             Owner = player;
             Owner.SpiritPlaceSystem.SpiritPlaced += OnSpiritPlaced;
+
+            void OnSpiritPlaced(SpiritSystem e)
+            {
+                e.LeveledUp += OnSpiritLevelUp;
+
+                void OnSpiritLevelUp(SpiritSystem spirit)
+                {
+                    var text = levelUpTextPool.PopObject();
+                    var random = UnityEngine.Random.Range(-20, 20);
+                    var textPositionOffset = new Vector3(random, Math.Abs(random + 10), random);
+                    var textComponent = text.GetComponent<TextMeshProUGUI>();
+
+                    textComponent.gameObject.SetActive(true);
+                    textComponent.transform.position = spirit.Prefab.transform.position + textPositionOffset;
+                    textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level).Value}";
+
+                    levelUpTexts.Add(textComponent);
+
+                    StartCoroutine(DeactivateLevelUpText());
+
+                    IEnumerator DeactivateLevelUpText()
+                    {
+                        yield return levelUpTextFadeDelay;
+                        text.SetActive(false);
+                    }
+                }
+            }
         }
 
         void Update()
@@ -52,65 +115,6 @@ namespace Game.UI
                     damageNumbers[i].gameObject.SetActive(false);
                     damageNumbers.RemoveAt(i);
                 }
-            }
-        }
-
-        void OnDamageDealt(DamageEventArgs e)
-        {
-            if (e.Target == null || e.Target.Prefab == null)
-                return;
-
-            var damageNumber = damageNumbersPool.PopObject();
-            var textComponent = damageNumber.GetComponent<TextMeshProUGUI>();
-            var damageText = Uty.KiloFormat((int)e.Damage);
-            var fontColor = defaultFontColor;
-            var random = UnityEngine.Random.Range(-20, 20);
-            var textPositionOffset = new Vector3(random, 90 + random, random);
-
-            if (e.CritCount > 0)
-            {
-                var sb = new StringBuilder();
-
-                for (int i = 1; i < e.CritCount; i++)
-                {
-                    sb.Append("!");
-                }
-
-                fontColor = critFontColor;
-                damageText = $"{damageText} {sb.ToString()}";
-            }
-
-            damageNumbers.Add(textComponent);
-            damageNumber.SetActive(true);
-
-            textComponent.text = damageText;
-            textComponent.fontSize = 18 + e.CritCount * 2;
-            textComponent.color = fontColor;
-
-            damageNumber.transform.position = e.Target.Prefab.transform.position + textPositionOffset;
-        }
-
-        void OnSpiritPlaced(SpiritSystem e) => e.LeveledUp += OnSpiritLevelUp;
-
-        void OnSpiritLevelUp(SpiritSystem spirit)
-        {
-            var text = levelUpTextPool.PopObject();
-            var random = UnityEngine.Random.Range(-20, 20);
-            var textPositionOffset = new Vector3(random, Math.Abs(random + 10), random);
-            var textComponent = text.GetComponent<TextMeshProUGUI>();
-
-            textComponent.gameObject.SetActive(true);
-            textComponent.transform.position = spirit.Prefab.transform.position + textPositionOffset;
-            textComponent.text = $"level up!\n{(int)spirit.Data.Get(Numeral.Level).Value}";
-
-            levelUpTexts.Add(textComponent);
-
-            StartCoroutine(DeactivateLevelUpText());
-
-            IEnumerator DeactivateLevelUpText()
-            {
-                yield return levelUpTextFadeDelay;
-                text.SetActive(false);
             }
         }
     }

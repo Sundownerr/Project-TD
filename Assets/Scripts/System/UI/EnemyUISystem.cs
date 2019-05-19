@@ -17,7 +17,7 @@ namespace Game.UI
         Image hpBar;
         float maxHealth;
 
-      
+
         public void SetSystem(PlayerSystem player)
         {
             Owner = player;
@@ -25,29 +25,37 @@ namespace Game.UI
             hpText = EnemyUI.GetComponentInChildren<TextMeshProUGUI>();
             hpBar = EnemyUI.transform.GetChild(0).GetComponent<Image>();
             EnemyUI.SetActive(false);
-        }
 
-        void OnClickedOnEnemy(GameObject e)
-        {
-            for (int i = 0; i < Owner.EnemyControlSystem.AllEnemies.Count; i++)
-                if(Owner.EnemyControlSystem.AllEnemies[i].Prefab == e)
+            void OnClickedOnEnemy(GameObject e)
+            {
+                for (int i = 0; i < Owner.EnemyControlSystem.AllEnemies.Count; i++)
                 {
-                    enemy = Owner.EnemyControlSystem.AllEnemies[i];
-                    break;
-                }    
-            EnemyUI.SetActive(true);           
+                    if (Owner.EnemyControlSystem.AllEnemies[i].Prefab == e)
+                    {
+                        enemy = Owner.EnemyControlSystem.AllEnemies[i];
+                        break;
+                    }
+                }
+
+                EnemyUI.SetActive(true);
+            }
         }
 
         void LateUpdate()
         {
             if (enemy != null && enemy.Prefab != null)
             {
+                var enemyMaxHealth = enemy.Data.Get(Enums.Enemy.MaxHealth).Sum;
+                var enemyCurentHealth = enemy.Data.Get(Enums.Enemy.Health).Sum;
+
                 EnemyUI.transform.position = enemy.Prefab.transform.position + new Vector3(0, 90, 0);
-                hpBar.fillAmount = (float)(enemy.Data.Get(Enums.Enemy.Health).Sum / enemy.Data.Get(Enums.Enemy.MaxHealth).Sum);               
-                hpText.text = Uty.KiloFormat(enemy.Data.Get(Enums.Enemy.Health).Sum);
+                hpBar.fillAmount = (float)(enemyCurentHealth / enemyMaxHealth);
+                hpText.text = Uty.KiloFormat(enemyCurentHealth);
             }
             else
-                EnemyUI.SetActive(false);           
+            {
+                EnemyUI.SetActive(false);
+            }
         }
     }
 }

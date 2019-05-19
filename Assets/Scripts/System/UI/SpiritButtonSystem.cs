@@ -25,27 +25,27 @@ namespace Game.UI
 
             transform.GetChild(0).GetComponent<Button>().onClick.AddListener(OnClick);
             SpiritCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
-        }
 
-        void OnClick()
-        {
-            var goldCost = SpiritData.Get(Numeral.ResourceCost).Value;
-            var spiritLimit = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
-            var magicCrystalsCost = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
-
-            if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
+            void OnClick()
             {
-                PlaceNewSpirit?.Invoke(SpiritData);
-                Count--;
+                var goldCost = SpiritData.Get(Numeral.ResourceCost).Value;
+                var spiritLimit = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
+                var magicCrystalsCost = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
 
-                if (Count >= 1)
+                if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
                 {
-                    SpiritCountText.text = Count.ToString();
-                }
-                else
-                {
-                    AllThisSpiritsPlaced?.Invoke(this);
-                    Destroy(gameObject);
+                    PlaceNewSpirit?.Invoke(SpiritData);
+                    Count--;
+
+                    if (Count >= 1)
+                    {
+                        SpiritCountText.text = Count.ToString();
+                    }
+                    else
+                    {
+                        AllThisSpiritsPlaced?.Invoke(this);
+                        Destroy(gameObject);
+                    }
                 }
             }
         }
