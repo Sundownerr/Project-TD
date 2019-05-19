@@ -22,6 +22,7 @@ namespace Game.Managers
         public GameObject RangePrefab;
         public GameObject LevelUpEffect;
         public GameObject ItemPrefab;
+        public GameObject SlotWithCooldownPrefab;
         public PlayerInputSystem PlayerInputSystem;
         public WaveSystem WaveSystem;
         public ResourceUISystem ResourceUISystem;
@@ -47,6 +48,7 @@ namespace Game.Managers
         public Transform EnemyParent;
         public Canvas UICanvas;
         public Canvas WorldCanvas;
+
 
         public GameObject NetworkEnemy;
 

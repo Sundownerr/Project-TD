@@ -27,15 +27,9 @@ namespace Game.UI
         {
             InventoryButton.onClick.AddListener(ShowButton);
 
-            for (int i = 0; i < Slots.Count; i++)
-                isSlotEmpty.Add(true);
+            Slots.ForEach(slot => isSlotEmpty.Add(true));
 
-            #region Helper functions
-
-            void ShowButton() =>
-               BGPanel.gameObject.SetActive(!BGPanel.gameObject.activeSelf);
-
-            #endregion
+            void ShowButton() => BGPanel.gameObject.SetActive(!BGPanel.gameObject.activeSelf);
         }
 
         public void SetSystem(PlayerSystem player)
@@ -44,44 +38,44 @@ namespace Game.UI
             Owner.ItemDropSystem.ItemCreated += OnItemCreated;
             Owner.ItemDropSystem.ItemUICreated += OnItemUICreated;
             Owner.SpiritUISystem.MoveItemToPlayer += OnItemMovedToPlayer;
+
+            void OnItemUICreated(ItemUISystem itemUI)
+            {
+                itemUI.DoubleClickedInPlayerInventory += OnItemDoubleClicked;
+                ApplyConsumable += itemUI.System.OnConsumableApplied;
+            }
+
+            void OnItemMovedToPlayer(ItemUISystem itemUI)
+            {
+                var freeSlotIndex = isSlotEmpty.IndexOf(true);
+                if (freeSlotIndex == -1) return;
+
+                var freeSlot = Slots[freeSlotIndex];
+
+                itemUI.transform.position = freeSlot.transform.position;
+                itemUI.transform.SetParent(freeSlot.transform.parent);
+
+                AddItemToPlayer(itemUI, freeSlotIndex);
+            }
+
+            void OnItemCreated(ItemSystem item)
+            {
+                var freeSlotIndex = isSlotEmpty.IndexOf(true);
+                if (freeSlotIndex == -1) return;
+
+                ItemsUI.Add(
+                    Owner.ItemDropSystem.CreateItemUI(item.Data, freeSlotIndex, Slots[freeSlotIndex].transform, Owner));
+
+                isSlotEmpty[freeSlotIndex] = false;
+                Slots[freeSlotIndex].SetActive(false);
+
+                ItemAddedToPlayer?.Invoke(ItemsUI[ItemsUI.Count - 1]);
+                return;
+
+            }
+
         }
 
-        void OnItemUICreated(ItemUISystem itemUI)
-        {
-            itemUI.BeingDragged += OnItemBeingDragged;
-            itemUI.DragEnd += OnItemDragEnd;
-            itemUI.DoubleClickedInPlayerInventory += OnItemDoubleClicked;
-            ApplyConsumable += itemUI.System.OnConsumableApplied;
-        }
-
-        void OnItemMovedToPlayer(ItemUISystem itemUI)
-        {
-            var freeSlotIndex = isSlotEmpty.IndexOf(true);
-            if (freeSlotIndex == -1) return;
-
-            var freeSlot = Slots[freeSlotIndex];
-
-            itemUI.transform.position = freeSlot.transform.position;
-            itemUI.transform.SetParent(freeSlot.transform.parent);
-
-            AddItemToPlayer(itemUI, freeSlotIndex);
-        }
-
-        void OnItemCreated(ItemSystem item)
-        {
-            var freeSlotIndex = isSlotEmpty.IndexOf(true);
-            if (freeSlotIndex == -1) return;
-
-            ItemsUI.Add(
-                Owner.ItemDropSystem.CreateItemUI(item.Data, freeSlotIndex, Slots[freeSlotIndex].transform, Owner));
-
-            isSlotEmpty[freeSlotIndex] = false;
-            Slots[freeSlotIndex].SetActive(false);
-
-            ItemAddedToPlayer?.Invoke(ItemsUI[ItemsUI.Count - 1]);
-            return;
-
-        }
 
         public void OnItemBeingDragged(ItemDragEventArgs e) => RemoveItemFromPlayer(e.ItemUI);
 

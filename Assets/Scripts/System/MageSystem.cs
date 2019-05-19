@@ -39,22 +39,22 @@ namespace Game.Systems.Mage
                 {
                     ModifyAttributes(e.Data, From.StartingAttribute);
                     e.LeveledUp += OnSpiritLeveledUp;
+                }
 
-                    void OnSpiritLeveledUp(SpiritSystem _) => ModifyAttributes(e.Data, From.PerLevelAttribute);
+                void OnSpiritLeveledUp(SpiritSystem _) => ModifyAttributes(e.Data, From.PerLevelAttribute);
 
-                    void ModifyAttributes(SpiritData spirit, From getFrom)
-                    {
-                        ModifyNumeralAttributes(spirit, getFrom);
+                void ModifyAttributes(SpiritData spirit, From getFrom)
+                {
+                    ModifyNumeralAttributes(spirit, getFrom);
 
-                        Mage.SpiritAttributes.ForEach(mageAttribute =>
-                            ModifyEntityAttribute(
-                                spirit.SpiritAttributes.Find(attribute => attribute.Type == mageAttribute.Type),
-                                mageAttribute,
-                                getFrom));
+                    Mage.SpiritAttributes.ForEach(mageAttribute =>
+                        ModifyEntityAttribute(
+                            spirit.SpiritAttributes.Find(attribute => attribute.Type == mageAttribute.Type),
+                            mageAttribute,
+                            getFrom));
 
-                        Mage.SpiritFlagAttributes.ForEach(mageAttribute =>
-                            spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
-                    }
+                    Mage.SpiritFlagAttributes.ForEach(mageAttribute =>
+                        spirit.FlagAttributes.Find(attribute => mageAttribute.Type == attribute.Type).Value = mageAttribute.Value);
                 }
             }
 

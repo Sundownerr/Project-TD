@@ -26,6 +26,37 @@ namespace Game.Utility
 
             return num.ToString("0.#");
         }
+
+        public static string AttributeToString(this Numeral attribute)
+        {
+            var spirit = GameData.Instance.Player.PlayerInputSystem.ChoosedSpirit.Data;
+
+            var withPercent =
+                attribute == Numeral.ItemDropRate ||
+                attribute == Numeral.ItemQualityRate ||
+                attribute == Numeral.BuffTime ||
+                attribute == Numeral.DebuffTime;
+
+            if (attribute == Numeral.Level)
+                return $"{Uty.KiloFormat((int)spirit.Get(attribute).Sum)}";
+
+            return $"{Uty.KiloFormat(spirit.Get(attribute).Sum)}{(withPercent ? "%" : string.Empty)}";
+        }
+
+        public static string AttributeToString(this Enums.Spirit attribute)
+        {
+            var spirit = GameData.Instance.Player.PlayerInputSystem.ChoosedSpirit.Data;
+
+            var withPercent =
+                attribute == Enums.Spirit.SpellCritChance ||
+                attribute == Enums.Spirit.SpellDamage ||
+                attribute == Enums.Spirit.CritChance ||
+                attribute == Enums.Spirit.ExpRate ||
+                attribute == Enums.Spirit.ResourceRate ||
+                attribute == Enums.Spirit.CritMultiplier;
+
+            return $"{Uty.KiloFormat(spirit.Get(attribute).Sum)}{(withPercent ? "%" : string.Empty)}";
+        }
     }
 
     public static class JsonHelper

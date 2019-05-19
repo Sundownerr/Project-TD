@@ -42,8 +42,6 @@ namespace Game.Systems
         {
             AddToList();
 
-            #region  Helper functions
-
             void AddToList()
             {
                 if (CollideType == CollideWith.Enemies)
@@ -63,8 +61,6 @@ namespace Game.Systems
                     AddEntity<EnemySystem>();
                     AddEntity<SpiritSystem>();
                 }
-
-                #region  Helper functions
 
                 void AddEntity<T>() where T : IVulnerable
                 {
@@ -106,33 +102,33 @@ namespace Game.Systems
 
                     return false;
                 }
-
-                #endregion
             }
-
-            #endregion
         }
 
         void OnTriggerExit(Collider other)
         {
             for (int i = 0; i < EntitySystems.Count; i++)
+            {
                 if (other.gameObject == EntitySystems[i].Prefab)
                 {
                     EntityExit?.Invoke(EntitySystems[i]);
                     EntitySystems.Remove(EntitySystems[i]);
                     Entities.Remove(other.gameObject);
                 }
+            }
         }
 
         void OnTriggerStay(Collider other)
         {
             for (int i = 0; i < EntitySystems.Count; i++)
+            {
                 if (EntitySystems[i] == null || EntitySystems[i].Prefab == null)
                 {
                     EntityExit?.Invoke(EntitySystems[i]);
                     Entities.RemoveAt(i);
                     EntitySystems.RemoveAt(i);
                 }
+            }
         }
 
         void Show(bool show)
