@@ -94,10 +94,13 @@ namespace Game.Managers
             void OnMageSelected(MageData e)
             {
                 if (GameManager.Instance.PreviousGameState == GameState.MainMenu)
+                {
                     OnGameStarted();
-                else
-                if (GameManager.Instance.PreviousGameState == GameState.InLobby)
+                }
+                else if (GameManager.Instance.PreviousGameState == GameState.InLobby)
+                {
                     OnLobbyJoined();
+                }
 
                 MageSelected?.Invoke(e);
             }

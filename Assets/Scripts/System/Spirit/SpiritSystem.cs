@@ -136,6 +136,8 @@ namespace Game.Systems.Spirit
             #endregion
         }
 
+        public bool CheckHaveMana(double requiredAmount) => Data.Get(Enums.Spirit.Mana).Sum >= requiredAmount;
+
         public void UpdateSystem()
         {
             RangeSystem.SetShow();

@@ -1,6 +1,11 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Game.Enums;
 using Game.Systems.Abilities;
 using Game.Systems.Enemy;
+using Game.Systems.Spirit;
+using Game.Systems.Spirit.Internal;
 
 namespace Game.Systems
 {
@@ -16,11 +21,31 @@ namespace Game.Systems
             this.isOwnedByPlayer = isOwnedByPlayer;
         }
 
-        public void Set() { }
+        public void Set()
+        {
+            if (owner is SpiritSystem spirit)
+            {
+                spirit.ShootSystem.Shooting += OnSpiritShooting;
+            }
+
+            void OnSpiritShooting(BulletSystem obj)
+            {
+                owner.AbilitySystems.ForEach(abilitySystem =>
+                {
+                    if (abilitySystem.Ability.IsUsedWhenShoot)
+                    {
+                        abilitySystem.Init();
+                    }
+                });
+            }
+        }
 
         public void UseAbility(int abilityIndex)
         {
-            if (isOwnedByPlayer) return;
+            if (isOwnedByPlayer)
+            {
+                return;
+            }
 
             owner.AbilitySystems[abilityIndex].Init();
         }
@@ -29,44 +54,78 @@ namespace Game.Systems
         {
             var abilitySystems = owner.AbilitySystems;
 
-            if (owner is EnemySystem)          
-                for (int i = 0; i < abilitySystems.Count; i++)
-                    abilitySystems[i].Init();
-
-            if (!isOwnedByPlayer) return;
-
-            for (int i = 0; i < abilitySystems.Count; i++)
+            if (owner is EnemySystem)
             {
-               
-                if (owner.Targets.Count > 0)
-                {              
-                    abilitySystems[i].SetTarget(owner.Targets[0] as ICanReceiveEffects);
-                    Init(abilitySystems[i], CheckTargetInRange(abilitySystems[i].Target));       
-                }
-                else
+                InitEnemyAbilities();
+            }
+            else
+            {
+                if (!isOwnedByPlayer)
                 {
-                    abilitySystems[i].SetTarget(null);      
-                    Init(abilitySystems[i], !abilitySystems[i].CheckAllEffectsEnded());
+                    return;
                 }
 
-                if (abilitySystems[i].IsNeedStack)
-                    CreateStack(i);
+                InitSpiritAbilities();
             }
 
-            for (int i = 0; i < abilityStacks.Count; i++)
-                Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
-
-            #region  Helper functions
-
-            void CreateStack(int index)
+            void InitEnemyAbilities()
             {
-                var stack = new AbilitySystem(abilitySystems[index].Ability, owner);
+                abilitySystems.ForEach(system =>
+                {
+                    if (owner.CheckHaveMana(system.Ability.ManaCost))
+                    {
+                        system.Init();
+                    }
+                });
+            }
 
-                stack.SetTarget(abilitySystems[index].Target);
-                stack.StackReset(abilitySystems[index]);
+            void InitSpiritAbilities()
+            {
+                abilitySystems.ForEach(abilitySystem =>
+                {
+                    if (owner.CheckHaveMana(abilitySystem.Ability.ManaCost))
+                    {
+                        if (!abilitySystem.Ability.IsUsedWhenShoot)
+                        {
+                            if (owner.Targets.Count > 0)
+                            {
+                                abilitySystem.SetTarget(owner.Targets[0] as ICanReceiveEffects);
+                                Init(abilitySystem, CheckTargetInRange(abilitySystem.Target));
+                            }
+                            else
+                            {
+                                abilitySystem.SetTarget(null);
+                                Init(abilitySystem, !abilitySystem.CheckAllEffectsEnded());
+                            }
 
-                abilityStacks.Add(stack);
-                abilitySystems[index].IsNeedStack = false;
+                            if (abilitySystem.IsNeedStack)
+                            {
+                                abilityStacks.Add(CreateStack(abilitySystem));
+                                abilitySystem.IsNeedStack = false;
+                            }
+                        }
+                    }
+                });
+
+                InitStacks();
+
+                void InitStacks()
+                {
+                    for (int i = 0; i < abilityStacks.Count; i++)
+                    {
+                        Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
+                    }
+                }
+            }
+
+            AbilitySystem CreateStack(AbilitySystem baseAbilitySystem)
+            {
+                var stack = new AbilitySystem(baseAbilitySystem.Ability, owner);
+
+                stack.SetTarget(baseAbilitySystem.Target);
+                stack.StackReset(baseAbilitySystem);
+
+                return stack;
             }
 
             bool CheckTargetInRange(ICanReceiveEffects target) =>
@@ -75,13 +134,14 @@ namespace Game.Systems
             void Init(AbilitySystem abilitySystem, bool condition)
             {
                 if (abilitySystem.Target != null && condition)
+                {
                     abilitySystem.Init();
-                else
-                if (abilitySystem.IsStacked && abilitySystem.CheckAllEffectsEnded())
+                }
+                else if (abilitySystem.IsStacked && abilitySystem.CheckAllEffectsEnded())
+                {
                     abilityStacks.Remove(abilitySystem);
+                }
             }
-
-            #endregion
         }
     }
 }

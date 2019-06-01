@@ -75,6 +75,8 @@ namespace Game.Systems.Enemy
             }
         }
 
+        public bool CheckHaveMana(double requiredAmount) => Data.Get(Enums.Enemy.Mana).Sum >= requiredAmount;
+
         public void UpdateSystem()
         {
             HealthSystem?.UpdateSystem();

@@ -25,7 +25,7 @@ namespace Game.Enums
         InLobby,
         SelectingMage
     }
-    
+
     public enum CollideWith
     {
         Enemies,
@@ -117,7 +117,9 @@ namespace Game.Enums
         DefaultMoveSpeed,
         MoveSpeed,
         Health,
-        MaxHealth
+        MaxHealth,
+        Mana,
+        ManaRegen
     }
 
     [Serializable]

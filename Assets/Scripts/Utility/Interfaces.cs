@@ -32,6 +32,8 @@ namespace Game
     {
         [SerializeField] AbilityControlSystem AbilityControlSystem { get; }
         [SerializeField] List<AbilitySystem> AbilitySystems { get; }
+
+        bool CheckHaveMana(double requiredAmount);
     }
 
     public interface ITraitSystem : IEntitySystem, ICombatComponent
@@ -68,20 +70,23 @@ namespace Game
         event Action<IHealthComponent> Died;
     }
 
-    public interface ISpiritAttributes
+    public interface INumeralAttributes
     {
         List<NumeralAttribute> NumeralAttributes { get; }
+    }
+
+    public interface ISpiritAttributes : INumeralAttributes
+    {
         List<SpiritAttribute> SpiritAttributes { get; }
         List<SpiritFlagAttribute> FlagAttributes { get; }
     }
 
-    public interface IEnemyAttributes
+    public interface IEnemyAttributes : INumeralAttributes
     {
-        List<NumeralAttribute> NumeralAttributes { get; }
         List<EnemyAttribute> EnemyAttributes { get; }
     }
 
-    public interface IAbilityComponent
+    public interface IAbilityComponent : INumeralAttributes
     {
         [SerializeField] List<Ability> Abilities { get; }
     }
@@ -106,7 +111,6 @@ namespace Game
         void Apply(IPrefabComponent entity);
         void Set();
     }
-
 
     public interface ITrait
     {

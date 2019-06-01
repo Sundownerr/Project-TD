@@ -17,6 +17,7 @@ namespace Game.Data.Abilities
     [Serializable]
     public class Ability : Entity
     {
+        [SerializeField] bool isUsedWhenShoot;
         [SerializeField] float cooldown;
         [SerializeField] float triggerChance;
         [SerializeField] int manaCost;
@@ -26,6 +27,7 @@ namespace Game.Data.Abilities
         public float TriggerChance { get => triggerChance; set => triggerChance = value; }
         public float Cooldown { get => cooldown; set => cooldown = value; }
         public List<Effect> Effects { get => effects; set => effects = value; }
+        public bool IsUsedWhenShoot { get => isUsedWhenShoot; set => isUsedWhenShoot = value; }
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]
