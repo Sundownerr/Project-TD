@@ -18,13 +18,12 @@ namespace Game.Systems.Spirit.Internal
         public bool isHaveChainTargets;
 
         List<BulletSystem> bullets = new List<BulletSystem>();
-        List<GameObject> bulletGOs = new List<GameObject>();
         List<float> removeTimers = new List<float>();
         SpiritSystem ownerSpirit;
         ObjectPool bulletPool;
         WaitForSeconds delayBetweenAttacks;
         bool canShoot = true;
-        double previousAttackCooldown;
+        double currentAttackCooldown;
         int shotCount;
 
         public ShootSystem(SpiritSystem spirit) => ownerSpirit = spirit;
@@ -40,37 +39,41 @@ namespace Game.Systems.Spirit.Internal
         {
             if (canShoot)
             {
-                var attackCooldown = CalculateAttackCooldown();
+                var newAttackCooldown = GetAttackCooldown();
 
-                if (previousAttackCooldown != attackCooldown)
+                if (currentAttackCooldown != newAttackCooldown)
                 {
-                    previousAttackCooldown = attackCooldown;
-                    delayBetweenAttacks = new WaitForSeconds((float)attackCooldown);
+                    currentAttackCooldown = newAttackCooldown;
+                    delayBetweenAttacks = new WaitForSeconds((float)newAttackCooldown);
                 }
 
                 canShoot = false;
                 ShotBullet();
-                GameLoop.Instance.StartCoroutine(AttackCooldown());
+                GameLoop.Instance.StartCoroutine(CooldownAttack());
             }
 
             Shoot();
 
             for (int i = 0; i < removeTimers.Count; i++)
+            {
                 if (removeTimers[i] > 0)
+                {
                     removeTimers[i] -= Time.deltaTime;
+                }
                 else
                 {
                     RemoveBullet(bullets[0]);
                     removeTimers.RemoveAt(i);
                 }
+            }
 
-            IEnumerator AttackCooldown()
+            IEnumerator CooldownAttack()
             {
                 yield return delayBetweenAttacks;
                 canShoot = true;
             }
 
-            double CalculateAttackCooldown()
+            double GetAttackCooldown()
             {
                 var attackDelay = ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Sum;
                 var attackSpeed = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Sum;
@@ -87,41 +90,43 @@ namespace Game.Systems.Spirit.Internal
                 PrepareToShoot?.Invoke();
 
                 for (int i = 0; i < shotCount; i++)
-                    CreateBullet(ownerSpirit.Targets[i]);
-
-                void CreateBullet(IHealthComponent target)
                 {
-                    var bulletGO = bulletPool.PopObject();
+                    bullets.Add(CreateBullet(ownerSpirit.Targets[i]));
+                }
 
-                    bulletGOs.Add(bulletGO);
-                    bullets.Add(new BulletSystem(bulletGO));
+                BulletSystem CreateBullet(IHealthComponent target)
+                {
+                    var newBullet = new BulletSystem(bulletPool.PopObject());
 
-                    SetBulletData(bullets[bullets.Count - 1]);
+                    SetBulletData();
 
-                    Shooting?.Invoke(bullets[bullets.Count - 1]);
-                    bulletGOs[bulletGOs.Count - 1].SetActive(true);
+                    Shooting?.Invoke(newBullet);
+                    newBullet.Prefab.SetActive(true);
 
-                    void SetBulletData(BulletSystem bullet)
+                    return newBullet;
+
+                    void SetBulletData()
                     {
-                        bulletGO.transform.position = ownerSpirit.ShootPoint.position;
-                        bulletGO.transform.rotation = ownerSpirit.MovingPart.rotation;
-                        bullet.Show(true);
-                        bullet.IsTargetReached = false;
+                        newBullet.Prefab.transform.position = ownerSpirit.ShootPoint.position;
+                        newBullet.Prefab.transform.rotation = ownerSpirit.MovingPart.rotation;
+                        newBullet.IsTargetReached = false;
 
                         if (target != null)
-                            bullet.Target = target;
+                        {
+                            newBullet.Target = target;
+                        }
                         else
-                            RemoveBullet(bullet);
+                        {
+                            RemoveBullet(newBullet);
+                        }
                     }
                 }
             }
 
             void RemoveBullet(BulletSystem bullet)
             {
-                bullet.Show(false);
                 bullet.Prefab.SetActive(false);
                 bullets.Remove(bullet);
-                bulletGOs.Remove(bullet.Prefab);
             }
         }
 
@@ -130,8 +135,7 @@ namespace Game.Systems.Spirit.Internal
             if (!bullet.IsTargetReached)
             {
                 bullet.IsTargetReached = true;
-                bullet.Show(false);
-                removeTimers.Add(bullets[bulletGOs.Count - 1].Lifetime);
+                removeTimers.Add(bullet.Lifetime);
             }
         }
 
@@ -149,25 +153,15 @@ namespace Game.Systems.Spirit.Internal
                     }
                     else
                     {
-                        var offset = new Vector3(0, 40, 0);
-                        var distance = bullet.Prefab.transform.position.GetDistanceTo(bullet.Target.Prefab.transform.position + offset);
-
-                        if (distance < 30)
+                        if (bullet.DistanceToTarget > 30)
                         {
-                            BulletHit?.Invoke(bullet);
-                            return;
+                            bullet.Update();
                         }
                         else
                         {
-                            var randVec = new Vector3(
-                                UnityEngine.Random.Range(-10, 10),
-                                UnityEngine.Random.Range(-10, 10),
-                                UnityEngine.Random.Range(-10, 10));
-
-                            var distanceModifier = Mathf.Lerp(1f, distance, Time.deltaTime / 12);
-
-                            bullet.Prefab.transform.LookAt(bullet.Target.Prefab.transform.position + offset);
-                            bullet.Prefab.transform.Translate(Vector3.forward * bullet.Speed * distanceModifier + randVec, Space.Self);
+                            SetTargetReached(bullet);
+                            BulletHit?.Invoke(bullet);
+                            return;
                         }
                     }
                 }

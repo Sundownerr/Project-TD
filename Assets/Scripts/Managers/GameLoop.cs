@@ -11,6 +11,7 @@ namespace Game.Managers
     public class GameLoop : SingletonDDOL<GameLoop>
     {
         PlayerSystem player;
+        bool isPlayerCreated;
 
         void Start()
         {
@@ -26,18 +27,25 @@ namespace Game.Managers
                 if (!inGame)
                 {
                     player = null;
+                    isPlayerCreated = false;
                 }
             }
 
             void OnPlayerDataSet(PlayerSystem e)
             {
                 player = e;
+                isPlayerCreated = true;
             }
         }
 
         void Update()
         {
-            player?.UpdateSystem();
+            if (!isPlayerCreated)
+            {
+                return;
+            }
+            
+            player.UpdateSystem();
         }
     }
 }

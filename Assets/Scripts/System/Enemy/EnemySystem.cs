@@ -84,7 +84,7 @@ namespace Game.Systems.Enemy
 
             if (IsOn)
             {
-                var waypointReached = Prefab.transform.position.GetDistanceTo(waypoints[WaypointIndex]) < 30;
+                var waypointReached = Prefab.GetDistanceTo(waypoints[WaypointIndex]) < 30;
 
                 if (WaypointIndex < waypoints.Length - 1)
                 {

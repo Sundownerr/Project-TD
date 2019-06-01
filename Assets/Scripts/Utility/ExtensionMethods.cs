@@ -34,6 +34,15 @@ public static class Ext
         return distance;
     }
 
+    public static float GetDistanceTo(this GameObject entityFrom, GameObject entityTo) =>
+        entityFrom.transform.position.GetDistanceTo(entityTo.transform.position);
+
+    public static float GetDistanceTo(this Vector3 positionFrom, GameObject entityTo) =>
+        positionFrom.GetDistanceTo(entityTo.transform.position);
+
+    public static float GetDistanceTo(this GameObject entityFrom, Vector3 positionTo) =>
+       entityFrom.transform.position.GetDistanceTo(positionTo);
+
     ///<summary>
     /// Return percernt of value
     ///</summary>

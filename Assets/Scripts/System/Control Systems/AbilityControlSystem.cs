@@ -34,6 +34,7 @@ namespace Game.Systems
                 {
                     if (abilitySystem.Ability.IsUsedWhenShoot)
                     {
+                        abilitySystem.SetTarget(owner.Targets[0] as ICanReceiveEffects);
                         abilitySystem.Init();
                     }
                 });

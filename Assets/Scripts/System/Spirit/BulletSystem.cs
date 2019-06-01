@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Game.Utility;
 
 namespace Game.Systems.Spirit.Internal
 {
@@ -9,15 +10,30 @@ namespace Game.Systems.Spirit.Internal
 
         public float Lifetime { get => lifetime; set => lifetime = value >= 0 ? value : 0; }
         public float Speed { get => speed; set => speed = value >= 0 ? value : 0; }
-        public bool IsTargetReached { get; set; }
-        public GameObject Prefab { get; set; }
 
-        public IPrefabComponent Owner { get ; set ; }
+        public GameObject Prefab { get; set; }
+        public float DistanceToTarget => Prefab.GetDistanceTo(Target.Prefab);
+
+        bool isTargetReached;
+        public bool IsTargetReached
+        {
+            get => isTargetReached;
+            set
+            {
+                isTargetReached = value;
+                Show(!value);
+            }
+        }
+
+        public IPrefabComponent Owner { get; set; }
 
         ParticleSystem.EmissionModule emissionModule;
         ParticleSystem[] particleSystems;
         int remainingBounceCount;
-        float lifetime, speed;
+        float lifetime;
+        float speed;
+        float defaultSpeed;
+
 
         public BulletSystem(GameObject prefab)
         {
@@ -25,11 +41,27 @@ namespace Game.Systems.Spirit.Internal
             particleSystems = prefab.GetComponentsInChildren<ParticleSystem>(true);
             Prefab.layer = 13;
             Speed = 10f;
-           
+            defaultSpeed = Speed;
+
             Lifetime = particleSystems[0].main.startLifetime.constant;
         }
 
-        public void Show(bool enabled)
+        public void Update()
+        {
+            Prefab.transform.LookAt(Target.Prefab.transform);
+            Prefab.transform.Translate(Prefab.transform.forward * Speed, Space.World);
+
+            if (!IsTargetReached)
+            {
+                Speed += 0.5f;
+            }
+            else
+            {
+                Speed = defaultSpeed;
+            }
+        }
+
+         void Show(bool enabled)
         {
             for (int i = 0; i < particleSystems.Length; i++)
             {

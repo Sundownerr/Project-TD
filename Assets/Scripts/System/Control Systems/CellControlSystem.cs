@@ -98,7 +98,7 @@ namespace Game.Systems
                         for (int i = 0; i < Cells.Count; i++)
                         {
                             var color = Cells[i].Renderer.material.color;
-                            var distance = hit.point.GetDistanceTo(Cells[i].transform.position);
+                            var distance = hit.point.GetDistanceTo(Cells[i].gameObject);
                             var alpha = Mathf.Clamp((100 - distance) * 0.01f, 0, 0.2f);
                             var notChoosedColor = new Color(color.r, color.g, color.b, Mathf.Lerp(color.a, alpha, Time.deltaTime * 6));
 
