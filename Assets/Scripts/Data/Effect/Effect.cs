@@ -9,7 +9,7 @@ using UnityEditor;
 using NaughtyAttributes;
 #endif
 
-namespace Game.Data.Effects
+namespace Game.Data
 {
     [Serializable]
     public abstract class Effect : Entity
@@ -22,7 +22,7 @@ namespace Game.Data.Effects
 #endif
         [SerializeField] int maxStackCount;
 
-        public abstract EffectSystem EffectSystem { get; }
+        public abstract Systems.Effect EffectSystem { get; }
         public float NextInterval { get => nextInterval; set => nextInterval = value; }
         public float Duration { get => duration; set => duration = value; }
         public int MaxStackCount { get => maxStackCount; set => maxStackCount = value; }

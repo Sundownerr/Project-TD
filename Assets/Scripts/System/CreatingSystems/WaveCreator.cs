@@ -7,14 +7,14 @@ using Game.Enums;
 using Game.Utility;
 using Game.Managers;
 using Game.Data.Traits;
-using Game.Data.Enemy;
-using Game.Data.Enemy.Internal;
+using Game.Data.EnemyEntity;
+using Game.Data.EnemyEntity.Internal;
 using Game.Data.Abilities;
 using Game.Data.NetworkRequests;
 
-namespace Game.Systems
+namespace Game.Systems.Waves
 {
-    public static class WaveCreatingSystem
+    public static class CreatingSystem
     {
         public static Queue<Wave> GenerateWaves(int waveAmount)
         {
@@ -54,8 +54,8 @@ namespace Game.Systems
 
             return generatedWaves;
         }
-
-        static EnemyData CreateEnemyData(EnemyData choosedData, int waveNumber, List<Ability> abilities, List<Trait> traits, ArmorType armor)
+ 
+        static Data.EnemyEntity.Enemy CreateEnemyData(Data.EnemyEntity.Enemy choosedData, int waveNumber, List<Ability> abilities, List<Trait> traits, ArmorType armor)
         {
             var newData = U.Instantiate(choosedData);
             newData.Index = choosedData.Index;
@@ -140,7 +140,7 @@ namespace Game.Systems
             var waveAbilities = GetAbilitiesByID();
             var armor = (ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(networkWaveData.ArmorIndex);
 
-            wave.EnemyTypes = new List<EnemyData>();
+            wave.EnemyTypes = new List<Data.EnemyEntity.Enemy>();
 
             networkWaveData.EnemyIndexes.ForEach(index =>
             {  
@@ -260,9 +260,9 @@ namespace Game.Systems
             Wave GetFittingEnemies()
             {
                 var sortedEnemies = ScriptableObject.CreateInstance<Wave>();
-                sortedEnemies.EnemyTypes = new List<EnemyData>();
+                sortedEnemies.EnemyTypes = new List<Data.EnemyEntity.Enemy>();
 
-                var choosedEnemies = new EnemyData[]
+                var choosedEnemies = new Data.EnemyEntity.Enemy[]
                 {
                     ChooseEnemyDataFrom(EnemyType.Small),
                     ChooseEnemyDataFrom(EnemyType.Boss),
@@ -277,7 +277,7 @@ namespace Game.Systems
 
                 return sortedEnemies;
 
-                EnemyData GetEnemyDataOfType(EnemyType type)
+                Data.EnemyEntity.Enemy GetEnemyDataOfType(EnemyType type)
                 {
                     for (int i = 0; i < choosedEnemies.Length; i++)
                     {
@@ -289,9 +289,9 @@ namespace Game.Systems
                     return null;
                 }
 
-                EnemyData ChooseEnemyDataFrom(EnemyType enemyType)
+                Data.EnemyEntity.Enemy ChooseEnemyDataFrom(EnemyType enemyType)
                 {
-                    var tempChoosedEnemies = new List<EnemyData>();
+                    var tempChoosedEnemies = new List<Data.EnemyEntity.Enemy>();
 
                     for (int i = 0; i < fittingEnemies.EnemyTypes.Count; i++)
                     {

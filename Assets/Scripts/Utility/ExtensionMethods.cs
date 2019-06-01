@@ -10,7 +10,7 @@ using Game.Data.Attributes;
 using Game.Data.NetworkRequests;
 using Game.Utility;
 using Game.Managers;
-using Game.Data.Enemy;
+using Game.Data.EnemyEntity;
 using Game.Systems.Cells;
 
 public static class Ext
@@ -99,11 +99,11 @@ public static class Ext
 
     public static List<EnemyAttribute> CreateAttributeList_E()
     {
-        var enums = Enum.GetValues(typeof(Enemy));
+        var enums = Enum.GetValues(typeof(Game.Enums.Enemy));
         var attributeList = new List<EnemyAttribute>();
 
         for (int i = 0; i < enums.Length; i++)
-            attributeList.Add(new EnemyAttribute() { Type = (Enemy)enums.GetValue(i), Value = 0, AppliedValue = 0 });
+            attributeList.Add(new EnemyAttribute() { Type = (Game.Enums.Enemy)enums.GetValue(i), Value = 0, AppliedValue = 0 });
         return attributeList;
     }
 
@@ -139,7 +139,7 @@ public static class Ext
     public static EntityAttribute<Game.Enums.SpiritFlag, bool> Get(this ISpiritAttributes entity, SpiritFlag type) =>
         entity.FlagAttributes.Find(x => x.Type == type);
 
-    public static EntityAttribute_A<Game.Enums.Enemy, double> Get(this IEnemyAttributes entity, Enemy type) =>
+    public static EntityAttribute_A<Game.Enums.Enemy, double> Get(this IEnemyAttributes entity, Game.Enums.Enemy type) =>
         entity.EnemyAttributes.Find(x => x.Type == type);
 
     public static List<NumeralAttribute> CopyFrom(this List<NumeralAttribute> that, List<NumeralAttribute> other)

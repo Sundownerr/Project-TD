@@ -5,17 +5,17 @@ using U = UnityEngine.Object;
 using Game.Enums;
 using Game.Systems.Spirit.Internal;
 using Game.Systems.Enemy;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 using Game.Data.Effects;
 using Game.Systems.Abilities;
 using Game.Utility.Creator;
 
 namespace Game.Systems.Spirit
 {
-    public class SpiritSystem : IAbilitiySystem, ITraitSystem, IDamageDealer, ICanReceiveEffects, IDisposable
+    public class SpiritSystem : IAbilitiyComponent, ITraitComponent, IDamageDealer, IAppliedEffectsComponent, IDisposable
     {
-        public event Action<Effect> EffectApplied;
-        public event Action<Effect> EffectRemoved;
+        public event Action<Data.Effect> EffectApplied;
+        public event Action<Data.Effect> EffectRemoved;
         public event Action<SpiritSystem> LeveledUp;
         public event Action StatsChanged;
 
@@ -28,15 +28,13 @@ namespace Game.Systems.Spirit
         public ShootSystem ShootSystem { get; private set; }
         public SpiritData Data { get => dataSystem.CurrentData; set => dataSystem.CurrentData = value; }
         public Renderer[] Renderers { get; private set; }
-        public AbilityControlSystem AbilityControlSystem { get; private set; }
-        public TraitControlSystem TraitControlSystem { get; private set; }
-
+        public Abilities.ControlSystem AbilityControlSystem { get; private set; }
+        public Traits.ControlSystem TraitControlSystem { get; private set; }
+      
         public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; private set; }
         public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
-        public List<ITraitHandler> TraitSystems { get; private set; } = new List<ITraitHandler>();
-        public List<AbilitySystem> AbilitySystems { get; private set; } = new List<AbilitySystem>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
         public bool IsOwnedByLocalPlayer { get; private set; } = true;
 
@@ -50,9 +48,9 @@ namespace Game.Systems.Spirit
             ShootPoint = MovingPart.GetChild(0).GetChild(0);
 
             dataSystem = new SpiritDataSystem(this);
-            TraitControlSystem = new TraitControlSystem(this);
+            TraitControlSystem = new Traits.ControlSystem(this);
             ShootSystem = new ShootSystem(this);
-            AbilityControlSystem = new AbilityControlSystem(this, isOwnedByPlayer);
+            AbilityControlSystem = new Abilities.ControlSystem(this, isOwnedByPlayer);
             AppliedEffectSystem = new AppliedEffectSystem();
             Prefab.layer = 14;
             IsOwnedByLocalPlayer = isOwnedByPlayer;
@@ -71,16 +69,19 @@ namespace Game.Systems.Spirit
             if (!Data.Get(Enums.SpiritFlag.IsGradeSpirit).Value)
             {
                 dataSystem.Set();
-                dataSystem.LeveledUp += (spirit) => LeveledUp?.Invoke(this);
-                dataSystem.StatsChanged += () => StatsChanged?.Invoke();
+                dataSystem.LeveledUp += OnLeveledUp;
+                dataSystem.StatsChanged += OnStatsChanged;
             }
 
-            SetTraitSystems();
-            SetAbilitySystems();
+            TraitControlSystem.Set(Data.Traits);
+            AbilityControlSystem.Set(Data.Abilities);
+            
             SetShootSystem();
             SetRangeSystem();
 
-            #region Helper functions
+            void OnLeveledUp(SpiritSystem obj) => LeveledUp?.Invoke(this);
+
+            void OnStatsChanged() => StatsChanged?.Invoke();
 
             void SetRangeSystem()
             {
@@ -107,23 +108,6 @@ namespace Game.Systems.Spirit
                 void OnEntityExitRange(IVulnerable e) => Targets.Remove(e as IHealthComponent);
             }
 
-            void SetTraitSystems()
-            {
-                Data.Traits?.ForEach(trait =>
-                {
-                    TraitSystems.Add(trait.GetSystem(this));
-                    TraitSystems[TraitSystems.Count - 1].Set();
-                });
-
-                TraitControlSystem.Set();
-            }
-
-            void SetAbilitySystems()
-            {
-                Data.Abilities?.ForEach(ability => AbilitySystems.Add(new AbilitySystem(ability, this)));
-
-                AbilityControlSystem.Set();
-            }
 
             void SetShootSystem()
             {
@@ -132,8 +116,6 @@ namespace Game.Systems.Spirit
                 bullet.SetActive(false);
                 ShootSystem.Set(bullet);
             }
-
-            #endregion
         }
 
         public bool CheckHaveMana(double requiredAmount) => Data.Get(Enums.Spirit.Mana).Sum >= requiredAmount;
@@ -188,19 +170,19 @@ namespace Game.Systems.Spirit
 
         public void AddExp(int amount) => dataSystem.AddExp(amount);
 
-        public void AddEffect(Effect effect)
+        public void AddEffect(Data.Effect effect)
         {
             AppliedEffectSystem.AddEffect(effect);
             EffectApplied?.Invoke(effect);
         }
 
-        public void RemoveEffect(Effect effect)
+        public void RemoveEffect(Data.Effect effect)
         {
             EffectRemoved?.Invoke(effect);
             AppliedEffectSystem.RemoveEffect(effect);
         }
 
-        public int CountOf(Effect effect) => AppliedEffectSystem.CountOf(effect);
+        public int CountOf(Data.Effect effect) => AppliedEffectSystem.CountOf(effect);
 
         #region IDisposable Support
         bool disposedValue = false; // To detect redundant calls

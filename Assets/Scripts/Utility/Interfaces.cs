@@ -28,18 +28,16 @@ namespace Game
         [SerializeField] IEntitySystem Owner { get; }
     }
 
-    public interface IAbilitiySystem : IEntitySystem, ICombatComponent
+    public interface IAbilitiyComponent : IEntitySystem, ICombatComponent
     {
-        [SerializeField] AbilityControlSystem AbilityControlSystem { get; }
-        [SerializeField] List<AbilitySystem> AbilitySystems { get; }
-
+        [SerializeField] Systems.Abilities.ControlSystem AbilityControlSystem { get; }
+     
         bool CheckHaveMana(double requiredAmount);
     }
 
-    public interface ITraitSystem : IEntitySystem, ICombatComponent
+    public interface ITraitComponent : IEntitySystem, ICombatComponent
     {
-        [SerializeField] TraitControlSystem TraitControlSystem { get; }
-        [SerializeField] List<ITraitHandler> TraitSystems { get; }
+        [SerializeField] Systems.Traits.ControlSystem TraitControlSystem { get; }
     }
 
     public interface ICombatComponent : IPrefabComponent
@@ -52,14 +50,14 @@ namespace Game
         [SerializeField] bool IsOn { get; set; }
     }
 
-    public interface ICanReceiveEffects : IPrefabComponent, IVulnerable
+    public interface IAppliedEffectsComponent : IPrefabComponent, IVulnerable
     {
         AppliedEffectSystem AppliedEffectSystem { get; }
-        void AddEffect(Effect Effect);
-        void RemoveEffect(Effect Effect);
-        int CountOf(Effect Effect);
-        event Action<Effect> EffectApplied;
-        event Action<Effect> EffectRemoved;
+        void AddEffect(Data.Effect Effect);
+        void RemoveEffect(Data.Effect Effect);
+        int CountOf(Data.Effect Effect);
+        event Action<Data.Effect> EffectApplied;
+        event Action<Data.Effect> EffectRemoved;
     }
 
     public interface IHealthComponent : IPrefabComponent, IVulnerable
@@ -86,12 +84,12 @@ namespace Game
         List<EnemyAttribute> EnemyAttributes { get; }
     }
 
-    public interface IAbilityComponent : INumeralAttributes
+    public interface IAbilityData : INumeralAttributes
     {
         [SerializeField] List<Ability> Abilities { get; }
     }
 
-    public interface ITraitComponent
+    public interface ITraitData
     {
         [SerializeField] List<Trait> Traits { get; }
     }
@@ -104,9 +102,9 @@ namespace Game
     public interface IDamageDealer : IEntitySystem
     { }
 
-    public interface ITraitHandler
+    public interface ITraitSystem
     {
-        [SerializeField] ITraitSystem Owner { get; }
+        [SerializeField] ITraitComponent Owner { get; }
         void IncreaseStatsPerLevel();
         void Apply(IPrefabComponent entity);
         void Set();
@@ -114,7 +112,7 @@ namespace Game
 
     public interface ITrait
     {
-        ITraitHandler GetTraitSystem(ITraitSystem owner);
+        ITraitSystem GetTraitSystem(ITraitComponent owner);
     }
 
     public interface IHaveDescription : IPointerEnterHandler, IPointerExitHandler

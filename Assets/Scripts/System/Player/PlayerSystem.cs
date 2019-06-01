@@ -10,8 +10,9 @@ using Game.Systems.Spirit;
 using Game.Systems.Enemy;
 using Game.Data.Mage;
 using Game.Systems.Mage;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 using Game.Data.Player;
+using Game.Systems.Waves;
 
 namespace Game.Systems
 {
@@ -25,12 +26,12 @@ namespace Game.Systems
     {
         public IEntitySystem Owner { get; set; }
         public PlayerInputSystem PlayerInputSystem { get; set; }
-        public CellControlSystem CellControlSystem { get; private set; }
-        public EnemyControlSystem EnemyControlSystem { get; private set; }
+        public Cells.ControlSystem CellControlSystem { get; private set; }
+        public Enemy.ControlSystem EnemyControlSystem { get; private set; }
         public EnemyUISystem EnemyUISystem { get; private set; }
-        public SpiritPlaceSystem SpiritPlaceSystem { get; set; }
-        public SpiritControlSystem SpiritControlSystem { get; private set; }
-        public SpiritCreatingSystem SpiritCreatingSystem { get; private set; }
+        public Spirit.PlaceSystem SpiritPlaceSystem { get; set; }
+        public Spirit.ControlSystem SpiritControlSystem { get; private set; }
+        public Spirit.CreatingSystem SpiritCreatingSystem { get; private set; }
         public SpiritUISystem SpiritUISystem { get; private set; }
         public ElementSystem ElementSystem { get; private set; }
         public ElementUISystem ElementUISystem { get; private set; }
@@ -78,11 +79,11 @@ namespace Game.Systems
             Data.System = this;
 
             MageHeroSystem = new MageSystem(this, mage);
-            EnemyControlSystem = new EnemyControlSystem(this);
-            SpiritControlSystem = new SpiritControlSystem(this);
-            CellControlSystem = new CellControlSystem(this);
-            SpiritPlaceSystem = new SpiritPlaceSystem(this);
-            SpiritCreatingSystem = new SpiritCreatingSystem(this);
+            EnemyControlSystem = new Enemy.ControlSystem(this);
+            SpiritControlSystem = new Spirit.ControlSystem(this);
+            CellControlSystem = new Cells.ControlSystem(this);
+            SpiritPlaceSystem = new PlaceSystem(this);
+            SpiritCreatingSystem = new Spirit.CreatingSystem(this);
             ResourceSystem = new ResourceSystem(this);
             ItemDropSystem = new ItemDropSystem(this);
             WaveSystem = new WaveSystem(this);

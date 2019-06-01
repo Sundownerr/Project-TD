@@ -8,8 +8,8 @@ using Game.Managers;
 using NetworkPlayer = Game.Systems.Network.NetworkPlayer;
 using Game.Systems.Spirit;
 using Game.Systems.Enemy;
-using Game.Data.Enemy;
-using Game.Data.Spirit;
+using Game.Data.EnemyEntity;
+using Game.Data.SpiritEntity;
 using Game.Systems.Cells;
 
 namespace Game.Utility

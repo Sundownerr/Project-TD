@@ -8,19 +8,19 @@ using Game.Enums;
 using Game.Data.Databases;
 using Game.Data.Traits;
 using Game.Data.Attributes;
-using Game.Data.Enemy.Internal;
+using Game.Data.EnemyEntity.Internal;
 using Game.Data.Abilities;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Game.Data.Enemy
+namespace Game.Data.EnemyEntity
 {
     [CreateAssetMenu(fileName = "Enemy", menuName = "Data/Enemy New")]
 
     [Serializable]
-    public class EnemyData : Entity, IEnemyAttributes, IAbilityComponent, ITraitComponent, IPrefabComponent
+    public class Enemy : Entity, IEnemyAttributes, IAbilityData, ITraitData, IPrefabComponent
     {
         [SerializeField, ShowAssetPreview()] GameObject prefab;
         [SerializeField] int waveLevel;

@@ -2,15 +2,15 @@
 using Game.Enums;
 using Game.Managers;
 
-namespace Game.Systems
+namespace Game.Systems.Spirit
 {
-    public class SpiritCreatingSystem
+    public class CreatingSystem
     {
         public event Action AddedNewAvailableSpirit;
 
         public PlayerSystem Owner { get; set; }
 
-        public SpiritCreatingSystem(PlayerSystem player)
+        public CreatingSystem(PlayerSystem player)
         {
             Owner = player;
         }

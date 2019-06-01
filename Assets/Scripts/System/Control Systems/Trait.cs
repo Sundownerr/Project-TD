@@ -3,22 +3,30 @@ using Game.Systems.Traits;
 using Game.Systems.Spirit;
 using Game.Systems.Spirit.Internal;
 using Game.Data.Traits;
+using System.Collections.Generic;
 
-namespace Game.Systems
+namespace Game.Systems.Traits
 {
-    public class TraitControlSystem
+    public class ControlSystem
     {
         public bool IsHaveChainTargets { get; set; }
+        List<ITraitSystem> traitSystems = new List<ITraitSystem>();
 
-        ITraitSystem owner;
+        ITraitComponent owner;
 
-        public TraitControlSystem(ITraitSystem owner)
+        public ControlSystem(ITraitComponent owner)
         {
             this.owner = owner;
         }
 
-        public void Set()
+        public void Set(List<Trait> traits)
         {
+            traits?.ForEach(trait =>
+            {
+                traitSystems.Add(trait.GetSystem(owner));
+                traitSystems[traitSystems.Count - 1].Set();
+            });
+
             if (owner is SpiritSystem spirit)
             {
                 spirit.ShootSystem.BulletHit += OnBulletHit;
@@ -30,12 +38,12 @@ namespace Game.Systems
                     var bulletTraitCount = 0;
                     var isHaveChainShot = false;
 
-                    for (int i = 0; i < spirit.TraitSystems.Count; i++)
+                    for (int i = 0; i < traitSystems.Count; i++)
                     {
                         bulletTraitCount++;
-                        spirit.TraitSystems[i].Apply(bullet);
+                        traitSystems[i].Apply(bullet);
 
-                        if (spirit.TraitSystems[i] is ChainshotSystem)
+                        if (traitSystems[i] is Traits.Chainshot)
                         {
                             isHaveChainShot = true;
                         }
@@ -63,11 +71,11 @@ namespace Game.Systems
                 {
                     spirit.ShootSystem.ShotCount = 1;
 
-                    var multishotTrait = spirit.Data.Traits.Find(trait => trait is Multishot) as Multishot;
+                    var multishotTrait = spirit.Data.Traits.Find(trait => trait is Data.Traits.Multishot);
 
                     if (multishotTrait != null)
                     {
-                        var requiredShotCount = 1 + multishotTrait.Count;
+                        var requiredShotCount = 1 + (multishotTrait as Data.Traits.Multishot).Count;
 
                         spirit.ShootSystem.ShotCount = spirit.Targets.Count >= requiredShotCount ?
                             requiredShotCount :
@@ -77,7 +85,7 @@ namespace Game.Systems
 
                 void OnShooting(BulletSystem bullet)
                 {
-                    var chainshotTrait = spirit.Data.Traits.Find(trait => trait is Chainshot) as Chainshot;
+                    var chainshotTrait = spirit.Data.Traits.Find(trait => trait is Data.Traits.Chainshot) as Data.Traits.Chainshot;
 
                     if (chainshotTrait != null)
                     {
@@ -87,6 +95,6 @@ namespace Game.Systems
             }
         }
 
-        public void IncreaseStatsPerLevel() => owner.TraitSystems.ForEach(traitSystem => traitSystem.IncreaseStatsPerLevel());
+        public void IncreaseStatsPerLevel() => traitSystems.ForEach(traitSystem => traitSystem.IncreaseStatsPerLevel());
     }
 }

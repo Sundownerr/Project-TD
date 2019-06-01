@@ -1,28 +1,33 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Game.Enums;
 using Game.Systems.Abilities;
 using Game.Systems.Enemy;
 using Game.Systems.Spirit;
 using Game.Systems.Spirit.Internal;
+using Game.Data.Abilities;
+using System;
 
-namespace Game.Systems
+namespace Game.Systems.Abilities
 {
-    public class AbilityControlSystem
+    public class ControlSystem
     {
-        IAbilitiySystem owner;
-        List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
-        bool isAllEffectsEnded, isOwnedByPlayer;
+        public event Action<AbilitySystem> AbilityUsed;
 
-        public AbilityControlSystem(IAbilitiySystem owner, bool isOwnedByPlayer)
+        List<AbilitySystem> abilityStacks = new List<AbilitySystem>();
+        List<AbilitySystem> abilitySystems = new List<AbilitySystem>();
+        IAbilitiyComponent owner;
+        bool isAllEffectsEnded;
+        bool isOwnedByPlayer;
+
+        public ControlSystem(IAbilitiyComponent owner, bool isOwnedByPlayer)
         {
-            this.owner = owner;
             this.isOwnedByPlayer = isOwnedByPlayer;
+            this.owner = owner;
         }
 
-        public void Set()
+        public void Set(List<Ability> abilities)
         {
+            abilities?.ForEach(ability => abilitySystems.Add(new AbilitySystem(ability, owner)));
+
             if (owner is SpiritSystem spirit)
             {
                 spirit.ShootSystem.Shooting += OnSpiritShooting;
@@ -30,12 +35,13 @@ namespace Game.Systems
 
             void OnSpiritShooting(BulletSystem obj)
             {
-                owner.AbilitySystems.ForEach(abilitySystem =>
+                abilitySystems.ForEach(abilitySystem =>
                 {
                     if (abilitySystem.Ability.IsUsedWhenShoot)
                     {
-                        abilitySystem.SetTarget(owner.Targets[0] as ICanReceiveEffects);
+                        abilitySystem.SetTarget(owner.Targets[0] as IAppliedEffectsComponent);
                         abilitySystem.Init();
+                        AbilityUsed?.Invoke(abilitySystem);
                     }
                 });
             }
@@ -48,13 +54,11 @@ namespace Game.Systems
                 return;
             }
 
-            owner.AbilitySystems[abilityIndex].Init();
+            abilitySystems[abilityIndex].Init();
         }
 
         public void UpdateSystem()
         {
-            var abilitySystems = owner.AbilitySystems;
-
             if (owner is EnemySystem)
             {
                 InitEnemyAbilities();
@@ -90,7 +94,7 @@ namespace Game.Systems
                         {
                             if (owner.Targets.Count > 0)
                             {
-                                abilitySystem.SetTarget(owner.Targets[0] as ICanReceiveEffects);
+                                abilitySystem.SetTarget(owner.Targets[0] as IAppliedEffectsComponent);
                                 Init(abilitySystem, CheckTargetInRange(abilitySystem.Target));
                             }
                             else
@@ -129,7 +133,7 @@ namespace Game.Systems
                 return stack;
             }
 
-            bool CheckTargetInRange(ICanReceiveEffects target) =>
+            bool CheckTargetInRange(IAppliedEffectsComponent target) =>
                 owner.Targets.Find(targetInRange => target == targetInRange) != null;
 
             void Init(AbilitySystem abilitySystem, bool condition)
@@ -137,6 +141,7 @@ namespace Game.Systems
                 if (abilitySystem.Target != null && condition)
                 {
                     abilitySystem.Init();
+                    AbilityUsed?.Invoke(abilitySystem);
                 }
                 else if (abilitySystem.IsStacked && abilitySystem.CheckAllEffectsEnded())
                 {

@@ -6,14 +6,14 @@ using Game.Data.Effects;
 
 namespace Game.Systems.Effects
 {
-    public class SlowAuraSystem : AuraSystem
+    public class SlowAura : Aura
     {
-        SlowAura effect;
+        Data.Effects.SlowAura effect;
         Dictionary<SpiritSystem, int> removedAttackSpeedMods;
 
-        public SlowAuraSystem(SlowAura effect) : base(effect)
+        public SlowAura(Data.Effects.SlowAura effect) : base(effect)
         {
-            Effect = effect;
+            Data = effect;
             this.effect = effect;
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
@@ -25,28 +25,28 @@ namespace Game.Systems.Effects
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
             var removedAttackSpeedMod = (int)spiritAttackSpeed.Sum.GetPercent(effect.SlowPercent);
 
-            if (spirit.CountOf(Effect) <= 0)
+            if (spirit.CountOf(Data) <= 0)
                 spiritAttackSpeed.AppliedValue -= removedAttackSpeedMod;
             else
                 removedAttackSpeedMod = (int)(spiritAttackSpeed.Sum - effect.SlowPercent).GetPercent(effect.SlowPercent);
 
-            spirit.AddEffect(Effect);
+            spirit.AddEffect(Data);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
         }
 
-        void OnSpiritExitRange(IVulnerable e) => RemoveEffect(e as ICanReceiveEffects);
+        void OnSpiritExitRange(IVulnerable e) => RemoveEffect(e as IAppliedEffectsComponent);
 
-        void RemoveEffect(ICanReceiveEffects entity)
+        void RemoveEffect(IAppliedEffectsComponent entity)
         {
             var spirit = entity as SpiritSystem;
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
 
-            if (spirit.CountOf(Effect) <= 1)
+            if (spirit.CountOf(Data) <= 1)
                 if (removedAttackSpeedMods.TryGetValue(spirit, out int removedAttackSpeed))
                     spiritAttackSpeed.AppliedValue += removedAttackSpeed;
 
             removedAttackSpeedMods.Remove(spirit);
-            spirit.RemoveEffect(Effect);
+            spirit.RemoveEffect(Data);
         }
 
         public override void Apply()
@@ -69,7 +69,7 @@ namespace Game.Systems.Effects
 
         public override void End()
         {
-            range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as ICanReceiveEffects));
+            range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as IAppliedEffectsComponent));
             removedAttackSpeedMods.Clear();
 
             range.EntityEntered -= OnSpiritEnteredRange;

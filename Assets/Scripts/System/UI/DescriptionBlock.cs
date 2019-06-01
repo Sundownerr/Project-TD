@@ -23,11 +23,17 @@ namespace Game.UI
         public string Title { get => title; set => title = value; }
         public Image Image { get => image; set => image = value; }
 
-        public void GetDescription() =>  ReferenceHolder.Instance.DescriptionUISystem.ShowDescription(Description);
+        public void GetDescription() => ReferenceHolder.Instance.DescriptionUISystem.ShowDescription(Description);
 
         public void OnPointerEnter(PointerEventData eventData) => GetDescription();
 
-        public void OnPointerExit(PointerEventData eventData) =>  ReferenceHolder.Instance.DescriptionUISystem.CloseDescription();
+        public void OnPointerExit(PointerEventData eventData) => ReferenceHolder.Instance.DescriptionUISystem.CloseDescription();
 
+        protected void Set(string description, Sprite sprite)
+        {
+            gameObject.SetActive(true);
+            Description = description;
+            Image.sprite = sprite;
+        }
     }
 }

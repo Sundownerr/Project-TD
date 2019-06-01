@@ -2,13 +2,13 @@
 
 namespace Game.Systems.Traits
 {
-    public class MultishotSystem : ITraitHandler
+    public class Multishot : ITraitSystem
     {
-        public ITraitSystem Owner { get; set; }
+        public ITraitComponent Owner { get; set; }
 
-        Multishot trait;
+        Data.Traits.Multishot trait;
 
-        public MultishotSystem(Multishot trait, ITraitSystem owner) 
+        public Multishot(Data.Traits.Multishot trait, ITraitComponent owner)
         {
             this.trait = trait;
             Owner = owner;
@@ -21,12 +21,12 @@ namespace Game.Systems.Traits
 
         public void Apply(IPrefabComponent entity)
         {
-           
+
         }
 
         public void Set()
         {
-            
+
         }
     }
 }

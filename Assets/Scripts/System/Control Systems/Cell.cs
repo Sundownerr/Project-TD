@@ -6,9 +6,9 @@ using Game.Systems.Spirit;
 using UnityEngine;
 using U = UnityEngine.Object;
 
-namespace Game.Systems
+namespace Game.Systems.Cells
 {
-    public class CellControlSystem
+    public class ControlSystem
     {
         public bool IsGridBuilded { get; set; }
         public List<Cell> Cells { get; set; } = new List<Cell>();
@@ -19,7 +19,7 @@ namespace Game.Systems
         RaycastHit hit;
         public PlayerSystem Owner { get; set; }
 
-        public CellControlSystem(PlayerSystem player)
+        public ControlSystem(PlayerSystem player)
         {
             Owner = player;
 

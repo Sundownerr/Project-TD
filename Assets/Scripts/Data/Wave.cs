@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Game.Data.Enemy;
+using Game.Data.EnemyEntity;
 
 namespace Game.Data
 {
@@ -10,6 +10,6 @@ namespace Game.Data
     public class Wave : ScriptableObject
     {       
         [SerializeField]
-        public List<EnemyData> EnemyTypes;
+        public List<EnemyEntity.Enemy> EnemyTypes;
     }
 }

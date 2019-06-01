@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace Game.Systems.Traits
 {
-    public class ChainshotSystem : ITraitHandler
+    public class Chainshot : ITraitSystem
     {
-        public ITraitSystem Owner { get; set; }
+        public ITraitComponent Owner { get; set; }
 
-        Chainshot trait;
+        Data.Traits.Chainshot trait;
 
-        public ChainshotSystem(Chainshot trait, ITraitSystem owner)
+        public Chainshot(Data.Traits.Chainshot trait, ITraitComponent owner)
         {
             this.trait = trait;
             Owner = owner;

@@ -5,14 +5,14 @@ namespace Game.Systems
 {
     public class AppliedEffectSystem
     {
-        public List<Effect> AppliedEffects { get; private set; } = new List<Effect>();
+        public List<Data.Effect> AppliedEffects { get; private set; } = new List<Data.Effect>();
 
-        public void AddEffect(Effect effect)
+        public void AddEffect(Data.Effect effect)
         {
             AppliedEffects.Add(effect);
         }
 
-        public void RemoveEffect(Effect effect)
+        public void RemoveEffect(Data.Effect effect)
         {
             for (int i = 0; i < AppliedEffects.Count; i++)
             {
@@ -24,7 +24,7 @@ namespace Game.Systems
             }
         }
 
-        public int CountOf(Effect effect)
+        public int CountOf(Data.Effect effect)
         {
             var count = 0;
             var appliedEffects = AppliedEffects;

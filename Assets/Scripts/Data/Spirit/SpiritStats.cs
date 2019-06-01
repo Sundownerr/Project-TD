@@ -4,7 +4,7 @@ using System;
 using Game.Enums;
 using OneLine;
 
-namespace Game.Data.Spirit.Internal
+namespace Game.Data.SpiritEntity.Internal
 {
     [Serializable]
     public enum DamageType

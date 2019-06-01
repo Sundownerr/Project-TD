@@ -19,5 +19,13 @@ namespace Game.UI
         {
             CooldownImage = Instantiate(CooldownPrefab, transform.position, Quaternion.identity, transform).GetComponent<Image>();
         }
+
+        public void Set(string description, Sprite sprite, int entityIndex)
+        {
+            base.Set(description, sprite);
+
+            CooldownImage.fillAmount = 0;
+            EntityIndex = entityIndex;
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace Game.Systems.Network
 
             void GenerateWaves()
             {
-                var waves = new List<Wave>(WaveCreatingSystem.GenerateWaves(waveAmount));
+                var waves = new List<Wave>(Waves.CreatingSystem.GenerateWaves(waveAmount));
 
                 for (int wave = 0; wave < waves.Count; wave++)
                 {

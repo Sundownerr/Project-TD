@@ -18,7 +18,7 @@ namespace Game.Data.Traits
             Description = $"Damage targets in {Range} range";
         }
 
-        public override ITraitHandler GetSystem(ITraitSystem owner) => new AOEShotSystem(this, owner);
+        public override ITraitSystem GetSystem(ITraitComponent owner) => new Systems.Traits.AOEShot(this, (ITraitComponent)owner);
     }
 }
 

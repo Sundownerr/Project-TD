@@ -11,7 +11,7 @@ namespace Game.Data.Effects
         [SerializeField] float slowPercent;
         [SerializeField] GameObject effectPrefab;
 
-        public override EffectSystem EffectSystem => new SlowAuraSystem(this);
+        public override Systems.Effect EffectSystem => new Systems.Effects.SlowAura(this);
 
         public float SlowPercent { get => slowPercent; private set => slowPercent = value; }
         public float Size { get => size; private set => size = value; }

@@ -3,8 +3,8 @@ using Game.Data.Attributes;
 using Game.Systems.Spirit;
 using Game.Systems.Enemy;
 using Game.Data.Mage;
-using Game.Data.Enemy;
-using Game.Data.Spirit;
+using Game.Data.EnemyEntity;
+using Game.Data.SpiritEntity;
 using UnityEngine;
 
 namespace Game.Systems.Mage
@@ -66,7 +66,7 @@ namespace Game.Systems.Mage
                     ModifyAttributes(e.Data, From.StartingAttribute);
                 }
 
-                void ModifyAttributes(EnemyData enemy, From getFrom)
+                void ModifyAttributes(Data.EnemyEntity.Enemy enemy, From getFrom)
                 {
                     ModifyNumeralAttributes(enemy, getFrom);
 
@@ -81,7 +81,7 @@ namespace Game.Systems.Mage
             var entityAttribute = new EntityAttribute_A_L<Numeral, double>();
             Mage.NumeralAttributes.ForEach(mageAttribute =>
             {
-                if (data is EnemyData enemy)
+                if (data is Data.EnemyEntity.Enemy enemy)
                 {
                     entityAttribute = enemy.NumeralAttributes.Find(attribute => attribute.Type == mageAttribute.Type);
                 }

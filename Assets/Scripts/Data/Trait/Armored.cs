@@ -21,7 +21,7 @@ namespace Game.Data.Traits
             Description = $"Add {AdditionalArmor} armor";
         }
 
-        public override ITraitHandler GetSystem(ITraitSystem owner) => new ArmoredSystem(this, owner);
+        public override ITraitSystem GetSystem(ITraitComponent owner) => new Systems.Traits.Armored((Armored)this, (ITraitComponent)owner);
     }
 }
 

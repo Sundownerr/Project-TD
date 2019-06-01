@@ -3,9 +3,9 @@ using System;
 using U = UnityEngine.Object;
 using Game.Systems.Enemy;
 
-namespace Game.Systems
+namespace Game.Systems.Enemy
 {
-    public class EnemyControlSystem
+    public class ControlSystem
     {
         public event Action<EnemySystem> EnemyDied;
         public List<EnemySystem> OwnedEnemies { get; private set; } = new List<EnemySystem>();
@@ -14,7 +14,7 @@ namespace Game.Systems
 
         PlayerSystem Owner;
 
-        public EnemyControlSystem(PlayerSystem player) => Owner = player;
+        public ControlSystem(PlayerSystem player) => Owner = player;
 
         public void SetSystem()
         {

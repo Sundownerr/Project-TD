@@ -72,8 +72,10 @@ namespace Game.UI
             base.Awake();
 
             baseAnimator = GetComponent<Animator>();
+
             expandButton = spiritName.transform.parent.GetComponent<Button>();
             expandButton.onClick.AddListener(ExpandStats);
+
             numeralStatValuesUI = new List<NumeralStatValueUI>(GetComponentsInChildren<NumeralStatValueUI>(true));
             spiritStatValuesUI = new List<SpiritStatValueUI>(GetComponentsInChildren<SpiritStatValueUI>(true));
             deltaTimeDelay = new WaitForSeconds(Time.deltaTime);
@@ -219,7 +221,7 @@ namespace Game.UI
                 {
                     if (choosedSpirit == null) return;
 
-                    choosedSpirit.AbilitySystems.ForEach(ability => ability.Used += OnAbilityUsed);
+                    choosedSpirit.AbilityControlSystem.AbilityUsed += OnAbilityUsed;
                     choosedSpirit.EffectApplied += OnEffectApplied;
                     choosedSpirit.EffectRemoved += OnEffectRemoved;
                     choosedSpirit.StatsChanged += OnStatsApplied;
@@ -229,36 +231,35 @@ namespace Game.UI
                 {
                     if (choosedSpirit == null) return;
 
-                    choosedSpirit.AbilitySystems.ForEach(ability => ability.Used -= OnAbilityUsed);
+                    choosedSpirit.AbilityControlSystem.AbilityUsed -= OnAbilityUsed;
                     choosedSpirit.EffectApplied -= OnEffectApplied;
                     choosedSpirit.EffectRemoved -= OnEffectRemoved;
                     choosedSpirit.StatsChanged -= OnStatsApplied;
                 }
 
-                void OnEffectRemoved(Effect e)
+                void OnEffectRemoved(Data.Effect effect)
                 {
-                    var appliedEffectUI = appliedEffectsUI.Find(effectUI => effectUI.EntityIndex == e.Index);
+                    var appliedEffectUI = appliedEffectsUI.Find(effectUI => effectUI.EntityIndex == effect.Index);
 
-                    if (appliedEffectUI == null) return;
-
-                    appliedEffectUI.gameObject.SetActive(false);
-                    appliedEffectsUI.Remove(appliedEffectUI);
+                    if (appliedEffectUI != null)
+                    {
+                        appliedEffectUI.gameObject.SetActive(false);
+                        appliedEffectsUI.Remove(appliedEffectUI);
+                    }
                 }
 
-                void OnEffectApplied(Effect e)
+                void OnEffectApplied(Data.Effect effect)
                 {
                     var poolObject = appliedEffectsUIPool.PopObject();
                     var appliedEffectUI = poolObject.GetComponent<SlotWithCooldown>();
 
-                    poolObject.GetComponent<Image>().sprite = e.Image;
-                    appliedEffectsUI.Add(appliedEffectUI);
-                    appliedEffectUI.EntityIndex = e.Index;
-                    appliedEffectUI.Description = e.Description;
+                    appliedEffectUI.Set(effect.Description, effect.Image, effect.Index);
+                    appliedEffectsUI.Add(appliedEffectUI);             
                 }
 
                 void OnAbilityUsed(AbilitySystem e)
                 {
-                    var slot = abilitySlots.Find(x => x.EntityIndex == e.Index);
+                    var slot = abilitySlots.Find(abilitySlot => abilitySlot.EntityIndex == e.Ability.Index);
                     slot.CooldownImage.fillAmount = 1f;
 
                     StartCoroutine(Cooldown());
@@ -280,37 +281,16 @@ namespace Game.UI
 
                 UpdateItems();
                 UpdateValues();
-                UpdateAbilities();
-                UpdateTraits();
+                UpdateSlotsWithCooldown(abilitySlots, choosedSpirit.Data.Abilities);
+                UpdateSlotsWithCooldown(traitSlots, choosedSpirit.Data.Traits);
 
-                void UpdateAbilities()
+                void UpdateSlotsWithCooldown<T>(List<SlotWithCooldown> slots, List<T> slotEntities) where T : Entity
                 {
-                    var spiritAbilities = choosedSpirit.Data.Abilities;
+                    slots.ForEach(slot => slot.gameObject.SetActive(false));
 
-                    abilitySlots.ForEach(abilitySlot => abilitySlot.gameObject.SetActive(false));
-
-                    for (int i = 0; i < spiritAbilities.Count; i++)
+                    for (int i = 0; i < slotEntities.Count; i++)
                     {
-                        abilitySlots[i].gameObject.SetActive(true);
-                        abilitySlots[i].Description = spiritAbilities[i].Description;
-                        abilitySlots[i].GetComponent<Image>().sprite = spiritAbilities[i].Image;
-                        abilitySlots[i].CooldownImage.fillAmount = 0;
-                        abilitySlots[i].EntityIndex = choosedSpirit.AbilitySystems[i].Index;
-                    }
-                }
-
-                void UpdateTraits()
-                {
-                    var spiritTraits = choosedSpirit.Data.Traits;
-
-                    traitSlots.ForEach(traitSlot => traitSlot.gameObject.SetActive(false));
-
-                    for (int i = 0; i < spiritTraits.Count; i++)
-                    {
-                        traitSlots[i].gameObject.SetActive(true);
-                        traitSlots[i].Description = spiritTraits[i].Description;
-                        traitSlots[i].GetComponent<Image>().sprite = spiritTraits[i].Image;
-                        traitSlots[i].CooldownImage.fillAmount = 0;
+                        slots[i].Set(slotEntities[i].Description, slotEntities[i].Image, slotEntities[i].Index);
                     }
                 }
             }

@@ -8,24 +8,21 @@ using Game.Systems.Effects;
 
 namespace Game.Systems.Abilities
 {
-    public class AbilitySystem : IEntitySystem, IIndexComponent
-    {
-        public event Action<AbilitySystem> Used;
-
+    public class AbilitySystem : IEntitySystem
+    {    
         public IEntitySystem Owner { get; private set; }
         public Ability Ability { get; private set; }
-        public ICanReceiveEffects Target { get; private set; }
-        public List<EffectSystem> EffectSystems { get; set; } = new List<EffectSystem>();
+        public IAppliedEffectsComponent Target { get; private set; }
+        public List<Systems.Effect> EffectSystems { get; set; } = new List<Systems.Effect>();
         public int CurrentEffectIndex { get; private set; }
         public bool IsStacked { get; private set; }
         public bool IsNeedStack { get; set; }
         public bool IsCooldowned { get; private set; } = true;
-        public int Index { get; set; }
 
         WaitForSeconds cooldownDelay;
         List<WaitForSeconds> nextEffectDelays = new List<WaitForSeconds>();
 
-        public AbilitySystem(Ability ability, IAbilitiySystem owner)
+        public AbilitySystem(Ability ability, IAbilitiyComponent owner)
         {
             Ability = ability;
             cooldownDelay = new WaitForSeconds(Ability.Cooldown);
@@ -40,11 +37,10 @@ namespace Game.Systems.Abilities
             SetSystem(owner);
         }
 
-        void SetSystem(IAbilitiySystem owner)
+        void SetSystem(IAbilitiyComponent owner)
         {
             Owner = owner;
-            Index = owner.AbilitySystems.Count > 0 ? owner.AbilitySystems.IndexOf(this) : 0;
-
+          
             SetEffects();
         }
 
@@ -65,7 +61,6 @@ namespace Game.Systems.Abilities
 
         void StartAbility()
         {
-            Used?.Invoke(this);
             GameLoop.Instance.StartCoroutine(Cooldown());
             GameLoop.Instance.StartCoroutine(InitEffect());
 
@@ -93,14 +88,14 @@ namespace Game.Systems.Abilities
 
                         foreach (var effectSystem in EffectSystems)
                         {
-                            if (effectSystem.Effect.MaxStackCount > 1)
+                            if (effectSystem.Data.MaxStackCount > 1)
                             {
                                 if (!effectSystem.IsEnded && !effectSystem.IsMaxStackReached)
                                 {
                                     return true;
                                 }
                             }
-                            else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Effect) == 0)
+                            else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Data) == 0)
                             {
                                 return true;
                             }
@@ -134,7 +129,7 @@ namespace Game.Systems.Abilities
             }
         }
 
-        public void SetTarget(ICanReceiveEffects target, bool forceSet = false)
+        public void SetTarget(IAppliedEffectsComponent target, bool forceSet = false)
         {
             Target = target;
             EffectSystems.ForEach(effectSystem => effectSystem.SetTarget(target, forceSet));
@@ -156,7 +151,6 @@ namespace Game.Systems.Abilities
 
             void SetStackedSystem()
             {
-                Index = baseAbility.Index;
                 SetEffects();
             }
         }

@@ -12,7 +12,7 @@ namespace Game.Data.Effects
     {
         [SerializeField] GameObject effectPrefab;
 
-        public override EffectSystem EffectSystem => new StunSystem(this); 
+        public override Systems.Effect EffectSystem => new Systems.Effects.Stun((Stun)this); 
         public GameObject EffectPrefab { get => effectPrefab; set => effectPrefab = value; }
     }
 }

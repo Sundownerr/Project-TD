@@ -19,6 +19,6 @@ namespace Game.Data.Traits
             Description = $"Bounce between {BounceCount} targets";
         }
 
-        public override ITraitHandler GetSystem(ITraitSystem owner) => new ChainshotSystem(this, owner);
+        public override ITraitSystem GetSystem(ITraitComponent owner) => new Systems.Traits.Chainshot((Chainshot)this, (ITraitComponent)owner);
     }
 }

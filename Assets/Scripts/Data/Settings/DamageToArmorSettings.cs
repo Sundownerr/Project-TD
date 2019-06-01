@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Data.Enemy.Internal;
-using Game.Data.Spirit.Internal;
+using Game.Data.EnemyEntity.Internal;
+using Game.Data.SpiritEntity.Internal;
 using Game.Wrappers;
 using UnityEngine;
 

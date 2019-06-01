@@ -3,13 +3,13 @@ using Game.Systems.Enemy;
 
 namespace Game.Systems.Traits
 {
-    public class ArmoredSystem : ITraitHandler
+    public class Armored : ITraitSystem
     {
-        public ITraitSystem Owner { get; set; }
+        public ITraitComponent Owner { get; set; }
 
-        Armored trait;
+        Data.Traits.Armored trait;
 
-        public ArmoredSystem(Armored trait, ITraitSystem owner) 
+        public Armored(Data.Traits.Armored trait, ITraitComponent owner)
         {
             this.trait = trait;
             Owner = owner;
@@ -20,12 +20,12 @@ namespace Game.Systems.Traits
             //Debug.Log("increase stats per level");
         }
 
-		public void Apply(IPrefabComponent entity)
-		{
-			
-		}
+        public void Apply(IPrefabComponent entity)
+        {
 
-        
+        }
+
+
         public void Set()
         {
             (Owner as EnemySystem).Data.Get(Enums.Enemy.ArmorValue).Value += trait.AdditionalArmor;

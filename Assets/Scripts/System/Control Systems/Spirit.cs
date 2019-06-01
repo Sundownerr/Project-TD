@@ -2,9 +2,9 @@
 using Game.Systems.Cells;
 using Game.Systems.Spirit;
 
-namespace Game.Systems
+namespace Game.Systems.Spirit
 {
-    public class SpiritControlSystem
+    public class ControlSystem
     {
         public List<SpiritSystem> OwnedSpirits { get; private set; } = new List<SpiritSystem>();
         public List<SpiritSystem> NotOwnedSpirits { get; private set; } = new List<SpiritSystem>();
@@ -12,7 +12,7 @@ namespace Game.Systems
 
         PlayerSystem Owner;
 
-        public SpiritControlSystem(PlayerSystem player) => Owner = player;
+        public ControlSystem(PlayerSystem player) => Owner = player;
 
         public void SetSystem()
         {

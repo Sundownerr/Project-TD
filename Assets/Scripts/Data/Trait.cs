@@ -11,7 +11,7 @@ namespace Game.Data.Traits
 {
     public abstract class Trait : Entity
     {
-        public abstract ITraitHandler GetSystem(ITraitSystem owner);
+        public abstract ITraitSystem GetSystem(ITraitComponent owner);
 
 #if UNITY_EDITOR
         [Button("Add to DataBase")]

@@ -4,19 +4,19 @@ using Game.Data.NetworkRequests;
 using Game.Managers;
 using Game.Utility;
 using Game.Systems.Spirit;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 using Game.Utility.Creator;
 
-namespace Game.Systems
+namespace Game.Systems.Spirit
 {
-    public class SpiritPlaceSystem
+    public class PlaceSystem
     {
         public event Action<SpiritSystem> SpiritPlaced;
         public event Action<SpiritCreationRequest> SpiritCreationRequested;
 
         public PlayerSystem Owner { get; set; }
 
-        public SpiritPlaceSystem(PlayerSystem player)
+        public PlaceSystem(PlayerSystem player)
         {
             Owner = player;
         }

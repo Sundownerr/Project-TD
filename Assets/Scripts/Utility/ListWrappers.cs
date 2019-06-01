@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
-using Game.Data.Spirit.Internal;
+using Game.Data.SpiritEntity.Internal;
 
 namespace Game.Wrappers
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Data.Enemy.Internal;
+using Game.Data.EnemyEntity.Internal;
 using Game.Enums;
 using Game.Utility.Localization;
 

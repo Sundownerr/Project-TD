@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Game.Data.Enemy;
+using Game.Data.EnemyEntity;
 
-namespace Game.Data.Enemy.Internal
+namespace Game.Data.EnemyEntity.Internal
 {
     [Serializable]
     public enum ArmorType

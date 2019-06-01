@@ -1,19 +1,19 @@
 ﻿using Game.Data.Effects;
 using Game.Systems.Abilities;
 
-namespace Game.Systems.Effects
+namespace Game.Systems
 {
-    public class EffectSystem : IEntitySystem
+    public class Effect : IEntitySystem
     {
         public bool IsEnded { get; protected set; } = true;
-        public bool IsMaxStackReached => Target.CountOf(Effect) > Effect.MaxStackCount;
-        public ICanReceiveEffects Target { get; protected set; }
+        public bool IsMaxStackReached => Target.CountOf(Data) > Data.MaxStackCount;
+        public IAppliedEffectsComponent Target { get; protected set; }
         public IEntitySystem Owner { get; protected set; }
-        public Effect Effect { get; protected set; }
+        public Data.Effect Data { get; protected set; }
 
-        public EffectSystem(Effect effect)
+        public Effect(Data.Effect effect)
         {
-            Effect = effect;
+            Data = effect;
         }
 
         public void SetSystem(AbilitySystem ownerAbility)
@@ -23,7 +23,7 @@ namespace Game.Systems.Effects
 
         public virtual void Apply()
         {
-            Target.AddEffect(Effect);
+            Target.AddEffect(Data);
             IsEnded = false;
         }
 
@@ -31,13 +31,13 @@ namespace Game.Systems.Effects
         {
             if (Target != null)
             {
-                Target.RemoveEffect(Effect);
+                Target.RemoveEffect(Data);
             }
 
             IsEnded = true;
         }
 
-        public virtual void SetTarget(ICanReceiveEffects newTarget, bool forceSet)
+        public virtual void SetTarget(IAppliedEffectsComponent newTarget, bool forceSet)
         {
             if (forceSet)
             {

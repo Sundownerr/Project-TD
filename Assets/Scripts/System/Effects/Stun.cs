@@ -7,17 +7,17 @@ using Game.Systems.Abilities;
 namespace Game.Systems.Effects
 {
 
-    public class StunSystem : EffectSystem
+    public class Stun : Effect
     {
         GameObject effectPrefab;
         Coroutine effectCoroutine;
 
-        Stun effect;
+        Data.Effects.Stun effect;
         WaitForSeconds stunDuration;
 
-        public StunSystem(Stun effect) : base(effect)
+        public Stun(Data.Effects.Stun effect) : base(effect)
         {
-            Effect = effect;
+            Data = effect;
             this.effect = effect;
             stunDuration = new WaitForSeconds(effect.Duration);
         }
@@ -34,7 +34,7 @@ namespace Game.Systems.Effects
 
             if (Target.Prefab == null)
             {
-                Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                Target = (Owner as AbilitySystem).Target as IAppliedEffectsComponent;
                 End();
                 return;
             }
@@ -65,7 +65,7 @@ namespace Game.Systems.Effects
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
             if (Target != null)
-                if (Target.CountOf(Effect) == 0)
+                if (Target.CountOf(Data) == 0)
                     Target.IsOn = true;
 
             Object.Destroy(effectPrefab);

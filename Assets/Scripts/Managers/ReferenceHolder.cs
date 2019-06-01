@@ -24,11 +24,11 @@ namespace Game.Managers
         public GameObject ItemPrefab;
         public GameObject SlotWithCooldownPrefab;
         public PlayerInputSystem PlayerInputSystem;
-        public WaveSystem WaveSystem;
+        public Systems.Waves.WaveSystem WaveSystem;
         public ResourceUISystem ResourceUISystem;
         public SpiritUISystem SpiritUISystem;
         public ElementUISystem ElementUISystem;
-        public SpiritPlaceSystem SpiritPlaceSystem;
+        public Systems.Spirit.PlaceSystem SpiritPlaceSystem;
         public GameObject BuildUISystem;
         public WaveUISystem WaveUISystem;
         public InventoryUISystem InventoryUISystem;

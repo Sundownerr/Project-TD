@@ -17,6 +17,6 @@ namespace Game.Data.Traits
             Description = $"Shoot {Count} additional targets";
         }
 
-        public override ITraitHandler GetSystem(ITraitSystem owner) => new MultishotSystem(this, owner);        
+        public override ITraitSystem GetSystem(ITraitComponent owner) => new Systems.Traits.Multishot(this, (ITraitComponent)owner);        
     }
 }

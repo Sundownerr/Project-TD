@@ -10,9 +10,8 @@ using Game.Utility;
 using Game.Systems.Enemy;
 using Game.Utility.Creator;
 
-namespace Game.Systems
+namespace Game.Systems.Waves
 {
-
     public class WaveSystem
     {
         public event Action WaveEnded, WaveStarted, AllWaveEnemiesKilled;
@@ -64,11 +63,11 @@ namespace Game.Systems
 
             if (GameManager.Instance.GameState != GameState.InGameMultiplayer)
             {
-                Waves = WaveCreatingSystem.GenerateWaves(Owner.WaveAmount);
+                Waves = Systems.Waves.CreatingSystem.GenerateWaves(Owner.WaveAmount);
             }
             else
             {
-                Waves = WaveCreatingSystem.GenerateWaves(Owner.NetworkPlayer.NetworkWaveDatas);
+                Waves = Systems.Waves.CreatingSystem.GenerateWaves(Owner.NetworkPlayer.NetworkWaveDatas);
             }
 
             ListWaves = new List<Wave>(Waves);

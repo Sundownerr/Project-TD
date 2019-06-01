@@ -8,19 +8,19 @@ using Game.Enums;
 using Game.Data.Databases;
 using Game.Data.Attributes;
 using Game.Data.Traits;
-using Game.Data.Spirit.Internal;
+using Game.Data.SpiritEntity.Internal;
 using Game.Data.Abilities;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Game.Data.Spirit
+namespace Game.Data.SpiritEntity
 {
 
     [CreateAssetMenu(fileName = "New Spirit", menuName = "Data/Spirit/Spirit")]
     [Serializable]
-    public class SpiritData : Entity, ISpiritAttributes, IAbilityComponent, ITraitComponent, IPrefabComponent
+    public class SpiritData : Entity, ISpiritAttributes, IAbilityData, ITraitData, IPrefabComponent
     {
         [Serializable]
         public struct BaseData

@@ -7,14 +7,14 @@ using Game.Utility.Creator;
 
 namespace Game.Systems.Effects
 {
-    public class AuraSystem : EffectSystem
+    public class Aura : Effect
     {
         protected RangeSystem range;
         protected GameObject rangePrefab;
 
-        public AuraSystem(Effect effect) : base(effect)
+        public Aura(Data.Effect effect) : base(effect)
         {
-            Effect = effect;
+            Data = effect;
         }
 
         public override void Apply()

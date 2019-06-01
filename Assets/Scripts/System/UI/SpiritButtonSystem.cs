@@ -4,7 +4,7 @@ using System;
 using Game.Enums;
 using Game.Utility;
 using Game.Systems;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 
 namespace Game.UI
 {

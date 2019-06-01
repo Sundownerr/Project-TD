@@ -8,20 +8,20 @@ using Game.Systems.Abilities;
 
 namespace Game.Systems.Effects
 {
-    public class DoTSystem : EffectSystem, IDamageDealerChild
+    public class DamageOverTime : Effect, IDamageDealerChild
     {
         public IDamageDealer OwnerDamageDealer { get; set; }
 
-        DoT effect;
+        Data.Effects.DamageOverTime effect;
         GameObject effectPrefab;
         ParticleSystem[] psList;
         WaitForSeconds damageInterval = new WaitForSeconds(1);
         Coroutine effectCoroutine;
 
 
-        public DoTSystem(DoT effect) : base(effect)
+        public DamageOverTime(Data.Effects.DamageOverTime effect) : base(effect)
         {
-            Effect = effect;
+            Data = effect;
             this.effect = effect;
         }
 
@@ -37,7 +37,7 @@ namespace Game.Systems.Effects
 
             if (Target.Prefab == null)
             {
-                Target = (Owner as AbilitySystem).Target as ICanReceiveEffects;
+                Target = (Owner as AbilitySystem).Target as IAppliedEffectsComponent;
                 End();
                 return;
             }

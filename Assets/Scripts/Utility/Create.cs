@@ -5,8 +5,8 @@ using Game.Enums;
 using Game.Managers;
 using Game.Systems.Spirit;
 using Game.Systems.Enemy;
-using Game.Data.Enemy;
-using Game.Data.Spirit;
+using Game.Data.EnemyEntity;
+using Game.Data.SpiritEntity;
 using Game.Systems.Cells;
 using Game.Data.NetworkRequests;
 
@@ -82,7 +82,7 @@ namespace Game.Utility.Creator
             GameData.Instance.Player.SpiritPlaceSystem.NetworkCreateSpirit(newSpirit);
         }
 
-        public static EnemySystem Enemy(EnemyData data, Vector3 position, Vector3[] waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
+        public static EnemySystem Enemy(Data.EnemyEntity.Enemy data, Vector3 position, Vector3[] waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
         {
             var enemy = prefab ?? U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Instance.EnemyParent);
             var enemySystem = new EnemySystem(enemy, waypoints, isOwnedByPlayer) { Data = data };

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 
 #if UNITY_EDITOR
 #endif

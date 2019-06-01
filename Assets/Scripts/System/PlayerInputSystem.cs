@@ -6,7 +6,7 @@ using Game.Utility;
 using Game.Managers;
 using Game.Systems.Spirit;
 using Game.Systems.Enemy;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 
 namespace Game.Systems
 {

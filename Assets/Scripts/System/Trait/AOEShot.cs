@@ -4,13 +4,13 @@ using Game.Data.Traits;
 
 namespace Game.Systems.Traits
 {
-    public class AOEShotSystem : ITraitHandler
+    public class AOEShot : ITraitSystem
     {
-        public ITraitSystem Owner { get; set; }
+        public ITraitComponent Owner { get; set; }
 
-        AOEShot trait;
+        Data.Traits.AOEShot trait;
 
-        public AOEShotSystem(AOEShot trait, ITraitSystem owner)
+        public AOEShot(Data.Traits.AOEShot trait, ITraitComponent owner)
         {
             this.trait = trait;
             Owner = owner;
@@ -42,7 +42,7 @@ namespace Game.Systems.Traits
 
         public void Set()
         {
-            
+
         }
     }
 }

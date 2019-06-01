@@ -4,7 +4,7 @@ using UnityEngine;
 using U = UnityEngine.Object;
 using Game.Enums;
 using Game.Managers;
-using Game.Data.Spirit;
+using Game.Data.SpiritEntity;
 using Game.Data.Items;
 
 namespace Game.Systems.Spirit.Internal
