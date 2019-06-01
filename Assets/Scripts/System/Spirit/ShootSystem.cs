@@ -62,7 +62,7 @@ namespace Game.Systems.Spirit.Internal
                 }
                 else
                 {
-                    RemoveBullet(bullets[0]);
+                    bullets[0].SetActive(false);
                     removeTimers.RemoveAt(i);
                 }
             }
@@ -96,37 +96,31 @@ namespace Game.Systems.Spirit.Internal
 
                 BulletSystem CreateBullet(IHealthComponent target)
                 {
-                    var newBullet = new BulletSystem(bulletPool.PopObject());
+                    var newBullet = bullets.Find(bullet => bullet.Prefab.activeSelf);
 
-                    SetBulletData();
+                    if (newBullet == null)
+                    {
+                        newBullet = new BulletSystem(
+                            bulletPool.PopObject(),
+                            ownerSpirit.ShootPoint.position,
+                            ownerSpirit.MovingPart.rotation);
+
+                        bullets.Add(newBullet);
+                    }
+
+                    if (target != null)
+                    {
+                        newBullet.Target = target;
+                    }
+                    else
+                    {
+                        newBullet.SetActive(false);
+                    }
 
                     Shooting?.Invoke(newBullet);
-                    newBullet.Prefab.SetActive(true);
 
                     return newBullet;
-
-                    void SetBulletData()
-                    {
-                        newBullet.Prefab.transform.position = ownerSpirit.ShootPoint.position;
-                        newBullet.Prefab.transform.rotation = ownerSpirit.MovingPart.rotation;
-                        newBullet.IsTargetReached = false;
-
-                        if (target != null)
-                        {
-                            newBullet.Target = target;
-                        }
-                        else
-                        {
-                            RemoveBullet(newBullet);
-                        }
-                    }
                 }
-            }
-
-            void RemoveBullet(BulletSystem bullet)
-            {
-                bullet.Prefab.SetActive(false);
-                bullets.Remove(bullet);
             }
         }
 
@@ -141,10 +135,8 @@ namespace Game.Systems.Spirit.Internal
 
         public void Shoot()
         {
-            for (int i = 0; i < bullets.Count; i++)
+            bullets.ForEach(bullet =>
             {
-                var bullet = bullets[i];
-
                 if (!bullet.IsTargetReached)
                 {
                     if (bullet.Target == null || bullet.Target.Prefab == null)
@@ -165,7 +157,7 @@ namespace Game.Systems.Spirit.Internal
                         }
                     }
                 }
-            }
+            });
         }
     }
 }

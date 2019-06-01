@@ -21,27 +21,50 @@ namespace Game.Systems.Spirit.Internal
             set
             {
                 isTargetReached = value;
+                Speed = defaultSpeed;
+
                 Show(!value);
+
+                void Show(bool enabled)
+                {
+                    for (int i = 0; i < particleSystems.Length; i++)
+                    {
+                        var emissionModule = particleSystems[i].emission;
+                        emissionModule.enabled = enabled;
+
+                        if (enabled)
+                            particleSystems[i].Play();
+                        else
+                            particleSystems[i].Stop();
+                    }
+                }
             }
+
         }
 
         public IPrefabComponent Owner { get; set; }
 
-        ParticleSystem.EmissionModule emissionModule;
         ParticleSystem[] particleSystems;
+
         int remainingBounceCount;
         float lifetime;
         float speed;
         float defaultSpeed;
 
-
-        public BulletSystem(GameObject prefab)
+        public BulletSystem(GameObject prefab, Vector3 startPosition, Quaternion startRotation)
         {
             Prefab = prefab;
             particleSystems = prefab.GetComponentsInChildren<ParticleSystem>(true);
             Prefab.layer = 13;
-            Speed = 10f;
+
+            Speed = 1f;
+
+            Prefab.transform.position = startPosition;
+            Prefab.transform.rotation = startRotation;
+
             defaultSpeed = Speed;
+
+            SetActive(true);
 
             Lifetime = particleSystems[0].main.startLifetime.constant;
         }
@@ -55,24 +78,12 @@ namespace Game.Systems.Spirit.Internal
             {
                 Speed += 0.5f;
             }
-            else
-            {
-                Speed = defaultSpeed;
-            }
         }
 
-         void Show(bool enabled)
+        public void SetActive(bool active)
         {
-            for (int i = 0; i < particleSystems.Length; i++)
-            {
-                emissionModule = particleSystems[i].emission;
-                emissionModule.enabled = enabled;
-
-                if (enabled)
-                    particleSystems[i].Play();
-                else
-                    particleSystems[i].Stop();
-            }
+            IsTargetReached = !active;
+            Prefab.SetActive(active);
         }
     }
 }

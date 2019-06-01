@@ -10,7 +10,7 @@ namespace Game.Utility
         public Transform Parent { get; set; }
         public uint PoolLenght { get; set; } = 1;
 
-        List<GameObject> poolList = new List<GameObject>();
+        public List<GameObject> Objects { get; private set; } = new List<GameObject>();
 
         public ObjectPool(GameObject poolObject, Transform parent, uint poolLength)
         {
@@ -34,11 +34,11 @@ namespace Game.Utility
 
         public GameObject PopObject()
         {
-            for (int i = 0; i < poolList.Count; i++)
-                if (!poolList[i].activeSelf)
+            for (int i = 0; i < Objects.Count; i++)
+                if (!Objects[i].activeSelf)
                 {
-                    poolList[i].SetActive(true);
-                    return poolList[i];
+                    Objects[i].SetActive(true);
+                    return Objects[i];
                 }
 
             if (PoolObject == null)
@@ -46,29 +46,29 @@ namespace Game.Utility
 
             CreateObject(Parent);
 
-            return poolList[poolList.Count - 1];
+            return Objects[Objects.Count - 1];
         }
 
 
 
         void CreateObject(Transform parent)
         {
-            poolList.Add(Object.Instantiate(PoolObject, parent));
-            poolList[poolList.Count - 1].SetActive(false);
+            Objects.Add(Object.Instantiate(PoolObject, parent));
+            Objects[Objects.Count - 1].SetActive(false);
         }
 
         public void DestroyPool()
         {
-            for (int i = poolList.Count - 1; i > 0; i--)
-                Object.Destroy(poolList[i]);
+            for (int i = Objects.Count - 1; i > 0; i--)
+                Object.Destroy(Objects[i]);
 
-            poolList.Clear();
+            Objects.Clear();
         }
 
         public void DeactivateAll()
         {
-            for (int i = 0; i < poolList.Count; i++)
-                poolList[i].SetActive(false);
+            for (int i = 0; i < Objects.Count; i++)
+                Objects[i].SetActive(false);
         }
     }
 }
