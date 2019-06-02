@@ -14,5 +14,7 @@ namespace Game.Consts
         public const string SingleplayerMap = "SingleplayerMap";
         public const string MultiplayerMap1 = "MultiplayerMap1";
         public const string MainMenu = "MainMenu";
+        public const string EnemyTag = "Enemy";
+        public const string SpiritTag = "Spirit";
     }
 }

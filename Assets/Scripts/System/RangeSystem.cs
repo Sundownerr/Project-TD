@@ -5,6 +5,7 @@ using Game.Enums;
 using Game.Utility;
 using Game.Systems.Spirit;
 using Game.Systems.Enemy;
+using Game.Consts;
 
 namespace Game.Systems
 {
@@ -15,8 +16,8 @@ namespace Game.Systems
         public event Action<IVulnerable> EntityExit;
         public event Action Destroyed;
 
-        public List<IVulnerable> EntitySystems { get; set; } = new List<IVulnerable>();
-        public List<GameObject> Entities { get; set; } = new List<GameObject>();
+        public List<IVulnerable> EntitySystems { get; private set; } = new List<IVulnerable>();
+        public List<GameObject> Entities { get; private set; } = new List<GameObject>();
         public IPrefabComponent Owner { get; set; }
         public CollideWith CollideType { get; set; }
 
@@ -27,14 +28,13 @@ namespace Game.Systems
         Color transparent, notTransparent;
         bool isRangeShowed;
 
-
         protected override void Awake()
         {
             base.Awake();
 
             rend = GetComponent<MeshRenderer>();
             transform.position += new Vector3(0, -5, 0);
-            rend.enabled = false;
+            Show = false;
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
@@ -50,67 +50,43 @@ namespace Game.Systems
 
         void OnTriggerEnter(Collider other)
         {
-            AddToList();
+            var isTagOk = other.gameObject.CompareTag(CollideType == CollideWith.Enemies ? StringConsts.EnemyTag : StringConsts.SpiritTag);
 
-            void AddToList()
+            if (!isTagOk)
+                return;
+
+            var newEntity = GetEntityFromList();
+
+            EntitySystems.Add(newEntity);
+            Entities.Add(newEntity.Prefab);
+            EntityEntered?.Invoke(newEntity);
+
+            IVulnerable GetEntityFromList()
             {
+                var player = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
+                IVulnerable findedEntity;
+
                 if (CollideType == CollideWith.Enemies)
                 {
-                    AddEntity<EnemySystem>();
-                    return;
+                    findedEntity = player.EnemyControlSystem.AllEnemies.Find(enemy =>
+                        other.gameObject == enemy.Prefab ||
+                        other.gameObject == enemy.Prefab.transform.GetChild(0).gameObject) as IVulnerable;
+                }
+                else
+                {
+                    findedEntity = player.SpiritControlSystem.AllSpirits.Find(spirit =>
+                        other.gameObject == spirit.Prefab ||
+                        other.gameObject == spirit.Prefab.transform.GetChild(0).gameObject) as IVulnerable;
                 }
 
-                if (CollideType == CollideWith.Spirits)
+                if (findedEntity != null)
                 {
-                    AddEntity<SpiritSystem>();
-                    return;
+                    return findedEntity;
                 }
-
-                if (CollideType == CollideWith.EnemiesAndSpirits)
+                else
                 {
-                    AddEntity<EnemySystem>();
-                    AddEntity<SpiritSystem>();
-                }
-
-                void AddEntity<T>() where T : IVulnerable
-                {
-                    var owner = (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>();
-
-                    if (typeof(T) == typeof(EnemySystem))
-                    {
-                        for (int i = 0; i < owner.EnemyControlSystem.AllEnemies.Count; i++)
-                        {
-                            if (CheckFound(owner.EnemyControlSystem.AllEnemies[i]))
-                            {
-                                return;
-                            }
-                        }
-                    }
-
-                    if (typeof(T) == typeof(SpiritSystem))
-                    {
-                        for (int i = 0; i < owner.SpiritControlSystem.AllSpirits.Count; i++)
-                        {
-                            if (CheckFound(owner.SpiritControlSystem.AllSpirits[i]))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                bool CheckFound(IVulnerable entitySystem)
-                {
-                    if (other.gameObject == entitySystem.Prefab || other.gameObject == entitySystem.Prefab.transform.GetChild(0).gameObject)
-                    {
-                        EntitySystems.Add(entitySystem);
-                        Entities.Add(entitySystem.Prefab);
-                        EntityEntered?.Invoke(entitySystem);
-
-                        return true;
-                    }
-
-                    return false;
+                    Debug.LogError("cant find entered entity");
+                    return null;
                 }
             }
         }
@@ -121,9 +97,7 @@ namespace Game.Systems
             {
                 if (other.gameObject == EntitySystems[i].Prefab)
                 {
-                    EntityExit?.Invoke(EntitySystems[i]);
-                    EntitySystems.Remove(EntitySystems[i]);
-                    Entities.Remove(other.gameObject);
+                    RemoveEntity(i);
                 }
             }
         }
@@ -134,11 +108,16 @@ namespace Game.Systems
             {
                 if (EntitySystems[i] == null || EntitySystems[i].Prefab == null)
                 {
-                    EntityExit?.Invoke(EntitySystems[i]);
-                    Entities.RemoveAt(i);
-                    EntitySystems.RemoveAt(i);
+                    RemoveEntity(i);
                 }
             }
+        }
+
+        void RemoveEntity(int index)
+        {
+            EntityExit?.Invoke(EntitySystems[index]);
+            EntitySystems.RemoveAt(index);
+            Entities.RemoveAt(index);
         }
     }
 }

@@ -65,12 +65,9 @@ namespace Game.Systems.Effects
             base.Apply();
 
             var owner = Owner.GetOwnerOfType<IEntitySystem>();
-            range = Create.Range(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits, OnEntityEnteredRange, OnEntityExitRange);
 
+            range = Create.Range(owner as IPrefabComponent, effect.Size, CollideWith.Spirits, OnEntityEnteredRange, OnEntityExitRange);
             range.Destroyed += OnRangeDestroyed;
-
-            range.CollideType = CollideWith.Spirits;
-            range.transform.localScale = new Vector3(effect.Size, 0.001f, effect.Size);
             range.transform.position += new Vector3(0, 15, 0);
             range.Show = true;
         }

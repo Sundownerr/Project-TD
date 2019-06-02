@@ -29,8 +29,7 @@ namespace Game.Enums
     public enum CollideWith
     {
         Enemies,
-        Spirits,
-        EnemiesAndSpirits
+        Spirits
     }
 
     public enum EnemyType

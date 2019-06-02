@@ -126,9 +126,7 @@ namespace Game.Systems.Spirit
                     ClearNullTargets();
                 }
             }
-
-            #region  Helper functions
-
+      
             void RotateAtEnemy()
             {
                 if (Targets[0].Prefab != null)
@@ -149,8 +147,6 @@ namespace Game.Systems.Spirit
                     }
                 }
             }
-
-            #endregion
         }
 
         public void Upgrade(SpiritSystem previousSpirit, SpiritData newData)
