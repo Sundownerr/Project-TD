@@ -61,7 +61,7 @@ namespace Game.Systems.Spirit.Internal
                 .FindAll(spiritAttribute => spiritAttribute.ValuePerLevel != 0)
                     .ForEach(attribute => attribute.LevelUp());
 
-            ownerSpirit.TraitControlSystem.IncreaseStatsPerLevel();
+            ownerSpirit.TraitControlSystem.LevelUp();
 
             if (!isUpgrading)
             {

@@ -53,7 +53,7 @@ namespace Game.Systems.Traits
                     {
                         if (bullet.Target != null)
                         {
-                            spirit.DealDamage(bullet.Target, spirit.Data.Get(Enums.Spirit.Damage).Sum);
+                            spirit.DealDamage(bullet.Target, spirit.DamageInstance);
                         }
 
                         spirit.ShootSystem.SetTargetReached(bullet);
@@ -95,6 +95,6 @@ namespace Game.Systems.Traits
             }
         }
 
-        public void IncreaseStatsPerLevel() => traitSystems.ForEach(traitSystem => traitSystem.IncreaseStatsPerLevel());
+        public void LevelUp() => traitSystems.ForEach(traitSystem => traitSystem.LevelUp());
     }
 }

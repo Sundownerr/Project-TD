@@ -105,7 +105,7 @@ namespace Game
     public interface ITraitSystem
     {
         [SerializeField] ITraitComponent Owner { get; }
-        void IncreaseStatsPerLevel();
+        void LevelUp();
         void Apply(IPrefabComponent entity);
         void Set();
     }

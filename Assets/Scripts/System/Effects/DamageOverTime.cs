@@ -5,6 +5,7 @@ using Game.Data.Effects;
 using Game.Managers;
 using Game.Systems.Enemy;
 using Game.Systems.Abilities;
+using Game.Data.SpiritEntity.Internal;
 
 namespace Game.Systems.Effects
 {
@@ -17,12 +18,15 @@ namespace Game.Systems.Effects
         ParticleSystem[] psList;
         WaitForSeconds damageInterval = new WaitForSeconds(1);
         Coroutine effectCoroutine;
+        (double damage, DamageType type) damageInstance;
 
 
         public DamageOverTime(Data.Effects.DamageOverTime effect) : base(effect)
         {
             EffectData = effect;
             this.effect = effect;
+
+            damageInstance = (effect.DamagePerTick, DamageType.Magic);
         }
 
         public override void Apply()
@@ -82,7 +86,7 @@ namespace Game.Systems.Effects
 
                     if (Target is EnemySystem enemy)
                     {
-                        this.DealDamage(enemy, effect.DamagePerTick);
+                        this.DealDamage(enemy, damageInstance);
                     }
 
                     yield return damageInterval;

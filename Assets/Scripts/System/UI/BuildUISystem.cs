@@ -82,6 +82,7 @@ namespace Game.UI
             else
             {
                 animator.SetBool("isOpen", false);
+                
                 for (int i = 0; i < spiritButtonGOs.Count; i++)
                     spiritButtonGOs[i].SetActive(false);
             }

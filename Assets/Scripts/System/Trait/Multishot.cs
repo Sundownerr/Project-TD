@@ -14,7 +14,7 @@ namespace Game.Systems.Traits
             Owner = owner;
         }
 
-        public void IncreaseStatsPerLevel()
+        public void LevelUp()
         {
             //Debug.Log("increase stats per level");
         }

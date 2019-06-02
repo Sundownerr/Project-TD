@@ -9,6 +9,7 @@ using Game.Data.SpiritEntity;
 using Game.Data.Effects;
 using Game.Systems.Abilities;
 using Game.Utility.Creator;
+using Game.Data.SpiritEntity.Internal;
 
 namespace Game.Systems.Spirit
 {
@@ -36,6 +37,7 @@ namespace Game.Systems.Spirit
         public List<IHealthComponent> Targets { get; private set; } = new List<IHealthComponent>();
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
         public bool IsOwnedByLocalPlayer { get; private set; } = true;
+        public (double damage, DamageType type) DamageInstance => (Data.Get(Enums.Spirit.Damage).Sum, Data.Base.DamageType);
 
         SpiritDataSystem dataSystem;
 
@@ -126,7 +128,7 @@ namespace Game.Systems.Spirit
                     ClearNullTargets();
                 }
             }
-      
+
             void RotateAtEnemy()
             {
                 if (Targets[0].Prefab != null)

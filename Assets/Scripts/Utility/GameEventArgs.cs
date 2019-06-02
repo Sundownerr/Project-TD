@@ -2,6 +2,7 @@
 using Game.UI;
 using Game.Systems.Spirit;
 using System;
+using Game.Data.SpiritEntity.Internal;
 
 namespace Game.Utility
 {
@@ -12,11 +13,11 @@ namespace Game.Utility
         public double Damage { get; set; }
         public int CritCount { get; set; }
 
-        public DamageEventArgs(IHealthComponent target, double damage, int critCount)
+        public DamageEventArgs(IHealthComponent target, (double value, int critCount, DamageType type) damageInstance)
         {
             Target = target;
-            Damage = damage;
-            CritCount = critCount;
+            Damage = damageInstance.value;
+            CritCount = damageInstance.critCount;
         }
     }
 

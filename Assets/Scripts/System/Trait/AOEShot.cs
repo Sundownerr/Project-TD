@@ -16,7 +16,7 @@ namespace Game.Systems.Traits
             Owner = owner;
         }
 
-        public void IncreaseStatsPerLevel()
+        public void LevelUp()
         {
             // Debug.Log("increase stats per level");
         }
@@ -35,9 +35,14 @@ namespace Game.Systems.Traits
                 enemyLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
-                    if (colliders[i].transform.gameObject == player.EnemyControlSystem.AllEnemies[j].Prefab)
-                        spirit.DealDamage(player.EnemyControlSystem.AllEnemies[i], spirit.Data.Get(Enums.Spirit.Damage).Sum);
+            {
+                var findedEnemy = player.EnemyControlSystem.AllEnemies.Find(enemy => colliders[i].transform.gameObject == enemy.Prefab);
+
+                if (findedEnemy != null)
+                {
+                    spirit.DealDamage(findedEnemy, spirit.DamageInstance);
+                }
+            }
         }
 
         public void Set()

@@ -17,7 +17,7 @@ namespace Game.Systems.Traits
             Owner = owner;
         }
 
-        public void IncreaseStatsPerLevel()
+        public void LevelUp()
         {
             //Debug.Log("incresa");
         }
@@ -36,47 +36,43 @@ namespace Game.Systems.Traits
                 enemies,
                 enemyLayer);
 
-            if (bullet.Target != null && enemyCount > 1)
-            {
-                spirit.DealDamage(bullet.Target, spirit.Data.Get(Enums.Spirit.Damage).Sum);
+            spirit.DealDamage(bullet.Target, spirit.DamageInstance);
 
+            if (bullet.Target == null || enemyCount <= 1)
+            {
+                spirit.ShootSystem.SetTargetReached(bullet);
+            }
+            else
+            {
                 if (bullet.RemainingBounceCount <= 0)
+                {
                     spirit.ShootSystem.SetTargetReached(bullet);
+                }
                 else
                 {
                     bullet.RemainingBounceCount--;
+
                     for (int enemyIndexInChain = 0; enemyIndexInChain < enemyCount; enemyIndexInChain++)
+                    {
                         if (bullet.Target.Prefab == enemies[enemyIndexInChain].gameObject)
                         {
                             if (enemyIndexInChain - 1 >= 0)
                             {
-                                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
-                                    if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain - 1].transform.gameObject)
-                                    {
-                                        bullet.Target = player.EnemyControlSystem.AllEnemies[j];
-                                        break;
-                                    }
-                                break;
+                                bullet.Target = GetEnemyInChain(enemies[enemyIndexInChain - 1].transform.gameObject);
                             }
 
                             if (enemyIndexInChain + 1 < enemyCount)
                             {
-                                for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
-                                    if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain + 1].transform.gameObject)
-                                    {
-                                        bullet.Target = player.EnemyControlSystem.AllEnemies[j];
-                                        break;
-                                    }
-                                break;
+                                bullet.Target = GetEnemyInChain(enemies[enemyIndexInChain + 1].transform.gameObject);
                             }
                         }
+                    }
                 }
             }
-            else
-            {
-                spirit.DealDamage(bullet.Target, spirit.Data.Get(Enums.Spirit.Damage).Sum);
-                spirit.ShootSystem.SetTargetReached(bullet);
-            }
+
+
+            IHealthComponent GetEnemyInChain(GameObject affectedEnemy) =>
+                player.EnemyControlSystem.AllEnemies.Find(enemy => enemy.Prefab == affectedEnemy);
         }
 
         public void Set()
@@ -85,3 +81,49 @@ namespace Game.Systems.Traits
         }
     }
 }
+
+// if (bullet.Target != null && enemyCount > 1)
+//         {
+//             spirit.DealDamage(bullet.Target, spirit.DamageInstance);
+
+//             if (bullet.RemainingBounceCount <= 0)
+//                 spirit.ShootSystem.SetTargetReached(bullet);
+//             else
+//             {
+//                 bullet.RemainingBounceCount--;
+//                 for (int enemyIndexInChain = 0; enemyIndexInChain < enemyCount; enemyIndexInChain++)
+//                 {
+//                     if (bullet.Target.Prefab == enemies[enemyIndexInChain].gameObject)
+//                     {
+//                         if (enemyIndexInChain - 1 >= 0)
+//                         {
+//                             bullet.Target = GetEnemyInChain(enemies[enemyIndexInChain - 1].transform.gameObject);
+
+//                             for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
+//                                 if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain - 1].transform.gameObject)
+//                                 {
+//                                     bullet.Target = player.EnemyControlSystem.AllEnemies[j];
+//                                     break;
+//                                 }
+//                             break;
+//                         }
+
+//                         if (enemyIndexInChain + 1 < enemyCount)
+//                         {
+//                             for (int j = 0; j < player.EnemyControlSystem.AllEnemies.Count; j++)
+//                                 if (player.EnemyControlSystem.AllEnemies[j].Prefab == enemies[enemyIndexInChain + 1].transform.gameObject)
+//                                 {
+//                                     bullet.Target = player.EnemyControlSystem.AllEnemies[j];
+//                                     break;
+//                                 }
+//                             break;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//         else
+//         {
+//             spirit.DealDamage(bullet.Target, spirit.DamageInstance);
+//             spirit.ShootSystem.SetTargetReached(bullet);
+//         }
