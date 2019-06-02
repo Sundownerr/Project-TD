@@ -9,12 +9,13 @@ using Game.Data.EnemyEntity;
 using Game.Data.SpiritEntity;
 using Game.Systems.Cells;
 using Game.Data.NetworkRequests;
+using System;
 
 namespace Game.Utility.Creator
 {
     public static class Create
     {
-        public static RangeSystem Range(IPrefabComponent owner, double size, CollideWith collideType)
+        public static RangeSystem Range(IPrefabComponent owner, double size, CollideWith collideType, Action<IVulnerable> onEntityEnteredRange, Action<IVulnerable> onEntityExitRange)
         {
             var range = UnityEngine.Object.Instantiate(ReferenceHolder.Instance.RangePrefab, owner.Prefab.transform);
             range.transform.localScale = new Vector3((float)size, 0.001f, (float)size);
@@ -22,6 +23,9 @@ namespace Game.Utility.Creator
             var rangeSystem = range.GetComponent<RangeSystem>();
             rangeSystem.Owner = owner;
             rangeSystem.CollideType = collideType;
+
+            rangeSystem.EntityEntered += onEntityEnteredRange;
+            rangeSystem.EntityExit += onEntityExitRange;
 
             return rangeSystem;
         }

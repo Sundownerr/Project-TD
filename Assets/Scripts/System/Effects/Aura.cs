@@ -7,24 +7,24 @@ using Game.Utility.Creator;
 
 namespace Game.Systems.Effects
 {
-    public class Aura : Effect
+    public abstract class Aura : Effect
     {
         protected RangeSystem range;
         protected GameObject rangePrefab;
 
         public Aura(Data.Effect effect) : base(effect)
         {
-            Data = effect;
+            EffectData = effect;
         }
 
         public override void Apply()
         {
-            var owner = Owner.GetOwnerOfType<IEntitySystem>();
-            range = Create.Range(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits);
-
             IsEnded = false;
         }
 
+        protected abstract void OnEntityEnteredRange(IVulnerable entity);
+        protected abstract void OnEntityExitRange(IVulnerable entity);
+        
         public override void End()
         {
             UnityEngine.Object.Destroy(rangePrefab);

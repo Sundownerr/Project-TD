@@ -42,7 +42,10 @@ namespace Game.Systems
 
         void OnDestroy()
         {
+            EntityEntered = null;
+            EntityExit = null;
             Destroyed?.Invoke();
+            Destroyed = null;
         }
 
         void OnTriggerEnter(Collider other)

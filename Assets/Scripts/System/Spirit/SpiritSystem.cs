@@ -27,10 +27,9 @@ namespace Game.Systems.Spirit
         public RangeSystem RangeSystem { get; private set; }
         public ShootSystem ShootSystem { get; private set; }
         public SpiritData Data { get => dataSystem.CurrentData; set => dataSystem.CurrentData = value; }
-        public Renderer[] Renderers { get; private set; }
         public Abilities.ControlSystem AbilityControlSystem { get; private set; }
         public Traits.ControlSystem TraitControlSystem { get; private set; }
-      
+
         public GameObject Prefab { get; private set; }
         public bool IsOn { get; set; }
         public IEntitySystem Owner { get; private set; }
@@ -75,8 +74,8 @@ namespace Game.Systems.Spirit
 
             TraitControlSystem.Set(Data.Traits);
             AbilityControlSystem.Set(Data.Abilities);
-            
-            SetShootSystem();
+
+            ShootSystem.Set(Prefab.transform.GetChild(2).gameObject);
             SetRangeSystem();
 
             void OnLeveledUp(SpiritSystem obj) => LeveledUp?.Invoke(this);
@@ -85,11 +84,8 @@ namespace Game.Systems.Spirit
 
             void SetRangeSystem()
             {
-                RangeSystem = Create.Range(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies);
-                RangeSystem.EntityEntered += OnEntityEnteredRange;
-                RangeSystem.EntityExit += OnEntityExitRange;
-                Renderers = Prefab.GetComponentsInChildren<Renderer>();
-
+                RangeSystem = Create.Range(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies, OnEntityEnteredRange, OnEntityExitRange);
+               
                 void OnEntityEnteredRange(IVulnerable e)
                 {
                     if (e is EnemySystem enemy)
@@ -107,21 +103,12 @@ namespace Game.Systems.Spirit
 
                 void OnEntityExitRange(IVulnerable e) => Targets.Remove(e as IHealthComponent);
             }
-
-
-            void SetShootSystem()
-            {
-                var bullet = Prefab.transform.GetChild(2).gameObject;
-
-                bullet.SetActive(false);
-                ShootSystem.Set(bullet);
-            }
         }
 
         public bool CheckHaveMana(double requiredAmount) => Data.Get(Enums.Spirit.Mana).Sum >= requiredAmount;
 
         public void ShowRange(bool show) => RangeSystem.Show = show;
-        
+
         public void UpdateSystem()
         {
             if (IsOn)

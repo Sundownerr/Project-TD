@@ -21,7 +21,7 @@ namespace Game.Systems.Effects
 
         public DamageOverTime(Data.Effects.DamageOverTime effect) : base(effect)
         {
-            Data = effect;
+            EffectData = effect;
             this.effect = effect;
         }
 

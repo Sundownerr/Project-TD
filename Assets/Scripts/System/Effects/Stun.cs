@@ -17,7 +17,7 @@ namespace Game.Systems.Effects
 
         public Stun(Data.Effects.Stun effect) : base(effect)
         {
-            Data = effect;
+            EffectData = effect;
             this.effect = effect;
             stunDuration = new WaitForSeconds(effect.Duration);
         }
@@ -65,7 +65,7 @@ namespace Game.Systems.Effects
                 GameLoop.Instance.StopCoroutine(effectCoroutine);
 
             if (Target != null)
-                if (Target.CountOf(Data) == 0)
+                if (Target.CountOf(EffectData) == 0)
                     Target.IsOn = true;
 
             Object.Destroy(effectPrefab);

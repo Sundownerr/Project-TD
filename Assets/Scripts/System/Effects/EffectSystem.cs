@@ -6,14 +6,14 @@ namespace Game.Systems
     public class Effect : IEntitySystem
     {
         public bool IsEnded { get; protected set; } = true;
-        public bool IsMaxStackReached => Target.CountOf(Data) > Data.MaxStackCount;
+        public bool IsMaxStackReached => Target.CountOf(EffectData) > EffectData.MaxStackCount;
         public IAppliedEffectsComponent Target { get; protected set; }
         public IEntitySystem Owner { get; protected set; }
-        public Data.Effect Data { get; protected set; }
+        public Data.Effect EffectData { get; protected set; }
 
         public Effect(Data.Effect effect)
         {
-            Data = effect;
+            EffectData = effect;
         }
 
         public void SetSystem(AbilitySystem ownerAbility)
@@ -23,7 +23,7 @@ namespace Game.Systems
 
         public virtual void Apply()
         {
-            Target.AddEffect(Data);
+            Target.AddEffect(EffectData);
             IsEnded = false;
         }
 
@@ -31,7 +31,7 @@ namespace Game.Systems
         {
             if (Target != null)
             {
-                Target.RemoveEffect(Data);
+                Target.RemoveEffect(EffectData);
             }
 
             IsEnded = true;

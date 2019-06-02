@@ -88,14 +88,14 @@ namespace Game.Systems.Abilities
 
                         foreach (var effectSystem in EffectSystems)
                         {
-                            if (effectSystem.Data.MaxStackCount > 1)
+                            if (effectSystem.EffectData.MaxStackCount > 1)
                             {
                                 if (!effectSystem.IsEnded && !effectSystem.IsMaxStackReached)
                                 {
                                     return true;
                                 }
                             }
-                            else if (effectSystem.Target != Target && Target.CountOf(effectSystem.Data) == 0)
+                            else if (effectSystem.Target != Target && Target.CountOf(effectSystem.EffectData) == 0)
                             {
                                 return true;
                             }

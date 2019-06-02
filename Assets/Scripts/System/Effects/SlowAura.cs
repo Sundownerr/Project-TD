@@ -3,6 +3,7 @@ using UnityEngine;
 using Game.Enums;
 using Game.Systems.Spirit;
 using Game.Data.Effects;
+using Game.Utility.Creator;
 
 namespace Game.Systems.Effects
 {
@@ -13,40 +14,48 @@ namespace Game.Systems.Effects
 
         public SlowAura(Data.Effects.SlowAura effect) : base(effect)
         {
-            Data = effect;
+            EffectData = effect;
             this.effect = effect;
             removedAttackSpeedMods = new Dictionary<SpiritSystem, int>();
         }
 
-        void OnSpiritEnteredRange(IVulnerable e)
+        protected override void OnEntityEnteredRange(IVulnerable e)
         {
             var spirit = e as SpiritSystem;
 
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
             var removedAttackSpeedMod = (int)spiritAttackSpeed.Sum.GetPercent(effect.SlowPercent);
 
-            if (spirit.CountOf(Data) <= 0)
+            if (spirit.CountOf(EffectData) <= 0)
+            {
                 spiritAttackSpeed.AppliedValue -= removedAttackSpeedMod;
+            }
             else
+            {
                 removedAttackSpeedMod = (int)(spiritAttackSpeed.Sum - effect.SlowPercent).GetPercent(effect.SlowPercent);
+            }
 
-            spirit.AddEffect(Data);
+            spirit.AddEffect(EffectData);
             removedAttackSpeedMods.Add(spirit, removedAttackSpeedMod);
         }
 
-        void OnSpiritExitRange(IVulnerable e) => RemoveEffect(e as IAppliedEffectsComponent);
+        protected override void OnEntityExitRange(IVulnerable e) => RemoveEffect(e as IAppliedEffectsComponent);
 
         void RemoveEffect(IAppliedEffectsComponent entity)
         {
             var spirit = entity as SpiritSystem;
             var spiritAttackSpeed = spirit.Data.Get(Enums.Spirit.AttackSpeed);
 
-            if (spirit.CountOf(Data) <= 1)
+            if (spirit.CountOf(EffectData) <= 1)
+            {
                 if (removedAttackSpeedMods.TryGetValue(spirit, out int removedAttackSpeed))
+                {
                     spiritAttackSpeed.AppliedValue += removedAttackSpeed;
+                }
+            }
 
             removedAttackSpeedMods.Remove(spirit);
-            spirit.RemoveEffect(Data);
+            spirit.RemoveEffect(EffectData);
         }
 
         public override void Apply()
@@ -55,8 +64,9 @@ namespace Game.Systems.Effects
 
             base.Apply();
 
-            range.EntityEntered += OnSpiritEnteredRange;
-            range.EntityExit += OnSpiritExitRange;
+            var owner = Owner.GetOwnerOfType<IEntitySystem>();
+            range = Create.Range(owner as IPrefabComponent, 1, CollideWith.EnemiesAndSpirits, OnEntityEnteredRange, OnEntityExitRange);
+
             range.Destroyed += OnRangeDestroyed;
 
             range.CollideType = CollideWith.Spirits;
@@ -72,8 +82,6 @@ namespace Game.Systems.Effects
             range.EntitySystems.ForEach(entitySystem => RemoveEffect(entitySystem as IAppliedEffectsComponent));
             removedAttackSpeedMods.Clear();
 
-            range.EntityEntered -= OnSpiritEnteredRange;
-            range.EntityExit -= OnSpiritExitRange;
             range.Destroyed -= OnRangeDestroyed;
             base.End();
         }
