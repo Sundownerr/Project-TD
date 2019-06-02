@@ -7,18 +7,21 @@ namespace Game.Data.NetworkRequests
     [Serializable]
     public class ListCoordinates3D : List<Coordinates3D>
     {
-        public Vector3[] ToVector3Array()
+        public List<Vector3> ToVector3List()
         {
-            var newArray = new Vector3[this.Count];
+            var newArray = new List<Vector3>(this.Count);
+
             for (int i = 0; i < this.Count; i++)
+            {
                 newArray[i] = new Vector3(this[i].X, this[i].Y, this[i].Z);
+            }
+
             return newArray;
         }
 
-        public ListCoordinates3D(Vector3[] positions)
+        public ListCoordinates3D(List<Vector3> positions)
         {
-            for (int i = 0; i < positions.Length; i++)
-                this.Add(positions[i].ToCoordinates3D());
+            positions.ForEach(position => this.Add(position.ToCoordinates3D()));
         }
     }
 

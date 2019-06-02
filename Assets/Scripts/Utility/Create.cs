@@ -10,6 +10,7 @@ using Game.Data.SpiritEntity;
 using Game.Systems.Cells;
 using Game.Data.NetworkRequests;
 using System;
+using System.Collections.Generic;
 
 namespace Game.Utility.Creator
 {
@@ -86,7 +87,7 @@ namespace Game.Utility.Creator
             GameData.Instance.Player.SpiritPlaceSystem.NetworkCreateSpirit(newSpirit);
         }
 
-        public static EnemySystem Enemy(Data.EnemyEntity.Enemy data, Vector3 position, Vector3[] waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
+        public static EnemySystem Enemy(Data.EnemyEntity.Enemy data, Vector3 position, List<Vector3> waypoints, bool isOwnedByPlayer = true, GameObject prefab = null)
         {
             var enemy = prefab ?? U.Instantiate(data.Prefab, position, Quaternion.identity, ReferenceHolder.Instance.EnemyParent);
             var enemySystem = new EnemySystem(enemy, waypoints, isOwnedByPlayer) { Data = data };
@@ -100,7 +101,7 @@ namespace Game.Utility.Creator
         {
             var enemyFromDB = GameData.Instance.Player.WaveSystem.ListWaves[request.WaveNumber + 1].EnemyTypes[request.PositionInWave];
             var spawnPos = request.Position.ToVector3();
-            var waypoints = request.Waypoints.ToVector3Array();
+            var waypoints = request.Waypoints.ToVector3List();
 
             if (enemyFromDB == null)
             {

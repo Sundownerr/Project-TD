@@ -57,7 +57,7 @@ namespace Game.Managers
 
         void Start()
         {
-            GameManager.Instance.StateChanged += OnGameStateChanged;
+            UIManager.Instance.StateChanged += OnUIStateChanged;
             UIManager.Instance.MageSelected += OnMageSelected;
             ReferenceHolder.Instance.ReferencesSet += OnReferencesSet;
 
@@ -65,9 +65,9 @@ namespace Game.Managers
 
             void OnReferencesSet() => SetPlayerData();
 
-            void OnGameStateChanged(GameState e)
+            void OnUIStateChanged(UIState e)
             {
-                if (e == GameState.InLobby)
+                if (e == UIState.InLobby)
                 {
                     LobbyExt.SetMemberData(LobbyData.Level, UserData.Level.ToString());
                     return;

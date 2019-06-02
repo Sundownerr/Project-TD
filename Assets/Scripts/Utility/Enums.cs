@@ -15,11 +15,16 @@ namespace Game.Enums
 
     public enum GameState
     {
-        MainMenu,
+        InMenu,
         LoadingGame,
         UnloadingGame,
         InGameSingleplayer,
-        InGameMultiplayer,
+        InGameMultiplayer
+    }
+
+    public enum UIState
+    {
+        MainMenu,
         BrowsingLobbies,
         CreatingLobby,
         InLobby,

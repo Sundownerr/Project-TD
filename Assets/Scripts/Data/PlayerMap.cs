@@ -8,12 +8,12 @@ namespace Game.Data
 {
     public class PlayerMap : MonoBehaviour
     {
-        public GameObject[] CellAreas;
+        public List<GameObject> CellAreas;
         public PlayerSystem Owner;
         public GameObject GroundSpawnPoint;
         public GameObject FlyingSpawnPoint;
-        public GameObject[] GroundWaypoints;
-        public GameObject[] FlyingWaypoints;
+        public List<GameObject> GroundWaypoints;
+        public List<GameObject> FlyingWaypoints;
 
     }
 }

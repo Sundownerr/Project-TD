@@ -27,12 +27,17 @@ namespace Game.Managers
             get => menu;
             set
             {
-                if (menu != null) return;
+                if (menu != null)
+                {
+                    return;
+                }
 
                 menu = value;
 
                 if (UIManager.Instance != null)
+                {
                     UIManager.Instance.Menu = value;
+                }
             }
         }
 
@@ -40,9 +45,12 @@ namespace Game.Managers
         public GameState GameState
         {
             get => currentGameState;
-            set
+            private set
             {
-                if (value == currentGameState) return;
+                if (value == currentGameState)
+                {
+                    return;
+                }
 
                 PreviousGameState = currentGameState;
                 currentGameState = value;
@@ -52,7 +60,7 @@ namespace Game.Managers
         }
 
         GameState previousGameState;
-        public GameState PreviousGameState { get; private set; } = GameState.MainMenu;
+        public GameState PreviousGameState { get; private set; } = GameState.InMenu;
 
         bool managersInstanced;
 
@@ -74,7 +82,10 @@ namespace Game.Managers
                 if (!managersInstanced)
                 {
                     for (int i = 0; i < Managers.Length; i++)
+                    {
                         Instantiate(Managers[i]);
+                    }
+
                     managersInstanced = true;
                 }
             }
@@ -96,13 +107,12 @@ namespace Game.Managers
                 if (scene.name == StringConsts.MainMenu)
                 {
                     RefreshReferences();
-                    GameState = GameState.MainMenu;
+                    GameState = GameState.InMenu;
                 }
 
                 void RefreshReferences()
                 {
                     Menu = GameObject.FindGameObjectWithTag(StringConsts.MenuUITag).GetComponent<MenuUISystem>();
-
                 }
             }
         }
@@ -132,9 +142,9 @@ namespace Game.Managers
             {
                 var isUsingSteam =
                     GameState == GameState.InGameMultiplayer ||
-                    GameState == GameState.InLobby ||
-                    GameState == GameState.BrowsingLobbies ||
-                    GameState == GameState.CreatingLobby;
+                    UIManager.Instance.State == UIState.InLobby ||
+                    UIManager.Instance.State == UIState.BrowsingLobbies ||
+                    UIManager.Instance.State == UIState.CreatingLobby;
 
                 SteamLostConnection?.Invoke();
 

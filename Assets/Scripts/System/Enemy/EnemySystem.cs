@@ -27,9 +27,9 @@ namespace Game.Systems.Enemy
         public AppliedEffectSystem AppliedEffectSystem { get; private set; }
         public bool IsOwnedByLocalPlayer { get; private set; }
 
-        Vector3[] waypoints;
+        List<Vector3> waypoints;
 
-        public EnemySystem(GameObject ownerPrefab, Vector3[] waypoints, bool isOwnedByPlayer = true)
+        public EnemySystem(GameObject ownerPrefab, List<Vector3> waypoints, bool isOwnedByPlayer = true)
         {
             AbilityControlSystem = new Abilities.ControlSystem(this, isOwnedByPlayer);
             TraitControlSystem = new Traits.ControlSystem(this);
@@ -67,7 +67,7 @@ namespace Game.Systems.Enemy
             {
                 var waypointReached = Prefab.GetDistanceTo(waypoints[WaypointIndex]) < 30;
 
-                if (WaypointIndex < waypoints.Length - 1)
+                if (WaypointIndex < waypoints.Count - 1)
                 {
                     if (!waypointReached)
                     {

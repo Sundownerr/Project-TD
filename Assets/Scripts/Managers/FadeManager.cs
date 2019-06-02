@@ -28,7 +28,7 @@ namespace Game.Managers
             void OnGameStateChanged(GameState e)
             {
                 var isFadeOut =
-                    e == GameState.MainMenu ||
+                    e == GameState.InMenu ||
                     e == GameState.InGameSingleplayer ||
                     e == GameState.InGameMultiplayer;
 

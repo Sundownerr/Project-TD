@@ -21,7 +21,7 @@ namespace Game.UI
         public GameObject Rarity, ParentGO;
         public bool IsChoosedNewSpirit;
 
-        List<GameObject> spiritButtonGOs = new List<GameObject>();
+        // List<GameObject> spiritButtonGOs = new List<GameObject>();
         List<SpiritButtonSystem> spiritButtons = new List<SpiritButtonSystem>();
         Transform rarityTransform;
         Vector2 newSpiritButtonPos = new Vector2(0, 1);
@@ -37,7 +37,7 @@ namespace Game.UI
             Owner = player;
 
             rarityTransform = Rarity.transform;
-            
+
             ElementButtons[(int)ElementType.Astral].onClick.AddListener(ShowAstral);
             ElementButtons[(int)ElementType.Darkness].onClick.AddListener(ShowDarkness);
             ElementButtons[(int)ElementType.Ice].onClick.AddListener(ShowIce);
@@ -82,9 +82,11 @@ namespace Game.UI
             else
             {
                 animator.SetBool("isOpen", false);
-                
-                for (int i = 0; i < spiritButtonGOs.Count; i++)
-                    spiritButtonGOs[i].SetActive(false);
+
+                for (int i = 0; i < spiritButtons.Count; i++)
+                {
+                    spiritButtons[i].gameObject.SetActive(false);
+                }
             }
         }
 
@@ -113,21 +115,27 @@ namespace Game.UI
 
         void UpdateRarity()
         {
-            for (int i = 0; i < spiritButtons.Count; i++)
-                spiritButtonGOs[i].gameObject.SetActive(spiritButtons[i].SpiritData.Base.Element == ChoosedElement);
+            spiritButtons.ForEach(button =>
+            {
+                button.gameObject.SetActive(button.SpiritData.Base.Element == ChoosedElement);
+            });
         }
 
         public void OnAllThisSpiritsUsed(SpiritButtonSystem spiritButton)
         {
-            spiritButtonGOs.Remove(spiritButton.gameObject);
             spiritButtons.Remove(spiritButton);
+
             var buttonRects = new List<RectTransform>();
 
             spiritButtons.ForEach(button =>
             {
                 if (button.Element == spiritButton.Element)
+                {
                     if (button.Rarity == spiritButton.Rarity)
+                    {
                         buttonRects.Add(button.GetComponent<RectTransform>());
+                    }
+                }
             });
 
             for (int i = 0; i < buttonRects.Count; i++)
@@ -136,17 +144,22 @@ namespace Game.UI
                 var newButtonPos = (Vector2)buttonRects[i].localPosition - newSpiritButtonPos;
 
                 for (int j = 0; j < buttonRects.Count; j++)
+                {
                     if (newButtonPos.y == buttonRects[j].localPosition.y)
                     {
                         isNewButtonPosBusy = true;
                         break;
                     }
+                }
 
                 if (isNewButtonPosBusy)
+                {
                     break;
-                else
-                if (newButtonPos.y >= 0)
+                }
+                else if (newButtonPos.y >= 0)
+                {
                     buttonRects[i].localPosition = newButtonPos;
+                }
             }
         }
 
@@ -162,49 +175,49 @@ namespace Game.UI
                     isSameSpirit = true;
                     button.Count++;
                     button.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = button.Count.ToString();
+                    spiritCount++;
                 }
-
-                if (button.Element == spiritData.Base.Element)
-                    if (button.Rarity == spiritData.Base.Rarity)
-                        spiritCount++;
             });
 
             if (!isSameSpirit)
-                CreateSpiritButton();
+            {
+                spiritButtons.Add(GetSpiritButton());
+            }
 
             UpdateUI();
 
-            #region  Helper functions
-
-            void CreateSpiritButton()
+            SpiritButtonSystem GetSpiritButton()
             {
-                spiritButtonGOs.Add(Instantiate(SpiritButtonPrefab, RarityGOs[(int)spiritData.Base.Rarity].transform));
-                spiritButtons.Add(spiritButtonGOs[spiritButtonGOs.Count - 1].GetComponent<SpiritButtonSystem>());
-
-                var spiritButton = spiritButtons[spiritButtons.Count - 1];
-                var spiritButtonImage = spiritButton.gameObject.transform.GetChild(0).GetComponent<Image>();
-
-                spiritButton.Owner = Owner;
-                spiritButton.SpiritData = spiritData;
-                spiritButton.PlaceNewSpirit += Owner.PlayerInputSystem.OnPlacingNewSpirit;
-                spiritButton.PlaceNewSpirit += Owner.SpiritPlaceSystem.OnPlacingNewSpirit;
-                spiritButton.AllThisSpiritsPlaced += OnAllThisSpiritsUsed;
-                spiritButton.GetComponent<RectTransform>().localPosition = newSpiritButtonPos * spiritCount;
+                var newSpiritButton = Instantiate(SpiritButtonPrefab, RarityGOs[(int)spiritData.Base.Rarity].transform).GetComponent<SpiritButtonSystem>();
+                var spiritButtonImage = newSpiritButton.gameObject.transform.GetChild(0).GetComponent<Image>();
                 spiritButtonImage.sprite = spiritData.Image;
-                spiritButton.Count = 1;
-            }
+                
+                newSpiritButton.Owner = Owner;
+                newSpiritButton.SpiritData = spiritData;
 
-            #endregion
+                newSpiritButton.PlaceNewSpirit += Owner.PlayerInputSystem.OnPlacingNewSpirit;
+                newSpiritButton.PlaceNewSpirit += Owner.SpiritPlaceSystem.OnPlacingNewSpirit;
+                newSpiritButton.AllThisSpiritsPlaced += OnAllThisSpiritsUsed;
+
+                newSpiritButton.GetComponent<RectTransform>().localPosition = newSpiritButtonPos * spiritCount;
+
+                newSpiritButton.Count = 1;
+
+                return newSpiritButton;
+            }
         }
 
         void OnDestroy()
         {
             if (ElementButtons != null)
+            {
                 ElementButtons.ForEach(button => button.onClick.RemoveAllListeners());
+            }
 
-            if (spiritButtonGOs != null)
-                spiritButtonGOs.ForEach(button => button.GetComponent<Button>().onClick.RemoveAllListeners());
-
+            if (spiritButtons != null)
+            {
+                spiritButtons.ForEach(button => button.GetComponent<Button>().onClick.RemoveAllListeners());
+            }
         }
     }
 }

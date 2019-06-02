@@ -21,8 +21,8 @@ namespace Game.Systems.Waves
         public PlayerSystem Owner { get; private set; }
         public Queue<Wave> Waves { get; private set; } = new Queue<Wave>();
         public List<Wave> ListWaves { get; private set; }
-        public Vector3[] GroundWaypoints { get; private set; }
-        public Vector3[] FlyingWaypoints { get; private set; }
+        public List<Vector3> GroundWaypoints { get; private set; }
+        public List<Vector3> FlyingWaypoints { get; private set; }
 
         List<List<EnemySystem>> wavesEnemySystem = new List<List<EnemySystem>>();
         List<int> currentEnemyCount = new List<int>();
@@ -57,7 +57,8 @@ namespace Game.Systems.Waves
 
         public void SetSystem()
         {
-            SetWaypoints();
+            GroundWaypoints = GetWaypoints(Owner.Map.GroundWaypoints);
+            FlyingWaypoints = GetWaypoints(Owner.Map.FlyingWaypoints);
 
             Owner.WaveUISystem.WaveStarted += OnWaveStarted;
 
@@ -73,32 +74,18 @@ namespace Game.Systems.Waves
             ListWaves = new List<Wave>(Waves);
             Waves.Dequeue();
 
-            #region  Helper functions
-
-            void SetWaypoints()
+            List<Vector3> GetWaypoints(List<GameObject> waypointObjects)
             {
-                GroundWaypoints = new Vector3[Owner.Map.GroundWaypoints.Length];
-                FlyingWaypoints = new Vector3[Owner.Map.FlyingWaypoints.Length];
+                var waypoints = new List<Vector3>(waypointObjects.Count);
+                waypointObjects.ForEach(waypoint => waypoints.Add(waypoint.transform.position));
 
-                for (int i = 0; i < GroundWaypoints.Length; i++)
-                {
-                    GroundWaypoints[i] = Owner.Map.GroundWaypoints[i].transform.position;
-                }
-
-                for (int i = 0; i < FlyingWaypoints.Length; i++)
-                {
-                    FlyingWaypoints[i] = Owner.Map.FlyingWaypoints[i].transform.position;
-                }
+                return waypoints;
             }
-
-            #endregion
         }
 
         public void UpdateSystem()
         {
             AddMagicCrystalAfterWaveEnd();
-
-            #region  Helper functions
 
             void AddMagicCrystalAfterWaveEnd()
             {
@@ -107,6 +94,7 @@ namespace Game.Systems.Waves
                     var killedEnemyCount = 0;
 
                     for (int enemyId = 0; enemyId < wavesEnemySystem[waveId].Count; enemyId++)
+                    {
                         if (wavesEnemySystem[waveId][enemyId].Prefab == null)
                         {
                             killedEnemyCount++;
@@ -118,10 +106,9 @@ namespace Game.Systems.Waves
                                 break;
                             }
                         }
+                    }
                 }
             }
-
-            #endregion
         }
 
         void SetNextWave()
@@ -139,8 +126,6 @@ namespace Game.Systems.Waves
 
             spawnCoroutine = GameLoop.Instance.StartCoroutine(SpawnEnemyWave());
 
-            #region  Helper functions
-
             IEnumerator SpawnEnemyWave()
             {
                 WaveStarted?.Invoke();
@@ -149,14 +134,14 @@ namespace Game.Systems.Waves
 
                 while (spawned < Waves.Peek().EnemyTypes.Count)
                 {
-                    Vector3 spawnPosition;
-                    Vector3[] waypoints;
-
-                    GetSpawnAndWayPoints();
+                    var isEnemyFlying = Waves.Peek().EnemyTypes[spawned].Type == EnemyType.Flying;
+                    var enemyPositions = GetEnemyPositions(isEnemyFlying);
+                    var spawnPosition = enemyPositions.spawnPosition;
+                    var waypoints = enemyPositions.waypoints;
 
                     if (GameManager.Instance.GameState == GameState.InGameMultiplayer)
                     {
-                        CreateEnemyRequest();
+                        SendEnemyRequest();
                     }
                     else
                     {
@@ -164,9 +149,8 @@ namespace Game.Systems.Waves
                     }
 
                     spawned++;
+                    
                     yield return spawnDelay;
-
-                    #region  Helper functions
 
                     void CreateEnemy()
                     {
@@ -176,7 +160,7 @@ namespace Game.Systems.Waves
                         EnemyCreated?.Invoke(newEnemy);
                     }
 
-                    void CreateEnemyRequest()
+                    void SendEnemyRequest()
                     {
                         var enemy = Waves.Peek().EnemyTypes[spawned];
                         var position = spawnPosition.ToCoordinates3D();
@@ -194,21 +178,10 @@ namespace Game.Systems.Waves
                         });
                     }
 
-                    void GetSpawnAndWayPoints()
-                    {
-                        if (Waves.Peek().EnemyTypes[spawned].Type == EnemyType.Flying)
-                        {
-                            spawnPosition = Owner.Map.FlyingSpawnPoint.transform.position;
-                            waypoints = FlyingWaypoints;
-                        }
-                        else
-                        {
-                            spawnPosition = Owner.Map.GroundSpawnPoint.transform.position;
-                            waypoints = GroundWaypoints;
-                        }
-                    }
-
-                    #endregion
+                    (Vector3 spawnPosition, List<Vector3> waypoints) GetEnemyPositions(bool isEnenmyFlying) =>
+                         isEnenmyFlying ?
+                            (Owner.Map.FlyingSpawnPoint.transform.position, FlyingWaypoints) :
+                            (Owner.Map.GroundSpawnPoint.transform.position, GroundWaypoints);
                 }
 
                 if (GameManager.Instance.GameState == GameState.InGameSingleplayer)
@@ -219,8 +192,6 @@ namespace Game.Systems.Waves
                     }
                 }
             }
-
-            #endregion
         }
     }
 }

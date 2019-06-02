@@ -114,6 +114,16 @@ namespace Game.UI.Lobbies
             }
         }
 
+        public void UpdateData()
+        {
+            wavesDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Waves));
+            modeDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Mode));
+            mapDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Map));
+            difficultyDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Difficulty));
+            playersSlider.value = int.Parse(LobbyExt.GetData(LobbyData.MaxPlayers));
+            visibilityDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Visibility));
+        }
+
         public void Destroy()
         {
             visibilityDropdown.onValueChanged.RemoveAllListeners();

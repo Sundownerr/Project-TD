@@ -10,14 +10,16 @@ namespace Game.UI
 {
     public class SpiritButtonSystem : ExtendedMonoBehaviour
     {
+        public event Action<SpiritData> PlaceNewSpirit;
+        public event Action<SpiritButtonSystem> AllThisSpiritsPlaced;
+
         public PlayerSystem Owner { get; set; }
         public int Count { get; set; }
         public RarityType Rarity => SpiritData.Base.Rarity;
         public ElementType Element => SpiritData.Base.Element;
         public SpiritData SpiritData { get; set; }
         public TextMeshProUGUI SpiritCountText { get; set; }
-        public event Action<SpiritData> PlaceNewSpirit;
-        public event Action<SpiritButtonSystem> AllThisSpiritsPlaced;
+
 
         protected override void Awake()
         {

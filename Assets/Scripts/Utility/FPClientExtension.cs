@@ -46,7 +46,7 @@ namespace Game.Utility
         public static void LeaveGame()
         {
             if (FPClient.Instance == null) return;
-            
+
             FPClient.Instance.Lobby.OnLobbyStateChanged = null;
             FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
             FPClient.Instance.LobbyList.OnLobbiesUpdated = null;
@@ -139,7 +139,7 @@ namespace Game.Utility
                 if (FPClient.Instance.Lobby.IsOwner)
                 {
                     networkManager.StartHost();
-                    GameManager.Instance.GameState = GameState.LoadingGame;
+                    // GameManager.Instance.GameState = GameState.LoadingGame;
                     LobbyExt.SetData(LobbyData.GameStarted, LobbyData.Yes);
                 }
             }
@@ -210,6 +210,7 @@ namespace Game.Utility
                 var texture = new Texture2D(image.Width, image.Height);
 
                 for (int x = 0; x < image.Width; x++)
+                {
                     for (int y = 0; y < image.Height; y++)
                     {
                         var pixel = image.GetPixel(x, y);
@@ -219,7 +220,7 @@ namespace Game.Utility
                             image.Height - y,
                             new UnityEngine.Color(pixel.r / 255.0f, pixel.g / 255.0f, pixel.b / 255.0f, pixel.a / 255.0f));
                     }
-
+                }
                 texture.Apply();
                 player.Avatar.texture = texture;
             }

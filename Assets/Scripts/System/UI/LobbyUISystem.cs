@@ -45,7 +45,10 @@ namespace Game.UI.Lobbies
 
             void OnMageSelected(MageData e)
             {
-                if (GameManager.Instance.GameState != GameState.InLobby) return;
+                if (UIManager.Instance.State != UIState.InLobby)
+                {
+                    return;
+                }
 
                 LobbyExt.SetMemberData(LobbyData.MageID, $"{e.Index}");
                 isChangingMage = false;
@@ -69,7 +72,10 @@ namespace Game.UI.Lobbies
 
         public override void Open(float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-            if (isChangingMage) return;
+            if (isChangingMage)
+            {
+                return;
+            }
 
             LobbyExt.SetCallbacks(
                 new LobbyCallbacks(
@@ -90,13 +96,19 @@ namespace Game.UI.Lobbies
             void UpdatePlayers()
             {
                 var playerIDs = FPClient.Instance.Lobby.GetMemberIDs();
-                for (int i = 0; i < playerIDs.Length; i++) AddPlayer(playerIDs[i]);
+
+                foreach (var id in playerIDs)
+                {
+                    AddPlayer(id);
+                }
             }
 
             void UpdateLobbyData()
             {
                 if (!FPClient.Instance.Lobby.IsOwner)
+                {
                     StartServerButton.gameObject.SetActive(false);
+                }
                 else
                 {
                     LobbyExt.SetData(LobbyData.GameStarted, LobbyData.No);
@@ -134,22 +146,19 @@ namespace Game.UI.Lobbies
             {
                 if (!FPClient.Instance.Lobby.IsOwner)
                 {
-                    WavesDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Waves));
-                    ModeDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Mode));
-                    MapDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Map));
-                    DifficultyDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Difficulty));
-                    PlayersSlider.value = int.Parse(LobbyExt.GetData(LobbyData.MaxPlayers));
-                    VisibilityDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Visibility));
+                    lobbyDataChanger.UpdateData();
                 }
 
                 var networkManager = NetworkManager.singleton as ExtendedNetworkManager;
 
                 if (LobbyExt.GetData(LobbyData.GameStarting) == LobbyData.Yes)
+                {
                     if (!NetworkClient.isConnected && !NetworkServer.active)
                     {
                         networkManager.networkAddress = FPClient.Instance.Lobby.Owner.ToString();
                         networkManager.onlineScene = LobbyExt.GetData(LobbyData.Map);
                     }
+                }
 
                 if (LobbyExt.GetData(LobbyData.GameStarted) == LobbyData.Yes)
                 {
@@ -171,13 +180,7 @@ namespace Game.UI.Lobbies
 
                 playerTexts.Add(steamID, Instantiate(PlayerTextPrefab, PlayerTextGroup.transform).GetComponent<LobbyPlayerUI>());
 
-                playerTexts[steamID]
-                    .SetName(FPClient.Instance.Friends.GetName(steamID))
-                    .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
-                    .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
-                        $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                        $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
-                    .SetAvatar(steamID);
+                SetPlayerData(steamID);
 
                 if (steamID == FPClient.Instance.SteamId)
                 {
@@ -202,13 +205,30 @@ namespace Game.UI.Lobbies
             }
         }
 
+        void SetPlayerData(ulong steamID)
+        {
+            playerTexts[steamID]
+                .SetName(FPClient.Instance.Friends.GetName(steamID))
+                .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
+                .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
+                    $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
+                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
+                .SetAvatar(steamID);
+        }
+
         public override void Close(Move moveTo, float timeToComplete = NumberConsts.UIAnimSpeed)
         {
-            if (isChangingMage) return;
+            if (isChangingMage)
+            {
+                return;
+            }
 
             base.Close(moveTo);
 
-            foreach (var playerText in playerTexts.Values) Destroy(playerText.gameObject);
+            foreach (var playerText in playerTexts.Values)
+            {
+                Destroy(playerText.gameObject);
+            }
 
             chatTextsPool.DeactivateAll();
             playerTexts.Clear();
@@ -222,13 +242,7 @@ namespace Game.UI.Lobbies
 
         void LobbyMemberDataUpdated(ulong steamID)
         {
-            playerTexts[steamID]
-                .SetName(FPClient.Instance.Friends.GetName(steamID))
-                .SetLevel($"Lv.{LobbyExt.GetMemberData(steamID, LobbyData.Level)}")
-                .SetReady(LobbyExt.GetMemberData(steamID, LobbyData.Ready) == LobbyData.Yes ?
-                    $"<color=green>{LocaleKeys.ReadyYes.GetLocalized()}</color>" :
-                    $"<color=red>{LocaleKeys.ReadyNo.GetLocalized()}</color>")
-                .SetAvatar(steamID);
+            SetPlayerData(steamID);
 
             if (FPClient.Instance.Lobby.IsOwner)
             {
@@ -246,7 +260,5 @@ namespace Game.UI.Lobbies
                 StartServerButton.interactable = true;
             }
         }
-
-
     }
 }
