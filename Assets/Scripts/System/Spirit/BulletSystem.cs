@@ -51,7 +51,7 @@ namespace Game.Systems.Spirit.Internal
         float speed;
         float defaultSpeed;
 
-        public BulletSystem(GameObject prefab, Vector3 startPosition, Quaternion startRotation)
+        public BulletSystem(GameObject prefab, Vector3 startPosition)
         {
             Prefab = prefab;
             particleSystems = prefab.GetComponentsInChildren<ParticleSystem>(true);
@@ -60,7 +60,7 @@ namespace Game.Systems.Spirit.Internal
             Speed = 1f;
 
             Prefab.transform.position = startPosition;
-            Prefab.transform.rotation = startRotation;
+          
 
             defaultSpeed = Speed;
 

@@ -48,7 +48,7 @@ namespace Game.Systems.Spirit
 
             dataSystem = new SpiritDataSystem(this);
             TraitControlSystem = new Traits.ControlSystem(this);
-            ShootSystem = new ShootSystem(this);
+            ShootSystem = new ShootSystem(this, ShootPoint.position);
             AbilityControlSystem = new Abilities.ControlSystem(this, isOwnedByPlayer);
             AppliedEffectSystem = new AppliedEffectSystem();
             Prefab.layer = 14;
@@ -85,7 +85,7 @@ namespace Game.Systems.Spirit
             void SetRangeSystem()
             {
                 RangeSystem = Create.Range(this, Data.Get(Enums.Spirit.Range).Value, CollideWith.Enemies, OnEntityEnteredRange, OnEntityExitRange);
-               
+
                 void OnEntityEnteredRange(IVulnerable e)
                 {
                     if (e is EnemySystem enemy)
@@ -117,11 +117,11 @@ namespace Game.Systems.Spirit
 
                 if (Targets.Count == 0)
                 {
-                    ShootSystem.Shoot();
+                    ShootSystem.UpdateBullets();
                 }
                 else
                 {
-                    ShootSystem.UpdateSystem();
+                    ShootSystem.UpdateSystem(Data.Get(Enums.Spirit.AttackSpeed).Sum, Data.Get(Enums.Spirit.AttackDelay).Sum);
                     RotateAtEnemy();
                     ClearNullTargets();
                 }

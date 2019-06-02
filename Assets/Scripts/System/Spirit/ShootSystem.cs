@@ -18,26 +18,49 @@ namespace Game.Systems.Spirit.Internal
         public bool isHaveChainTargets;
 
         List<BulletSystem> bullets = new List<BulletSystem>();
-        List<float> removeTimers = new List<float>();
-        SpiritSystem ownerSpirit;
+        ICombatComponent owner;
         ObjectPool bulletPool;
         WaitForSeconds delayBetweenAttacks;
+        WaitForSeconds bulletLifetime;
+        Vector3 bulletSpawnPosition;
         bool canShoot = true;
         double currentAttackCooldown;
         int shotCount;
+        double attackSpeed;
+        double attackDelay;
 
-        public ShootSystem(SpiritSystem spirit) => ownerSpirit = spirit;
+        public ShootSystem(ICombatComponent owner, Vector3 bulletSpawnPosition)
+        {
+            this.owner = owner;
+            this.bulletSpawnPosition = bulletSpawnPosition;
+        }
 
         void OnDestroy() => bulletPool.DestroyPool();
 
         public void Set(GameObject bullet)
         {
-            bulletPool = new ObjectPool(bullet, ownerSpirit.Prefab.transform, 2);
+            bulletPool = new ObjectPool(bullet, owner.Prefab.transform, 2);
         }
 
-        public void UpdateSystem()
+        public void UpdateSystem(double attackSpeed, double attackDelay)
         {
             if (canShoot)
+            {
+                RefreshAttackCooldown();
+                ShootBullet();
+                GameLoop.Instance.StartCoroutine(CooldownAttack());
+            }
+
+            UpdateBullets();
+
+            IEnumerator CooldownAttack()
+            {
+                canShoot = false;
+                yield return delayBetweenAttacks;
+                canShoot = true;
+            }
+
+            void RefreshAttackCooldown()
             {
                 var newAttackCooldown = GetAttackCooldown();
 
@@ -47,64 +70,32 @@ namespace Game.Systems.Spirit.Internal
                     delayBetweenAttacks = new WaitForSeconds((float)newAttackCooldown);
                 }
 
-                canShoot = false;
-                ShotBullet();
-                GameLoop.Instance.StartCoroutine(CooldownAttack());
-            }
-
-            Shoot();
-
-            for (int i = 0; i < removeTimers.Count; i++)
-            {
-                if (removeTimers[i] > 0)
+                double GetAttackCooldown()
                 {
-                    removeTimers[i] -= Time.deltaTime;
-                }
-                else
-                {
-                    bullets[0].SetActive(false);
-                    removeTimers.RemoveAt(i);
+                    var modifiedAttackDelay = attackDelay.GetPercent(attackSpeed);
+
+                    return attackSpeed < 100 ?
+                        attackDelay + (attackDelay - modifiedAttackDelay) :
+                        attackDelay - (modifiedAttackDelay - attackDelay);
                 }
             }
 
-            IEnumerator CooldownAttack()
-            {
-                yield return delayBetweenAttacks;
-                canShoot = true;
-            }
-
-            double GetAttackCooldown()
-            {
-                var attackDelay = ownerSpirit.Data.Get(Enums.Spirit.AttackDelay).Sum;
-                var attackSpeed = ownerSpirit.Data.Get(Enums.Spirit.AttackSpeed).Sum;
-
-                var modifiedAttackDelay = attackDelay.GetPercent(attackSpeed);
-
-                return attackSpeed < 100 ?
-                    attackDelay + (attackDelay - modifiedAttackDelay) :
-                    attackDelay - (modifiedAttackDelay - attackDelay);
-            }
-
-            void ShotBullet()
+            void ShootBullet()
             {
                 PrepareToShoot?.Invoke();
 
                 for (int i = 0; i < shotCount; i++)
                 {
-                    bullets.Add(CreateBullet(ownerSpirit.Targets[i]));
+                    CreateBullet(owner.Targets[i]);
                 }
 
-                BulletSystem CreateBullet(IHealthComponent target)
+                void CreateBullet(IHealthComponent target)
                 {
                     var newBullet = bullets.Find(bullet => bullet.Prefab.activeSelf);
 
                     if (newBullet == null)
                     {
-                        newBullet = new BulletSystem(
-                            bulletPool.PopObject(),
-                            ownerSpirit.ShootPoint.position,
-                            ownerSpirit.MovingPart.rotation);
-
+                        newBullet = new BulletSystem(bulletPool.PopObject(), bulletSpawnPosition);
                         bullets.Add(newBullet);
                     }
 
@@ -117,9 +108,12 @@ namespace Game.Systems.Spirit.Internal
                         newBullet.SetActive(false);
                     }
 
-                    Shooting?.Invoke(newBullet);
+                    if (bulletLifetime == null)
+                    {
+                        bulletLifetime = new WaitForSeconds(newBullet.Lifetime);
+                    }
 
-                    return newBullet;
+                    Shooting?.Invoke(newBullet);
                 }
             }
         }
@@ -129,11 +123,17 @@ namespace Game.Systems.Spirit.Internal
             if (!bullet.IsTargetReached)
             {
                 bullet.IsTargetReached = true;
-                removeTimers.Add(bullet.Lifetime);
+                GameLoop.Instance.StartCoroutine(RemoveBullet());
+            }
+
+            IEnumerator RemoveBullet()
+            {
+                yield return bulletLifetime;
+                bullet.SetActive(false);
             }
         }
 
-        public void Shoot()
+        public void UpdateBullets()
         {
             bullets.ForEach(bullet =>
             {
