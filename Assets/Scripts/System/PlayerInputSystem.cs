@@ -78,6 +78,11 @@ namespace Game.Systems
                         var isMouseOnCell = hit.transform.gameObject.layer == 15;
                         var isMouseOnEnemy = hit.transform.gameObject.layer == 12;
 
+                        if (ChoosedSpirit != null)
+                        {
+                            ChoosedSpirit.ShowRange(false);
+                        }
+
                         if (isMouseOnSpirit)
                         {
                             GetChoosedSpirit();
@@ -123,6 +128,7 @@ namespace Game.Systems
             void GetChoosedSpirit()
             {
                 ChoosedSpirit = Owner.SpiritControlSystem.AllSpirits.Find(spirit => spirit.Prefab == hit.transform.gameObject);
+                ChoosedSpirit.ShowRange(true);
                 Owner.SpiritUISystem.ActivateUpgradeButton(CheckGradeListOk(out _));
                 ActivateSelection(ChoosedSpirit);
             }
@@ -164,7 +170,7 @@ namespace Game.Systems
 
         bool CheckGradeListOk(out List<SpiritData> grades)
         {
-            var allSpirits =  ReferenceHolder.Instance.SpiritDB.Data;
+            var allSpirits = ReferenceHolder.Instance.SpiritDB.Data;
             var spirit = allSpirits.Find(x => x.Index == ChoosedSpirit.Data.Index);
 
             if (spirit != null)

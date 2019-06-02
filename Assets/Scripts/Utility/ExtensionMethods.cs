@@ -175,9 +175,9 @@ public static class Ext
     ///</summary>   
     public static T GetOwnerOfType<T>(this IEntitySystem entitySystem) where T : IEntitySystem
     {
-        if (entitySystem.Owner is T system)
+        if (entitySystem.Owner is T entity)
         {
-            return system;
+            return entity;
         }
 
         return entitySystem.Owner == null ? default(T) : entitySystem.Owner.GetOwnerOfType<T>();

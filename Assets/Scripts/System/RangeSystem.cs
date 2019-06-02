@@ -10,24 +10,31 @@ namespace Game.Systems
 {
     public class RangeSystem : ExtendedMonoBehaviour
     {
-        public List<IVulnerable> EntitySystems { get; set; } = new List<IVulnerable>();
-        public List<GameObject> Entities { get; set; } = new List<GameObject>();
-        public IPrefabComponent Owner { get; set; }
-        public CollideWith CollideType { get; set; }
+
         public event Action<IVulnerable> EntityEntered;
         public event Action<IVulnerable> EntityExit;
         public event Action Destroyed;
 
-        Renderer rend;
+        public List<IVulnerable> EntitySystems { get; set; } = new List<IVulnerable>();
+        public List<GameObject> Entities { get; set; } = new List<GameObject>();
+        public IPrefabComponent Owner { get; set; }
+        public CollideWith CollideType { get; set; }
+
+        bool show;
+        public bool Show { set => rend.enabled = value; }
+
+        MeshRenderer rend;
         Color transparent, notTransparent;
         bool isRangeShowed;
+
 
         protected override void Awake()
         {
             base.Awake();
 
-            rend = GetComponent<Renderer>();
+            rend = GetComponent<MeshRenderer>();
             transform.position += new Vector3(0, -5, 0);
+            rend.enabled = false;
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
@@ -130,27 +137,5 @@ namespace Game.Systems
                 }
             }
         }
-
-        void Show(bool show)
-        {
-            isRangeShowed = show;
-            rend.material.color = show ? notTransparent : transparent;
-        }
-
-        public void SetShow()
-        {
-            var isChoosedSpirit =
-                (Owner as IEntitySystem).GetOwnerOfType<PlayerSystem>().PlayerInputSystem.ChoosedSpirit == Owner as SpiritSystem;
-
-            if (isChoosedSpirit)
-            {
-                if (!isRangeShowed)
-                    Show(true);
-            }
-            else if (isRangeShowed)
-                Show(false);
-        }
-
-        public void SetShow(bool show) => Show(show);
     }
 }

@@ -120,10 +120,10 @@ namespace Game.Systems.Spirit
 
         public bool CheckHaveMana(double requiredAmount) => Data.Get(Enums.Spirit.Mana).Sum >= requiredAmount;
 
+        public void ShowRange(bool show) => RangeSystem.Show = show;
+        
         public void UpdateSystem()
         {
-            RangeSystem.SetShow();
-
             if (IsOn)
             {
                 AbilityControlSystem.UpdateSystem();

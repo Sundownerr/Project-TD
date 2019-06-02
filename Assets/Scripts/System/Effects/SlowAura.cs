@@ -62,7 +62,7 @@ namespace Game.Systems.Effects
             range.CollideType = CollideWith.Spirits;
             range.transform.localScale = new Vector3(effect.Size, 0.001f, effect.Size);
             range.transform.position += new Vector3(0, 15, 0);
-            range.SetShow(true);
+            range.Show = true;
         }
 
         void OnRangeDestroyed() => End();
