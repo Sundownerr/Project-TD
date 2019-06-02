@@ -153,7 +153,11 @@ namespace Game.Systems.Spirit
             #endregion
         }
 
-        public void Upgrade(SpiritSystem previousSpirit, SpiritData newData) => dataSystem.Upgrade(previousSpirit, newData);
+        public void Upgrade(SpiritSystem previousSpirit, SpiritData newData)
+        {
+            UsedCell = previousSpirit.UsedCell;
+            dataSystem.Upgrade(previousSpirit, newData);
+        }
 
         public void AddExp(int amount) => dataSystem.AddExp(amount);
 

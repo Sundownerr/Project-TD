@@ -35,8 +35,6 @@ namespace Game.Systems.Spirit.Internal
             this.bulletSpawnPosition = bulletSpawnPosition;
         }
 
-        void OnDestroy() => bulletPool.DestroyPool();
-
         public void Set(GameObject bullet)
         {
             bulletPool = new ObjectPool(bullet, owner.Prefab.transform, 2);

@@ -34,6 +34,13 @@ namespace Game.Data.Attributes
     {
         [SerializeField] public Increase IncreasePerLevel;
         [SerializeField] public double ValuePerLevel;
+
+        public void LevelUp()
+        {
+            Value = IncreasePerLevel == Increase.ByValue ?
+                Value + ValuePerLevel :
+                Value + Value.GetPercent(ValuePerLevel);
+        }
     }
 
     [Serializable]
