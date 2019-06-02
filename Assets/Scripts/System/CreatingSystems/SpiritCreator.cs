@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.Enums;
 using Game.Managers;
 
@@ -24,30 +25,38 @@ namespace Game.Systems.Spirit
             //     GM.Instance.AvailableTowerList.Clear();
             //     GM.Instance.PlayerData.StartTowerRerollCount--;
             // }
-            var elementLevels = Owner.Data.ElementLevels;
-            var dataBaseElements =  ReferenceHolder.Instance.SpiritDB.Data;
+   
+            var spiritsFromDatabase = ReferenceHolder.Instance.SpiritDB.Data;
+            var leveledUpElements = Owner.Data.ElementLevels.FindAll(elementLevel => elementLevel > 0);
 
-            for (int lvldUpElementId = 0; lvldUpElementId < elementLevels.Count; lvldUpElementId++)
-                if (elementLevels[lvldUpElementId] > 0)
-                    for (int dbElementId = 0; dbElementId < dataBaseElements.Count; dbElementId++)
-                        if (dbElementId == lvldUpElementId)
-                            GetNewSpirit(lvldUpElementId);
-
+            for (int elementIndex = 0; elementIndex < leveledUpElements.Count; elementIndex++)
+            {
+                GetNewSpirits((ElementType)elementIndex)
+                    .ForEach(spirit =>
+                    {
+                        Owner.AvailableSpirits.Add(spirit);
+                        Owner.BuildUISystem.AddSpiritButton(spirit);
+                    });
+            }
+              
             AddedNewAvailableSpirit?.Invoke();
 
-            void GetNewSpirit(int elementId)
+            List<Data.SpiritEntity.SpiritData> GetNewSpirits(ElementType element)
             {
-                var spirits =  ReferenceHolder.Instance.SpiritDB.Data;
+                var spirits = ReferenceHolder.Instance.SpiritDB.Data;
+                var newSpirits = new List<Data.SpiritEntity.SpiritData>();
 
-                for (int i = 0; i < spirits.Count; i++)
-                {
-                    if (spirits[i].Get(Numeral.WaveLevel).Value <= Owner.WaveSystem.WaveNumber)
+                spirits.FindAll(spiritInDatabase => spiritInDatabase.Base.Element == element)
+                    .ForEach(spirit =>
                     {
-                        Owner.AvailableSpirits.Add(spirits[i]);
-                        Owner.BuildUISystem.AddSpiritButton(spirits[i]);
-                    }
-                }
-            }                                       
+                        if (spirit.Get(Numeral.WaveLevel).Value <= Owner.WaveSystem.WaveNumber)
+                        {
+                            newSpirits.Add(spirit);
+                        }
+                    });
+
+                return newSpirits;
+            }
         }
     }
 }
