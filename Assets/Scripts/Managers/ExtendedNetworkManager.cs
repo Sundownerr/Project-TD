@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using FPClient = Facepunch.Steamworks.Client;
 using NetworkPlayer = Game.Systems.Network.NetworkPlayer;
 using Game.Systems;
 using Game.Systems.Network;

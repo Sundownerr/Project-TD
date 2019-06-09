@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using FPClient = Facepunch.Steamworks.Client;
-using Facepunch.Steamworks;
 using UnityEngine.UI;
 using TMPro;
 using Mirror;
@@ -13,74 +11,21 @@ using Game.Consts;
 using Game.UI;
 using Game.Enums;
 using Game.UI.Lobbies;
+using Steamworks.Data;
+using Steamworks;
+using System.Threading.Tasks;
 
 namespace Game.Utility
 {
-    public struct LobbyCallbacks
-    {
-        public Action<Lobby.MemberStateChange, ulong, ulong> StateChanged;
-        public Action<ulong> MemberDataUpdated;
-        public Action DataUpdated;
-        public Action<ulong, string> ChatStringReceived;
-
-        /// <param name="stateChanged"> Called when the state of the Lobby is somehow shifted. Usually when someone joins
-        /// or leaves the lobby. The first ulong is the SteamID of the user that initiated
-        /// the change. The second ulong is the person that was affected</param>
-        /// <param name="chatStringReceived">Callback when chat string received</param>
-        /// <param name="dataUpdated"> Called when the lobby data itself has been updated. 
-        /// Called when someone has joined/left, Owner has updated data, etc.</param>
-        /// <param name="memberDataUpdated">Called when a member of the lobby has updated either 
-        /// their personal Lobby metadata or someone's global steam state has changed (like a display name). 
-        /// Parameter is the user steamID who changed</param>
-        public LobbyCallbacks(Action<Lobby.MemberStateChange, ulong, ulong> stateChanged, Action<ulong> memberDataUpdated, Action dataUpdated, Action<ulong, string> chatStringReceived)
-        {
-            StateChanged = stateChanged;
-            MemberDataUpdated = memberDataUpdated;
-            DataUpdated = dataUpdated;
-            ChatStringReceived = chatStringReceived;
-        }
-    }
-
-    public static class FPClientExt
-    {
-        public static void LeaveGame()
-        {
-            if (FPClient.Instance == null) return;
-
-            FPClient.Instance.Lobby.OnLobbyStateChanged = null;
-            FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
-            FPClient.Instance.LobbyList.OnLobbiesUpdated = null;
-            FPClient.Instance.Lobby.OnLobbyCreated = null;
-            FPClient.Instance.Lobby.OnLobbyJoined = null;
-            FPClient.Instance.Lobby.OnChatStringRecieved = null;
-
-            FPClient.Instance.Lobby.Leave();
-        }
-    }
-
+  
     public static class LobbyExt
     {
-        public static void SetCallbacks(LobbyCallbacks lobbyCallbacks)
-        {
-            FPClient.Instance.Lobby.OnLobbyStateChanged = lobbyCallbacks.StateChanged;
-            FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = lobbyCallbacks.MemberDataUpdated;
-            FPClient.Instance.Lobby.OnLobbyDataUpdated = lobbyCallbacks.DataUpdated;
-            FPClient.Instance.Lobby.OnChatStringRecieved = lobbyCallbacks.ChatStringReceived;
-        }
-
-        public static void ClearLobbyCallbacks()
-        {
-            FPClient.Instance.Lobby.OnLobbyStateChanged = null;
-            FPClient.Instance.Lobby.OnLobbyMemberDataUpdated = null;
-            FPClient.Instance.Lobby.OnLobbyDataUpdated = null;
-            FPClient.Instance.Lobby.OnChatStringRecieved = null;
-        }
-
         /// <summary>
         /// Send chat message as player
         /// </summary>
         public static void SendChatMessage(TMP_InputField chatInputField)
         {
+            var lobby = GameData.Instance.CurrentLobby;
 
             if (string.IsNullOrWhiteSpace(chatInputField.text))
             {
@@ -88,37 +33,27 @@ namespace Game.Utility
                 return;
             }
 
-            var message = $"{FPClient.Instance.Username}: {chatInputField.text}";
+            var message = $"{SteamClient.Name}: {chatInputField.text}";
 
-            if (FPClient.Instance.Lobby.SendChatMessage(message))
+            if (lobby.SendChatString(message))
             {
                 chatInputField.text = string.Empty;
                 chatInputField.ActivateInputField();
             }
         }
 
-        /// <summary>
-        /// Send chat message as server
-        /// </summary>
-        public static void SendChatMessage(string message)
-        {
-            if (string.IsNullOrWhiteSpace(message))
-                return;
 
-            FPClient.Instance.Lobby.SendChatMessage(message);
-        }
+        public static Friend GetMeFromLobby(this Lobby lobby) =>
+            new List<Friend>(lobby.Members).Find(x => x.IsMe);
 
-        public static string GetData(string key) => FPClient.Instance.Lobby.CurrentLobbyData.GetData(key);
-        public static bool SetData(string key, string value) => FPClient.Instance.Lobby.CurrentLobbyData.SetData(key, value);
-
-        public static string GetMemberData(ulong steamID, string key) => FPClient.Instance.Lobby.GetMemberData(steamID, key);
-        public static void SetMemberData(string key, string value) => FPClient.Instance.Lobby.SetMemberData(key, value);
 
         public static void StartLobbyServer()
         {
-            if (FPClient.Instance.Lobby.IsOwner)
+            var lobby = GameData.Instance.CurrentLobby;
+
+            if (lobby.Owner.IsMe)
             {
-                LobbyExt.SetData(LobbyData.GameStarting, LobbyData.Yes);
+                lobby.SetData(LobbyData.GameStarting, LobbyData.Yes);
                 GameManager.Instance.StartCoroutine(StartTimer());
             }
 
@@ -127,43 +62,53 @@ namespace Game.Utility
                 var networkManager = NetworkManager.singleton as ExtendedNetworkManager;
                 var timeUntilStart = 4d;
 
-                LobbyExt.SendChatMessage($"Starting in 5 ...");
+                SendChatMessage($"Starting in 5 ...");
 
                 while (timeUntilStart > 0)
                 {
-                    LobbyExt.SendChatMessage($"{timeUntilStart} ...");
+                    SendChatMessage($"{timeUntilStart} ...");
                     yield return new WaitForSeconds(0.5f);
                     timeUntilStart -= 1;
                 }
 
-                if (FPClient.Instance.Lobby.IsOwner)
+                if (lobby.Owner.IsMe)
                 {
                     networkManager.StartHost();
                     // GameManager.Instance.GameState = GameState.LoadingGame;
-                    LobbyExt.SetData(LobbyData.GameStarted, LobbyData.Yes);
+                    lobby.SetData(LobbyData.GameStarted, LobbyData.Yes);
+                }
+
+                void SendChatMessage(string message)
+                {
+                    if (string.IsNullOrWhiteSpace(message))
+                        return;
+
+                    lobby.SendChatString(message);
                 }
             }
         }
 
-        public static void SetLobbyDefaultData()
+        public static void SetDefaultData(this Lobby lobby)
         {
-            FPClient.Instance.Lobby.Name = $"{FPClient.Instance.Username}'s lobby";
 
-            LobbyExt.SetData(LobbyData.Joinable, LobbyData.Yes);
-            LobbyExt.SetData(LobbyData.GameStarted, LobbyData.No);
-            LobbyExt.SetData(LobbyData.GameStarting, LobbyData.No);
-            LobbyExt.SetData(LobbyData.Mode, string.Empty);
-            LobbyExt.SetData(LobbyData.Difficulty, string.Empty);
-            LobbyExt.SetData(LobbyData.Map, StringConsts.MultiplayerMap1);
-            LobbyExt.SetData(LobbyData.Waves, string.Empty);
-            LobbyExt.SetMemberData(LobbyData.MageID, $"{GameData.Instance.ChoosedMage.Index}");
-            LobbyExt.SetMemberData(LobbyData.Ready, LobbyData.No);
+            var me = lobby.GetMeFromLobby();
+            lobby.SetData("name", $"{SteamClient.Name}'s lobby");
+
+            lobby.SetData(LobbyData.Joinable, LobbyData.Yes);
+            lobby.SetData(LobbyData.GameStarted, LobbyData.No);
+            lobby.SetData(LobbyData.GameStarting, LobbyData.No);
+            lobby.SetData(LobbyData.Mode, string.Empty);
+            lobby.SetData(LobbyData.Difficulty, string.Empty);
+            lobby.SetData(LobbyData.Map, StringConsts.MultiplayerMap1);
+            lobby.SetData(LobbyData.Waves, string.Empty);
+            lobby.SetMemberData(me, LobbyData.MageID, $"{GameData.Instance.ChoosedMage.Index}");
+            lobby.SetMemberData(me, LobbyData.Ready, LobbyData.No);
 
         }
 
         public static void UpdateData(TextMeshProUGUI UIText, string key)
         {
-            var value = GetData(key);
+            var value = GameData.Instance.CurrentLobby.GetData(key);
 
             if (string.IsNullOrWhiteSpace(value))
                 return;
@@ -198,16 +143,14 @@ namespace Game.Utility
             return player;
         }
 
-        public static LobbyPlayerUI SetAvatar(this LobbyPlayerUI player, ulong steamID)
+        public static async Task<LobbyPlayerUI> SetAvatar(this LobbyPlayerUI player, Friend member)
         {
-            FPClient.Instance.Friends.GetAvatar(Friends.AvatarSize.Medium, steamID, LoadAvatar);
+            var avatar = await member.GetSmallAvatarAsync();
 
-            void LoadAvatar(Facepunch.Steamworks.Image image)
+            if (avatar.HasValue)
             {
-                if (image == null)
-                    return;
-
-                var texture = new Texture2D(image.Width, image.Height);
+                var image = avatar.Value;
+                var texture = new Texture2D((int)image.Width, (int)image.Height);
 
                 for (int x = 0; x < image.Width; x++)
                 {
@@ -217,7 +160,7 @@ namespace Game.Utility
 
                         texture.SetPixel(
                             x,
-                            image.Height - y,
+                            (int)image.Height - y,
                             new UnityEngine.Color(pixel.r / 255.0f, pixel.g / 255.0f, pixel.b / 255.0f, pixel.a / 255.0f));
                     }
                 }

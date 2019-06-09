@@ -8,12 +8,16 @@ using Game.Systems;
 using System;
 using Game.Data;
 using NetworkPlayer = Game.Systems.Network.NetworkPlayer;
+using Steamworks;
+using Steamworks.Data;
 
 namespace Game.Managers
 {
     public class GameData : SingletonDDOL<GameData>
     {
         public event Action<PlayerSystem> PlayerDataSet;
+
+        public Lobby CurrentLobby { get; set; }
 
         NetworkPlayer networkPlayer;
         public NetworkPlayer NetworkPlayer
@@ -69,7 +73,8 @@ namespace Game.Managers
             {
                 if (e == UIState.InLobby)
                 {
-                    LobbyExt.SetMemberData(LobbyData.Level, UserData.Level.ToString());
+                    
+                    CurrentLobby.SetMemberData(CurrentLobby.GetMeFromLobby(), LobbyData.Level, UserData.Level.ToString());
                     return;
                 }
             }

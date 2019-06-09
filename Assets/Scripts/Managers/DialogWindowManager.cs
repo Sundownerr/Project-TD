@@ -43,20 +43,19 @@ namespace Game.UI
             buttonYes.onClick.RemoveAllListeners();
             buttonNo.onClick.RemoveAllListeners();
 
-            buttonYes.onClick.AddListener(() => { Close(UIWindow.Move.Up, 0.05f); });
-            buttonNo.onClick.AddListener(() => { Close(UIWindow.Move.Up, 0.05f); });
-
             buttonYes.onClick.AddListener(yesAction);
-            if (noAction != null) buttonNo.onClick.AddListener(noAction);
-
+            buttonNo.onClick.AddListener(noAction ?? OnButtonClicked);
+         
             var wordsCount = text.Split(' ').Length;
             var width = Mathf.Clamp(text.Length * 11, 300, 500);
             var height = Mathf.Clamp(wordsCount * 2, 100, 500);
-            this.windowText.text = text;
 
+            windowText.text = text;
             windowRect.sizeDelta = new Vector2(width, height);
 
             Open(0.05f);
+
+            void OnButtonClicked() => Close(UIWindow.Move.Up, 0.05f);
         }
     }
 }

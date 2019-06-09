@@ -93,9 +93,6 @@ namespace Game.Systems
             UICanvas = ReferenceHolder.Instance.UICanvas;
             WorldCanvas = ReferenceHolder.Instance.WorldCanvas;
 
-            PlayerInputSystem = U.Instantiate(ReferenceHolder.Instance.PlayerInputSystem.gameObject).GetComponent<PlayerInputSystem>();
-            InventoryUISystem = U.Instantiate(ReferenceHolder.Instance.InventoryUISystem.gameObject, UICanvas.transform).GetComponent<InventoryUISystem>();
-            ResourceUISystem = U.Instantiate(ReferenceHolder.Instance.ResourceUISystem.gameObject, UICanvas.transform).GetComponent<ResourceUISystem>();
 
             SpiritUISystem = U.Instantiate(ReferenceHolder.Instance.SpiritUISystem.gameObject, UICanvas.transform).GetComponent<SpiritUISystem>();
             BuildUISystem = U.Instantiate(ReferenceHolder.Instance.BuildUISystem.gameObject, WorldCanvas.transform).GetComponentInChildren<BuildUISystem>();
@@ -105,16 +102,21 @@ namespace Game.Systems
             WorldUISystem = U.Instantiate(ReferenceHolder.Instance.WorldUISystem.gameObject, WorldCanvas.transform).GetComponent<WorldUISystem>();
             DescriptionUISystem = U.Instantiate(ReferenceHolder.Instance.DescriptionUISystem.gameObject, UICanvas.transform).GetComponent<DescriptionUISystem>();
 
+
+            PlayerInputSystem = U.Instantiate(ReferenceHolder.Instance.PlayerInputSystem.gameObject).GetComponent<PlayerInputSystem>();
+            InventoryUISystem = U.Instantiate(ReferenceHolder.Instance.InventoryUISystem.gameObject, UICanvas.transform).GetComponent<InventoryUISystem>();
+            ResourceUISystem = U.Instantiate(ReferenceHolder.Instance.ResourceUISystem.gameObject, UICanvas.transform).GetComponent<ResourceUISystem>();
+
             SetSystem();
         }
 
         void SetSystem()
         {
-            PlayerInputSystem.SetSystem(this);
+
             SpiritUISystem.SetSystem(this);
             EnemyControlSystem.SetSystem();
             CellControlSystem.SetSystem();
-            SpiritPlaceSystem.SetSystem();
+
             SpiritCreatingSystem.SetSystem();
             ResourceSystem.SetSystem();
             ItemDropSystem.SetSystem();
@@ -131,6 +133,8 @@ namespace Game.Systems
             DescriptionUISystem.SetSystem(this);
             SpiritControlSystem.SetSystem();
             MageHeroSystem.SetSystem();
+            SpiritPlaceSystem.SetSystem();
+            PlayerInputSystem.SetSystem(this);
 
             ReferenceHolder.Instance.StartCoroutine(SetCameraPos());
             isSet = true;
@@ -146,8 +150,6 @@ namespace Game.Systems
 
                 yield return new WaitForSeconds(0.1f);
                 cinemachineCamera.SetActive(true);
-
-
             }
         }
 

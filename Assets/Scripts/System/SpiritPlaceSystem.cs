@@ -21,14 +21,17 @@ namespace Game.Systems.Spirit
             Owner = player;
         }
 
-        public void SetSystem() { }
+        public void SetSystem()
+        {
+            UIManager.Instance.BuildUISystem.PlaceNewSpiritClicked += OnPlacingNewSpirit;
+        }
 
         public void NetworkCreateSpirit(SpiritSystem spirit)
         {
             SpiritPlaced?.Invoke(spirit);
         }
 
-        public void OnPlacingNewSpirit(SpiritData spiritData)
+        void OnPlacingNewSpirit(SpiritData spiritData)
         {
             if (Owner.CellControlSystem.IsGridBuilded)
             {

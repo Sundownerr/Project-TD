@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine.UI;
-using Facepunch.Steamworks;
-using FPClient = Facepunch.Steamworks.Client;
+using Steamworks;
 using TMPro;
 using Game.Consts;
 using Game.Utility;
 using Game.Utility.Localization;
+using Steamworks.Data;
 
 namespace Game.UI.Lobbies
 {
@@ -19,8 +19,9 @@ namespace Game.UI.Lobbies
         TMP_Dropdown mapDropdown;
         TMP_Dropdown wavesDropdown;
         TMP_InputField LobbyName;
+        Lobby lobby;
 
-        public LobbyDataChanger(LobbyUISystem lobbyUISystem)
+        public LobbyDataChanger(LobbyUISystem lobbyUISystem, Lobby lobby)
         {
             maxPlayersText = lobbyUISystem.MaxPlayersText;
             playersSlider = lobbyUISystem.PlayersSlider;
@@ -30,9 +31,11 @@ namespace Game.UI.Lobbies
             wavesDropdown = lobbyUISystem.WavesDropdown;
             visibilityDropdown = lobbyUISystem.VisibilityDropdown;
 
+            this.lobby = lobby;
+
             LocalizeDropdownItems();
 
-            if (!FPClient.Instance.Lobby.IsOwner)
+            if (!lobby.Owner.IsMe)
             {
                 ActivateDropdowns(false);
             }
@@ -45,35 +48,43 @@ namespace Game.UI.Lobbies
                     playersSlider.maxValue = option == 0 ? 2 : 8;
                     playersSlider.value = playersSlider.value > playersSlider.maxValue ? playersSlider.maxValue : playersSlider.value;
 
-                    LobbyExt.SetData(LobbyData.Mode, option.ToString());
+                    lobby.SetData(LobbyData.Mode, option.ToString());
                 });
 
                 visibilityDropdown.onValueChanged.AddListener((option) =>
                 {
-                    FPClient.Instance.Lobby.LobbyType = option == 0 ? Lobby.Type.Public : Lobby.Type.FriendsOnly;
-                    LobbyExt.SetData(LobbyData.Visibility, option.ToString());
+                    if (option == 0)
+                    {
+                        lobby.SetPublic();
+                    }
+                    else
+                    {
+                        lobby.SetPrivate();
+                    }
+
+                    //  lobby.SetData(LobbyData.Visibility, option.ToString());
                 });
 
                 difficultyDropdown.onValueChanged.AddListener((option) =>
                 {
-                    LobbyExt.SetData(LobbyData.Difficulty, option.ToString());
+                    lobby.SetData(LobbyData.Difficulty, option.ToString());
                 });
 
                 mapDropdown.onValueChanged.AddListener((option) =>
                 {
-                    LobbyExt.SetData(LobbyData.Map, mapDropdown.options[option].text);
+                    lobby.SetData(LobbyData.Map, mapDropdown.options[option].text);
                 });
 
                 wavesDropdown.onValueChanged.AddListener((option) =>
                 {
-                    LobbyExt.SetData(LobbyData.Waves, option.ToString());
+                    lobby.SetData(LobbyData.Waves, option.ToString());
                 });
 
                 playersSlider.onValueChanged.AddListener((sliderValue) =>
                 {
                     maxPlayersText.text = sliderValue.ToString();
-                    FPClient.Instance.Lobby.MaxMembers = (int)sliderValue;
-                    LobbyExt.SetData(LobbyData.MaxPlayers, ((int)sliderValue).ToString());
+                    lobby.MaxMembers = (int)sliderValue;
+                    lobby.SetData(LobbyData.MaxPlayers, ((int)sliderValue).ToString());
                 });
 
                 playersSlider.minValue = 2;
@@ -116,12 +127,12 @@ namespace Game.UI.Lobbies
 
         public void UpdateData()
         {
-            wavesDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Waves));
-            modeDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Mode));
-            mapDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Map));
-            difficultyDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Difficulty));
-            playersSlider.value = int.Parse(LobbyExt.GetData(LobbyData.MaxPlayers));
-            visibilityDropdown.value = int.Parse(LobbyExt.GetData(LobbyData.Visibility));
+            wavesDropdown.value = int.Parse(lobby.GetData(LobbyData.Waves));
+            modeDropdown.value = int.Parse(lobby.GetData(LobbyData.Mode));
+            mapDropdown.value = int.Parse(lobby.GetData(LobbyData.Map));
+            difficultyDropdown.value = int.Parse(lobby.GetData(LobbyData.Difficulty));
+            playersSlider.value = int.Parse(lobby.GetData(LobbyData.MaxPlayers));
+            visibilityDropdown.value = int.Parse(lobby.GetData(LobbyData.Visibility));
         }
 
         public void Destroy()

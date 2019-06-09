@@ -5,12 +5,13 @@ using Game.Enums;
 using Game.Utility;
 using Game.Systems;
 using Game.Data.SpiritEntity;
+using UnityEngine;
 
 namespace Game.UI
 {
     public class SpiritButtonSystem : ExtendedMonoBehaviour
     {
-        public event Action<SpiritData> PlaceNewSpirit;
+        public event Action<SpiritData> PlaceNewSpiritClicked;
         public event Action<SpiritButtonSystem> AllThisSpiritsPlaced;
 
         public PlayerSystem Owner { get; set; }
@@ -30,18 +31,22 @@ namespace Game.UI
 
             void OnClick()
             {
+                Debug.Log(1);
                 var goldCost = SpiritData.Get(Numeral.ResourceCost).Value;
                 var spiritLimit = SpiritData.Get(Enums.Spirit.SpiritLimit).Value;
                 var magicCrystalsCost = SpiritData.Get(Enums.Spirit.MagicCrystalReq).Value;
-
+                Debug.Log(Owner.ResourceSystem);
                 if (Owner.ResourceSystem.CheckHaveResources(spiritLimit, goldCost, magicCrystalsCost))
                 {
-                    PlaceNewSpirit?.Invoke(SpiritData);
+                    Debug.Log(3);
+                    PlaceNewSpiritClicked?.Invoke(SpiritData);
                     Count--;
 
                     if (Count >= 1)
                     {
+                        Debug.Log(4);
                         SpiritCountText.text = Count.ToString();
+                        Debug.Log(5);
                     }
                     else
                     {
@@ -50,6 +55,18 @@ namespace Game.UI
                     }
                 }
             }
+        }
+
+        public void Set(SpiritData spiritData, PlayerSystem owner, Vector2 position, int index)
+        {
+            transform.GetChild(0).GetComponent<Image>().sprite = spiritData.Image;
+
+            owner = Owner;
+            SpiritData = spiritData;
+
+            GetComponent<RectTransform>().localPosition = position * index;
+
+            Count = 1;
         }
     }
 }

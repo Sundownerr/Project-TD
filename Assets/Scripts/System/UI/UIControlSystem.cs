@@ -4,10 +4,10 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 using System;
-using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
 using Game.Utility;
 using Game.Managers;
+using Steamworks;
 
 namespace Game.Systems
 {
@@ -26,9 +26,15 @@ namespace Game.Systems
 
         void Awake()
         {
-            if (FPClient.Instance != null)
+            if (SteamClient.IsLoggedOn)
             {
-                FPClient.Instance.Lobby.OnChatStringRecieved = ChatMessageReceived;
+                SteamMatchmaking.OnChatMessage += (lobby, member, message) =>
+                {
+                    var prefab = Instantiate(ChatTextPrefab, ChatTextGroup.transform);
+
+                    chatTexts.Add(prefab.GetComponent<TMP_InputField>());
+                    chatTexts[chatTexts.Count - 1].text = message;
+                };
             }
 
             IncreaseLevelButton.onClick.AddListener(OnIncreaseLevelClick);
@@ -38,30 +44,22 @@ namespace Game.Systems
 
             void QuitGame()
             {
-                var manager = NetworkManager.singleton as ExtendedNetworkManager;
+                // var manager = NetworkManager.singleton as ExtendedNetworkManager;
 
-                if (FPClient.Instance.Lobby.CurrentLobby == 0)
-                {
-                    manager.StopHost();
-                    manager.StopClient();
-                    
-                    return;
-                }
+                // if (FPClient.Instance.Lobby.CurrentLobby == 0)
+                // {
+                //     manager.StopHost();
+                //     manager.StopClient();
 
-                if (FPClient.Instance.Lobby.IsOwner)
-                {
-                    manager.StopHost();
-                }
+                //     return;
+                // }
 
-                manager.StopClient();
-            }
+                // if (FPClient.Instance.Lobby.IsOwner)
+                // {
+                //     manager.StopHost();
+                // }
 
-            void ChatMessageReceived(ulong senderID, string message)
-            {
-                var prefab = Instantiate(ChatTextPrefab, ChatTextGroup.transform);
-
-                chatTexts.Add(prefab.GetComponent<TMP_InputField>());
-                chatTexts[chatTexts.Count - 1].text = message;
+                // manager.StopClient();
             }
         }
 

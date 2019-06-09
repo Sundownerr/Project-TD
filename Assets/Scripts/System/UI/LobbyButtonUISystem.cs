@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Facepunch.Steamworks;
 using TMPro;
+using Steamworks.Data;
 
 namespace Game.UI.Lobbies
 {
     public class LobbyButtonUISystem : MonoBehaviour
     {
-        public event Action<LobbyList.Lobby> Clicked;
+        public event Action<Lobby> Clicked;
 
-        public LobbyList.Lobby Lobby { get; set; }
+        public Lobby Lobby { get; set; }
         public TextMeshProUGUI Label { get; set; }
 
         void Awake()

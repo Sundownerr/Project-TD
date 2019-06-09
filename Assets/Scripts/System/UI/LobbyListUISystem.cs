@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Facepunch.Steamworks;
 using System.Text;
 using Mirror;
-using FPClient = Facepunch.Steamworks.Client;
 using TMPro;
 using System;
 using Game;
@@ -11,6 +9,9 @@ using DG.Tweening;
 using Game.Utility;
 using Game.Consts;
 using Game.Managers;
+using Steamworks;
+using Steamworks.Data;
+using System.Threading.Tasks;
 
 namespace Game.UI.Lobbies
 {
@@ -21,7 +22,7 @@ namespace Game.UI.Lobbies
         public LobbyUISystem LobbyUI;
         public Button RefreshButton, CreateLobbyButton, JoinLobbyButton;
 
-        LobbyList.Lobby selectedLobby;
+        Lobby? selectedLobby;
         ObjectPool lobbyButtonsPool, lobbyInfoTextPool;
 
         void Start()
@@ -35,25 +36,63 @@ namespace Game.UI.Lobbies
             CreateLobbyButton.onClick.AddListener(OnCreateLobbyClick);
             JoinLobbyButton.onClick.AddListener(OnJoinLobbyClick);
 
-            void OnCreateLobbyClick() => FPClient.Instance.Lobby.Create(Lobby.Type.Public, 2);
-
-            void OnJoinLobbyClick()
+            async void OnCreateLobbyClick()
             {
-                if (selectedLobby != null)
+                var lobbyTask = await SteamMatchmaking.CreateLobbyAsync(5);
+
+                if (lobbyTask.HasValue)
                 {
-                    FPClient.Instance.Lobby.Join(selectedLobby.LobbyID);
+                    var lobby = lobbyTask.Value;
+
+                    if (lobby.SetPublic() && lobby.SetJoinable(true))
+                    {
+                        Debug.Log("Succesfully created lobby");
+                        lobby.Owner = new Friend(SteamClient.SteamId);
+
+                        lobby.SetDefaultData();
+                        // CreatedLobby?.Invoke();
+
+                        await JoinLobby(lobby);
+                    }
+                }
+            }
+
+            async Task JoinLobby(Lobby? lobby)
+            {
+                var joinTask = await lobby.Value.Join();
+
+                if (joinTask == RoomEnter.Success)
+                {
+                    Debug.Log("succesfully joined lobby");
+
+                    lobbyInfoTextPool.DeactivateAll();
+                    lobbyButtonsPool.DeactivateAll();
+
+
+                    selectedLobby = null;
+
+                    GameData.Instance.CurrentLobby = lobby.Value;
+
+                    JoinedLobby?.Invoke();
+                }
+                else
+                {
+                    Debug.LogError($"error when joining lobby: {joinTask}");
+                }
+            }
+
+            async void OnJoinLobbyClick()
+            {
+                if (selectedLobby.HasValue)
+                {
+                    await JoinLobby(selectedLobby);
                 }
             }
 
             void OnRefreshButtonClick()
             {
-                var lobbyFilter = new LobbyList.Filter
-                {
-                    DistanceFilter = LobbyList.Filter.Distance.Worldwide
-                };
-
-                FPClient.Instance.LobbyList.Refresh(lobbyFilter);
                 lobbyButtonsPool.DeactivateAll();
+                UpdateLobbyList();
             }
         }
 
@@ -65,65 +104,47 @@ namespace Game.UI.Lobbies
                 NetworkManager.singleton = prefab.GetComponent<ExtendedNetworkManager>();
             }
 
-            FPClient.Instance.LobbyList.OnLobbiesUpdated = LobbiesUpdated;
-            FPClient.Instance.Lobby.OnLobbyJoined = LobbyJoined;
-            FPClient.Instance.Lobby.OnLobbyCreated = LobbyCreated;
+            UpdateLobbyList();
 
             base.Open(timeToComplete);
+        }
 
-            void LobbyCreated(bool isSuccesful)
+        async void UpdateLobbyList()
+        {
+            var lobbyList = await SteamMatchmaking.LobbyList.RequestAsync();
+            var sb = new StringBuilder();
+            var index = 1;
+
+            foreach (var lobby in lobbyList)
             {
-                if (isSuccesful)
-                {
+                var name = lobby.GetData("name");
 
-                    LobbyExt.SetLobbyDefaultData();
-                    CreatedLobby?.Invoke();
-                }
+                if (string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                sb.Append($"{index}.   ")
+                    .Append($"{name}  ")
+                    .Append($"{lobby.MemberCount} / ")
+                    .Append(lobby.MaxMembers);
+
+                var lobbyButton = lobbyButtonsPool.PopObject().GetComponent<LobbyButtonUISystem>();
+
+                lobbyButton.Lobby = lobby;
+                lobbyButton.Label.text = sb.ToString();
+                lobbyButton.Clicked += OnLobbyButtonClicked;
+                sb.Clear();
+                index++;
             }
 
-            void LobbyJoined(bool isSuccesful)
+            void OnLobbyButtonClicked(Lobby lobby)
             {
-                if (isSuccesful)
+                selectedLobby = lobby;
+                lobbyInfoTextPool.DeactivateAll();
+                var lobbyData = lobby.Data;
+
+                foreach (var data in lobbyData)
                 {
-                    lobbyInfoTextPool.DeactivateAll();
-                    lobbyButtonsPool.DeactivateAll();
-
-                    selectedLobby = null;
-                    JoinedLobby?.Invoke();
-                }
-            }
-
-            void LobbiesUpdated()
-            {
-                var lobbies = FPClient.Instance.LobbyList.Lobbies;
-                var sb = new StringBuilder();
-
-                for (int i = 0; i < lobbies.Count; i++)
-                {
-                    sb.Append($"{i}.   ")
-                        .Append($"{lobbies[i]?.Name}  ")
-                        .Append($"{lobbies[i]?.NumMembers} / ")
-                        .Append(lobbies[i]?.MemberLimit);
-
-                    var lobbyButton = lobbyButtonsPool.PopObject().GetComponent<LobbyButtonUISystem>();
-
-                    lobbyButton.Lobby = lobbies[i];
-                    lobbyButton.Label.text = sb.ToString();
-                    lobbyButton.Clicked += OnLobbyButtonClicked;
-                    sb.Clear();
-                }
-
-                void OnLobbyButtonClicked(LobbyList.Lobby lobby)
-                {
-                    if (lobby == null) return;
-
-                    selectedLobby = lobby;
-                    lobbyInfoTextPool.DeactivateAll();
-
-                    foreach (var pair in lobby.GetAllData())
-                    {
-                        lobbyInfoTextPool.PopObject().GetComponent<TextMeshProUGUI>().text = $"{pair.Key} {pair.Value}";
-                    }
+                    lobbyInfoTextPool.PopObject().GetComponent<TextMeshProUGUI>().text = $"{data.Key} {data.Value}";
                 }
             }
         }

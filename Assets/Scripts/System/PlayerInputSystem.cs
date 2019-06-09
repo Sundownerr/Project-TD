@@ -56,8 +56,18 @@ namespace Game.Systems
 
             Owner.SpiritUISystem.Selling += OnSelling;
             Owner.SpiritUISystem.Upgrading += OnUpgrading;
+            UIManager.Instance.BuildUISystem.PlaceNewSpiritClicked += OnPlacingNewSpirit;
+
             selection = Instantiate(Selection);
             selection.SetActive(false);
+
+            void OnPlacingNewSpirit(SpiritData spiritData)
+            {
+                var placedSpirit = Owner.AvailableSpirits.Find(spirit => spirit.Index == spiritData.Index);
+                Owner.AvailableSpirits.Remove(placedSpirit);
+
+                PlacingSpirit?.Invoke();
+            }
         }
 
         void Update()
@@ -158,13 +168,7 @@ namespace Game.Systems
                 selection.SetActive(activate);
         }
 
-        public void OnPlacingNewSpirit(SpiritData spiritData)
-        {
-            var placedSpirit = Owner.AvailableSpirits.Find(spirit => spirit.Index == spiritData.Index);
-            Owner.AvailableSpirits.Remove(placedSpirit);
 
-            PlacingSpirit?.Invoke();
-        }
 
         void OnSelling() => SpiritSold?.Invoke(ChoosedSpirit);
 

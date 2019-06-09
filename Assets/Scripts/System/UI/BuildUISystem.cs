@@ -8,11 +8,14 @@ using Game.Utility;
 using Game.Systems;
 using Game.Systems.Spirit;
 using Game.Data.SpiritEntity;
+using Game.Managers;
 
 namespace Game.UI
 {
     public class BuildUISystem : ExtendedMonoBehaviour
     {
+        public event Action<SpiritData> PlaceNewSpiritClicked;
+
         public PlayerSystem Owner { get; set; }
         public List<Button> ElementButtons;
         public List<GameObject> RarityGOs;
@@ -34,6 +37,7 @@ namespace Game.UI
 
         public void SetSystem(PlayerSystem player)
         {
+            UIManager.Instance.BuildUISystem = this;
             Owner = player;
 
             rarityTransform = Rarity.transform;
@@ -82,11 +86,7 @@ namespace Game.UI
             else
             {
                 animator.SetBool("isOpen", false);
-
-                for (int i = 0; i < spiritButtons.Count; i++)
-                {
-                    spiritButtons[i].gameObject.SetActive(false);
-                }
+                spiritButtons.ForEach(button => button.gameObject.SetActive(false));
             }
         }
 
@@ -101,7 +101,8 @@ namespace Game.UI
             UpdateRarity();
         }
 
-        void UpdateAvailableElement() => ElementButtons.ForEach(button => button.gameObject.SetActive(true));
+        void UpdateAvailableElement() =>
+            ElementButtons.ForEach(button => button.gameObject.SetActive(true));
 
         void ShowRarity(ElementType element)
         {
@@ -113,56 +114,9 @@ namespace Game.UI
             UpdateRarity();
         }
 
-        void UpdateRarity()
-        {
-            spiritButtons.ForEach(button =>
-            {
-                button.gameObject.SetActive(button.SpiritData.Base.Element == ChoosedElement);
-            });
-        }
-
-        public void OnAllThisSpiritsUsed(SpiritButtonSystem spiritButton)
-        {
-            spiritButtons.Remove(spiritButton);
-
-            var buttonRects = new List<RectTransform>();
-
-            spiritButtons.ForEach(button =>
-            {
-                if (button.Element == spiritButton.Element)
-                {
-                    if (button.Rarity == spiritButton.Rarity)
-                    {
-                        buttonRects.Add(button.GetComponent<RectTransform>());
-                    }
-                }
-            });
-
-            for (int i = 0; i < buttonRects.Count; i++)
-            {
-                var isNewButtonPosBusy = false;
-                var newButtonPos = (Vector2)buttonRects[i].localPosition - newSpiritButtonPos;
-
-                for (int j = 0; j < buttonRects.Count; j++)
-                {
-                    if (newButtonPos.y == buttonRects[j].localPosition.y)
-                    {
-                        isNewButtonPosBusy = true;
-                        break;
-                    }
-                }
-
-                if (isNewButtonPosBusy)
-                {
-                    break;
-                }
-                else if (newButtonPos.y >= 0)
-                {
-                    buttonRects[i].localPosition = newButtonPos;
-                }
-            }
-        }
-
+        void UpdateRarity() =>
+            spiritButtons.ForEach(button => button.gameObject.SetActive(button.SpiritData.Base.Element == ChoosedElement));
+        
         public void AddSpiritButton(SpiritData spiritData)
         {
             var spiritCount = 0;
@@ -189,21 +143,56 @@ namespace Game.UI
             SpiritButtonSystem GetSpiritButton()
             {
                 var newSpiritButton = Instantiate(SpiritButtonPrefab, RarityGOs[(int)spiritData.Base.Rarity].transform).GetComponent<SpiritButtonSystem>();
-                var spiritButtonImage = newSpiritButton.gameObject.transform.GetChild(0).GetComponent<Image>();
-                spiritButtonImage.sprite = spiritData.Image;
-                
-                newSpiritButton.Owner = Owner;
-                newSpiritButton.SpiritData = spiritData;
 
-                newSpiritButton.PlaceNewSpirit += Owner.PlayerInputSystem.OnPlacingNewSpirit;
-                newSpiritButton.PlaceNewSpirit += Owner.SpiritPlaceSystem.OnPlacingNewSpirit;
+                newSpiritButton.Set(spiritData, Owner, newSpiritButtonPos, spiritCount);
+                newSpiritButton.PlaceNewSpiritClicked += OnPlaceNewSpiritClicked;
                 newSpiritButton.AllThisSpiritsPlaced += OnAllThisSpiritsUsed;
 
-                newSpiritButton.GetComponent<RectTransform>().localPosition = newSpiritButtonPos * spiritCount;
-
-                newSpiritButton.Count = 1;
-
                 return newSpiritButton;
+
+                void OnPlaceNewSpiritClicked(SpiritData obj) => PlaceNewSpiritClicked?.Invoke(obj);
+
+                void OnAllThisSpiritsUsed(SpiritButtonSystem spiritButton)
+                {
+                    spiritButtons.Remove(spiritButton);
+
+                    var buttonRects = new List<RectTransform>();
+
+                    spiritButtons.ForEach(button =>
+                    {
+                        if (button.Element == spiritButton.Element)
+                        {
+                            if (button.Rarity == spiritButton.Rarity)
+                            {
+                                buttonRects.Add(button.GetComponent<RectTransform>());
+                            }
+                        }
+                    });
+
+                    for (int i = 0; i < buttonRects.Count; i++)
+                    {
+                        var isNewButtonPosBusy = false;
+                        var newButtonPos = (Vector2)buttonRects[i].localPosition - newSpiritButtonPos;
+
+                        for (int j = 0; j < buttonRects.Count; j++)
+                        {
+                            if (newButtonPos.y == buttonRects[j].localPosition.y)
+                            {
+                                isNewButtonPosBusy = true;
+                                break;
+                            }
+                        }
+
+                        if (isNewButtonPosBusy)
+                        {
+                            break;
+                        }
+                        else if (newButtonPos.y >= 0)
+                        {
+                            buttonRects[i].localPosition = newButtonPos;
+                        }
+                    }
+                }
             }
         }
 

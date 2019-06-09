@@ -121,7 +121,7 @@ namespace Game.Managers
         {
             Steam.Instance.ConnectionLost += OnSteamLostConnection;
             Steam.Instance.Connected += OnSteamConnected;
-            UIManager.Instance.ReturnToMenu += OnReturnToMenu;
+            BackButtonUI.Instance.ReturnToMenu += OnReturnToMenu;
             UIManager.Instance.GameStarted += OnGameStarted;
 
             void OnGameStarted()

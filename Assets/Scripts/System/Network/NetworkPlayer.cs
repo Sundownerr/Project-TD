@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using FPClient = Facepunch.Steamworks.Client;
 using Game.Systems;
 using System;
 using Game;
@@ -11,6 +10,7 @@ using Game.Utility.Creator;
 using Game.Managers;
 using Game.Utility;
 using Game.Utility.Serialization;
+using Steamworks;
 
 namespace Game.Systems.Network
 {
@@ -145,7 +145,7 @@ namespace Game.Systems.Network
             if (!isLocalPlayer) return;
 
             var data = GameData.Instance.UserData;
-            var userName = FPClient.Instance.Username;
+            var userName = SteamClient.Name;
 
             CmdSendData(gameObject, data, userName);
         }
@@ -155,7 +155,7 @@ namespace Game.Systems.Network
             if (!isLocalPlayer) return;
 
             GameData.Instance.SaveData(new UserData(PlayerData.Level));
-            FPClientExt.LeaveGame();
+            // FPClientExt.LeaveGame();
         }
 
         [Command]
